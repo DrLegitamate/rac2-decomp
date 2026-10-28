@@ -1913,6 +1913,12 @@ moves the scalar input to a VU0 register, forms rows using `vmulx`/`vaddx` and
 `vmove`, and stores four quadwords with `sqc2`. No C route exists under the
 qualified compiler; retain its marker pending maintainer review.
 
+`func_00283D00` is a 56-byte scalar division/remainder helper at all 28
+placements. It uses `vdiv` and Q, converts the quotient through `vftoi0` /
+`vitof0`, and finishes the remainder calculation with VU0 instructions. Its
+body likewise has no C route under the qualified compiler; keep the marker
+pending maintainer review.
+
 `func_00283360` is a 40-byte example: its body is identical in the boot and all
 27 levels, and it uses `vmulx.xyzw`, `vmr32.xyzw`, `vaddw.x/y` and `sqc2`.
 There are 151 direct calls to its placements across the 28 programs, confirming
