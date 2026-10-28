@@ -1891,6 +1891,12 @@ placements. It subtracts two vectors, squares and sums xy, computes `vsqrt`
 through Q and returns the scalar result through `qmfc2`; its VU0 body likewise
 has no C route under this compiler. Keep the marker pending maintainer review.
 
+`func_002830C0` is a 48-byte vector-matrix transform at all 28 placements.
+It loads the input and four matrix columns with `lqc2`, accumulates the
+products using `vmulax`/`vmadd*`, and writes the result using `sqc2`. The
+qualified compiler has no C route for its COP2/VU0 body; keep the marker
+pending maintainer review.
+
 `func_00283360` is a 40-byte example: its body is identical in the boot and all
 27 levels, and it uses `vmulx.xyzw`, `vmr32.xyzw`, `vaddw.x/y` and `sqc2`.
 There are 151 direct calls to its placements across the 28 programs, confirming
