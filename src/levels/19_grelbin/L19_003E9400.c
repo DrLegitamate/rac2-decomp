@@ -1,7 +1,7 @@
 #include "include_asm.h"
 #include "common.h"
 
-INCLUDE_ASM("asm/levels", func_L19_003E9400);
+/* func_L19_003E9400 is defined in L19_003E9400-controller.c. */
 
 INCLUDE_ASM("asm/levels", func_L19_00411890);
 
@@ -37,18 +37,18 @@ void func_L19_00417A00(char *a0)
 INCLUDE_ASM("asm/levels", func_L19_00417A58);
 
 
-INCLUDE_ASM("asm/levels", func_L19_00417CA0);
+/* func_L19_00417CA0 is defined in L19_003E9400-effects-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L19_00417F88);
 
 INCLUDE_ASM("asm/levels", func_L19_0041B078);
 
-INCLUDE_ASM("asm/levels", func_L19_0041BFD0);
+/* func_L19_0041BFD0 is defined in L19_0041BFD0-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L19_0041C328);
 
 
-INCLUDE_ASM("asm/levels", func_L19_0041E5B0);
+/* func_L19_0041E5B0 is defined in L19_003E9400-lift-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L19_0041EE60);
 
