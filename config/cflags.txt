@@ -1348,3 +1348,5 @@ src/game/002BBCB0-g8-qcopy.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por
 src/game/002BD0D0-g8.c	-O2 -G8 -ffunction-sections -g -frac2-qcopy -frac2-qcopy-barrier
 src/game/002BCC58-g8.c	-O2 -G8 -ffunction-sections -g -fno-gcse
 src/game/002BDEB0.c	-O2 -G0 -ffunction-sections -g
+src/game/002C3430-fade.c	-O2 -G0 -ffunction-sections -g -frac2-hazard-labels
+src/game/002EB1E0.c	-O2 -G0 -ffunction-sections -frac2-gcse-unsplit-edges

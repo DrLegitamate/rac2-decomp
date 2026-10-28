@@ -12,7 +12,7 @@ typedef unsigned char u8;
 
 INCLUDE_ASM("asm/game", func_002DDEC8);
 
-INCLUDE_ASM("asm/game", func_002DE0D0);
+/* func_002DE0D0 is in 002DDEC8-animation.c. */
 
 /* The chunk table: a key and its flags, one pair per chunk. */
 typedef struct {
@@ -85,6 +85,20 @@ void func_002DE3A0(s32 param)
 }
 
 
+extern void func_002B7AD0(void);
+
+/* The chunk table again, as signed (key, flags) pairs indexed directly: read
+   through a Chunk cast of the int array, the loop compiles to another shape. */
+typedef struct {
+    int key;
+    int flags;
+} ChunkSlot;
+extern ChunkSlot D_001B1F50_slots[] __asm__("D_001B1F50") __attribute__((sda));
+
+/* rac1-decomp src/game/pause.c: release_menu_stream_buffer */
+/* Releases the chunk whose key matches. Bit 1 means taken; bit 2 on top of it
+   means the chunk also holds the latch at byte 0xDB of D_001F2840, which is
+   handed back through func_002B7AD0 first. Always returns 0. */
 INCLUDE_ASM("asm/game", func_002DE618);
 
 extern int D_001B1F50[] __attribute__((sda));

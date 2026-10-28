@@ -1,5 +1,95 @@
 #include "include_asm.h"
 #include "common.h"
+/* Copy the xyz components and clear the fourth word. Adapted from RAC1. */
+static __inline__ void particle_copy_xyz(float *dst, float *src)
+{
+    dst[0] = src[0];
+    dst[1] = src[1];
+    dst[2] = src[2];
+    *(int *)&dst[3] = 0;
+}
+extern void func_002ACB48(void *, float);
+extern float func_00282E80(void *, void *);
+extern void func_002A8F70(void *, int, int, void *, void *, float);
+extern int func_00277F48(float, void *, int, int, int);
+extern char *func_002C2A88(void *, int, int, int, int, int, int, float, float);
+extern char *func_002C56B0(void *, int, int, int, int, int, int, float, float);
+extern unsigned char *D_001F2628;
+extern char *D_001B1D90[] __attribute__((sda));
+extern char D_00189EA0[];
+
+typedef struct {
+    char pad00[0x88];
+    float height;
+    char pad8C[0x2290 - 0x8C];
+    void *owner;
+} ParticleHero2C2C80;
+
+typedef struct {
+    char pad00[0x2290];
+    void *owner;
+} ParticleHero2C58A8;
+
+extern char *func_002C3F88(int,void *,float,float,int,int,int,void *);
+extern void func_00283410(void *,void *);
+extern void func_002830C0(void *,void *,void *);
+extern void func_00283098(void *,void *,void *);
+extern int D_001B1688[] __attribute__((sda));
+extern int func_00283D38(int,int,float);
+extern float func_00282E48(void *,void *);
+extern void func_002AE730(void *,void *);
+extern void func_002AE838(void *,void *);
+extern void func_00282D08(void *,void *,void *,float);
+extern char D_00189F00[];
+
+extern char *func_002C5B70(void *, void *, int, int);
+typedef unsigned int U128 __attribute__((mode(TI)));
+typedef union { U128 q; f32 f[4]; } SplitVector;
+typedef struct SplitMotion {
+    f32 x, y, z, w;
+    f32 t;
+    s16 f14;
+    s16 f16;
+    u8 f18;
+    char pad19[3];
+    void *f1C;
+} SplitMotion;
+typedef struct SplitParticle {
+    u8 b00;
+    char pad01;
+    u8 b02;
+    char pad03;
+    u32 f04;
+    u8 f08;
+    char pad09;
+    s16 h0A;
+    f32 f0C;
+    SplitVector posv;
+    SplitMotion pv;
+} SplitParticle;
+typedef struct { SplitVector v; void *f10; s32 f14; s32 f18; f32 f1C; s32 f20; char pad[0xC]; } SplitCollision;
+typedef struct { SplitVector v; f32 x10; s16 h14; s16 h16; u8 b18; u8 pad[3]; s32 x1C; } FadeSplitMotion;
+typedef struct { u8 pad[2]; u8 b2; u8 pad3; u32 x4; u8 b8; u8 pad9; s16 hA; f32 fC; SplitVector pos; FadeSplitMotion e; } FadeSplitParticle;
+typedef struct { SplitVector v; s32 x10; s32 x14; u8 pad[4]; f32 x1C; s32 x20; } FadeSplitCollision;
+extern char *func_002C02F0(void *, void *, int, void *, int, int);
+extern int func_002761F8(void *, void *, int, void *, void *);
+extern void func_00283028(void *, void *, void *);
+extern void func_00282C88(void *);
+extern float D_001BAFC0[];
+extern unsigned char *D_001F25F4, *D_001F26A8;
+extern int func_002A9568(int, int, float);
+extern void func_00282CF0(void *, void *, void *);
+extern float func_00282DF0(void *);
+extern void func_00282F20(void *, void *, float);
+extern float func_002A7940(void);
+extern int func_002AAE98(float, float, float, float);
+extern int func_00283CF0(float);
+extern float func_002A7878(float, float);
+extern int func_001163B0(void);
+extern unsigned char *D_001F2570;
+extern unsigned char *D_001F2688;
+extern int func_002A8860(void *, int);
+extern void func_0029FCC0(void *, int, void *);
 
 /* Qwen draft (branch qwen/autonomy, c8b09022), checked by tools/check.py */
 void func_002B9180(void *);
@@ -329,13 +419,235 @@ void func_002BFFE8(char *self)
 
 /* func_002C02F0 uses the quadword-copy profile in 002C02F0-qcopy.c. */
 
-INCLUDE_ASM("asm/game", func_002C04C0);
+/* Adapted from RAC1 effect_particle_updates.c; measured against RAC2 retail. */
+void func_002C04C0(SplitParticle *p) {
+    SplitVector v0u;
+    SplitVector v1u;
+    SplitCollision c;
+    f32 v2[4];
+    SplitMotion *pv;
+    SplitParticle *r;
+    u8 *tab;
+    u8 fl;
+    s32 fm;
+    s64 hit;
+    s32 k, t;
+    f32 f, g, s;
+
+    pv = &p->pv;
+    if (p->h0A != 0 && func_00282978(&p->h0A) != 0) {
+        f32 sp, lo, hi, sc, zero, nsp;
+        pv->f18 |= 0x88;
+        lo = 0.5f;
+        sp = p->f0C / (func_00283CE0_2((u8)pv->pad19[0]) * 28125.0f);
+        hi = 0.7f;
+        sc = 0.2f;
+        p->f0C = p->f0C * 0.8f;
+        zero = 0.0f;
+        f = func_002A7878(lo, hi);
+        nsp = -sp;
+        func_00282D30_12((char *)v0u.f, (char *)pv, f);
+        v1u.f[0] = p->posv.f[0] + func_002A7878(nsp, sp);
+        v1u.f[1] = p->posv.f[1] + func_002A7878(nsp, sp);
+        v1u.f[2] = p->posv.f[2] + func_002A7878(nsp, sp);
+        v0u.f[0] = v0u.f[0] + func_002A7878(-p->pv.x * sc, p->pv.x * sc);
+        v0u.f[1] = v0u.f[1] + func_002A7878(-pv->y * sc, pv->y * sc);
+        v0u.f[2] = v0u.f[2] + func_002A7878(-pv->z * sc, zero);
+        r = (SplitParticle *)func_002C02F0(v1u.f, v0u.f, (pv->f18 & 0x10) | 0x88, pv->f1C, (u8)pv->pad19[0], 128);
+        if (r != 0) {
+            r->h0A = 2;
+            r->f0C = p->f0C;
+        }
+        func_00282D30_12((char *)pv, (char *)pv, func_002A7878(lo, hi));
+        p->pv.x = p->pv.x + func_002A7878(-p->pv.x * sc, p->pv.x * sc);
+        pv->y = pv->y + func_002A7878(-pv->y * sc, pv->y * sc);
+        pv->z = pv->z + func_002A7878(-pv->z * sc, zero);
+        p->posv.f[0] = p->posv.f[0] + func_002A7878(nsp, sp);
+        p->posv.f[1] = p->posv.f[1] + func_002A7878(nsp, sp);
+        p->posv.f[2] = p->posv.f[2] + func_002A7878(nsp, sp);
+    }
+    tab = D_001F2570;
+    { int index = p->b02 - tab[0];
+    p->b02 = tab[(p->h0A + pv->f16 + index) & 7]; }
+    func_00282CC0((char *)v0u.f, (char *)p->posv.f, (char *)pv);
+    hit = 0;
+    k = pv->f14;
+    if (3 < k) {
+        func_00282CF0(v1u.f, p->posv.f, pv);
+    } else {
+        v1u.q = p->posv.q;
+    }
+    func_00282D30_12((char *)&c, (char *)&c, 0.01f);
+    fl = pv->f18;
+    if (fl & 8) {
+        if ((p->f04 & 0xFF000000) == 0) goto kill;
+        pv->f18 = fl | 8;
+        if (!(pv->f18 & 0x10)) hit = func_002761F8(v1u.f, v0u.f, 4, pv->f1C, 0) != 0;
+    } else {
+        c.f10 = pv->f1C;
+        c.f14 = 0x10001;
+        c.f1C = 1.0f;
+        c.v.q = *(U128 *)pv;
+        if (fl & 0x40) func_00282C88(&c);
+        c.f20 = 1;
+        if (!(pv->f18 & 0x10)) hit = func_002761F8(v1u.f, v0u.f, 0, pv->f1C, &c) != 0;
+    }
+    if (hit) {
+        func_00282F20(v2, D_001BAFC0, 1.0f);
+        func_00283028(pv, pv, D_001BAFC0);
+        func_00282D30_12((char *)pv, (char *)pv, 0.02f);
+        func_00282F20(v2, D_001BAFC0, 0.055f);
+        func_00282CC0((char *)p->posv.f, (char *)(D_001BAFC0 - 8), (char *)v2);
+        if (p->f0C < 200000.0f && (pv->f18 & 8) == 0) {
+            p->f0C = p->f0C + p->f0C;
+        }
+        pv->f18 |= 8;
+    } else {
+        qcopy(p->posv.f, v0u.f);
+    }
+    if (pv->f18 & 8) {
+        f32 n;
+        pv->f16++;
+        n = p->f0C - (func_00283CE0_2((u8)pv->pad19[0]) * 8437.5f - func_00283CE0_2((u8)pv->pad19[0]) * 937.5f) * 0.0694444477558136f;
+        p->f0C = n;
+        if (n <= 0.0f) {
+        kill:
+            func_002B9180(p);
+            return;
+        }
+    } else {
+        p->f0C = p->f0C + (func_00283CE0_2((u8)pv->pad19[0]) * 8437.5f - func_00283CE0_2((u8)pv->pad19[0]) * 937.5f) * 0.0555555559694767f;
+    }
+    f = func_00283CE0_2(pv->f14);
+    s = f * 0.000246913579758257f + 0.08f;
+    if (s < 0.0f) s = 0.0f;
+    if (0.08f < s) s = 0.08f;
+    if (pv->f18 & 8) {
+        s = s / ((f32)pv->f16 * 0.142857149243355f + 1.0f);
+    }
+    p->f04 = (p->f04 & 0xFFFFFF) | (func_00283CF0(s * 256.0f) << 24);
+    pv->z = pv->z + 0.008f;
+    t = pv->f14;
+    if (25 < t || (pv->f18 & 8)) {
+        pv->x = pv->x * 0.95f;
+        pv->y = pv->y * 0.95f;
+    }
+    fm = pv->f18;
+    g = -1.0f;
+    if (fm & 1) g = 1.0f;
+    if (fm & 8) {
+        pv->z = pv->z + 0.008f;
+        f = func_00283CE0_2(pv->f16);
+        pv->t = pv->t + g * (-0.01f) / f;
+    } else {
+        pv->t = pv->t + g * (-0.01f);
+    }
+    if (1.0f < pv->t) pv->t = pv->t - 1.0f;
+    if (pv->t < 0.0f) pv->t = pv->t + 1.0f;
+    p->f08 = (s32)(pv->t * 256.0f);
+}
+
 
 
 /* func_002C0CC0 uses the quadword-copy profile in 002C0CC0-qcopy.c. */
 
-INCLUDE_ASM("asm/game", func_002C0E50);
+/* Adapted from RAC1 effect_particle_updates.c; measured against RAC2 retail. */
+void func_002C0E50(FadeSplitParticle *m) {
+    SplitVector v, p;
+    FadeSplitCollision c;
+    FadeSplitMotion *e = &m->e;
+    FadeSplitParticle *n;
+    f32 r, nr, a, s;
+    s32 hit;
+    u8 fl;
+    u8 *tab;
 
+    if (m->hA != 0 && func_00282978(&m->hA)) {
+        e->b18 |= 0x88;
+        r = m->fC * 0.0000011111111462014378f;
+        m->fC *= 0.8f;
+        nr = -r;
+        func_00282D30_12((char *)&v, (char *)e, func_002A7878(0.5f, 0.7f));
+        p.f[0] = m->pos.f[0] + func_002A7878(nr, r);
+        p.f[1] = m->pos.f[1] + func_002A7878(nr, r);
+        p.f[2] = m->pos.f[2] + func_002A7878(nr, r);
+        v.f[0] += func_002A7878(-e->v.f[0] * 0.2f, e->v.f[0] * 0.2f);
+        v.f[1] += func_002A7878(-e->v.f[1] * 0.2f, e->v.f[1] * 0.2f);
+        v.f[2] += func_002A7878(-e->v.f[2] * 0.2f, 0.0f);
+        n = (FadeSplitParticle *)func_002C0CC0((char *)&p, (char *)&v, (e->b18 & 0x10) | 0x88, e->x1C);
+        if (n) {
+            n->hA = 2;
+            n->fC = m->fC;
+        }
+        func_00282D30_12((char *)e, (char *)e, func_002A7878(0.5f, 0.7f));
+        e->v.f[0] += func_002A7878(-e->v.f[0] * 0.2f, e->v.f[0] * 0.2f);
+        e->v.f[1] += func_002A7878(-e->v.f[1] * 0.2f, e->v.f[1] * 0.2f);
+        e->v.f[2] += func_002A7878(-e->v.f[2] * 0.2f, 0.0f);
+        m->pos.f[0] += func_002A7878(nr, r);
+        m->pos.f[1] += func_002A7878(nr, r);
+        m->pos.f[2] += func_002A7878(nr, r);
+    }
+    tab = D_001F2570;
+    { int index = m->b2 - tab[0];
+    m->b2 = tab[(m->hA + e->h16 + index) & 7]; }
+    func_00282CC0((char *)&v, (char *)&m->pos, (char *)e);
+    hit = 0;
+    if (e->h14 > 3) {
+        func_00282CF0(&p, &m->pos, e);
+    } else {
+        p.q = m->pos.q;
+    }
+    func_00282D30_12((char *)&c, (char *)&c, 0.01f);
+    fl = e->b18;
+    if (fl & 8) {
+        if (!(m->x4 & 0xFF000000)) goto kill;
+        e->b18 = fl | 8;
+        if (!func_002A77E0(3) && !(e->b18 & 0x10)) hit = func_002761F8(&p, &v, 0, (void *)e->x1C, 0) != 0;
+    } else {
+        c.x10 = e->x1C;
+        c.x1C = 1.0f;
+        c.v.q = e->v.q;
+        c.x14 = 1;
+        c.x20 = 1;
+        if (!func_002A77E0(3) && !(e->b18 & 0x10)) hit = func_002761F8(&p, &v, 0, (void *)e->x1C, &c) != 0;
+    }
+    if (hit) e->b18 |= 8;
+    else qcopy(&m->pos, &v);
+    if (e->b18 & 8) {
+        e->h16++;
+        m->fC -= 18055.5546875f;
+        if (m->fC <= 0.0f) {
+        kill:
+            func_002B9180(m);
+            return;
+        }
+    } else {
+        m->fC += 14444.4443359375f;
+    }
+    s = func_00283CE0_2(e->h14);
+    a = s * 0.000246913579758257f + 0.08f;
+    if (a < 0.0f) a = 0.0f;
+    if (0.08f < a) a = 0.08f;
+    if (e->b18 & 8) a /= (f32)e->h16 * 0.142857149243355f + 1.0f;
+    m->x4 = (m->x4 & 0xFFFFFF) | (func_00283CF0(a * 256.0f) << 24);
+    e->v.f[2] += 0.008f;
+    if (e->h14 > 25 || (e->b18 & 8)) {
+        e->v.f[0] *= 0.95f;
+        e->v.f[1] *= 0.95f;
+    }
+    { u8 f2 = e->b18;
+    s = -1.0f;
+    if (f2 & 1) s = 1.0f;
+    if (f2 & 8) {
+        e->v.f[2] += 0.008f;
+        e->x10 += s * (-0.01f) / func_00283CE0_2(e->h16);
+    } else {
+        e->x10 += s * (-0.01f);
+    } }
+    if (1.0f < e->x10) e->x10 -= 1.0f;
+    if (e->x10 < 0.0f) e->x10 += 1.0f;
+    m->b8 = (s32)(e->x10 * 256.0f);
+}
 
 /* Updates one byte-addressed object by packing a converted short-ratio value with three bytes, applying the bound helper sequence to three stored floats, and accumulating one byte and one float. */
 void func_002C1840(char *self)
@@ -548,7 +860,49 @@ void func_002C2170(char *p)
     }
 }
 
-INCLUDE_ASM("asm/game", func_002C23B8);
+/* Move a particle while tweening its size and alpha, then apply gravity. */
+void func_002C23B8(char *p)
+{
+    char *q = p + 32;
+    Vec16_F9a4b4d8b v;
+    float t;
+    int alpha;
+
+    p[8] += (unsigned char)q[10];
+    if (*(short *)(q + 8) - *(short *)(p + 10) < 6) {
+        t = (float)(*(short *)(q + 8) - *(short *)(p + 10)) * 0.2f;
+        *(float *)(p + 12) = *(float *)(q + 4) +
+            ((*(float *)q + *(float *)(q + 4)) * 0.5f - *(float *)(q + 4)) * t;
+        {
+            int c2 = (unsigned char)q[11] >> 1;
+            int c = (unsigned char)q[11];
+            alpha = func_00283CF0((float)c + (float)(c2 - c) * t);
+        }
+    } else {
+        t = func_00283CE0_2(*(short *)(q + 8) - 6);
+        t = (float)*(short *)(p + 10) / t;
+        *(float *)(p + 12) = *(float *)q +
+            ((*(float *)q + *(float *)(q + 4)) * 0.5f - *(float *)q) * t;
+        alpha = func_00283CF0((float)((unsigned char)q[11] >> 1) * t);
+    }
+    *(int *)(p + 4) = (alpha << 24) | (*(int *)(p + 4) & 0xffffff);
+    particle_copy_xyz(v.f, (float *)(q + 12));
+    func_00282CC0(p + 16, p + 16, (char *)&v);
+    *(float *)(q + 20) -= *(float *)(q + 24);
+    if (*(float *)(p + 28) != 0) {
+        if (*(float *)(p + 28) == 2.0f)
+            func_00300190_2(p + 16, p + 16);
+        *(float *)(p + 28) = 2.0f;
+    }
+    if (*(float *)(p + 16) < 2 || *(float *)(p + 16) > 1021 ||
+        *(float *)(p + 20) < 2 || *(float *)(p + 20) > 1021 ||
+        *(float *)(p + 24) < 2 || *(float *)(p + 24) > 1021) {
+        func_002B9180(p);
+        return;
+    }
+    if (func_00282978((short *)(p + 10)))
+        func_002B9180(p);
+}
 
 extern void func_002C96F8(float, float, void *, int *, float *, void *);
 
@@ -657,7 +1011,50 @@ void func_002C29A0(char *p)
 
 /* func_002C2A88 uses the quadword-copy profile in 002C2A88-qcopy.c. */
 
-INCLUDE_ASM("asm/game", func_002C2C80);
+void func_002C2C80(char *p) {
+ char *q=p+32; SplitVector v; int i; float f, a, speed;
+ switch(*(unsigned char *)(q+20)) {
+ case 0: {
+  float duration=func_00283CE0_2(*(unsigned char *)(q+17));
+  *(int *)(p+4)=func_00283D38(0xff4080ff,0,(duration-func_00283CE0_2(*(short *)(p+10)))/duration);
+  if(func_00282978((short *)(p+10))) {
+   if(*(unsigned char *)(q+16)==1)func_002B9180(p);
+   else {*(unsigned char *)(q+20)=1;*(short *)(p+10)=*(unsigned char *)(q+18);}
+  }
+  break; }
+ case 1:
+  for(i=0;i<*(unsigned char *)(q+19);i++) {
+   qcopy(&v,p+16);
+   func_002ACB48(&v,0.05f);
+   speed=1.0f;
+   if(*(short *)(p+10)<10)speed=func_00283CE0_2(*(short *)(p+10))*0.1f;
+   func_002C2A88(&v,2,*(unsigned char *)(q+17),*(unsigned char *)(q+18),*(unsigned char *)(q+19),*(unsigned char *)(q+21),*(int *)(q+24),*(float *)(q+28),speed);
+  }
+  if(func_00282978((short *)(p+10)))func_002B9180(p);
+  { char *pos=D_00189EA0; ParticleHero2C2C80 *hero;
+  if(func_00282E80(p+16,pos)<0.3f) {
+   hero=(ParticleHero2C2C80 *)(pos-128);
+   if(hero->height<*(float *)(p+24)+1.2f) {
+   func_00282CF0(&v,pos,p+16);
+   func_00282F20(&v,&v,1.0f);v.f[2]=1.0f;
+   func_002A8F70(hero->owner,*(int *)(q+24),1,p+16,&v,*(float *)(q+28));
+  }}
+  }
+  break;
+ case 2:
+  func_00282CC0(p+16,p+16,q);
+  a=func_00283CE0_2(*(unsigned char *)(q+21));
+  f=(a-func_00283CE0_2(*(short *)(p+10)))/a;
+  *(int *)(p+4)=func_00283D38((*(unsigned char *)(q+22)<<24)|0x4060,0x8fafff,f);
+  if(f<0.6f)*(float *)(p+12)+=9030.0f;else *(float *)(p+12)-=16800.0f;
+  p[2]=D_001F2628[func_001163B0()&7];
+  if((((p-D_001B1D90[0])>>6)&1))p[8]++;else p[8]--;
+  if(func_00282978((short *)(p+10)))func_002B9180(p);
+  break;
+ }
+}
+
+
 
 
 extern unsigned char *r1_func_00218928(int);
@@ -705,6 +1102,8 @@ void func_002C30F8(char *self)
         func_002B9180(self);
 }
 
+/* Creates a particle at POS moving by VEL; in mode 1 it also keeps its offset from the
+   resident view origin. */
 /* func_002C3150 uses the quadword-copy profile in 002C3150-qcopy.c. */
 
 /* advances three floats of a sub-object by a resident offset triple, calls a three-pointer update, subtracts the offsets back out, rejects the result when any coordinate leaves the 2.0..1021.0 band, and otherwise rescales a 24-bit handle by the ratio of two helper lookups over a signed halfword index */
@@ -746,7 +1145,8 @@ void func_002C3280(u8 *self)
     *(int *)(self + 4) = func_00283D38_3(n, *(int *)(self + 4), a / func_00283CE0_4(*(short *)(self + 10)));
 }
 
-INCLUDE_ASM("asm/game", func_002C3430);
+/* func_002C3430 uses the hazard-label profile in 002C3430-fade.c. */
+
 
 void func_002C37E0(char *obj)
 {
@@ -781,6 +1181,7 @@ tail:
 
 /* func_002C38E0 is in the -G8 sibling. */
 
+/* Advances a spark, stops it on collision, and decays its RGBA channels. */
 INCLUDE_ASM("asm/game", func_002C3B08);
 
 /* func_002C3D80 uses the quadword-copy profile in 002C3D80-qcopy.c. */
@@ -802,9 +1203,47 @@ void func_002C3EE8(char *p)
 
 /* func_002C3F88 uses the quadword-copy profile in 002C3F88-qcopy.c. */
 
-INCLUDE_ASM("asm/game", func_002C4100);
+/* Updates an attached spark and emits children; mode 1 orbits its owner.
+ * The interleaved prototype preserves each EE argument register bank. */
+void func_002C4100(char *p) {
+ char *q=p+32; float v[4], w[4], rot[4], mat[16]; char *child;
+ if(*(short *)(q+28)==0) {
+  if(func_002A8860(p+4,*(short *)(q+26))) {func_002B9180(p);return;}
+  if(*(char **)(q+12)) {
+   v[0]=*(float *)(p+32);v[1]=*(float *)(q+4);v[2]=*(float *)(q+8);
+   func_00282D30(v,v,func_00283CE0_2(*(short *)(q+24)));
+   func_00282CC0(p+16,*(char **)(q+12)+16,(char *)v);
+  }
+  return;
+ }
+ if(func_00282978((short *)(p+10)) || (*(short *)(p+10)<10 && func_002A8860(p+4,16))) {func_002B9180(p);return;}
+ if(*(short *)(q+28)==1)func_002C3F88(0,p+16,0,0,10,0,*(signed char *)(p+7),0);
+ else {
+  v[0]=*(float *)(q);v[1]=*(float *)(q+4);v[2]=*(float *)(q+8);
+  child=func_002C3F88(*(int *)(q+12),p+16,0,0,10,0,*(signed char *)(p+7),v);
+  if(child) *(short *)(child+56)=*(short *)(q+24);
+ }
+ if(*(short *)(q+28)==1) {
+  qcopy(p+16,*(char **)(q+12)+16);
+  v[0]=func_00283180(*(float *)(q+16))*2.25f;
+  v[1]=func_00283198(*(float *)(q+16))*2.25f;
+  v[2]=v[0]; v[0]=0;
+  w[0]=func_00283180(*(float *)(q+20))*0.28f;
+  w[1]=func_00283198(*(float *)(q+20))*0.28f;
+  w[2]=w[0]; w[0]=0;
+  func_00282C88(rot);rot[1]=*(float *)(q+16);
+  func_00283410(mat,rot);func_002830C0(w,w,mat);
+  func_00282CC0((char *)v,(char *)v,(char *)w);
+  func_00283098(v,v,*(char **)(q+12)+192);
+  func_00282CC0(p+16,p+16,(char *)v);
+  *(float *)(q+16)=func_00283B98(*(float *)(q+16),0.015998853370547295f);
+  *(float *)(q+20)=func_00283B98(*(float *)(q+20),0.07272206246852875f);
+ }
+}
 
 
+
+/* Follows a selected attachment, randomizes its rotation, and fades by lifetime. */
 INCLUDE_ASM("asm/game", func_002C4500);
 
 /* decrements a signed short counter and, at zero, rotates a 24-bit identifier beside it and reloads the counter; calls a helper when the identifier's top byte is clear */
@@ -819,7 +1258,41 @@ void func_002C4788(u8 *a0) {
     }
 }
 
-INCLUDE_ASM("asm/game", func_002C47E8);
+/* Pulls toward a target, blends colour by distance, then advances through
+ * three timed movement/fade phases. */
+void func_002C47E8(char *p) {
+ char *q=p+32; float v[4],a[4],b[4];float f;
+ if(D_001B1688[0]&1)p[8]++;
+ f=func_00282E48(p+16,D_00189F00);
+ if(f<5.0f && *(float *)(*(char **)(q+24)+8)>0.0f) {
+  func_00282CF0(a,*(void **)(q+24),p+16);
+  if(func_00282DF0(a)>0.5f) {func_00282F20(a,a,0.1f/f);func_00282CC0(p+16,p+16,(char *)a);}
+  else {func_00282F20(a,a,0.005f);func_002AE730(a,p+36);}
+ }
+ f=(2.5f-(f-0.5f))*0.4f;
+ if(f>1.0f)f=1.0f;else if(f<0.0f)f=0.0f;
+ *(int *)(p+4)=func_00283D38(*(int *)(q+8),*(int *)(q+12),f);
+ if(*(short *)(q+16)) {
+  /* Retail writes zero to the hardware register at 0x10000000. */
+  *(volatile int *)0x10000000=0;
+  func_002AE838(v,q);func_00282CC0(p+16,p+16,(char *)v);
+  f=func_00283CE0_2(*(short *)(p+10))/func_00283CE0_2(*(short *)(q+16));
+  *(int *)(p+4)=func_00283D38(*(int *)(p+4)&0xffffff,*(int *)(p+4),1.0f-f);
+  if(func_00282978((short *)(p+10))){*(short *)(q+16)=0;*(short *)(p+10)=*(short *)(q+18);}
+ } else if(*(short *)(q+18)) {
+  func_002AE838(a,q);func_002AE838(b,q+4);
+  func_00282D08(v,b,a,func_00283CE0_2(*(short *)(p+10))/func_00283CE0_2(*(short *)(q+18)));
+  func_00282CC0(p+16,p+16,(char *)v);
+  if(func_00282978((short *)(p+10))){*(short *)(q+18)=0;*(short *)(p+10)=*(short *)(q+20);}
+ } else {
+  int color;
+  func_002AE838(v,q+4);func_00282CC0(p+16,p+16,(char *)v);
+  color=*(int *)(p+4)&0xffffff;
+  *(int *)(p+4)=func_00283D38(color,*(int *)(p+4),func_00283CE0_2(*(short *)(p+10))/func_00283CE0_2(*(short *)(q+20)));
+  if(func_00282978((short *)(p+10)))func_002B9180(p);
+ }
+}
+
 
 void func_002C4B10(u8 *a0)
 {
@@ -922,11 +1395,137 @@ void func_002C5550(Obj_F7cacd225 *o)
 
 /* func_002C56B0 uses the quadword-copy profile in 002C56B0-qcopy.c. */
 
-INCLUDE_ASM("asm/game", func_002C58A8);
+void func_002C58A8(char *p) {
+ char *q=p+32; SplitVector v; struct { float v[4]; void *owner; int flags; unsigned char mode, enabled; short mask; float scale; int last; } c; int i; float f,a,speed;
+ switch(*(unsigned char *)(q+20)) {
+ case 0:
+  for(i=0;i<*(unsigned char *)(q+19);i++) {
+   qcopy(&v,p+16);
+   func_002ACB48(&v,0.05f);
+   speed=1.0f;
+   if(*(short *)(p+10)<10)speed=func_00283CE0_2(*(short *)(p+10))*0.1f;
+   func_002C56B0(&v,0,1,*(short *)(q+16),*(unsigned char *)(q+19),*(unsigned char *)(q+21),*(int *)(q+24),*(float *)(q+28),speed);
+  }
+  if(func_00282978((short *)(p+10)))func_002B9180(p);
+  func_00282C88(&c);
+  { ParticleHero2C58A8 *hero=(ParticleHero2C58A8 *)D_00189E20;
+  c.owner=hero->owner;c.flags=0x10000;c.mode=2;c.mask=0x820;c.enabled=1;c.scale=1.0f;c.last=0; }
+  if((D_001B1688[0]+*(unsigned char *)(q+23))%10==0)
+   func_00277F48(0.2f,p+16,16,(int)c.owner,(int)&c);
+  break;
+ case 1:
+  func_00282CC0(p+16,p+16,q);
+  a=func_00283CE0_2(*(unsigned char *)(q+21));
+  f=(a-func_00283CE0_2(*(short *)(p+10)))/a;
+  *(int *)(p+4)=func_00283D38((*(unsigned char *)(q+22)<<24)|0x4060,0x8fafff,f);
+  if(f<0.6f)*(float *)(p+12)+=9030.0f;else *(float *)(p+12)-=16800.0f;
+  p[2]=D_001F2628[func_001163B0()&7];
+  if((((p-D_001B1D90[0])>>6)&1))p[8]++;else p[8]--;
+  if(func_00282978((short *)(p+10)))func_002B9180(p);
+  break;
+ }
+}
+
 
 /* func_002C5B70 uses the quadword-copy profile in 002C5B70-qcopy.c. */
 
-INCLUDE_ASM("asm/game", func_002C5D00);
+/* Adapted from RAC1 effect_particle_updates.c; measured against RAC2 retail. */
+void func_002C5D00(FadeSplitParticle *m) {
+    SplitVector v, p;
+    FadeSplitCollision c;
+    FadeSplitMotion *e = &m->e;
+    FadeSplitParticle *n;
+    f32 r, nr, a, s;
+    s32 hit;
+    u8 fl;
+    u8 *tab;
+
+    if (m->hA != 0 && func_00282978(&m->hA)) {
+        e->b18 |= 0x88;
+        r = m->fC * 0.0000011111111462014378f;
+        m->fC *= 0.8f;
+        nr = -r;
+        func_00282D30_12((char *)&v, (char *)e, func_002A7878(0.5f, 0.7f));
+        p.f[0] = m->pos.f[0] + func_002A7878(nr, r);
+        p.f[1] = m->pos.f[1] + func_002A7878(nr, r);
+        p.f[2] = m->pos.f[2] + func_002A7878(nr, r);
+        v.f[0] += func_002A7878(-e->v.f[0] * 0.2f, e->v.f[0] * 0.2f);
+        v.f[1] += func_002A7878(-e->v.f[1] * 0.2f, e->v.f[1] * 0.2f);
+        v.f[2] += func_002A7878(-e->v.f[2] * 0.2f, 0.0f);
+        n = (FadeSplitParticle *)func_002C5B70((char *)&p, (char *)&v, 0x88, e->x1C);
+        if (n) {
+            n->hA = 2;
+            n->fC = m->fC;
+        }
+        func_00282D30_12((char *)e, (char *)e, func_002A7878(0.5f, 0.7f));
+        e->v.f[0] += func_002A7878(-e->v.f[0] * 0.2f, e->v.f[0] * 0.2f);
+        e->v.f[1] += func_002A7878(-e->v.f[1] * 0.2f, e->v.f[1] * 0.2f);
+        e->v.f[2] += func_002A7878(-e->v.f[2] * 0.2f, 0.0f);
+        m->pos.f[0] += func_002A7878(nr, r);
+        m->pos.f[1] += func_002A7878(nr, r);
+        m->pos.f[2] += func_002A7878(nr, r);
+    }
+    tab = D_001F2688;
+    { int index = m->b2 - tab[0];
+    m->b2 = tab[(m->hA + e->h16 + index) & 7]; }
+    func_00282CC0((char *)&v, (char *)&m->pos, (char *)e);
+    hit = 0;
+    if (e->h14 > 3) {
+        func_00282CF0(&p, &m->pos, e);
+    } else {
+        p.q = m->pos.q;
+    }
+    func_00282D30_12((char *)&c, (char *)&c, 0.01f);
+    fl = e->b18;
+    if (fl & 8) {
+        if (!(m->x4 & 0xFF000000)) goto kill;
+        e->b18 = fl | 8;
+        if (!func_002A77E0(3)) hit = func_002761F8(&p, &v, 0, (void *)e->x1C, 0) != 0;
+    } else {
+        c.x10 = e->x1C;
+        c.x1C = 1.0f;
+        c.v.q = e->v.q;
+        c.x14 = 1;
+        c.x20 = 1;
+        if (!func_002A77E0(3)) hit = func_002761F8(&p, &v, 0, (void *)e->x1C, &c) != 0;
+    }
+    if (hit) e->b18 |= 8;
+    else qcopy(&m->pos, &v);
+    if (e->b18 & 8) {
+        e->h16++;
+        m->fC -= 18055.5546875f;
+        if (m->fC <= 0.0f) {
+        kill:
+            func_002B9180(m);
+            return;
+        }
+    } else {
+        m->fC += 14444.4443359375f;
+    }
+    s = func_00283CE0_2(e->h14);
+    a = s * 0.000246913579758257f + 0.08f;
+    if (a < 0.0f) a = 0.0f;
+    if (0.08f < a) a = 0.08f;
+    if (e->b18 & 8) a /= (f32)e->h16 * 0.142857149243355f + 1.0f;
+    m->x4 = (m->x4 & 0xFFFFFF) | (func_00283CF0(a * 256.0f) << 24);
+    e->v.f[2] += 0.0002f;
+    if (e->h14 > 25 || (e->b18 & 8)) {
+        e->v.f[0] *= 0.95f;
+        e->v.f[1] *= 0.95f;
+    }
+    { u8 f2 = e->b18;
+    s = -1.0f;
+    if (f2 & 1) s = 1.0f;
+    if (f2 & 8) {
+        e->v.f[2] += 0.0002f;
+        e->x10 += s * (-0.01f) / func_00283CE0_2(e->h16);
+    } else {
+        e->x10 += s * (-0.01f);
+    } }
+    if (1.0f < e->x10) e->x10 -= 1.0f;
+    if (e->x10 < 0.0f) e->x10 += 1.0f;
+    m->b8 = (s32)(e->x10 * 256.0f);
+}
 
 /* func_002C6360 is in the -G8 sibling (its two globals are read through $gp). */
 
@@ -1067,6 +1666,9 @@ extern void func_0029FCC0(void *, int, void *);
 extern void func_00282CF0(void *, void *, void *);
 extern void func_00282F20(void *, void *, float);
 
+/* Follows the particle's target (or one of its joints): the alpha fades towards the limit
+   while the target is shown and out otherwise; a missing or dying target fades the particle
+   out and frees it. The second read of the colour word is the retail copy kept by GCSE. */
 void func_002C6A08(Emitter2C6A08 *emitter)
 {
     float joint[4];
@@ -1117,7 +1719,54 @@ INCLUDE_ASM("asm/game", func_002C6DD8);
 
 INCLUDE_ASM("asm/game", func_002C7050);
 
-INCLUDE_ASM("asm/game", func_002C72A0);
+extern int func_00282948(short *);
+/* Delay movement and the size/alpha tween until the secondary timer fires. */
+void func_002C72A0(char *p)
+{
+    char *q = p + 32;
+    Vec16_F9a4b4d8b v;
+    float t;
+    int elapsed, alpha;
+
+    p[8] += (unsigned char)q[10];
+    if (func_00282948((short *)(q + 24))) {
+        elapsed = *(short *)(q + 8) - *(short *)(p + 10);
+        if (elapsed < *(short *)(q + 30)) {
+            t = (float)elapsed * 0.2f;
+            *(float *)(p + 12) = *(float *)(q + 4) +
+                ((*(float *)q + *(float *)(q + 4)) * 0.5f - *(float *)(q + 4)) * t;
+            {
+                int c2 = (unsigned char)q[11] >> 1;
+                int c = (unsigned char)q[11];
+                alpha = func_00283CF0((float)c + (float)(c2 - c) * t);
+            }
+        } else {
+            t = func_00283CE0_2(*(short *)(q + 8) - 6);
+            t = (float)*(short *)(p + 10) / t;
+            *(float *)(p + 12) = *(float *)q +
+                ((*(float *)q + *(float *)(q + 4)) * 0.5f - *(float *)q) * t;
+            alpha = func_00283CF0((float)((unsigned char)q[11] >> 1) * t);
+        }
+        *(int *)(p + 4) = (alpha << 24) | (*(int *)(p + 4) & 0xffffff);
+        particle_copy_xyz(v.f, (float *)(q + 12));
+        func_00282CC0(p + 16, p + 16, (char *)&v);
+        if (*(float *)(p + 16) < 2 || *(float *)(p + 16) > 1021 ||
+            *(float *)(p + 20) < 2 || *(float *)(p + 20) > 1021 ||
+            *(float *)(p + 24) < 2 || *(float *)(p + 24) > 1021) {
+            func_002B9180(p);
+            return;
+        }
+        if (func_00282978((short *)(p + 10))) {
+            func_002B9180(p);
+            return;
+        }
+    }
+    if (*(float *)(p + 28) != 0) {
+        if (*(float *)(p + 28) == 2.0f)
+            func_00300190_2(p + 16, p + 16);
+        *(float *)(p + 28) = 2.0f;
+    }
+}
 
 void func_002C7538(char *a0)
 {
