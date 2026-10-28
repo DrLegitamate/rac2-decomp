@@ -330,6 +330,26 @@ identify its canonical function. See [LEVELS.md](LEVELS.md).
 GP and overlay base depend on the release. USA v1.01 uses GP `0x001AEFF0`; take
 other releases' constants from the selected layout, not a copied literal.
 
+An explicitly measured GP address view can use the existing `SDATA` macro:
+`extern float tuning[] SDATA(tuning);`. Keep an unknown owner incomplete, or use
+its independently established full type; never shorten an array for a `-G` threshold.
+`tools/sdata_aliases.py` recognizes only the reserved `__gp` spelling emitted by
+that macro, supplies its assembler small-address metadata before the first `.ent`,
+and binds it to the same canonical storage. The metadata size is an address-class
+selector, not the canonical object's extent. Incomplete arrays emit no `.extern`,
+so references also identify this explicit request. Ordinary assembly and operands
+are unchanged; conflicting bindings or alias storage definitions fail closed.
+
+This adapts RAC1's explicit-alias route, without its broader delay-slot pass.
+Both C compiler chains and the allocation diagnostic apply it before assembly;
+its contents participate in the C object cache key. Authored 14-/28-byte controls
+retain unknown canonical ELF extents, read every byte from the same full storage,
+and preserve GP relocations and offsets. Link controls cover signed displacement
+edges and reject addresses outside the GP window. A same-prefix decoy is not an
+address source: binding is by canonical symbol, never by matching a scalar prefix.
+These controls qualify the address view, not any game function; every consumer
+still needs all carrying releases' placement checks and strict linked builds.
+
 The backend's symbol model, declaration size, -G threshold and assembler mode all
 matter; neither `sda` nor `nosda` is a universal opcode selector:
 

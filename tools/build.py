@@ -204,6 +204,7 @@ TEXT_HEADER = '.set noat\n.set noreorder\n.section .text, "ax"\n'
 
 
 SDK_COMPILER = ROOT / "build/compiler/sdk"
+SDATA_ALIASES = Path(__file__).with_name("sdata_aliases.py")
 
 
 def flags_for(source: Path) -> str:
@@ -231,7 +232,7 @@ def compile_key(source: Path, flags: str) -> str:
     """Private object-cache key for the inputs used by the selected compiler chain."""
     compiler = SDK_COMPILER if flags.startswith("sdk") else COMPILER
     programs = ("xgcc", "cpp", "cc1") if flags.startswith("sdk") else ("cpp", "cc1")
-    inputs = {source, Path(__file__), COMPILER / "as"}
+    inputs = {source, Path(__file__), COMPILER / "as", SDATA_ALIASES}
     inputs.update(compiler / name for name in programs)
     for directory in (ROOT / "include", compiler / "include", source.parent):
         inputs.update(directory.rglob("*.h"))
@@ -275,6 +276,7 @@ def compile_c(source: Path) -> Path:
         sys.exit(f"{source.relative_to(ROOT)} has invalid compiler flags: {error}")
     compiler_flags = shlex.join(compiler_args)
     assemble = shlex.join([str(COMPILER / "as"), *assembler_args, "-o", "x.o", "x.s"])
+    metadata = f"python3 '{SDATA_ALIASES}' x.s; "
     stamp = out.with_suffix(".inputs")
     key = compile_key(source, flags)
     if out.is_file() and stamp.is_file() and stamp.read_text() == key:
@@ -285,11 +287,11 @@ def compile_c(source: Path) -> Path:
         # the SDK compiler's driver (integrated cpp), then the game compiler's assembler
         script = (f"set -e; t=$(mktemp -d); cd $t; cp '{source}' x.c; "
                   f"'{SDK_COMPILER}/xgcc' -B'{SDK_COMPILER}/' -S {compiler_flags} -I'{ROOT}/include' -I'{SDK_COMPILER}/include' "
-                  f"-I'{source.parent}' x.c -o x.s; {assemble}; cp x.o '{out}'.$$; mv '{out}'.$$ '{out}'; rm -rf $t")
+                  f"-I'{source.parent}' x.c -o x.s; {metadata}{assemble}; cp x.o '{out}'.$$; mv '{out}'.$$ '{out}'; rm -rf $t")
     else:
         script = (f"set -e; t=$(mktemp -d); cd $t; cp '{source}' x.c; "
                   f"'{COMPILER}/cpp' -I'{COMPILER}/include' -I'{ROOT}/include' -I'{source.parent}' x.c > x.i; "
-                  f"'{COMPILER}/cc1' -quiet {compiler_flags} x.i -o x.s; {assemble}; "
+                  f"'{COMPILER}/cc1' -quiet {compiler_flags} x.i -o x.s; {metadata}{assemble}; "
                   f"cp x.o '{out}'.$$; mv '{out}'.$$ '{out}'; rm -rf $t")
     result = subprocess.run([*runner, "bash", "-c", script], capture_output=True, text=True)
     if result.returncode:

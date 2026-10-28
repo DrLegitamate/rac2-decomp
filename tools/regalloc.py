@@ -139,6 +139,7 @@ def compile_script(source: Path, work: Path, flags: str, dumps: tuple[str, ...])
                                    "x.c"]) + " > x.i")
         commands.append(shlex.join([str(tools / "cc1"), "-quiet", *compiler, *dumps,
                                    "x.i", "-o", "x.s"]))
+    commands.append(shlex.join(["python3", str(build.SDATA_ALIASES), "x.s"]))
     commands.append(shlex.join([str(tools / "as"), *assembler, "-o", "x.o", "x.s"]))
     return "; ".join(commands)
 
