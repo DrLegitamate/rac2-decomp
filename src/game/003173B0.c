@@ -1,6 +1,59 @@
 #include "include_asm.h"
 #include "common.h"
 
+extern int D_001B2758 MACRO_ADDR;
+extern float func_002A7878(float, float), func_002A78D8(float, float);
+extern void func_00282C88(void *), func_002B00B0(void *, void *, int);
+extern char *func_002AB1F0(void *);
+extern void func_00282CC0(void *, void *, void *);
+extern int func_00283CF0(float), func_002A7820(int, int);
+extern void func_002B60B0(void *, float, float, float, float);
+extern void func_0029FCC0(void *, int, void *);
+extern int func_002761F8(void *, void *, int, void *, int);
+extern void func_002A7750(void *, int, int), func_002A7470(void *, int, int, int);
+extern float D_001BAFA8;
+
+/* One of the twelve 0xA0-byte records at *D_001B2758 that func_0031DEE8 steps for their
+   owner: the boot counterpart of the level records func_L00_003BBB68 updates. */
+typedef struct {
+    float out0[4];          /* 0x00: ang0 through the two angle helpers, times amp0 */
+    float out1[4];          /* 0x10: the same for ang1 */
+    float start[4];         /* 0x20: copied from the owner's position each frame */
+    float pos[4];           /* 0x30: follows the target */
+    float ang0[3];          /* 0x40 */
+    float rate0[3];         /* 0x4C */
+    float amp0[3];          /* 0x58 */
+    float ang1[3];          /* 0x64 */
+    float rate1[3];         /* 0x70 */
+    float amp1[3];          /* 0x7C */
+    int life;               /* 0x88: timer, frees the record when it expires */
+    char *owner;            /* 0x8C */
+    char *target;           /* 0x90 */
+    int time;               /* 0x94: timer, also counts the approach */
+    int duration;           /* 0x98 */
+    int hit;                /* 0x9C */
+} Slot31DEE8;
+
+/* The 0xE0-byte class records; D_00139568 maps a class number to its record. */
+typedef struct {
+    char pad_00[0x74];
+    float f74;
+    char pad_78[0xE0 - 0x78];
+} Class31DEE8;
+
+extern unsigned char D_00139568[];
+extern Class31DEE8 D_00239BA0[];
+extern float func_00283B98(float angle, float step);
+extern float func_00283180(float angle);
+extern float func_00283198(float angle);
+extern float func_00283CE0(int ticks);
+extern int func_00282948(void *timer);
+extern void func_00282D08(void *out, void *from, void *to, float t);
+extern void func_002A8C00(void *packet, char *owner, int flags, void *direction, float amount);
+extern void func_002A8E20(char *target, void *packet);
+extern void func_0031F6E8(void *pos, int count, int mode);
+extern void func_0032D758(char *target, int kind, int value);
+
 extern char F669d6320_D_001BAFC0[];
 
 extern void F669d6320_FUN_00282F20(void *out, void *in, float scale);
@@ -142,9 +195,79 @@ void func_00318200(char *object)
 
 INCLUDE_ASM("asm/game", func_00318340);
 
-INCLUDE_ASM("asm/game", func_00319780);
+/* func_00319780 is in 00319780-g8.c. */
 
-INCLUDE_ASM("asm/game", func_00319B38);
+void func_00319B38(char *self)
+{
+    char *d = *(char **)(self + 0x68);
+    *(u8 *)(d+0x68) = func_00283CF0(15.0f);
+    *(u8 *)(d+0x6A) = func_00283CF0(12.0f);
+    *(float *)(self+0x2C) *= 1.1f;
+    *(u16 *)(self+0x34) |= 0x8100;
+    *(char **)(d+0x18) = d+0x130;
+    *(u8 *)(d+0x48)=3;
+    *(u8 *)(d+0x90)=17;
+    *(int *)(d+0xC8)=4;
+    *(int *)(d+0xFC)=*(int *)(d+0x270);
+    *(u8 *)(d+0x95)=13;
+    *(float *)(d+220)=0.30000001192092896f;
+    *(float *)(d+216)=0.05000000074505806f;
+    *(float *)(d+160)=0.06666667014360428f;
+    *(float *)(d+164)=0.004166666883975267f;
+    *(float *)(d+168)=0.008333333767950535f;
+    *(float *)(d+176)=0.5f;
+    *(float *)(d+180)=0.5f;
+    *(float *)(d+188)=0.4000000059604645f;
+    *(float *)(d+156)=0.10000000894069672f;
+    if ((float)*(int *)(d+0x2E8)>0.0f) *(float *)(d+0xC0)=(float)*(int *)(d+0x2E8);
+    *(float *)(d+0x15C)=0.0f;
+    *(float *)(d+320)=12.56637191772461f;
+    *(float *)(d+304)=0.800000011920929f;
+    *(float *)(d+308)=0.5f;
+    *(float *)(d+0x138)=0.4f;
+    *(float *)(d+316)=0.4000000059604645f;
+    *(float *)(d+352)=0.523598849773407f;
+    *(int *)(d+0x168)|=5;
+    func_002B60B0(self,0.0033333334140479565f,0.10000000894069672f,0.0011635529808700085f,0.10471977293491364f);
+    qcopy(d+0x220,self+0x10);
+    *(float *)(d+0x230)=1.0f;
+    *(float *)(d+0x23C)=3.0f;
+    *(float *)(d+0x240)=10.0f;
+    *(int *)(d+0x2D8)=func_002A7820(120,700);
+    *(float *)(d+0x294)*=0.01745329424738884f;
+    *(u8 *)(d+0x250)=176;
+    *(u8 *)(d+0x251)=128;
+    *(u8 *)(d+0x252)=64;
+    *(int *)(d+0x2C4)=1;
+    *(float *)(d+0x2BC)=0.0f;
+    *(int *)(d+0x2C0)=0;
+    qcopy(d+0x340,self+0x10);
+    *(float *)(d+0x290)=0.0f;
+    *(int *)(d+0x2C8)=0;
+    *(int *)(d+0x2CC)=0;
+    *(int *)(d+0x37C)=0;
+    func_0029FCC0(self,0,d+0x2F0);
+    qcopy(d+0x300,d+0x2F0);
+    *(float *)(d+0x2F8)+=20.0f;
+    if (func_002761F8(d+0x300,d+0x2F0,0,self,0))
+        *(float *)(d+0x2F8)=D_001BAFA8;
+    *(int *)(d+0x168)|=4;
+    *(u16 *)(self+0x34)|=0x100;
+    *(float *)(d+0x140)=12.56637191772461f;
+    *(int *)(d+0x168)|=1;
+    if (*(int *)(d+0x28C)==0) {
+        if (*(int *)(d+0x370)!=-1) {
+            func_002A7750(self,15,3);
+            if (*(u8 *)(self+0x43)!=7) func_002A7470(self,7,0,0);
+        } else {
+            func_002A7750(self,1,0);
+            if (*(u8 *)(self+0x43)!=0) func_002A7470(self,0,0,0);
+        }
+    } else {
+        func_002A7750(self,3,1);
+        if (*(u8 *)(self+0x43)!=11) func_002A7470(self,11,0,0);
+    }
+}
 
 extern void func_002AB8C0(char *, char *);
 extern int func_00282978(void *);
@@ -367,11 +490,9 @@ void func_0031C8E0(char *p)
 }
 
 
-INCLUDE_ASM("asm/game", func_0031CB78);
+/* func_0031CB78 is in its own unit: func_0031C7A0 has different placements. */
 
 INCLUDE_ASM("asm/game", func_0031CDF8);
-
-INCLUDE_ASM("asm/game", func_0031D070);
 
 void func_0031D268(char *arg0) {
     char *state = *(char **)(arg0 + 0x68);
@@ -395,9 +516,148 @@ INCLUDE_ASM("asm/game", func_0031D350);
 INCLUDE_ASM("asm/game", func_0031D588);
 
 
-INCLUDE_ASM("asm/game", func_0031DC18);
+void func_0031DC18(char *self, char *target, int count)
+{
+    int pool = D_001B2758;
+    char *position = self + 0x10;
+    char *target_position = target + 0x10;
+    char *data = *(char **)(self + 0x68);
+    char *p;
+    char *info;
+    float v[4];
+    int i;
+    for (i = 0; i < 12; i++) {
+        p = (char *)(pool + i * 0xA0);
+        if (*(int *)(p + 0x8C) == 0) {
+            *(char **)(p + 0x8C) = self;
+            (*(int *)(data + 0x1C))++;
+            qcopy(p + 0x20, position);
+            *(float *)(p + 64) = func_002A7878(-3.14159274101257324219f, 3.14159274101257324219f);
+            *(float *)(p + 68) = func_002A7878(-3.14159274101257324219f, 3.14159274101257324219f);
+            *(float *)(p + 72) = func_002A7878(-3.14159274101257324219f, 3.14159274101257324219f);
+            *(float *)(p + 100) = func_002A7878(-3.14159274101257324219f, 3.14159274101257324219f);
+            *(float *)(p + 104) = func_002A7878(-3.14159274101257324219f, 3.14159274101257324219f);
+            *(float *)(p + 108) = func_002A7878(-3.14159274101257324219f, 3.14159274101257324219f);
+            *(float *)(p + 76) = func_002A78D8(0.001f, 0.05f);
+            *(float *)(p + 80) = func_002A78D8(0.001f, 0.05f);
+            *(float *)(p + 84) = func_002A78D8(0.001f, 0.05f);
+            *(float *)(p + 112) = func_002A78D8(0.001f, 0.05f);
+            *(float *)(p + 116) = func_002A78D8(0.001f, 0.05f);
+            *(float *)(p + 120) = func_002A78D8(0.001f, 0.05f);
+            *(float *)(p + 88) = func_002A7878(3.25f, 6.75f);
+            *(float *)(p + 92) = func_002A7878(3.25f, 6.75f);
+            *(float *)(p + 96) = func_002A7878(3.25f, 6.75f);
+            *(float *)(p + 124) = func_002A7878(1.25f, 4.75f);
+            *(float *)(p + 128) = func_002A7878(1.25f, 4.75f);
+            *(float *)(p + 132) = func_002A7878(1.25f, 4.75f);
+            func_00282C88(p);
+            func_00282C88(p + 0x10);
+            *(int *)(p + 0x94) = count;
+            *(int *)(p + 0x98) = count;
+            *(char **)(p + 0x90) = target;
+            *(int *)(p + 0x9C) = 0;
+            *(int *)(p + 0x88) = 20;
+            info = func_002AB1F0(target);
+            if (info) {
+                func_002B00B0(target, v, 1);
+                func_00282D30(v, v, *(float *)(info + 0x10));
+                func_00282CC0(p + 0x30, v, target + 0x10);
+            } else {
+                qcopy(p + 0x30, target_position);
+            }
+            break;
+        }
+    }
+}
 
-INCLUDE_ASM("asm/game", func_0031DEE8);
+static inline Class31DEE8 *Class31DEE8At(int index)
+{
+    return &D_00239BA0[index];
+}
+
+/* Steps every record the owner holds: refreshes its start from the owner, advances the two
+   angle triples (faster while the approach timer runs), and while it has a target moves its
+   position towards it. When the approach timer expires and the target is still live, it
+   sends one hit packet (func_002A8C00/func_002A8E20) and marks the record; when the life
+   timer expires the record is released and the owner's count drops. */
+void func_0031DEE8(char *owner)
+{
+    float v[4];
+    struct {
+        char pad_00[0x18];
+        unsigned char kind;
+        unsigned char mode;
+        short id;
+        char pad_1c[0x14];
+    } packet;
+    char *ctx = *(char **)(owner + 0x68);
+    Slot31DEE8 *slot;
+    char *other;
+    float ratio;
+    float damage;
+    float boost = 100.0f;
+    int i;
+
+    for (i = 0; i < 12; i++) {
+        if (((Slot31DEE8 *)D_001B2758)[i].owner != owner)
+            continue;
+        slot = &((Slot31DEE8 *)D_001B2758)[i];
+        qcopy(slot->start, owner + 0x10);
+        if (slot->time) {
+            slot->ang0[0] = func_00283B98(slot->ang0[0], slot->rate0[0] * boost);
+            slot->ang0[1] = func_00283B98(slot->ang0[1], slot->rate0[1] * boost);
+            slot->ang0[2] = func_00283B98(slot->ang0[2], slot->rate0[2] * boost);
+            slot->ang1[0] = func_00283B98(slot->ang1[0], slot->rate1[0] * boost);
+            slot->ang1[1] = func_00283B98(slot->ang1[1], slot->rate1[1] * boost);
+            slot->ang1[2] = func_00283B98(slot->ang1[2], slot->rate1[2] * boost);
+        } else {
+            slot->ang0[0] = func_00283B98(slot->ang0[0], slot->rate0[0]);
+            slot->ang0[1] = func_00283B98(slot->ang0[1], slot->rate0[1]);
+            slot->ang0[2] = func_00283B98(slot->ang0[2], slot->rate0[2]);
+            slot->ang1[0] = func_00283B98(slot->ang1[0], slot->rate1[0]);
+            slot->ang1[1] = func_00283B98(slot->ang1[1], slot->rate1[1]);
+            slot->ang1[2] = func_00283B98(slot->ang1[2], slot->rate1[2]);
+        }
+        slot->out0[0] = func_00283180(slot->ang0[0]) * slot->amp0[0];
+        slot->out0[1] = func_00283198(slot->ang0[1]) * slot->amp0[1];
+        slot->out0[2] = -func_00283198(slot->ang0[2]) * slot->amp0[2];
+        slot->out1[0] = func_00283180(slot->ang1[0]) * slot->amp1[0];
+        slot->out1[1] = func_00283198(slot->ang1[1]) * slot->amp1[1];
+        slot->out1[2] = -func_00283198(slot->ang1[2]) * slot->amp1[2];
+        if (slot->target) {
+            other = func_002AB1F0(slot->target);
+            if (other) {
+                func_002B00B0(slot->target, v, 1);
+                func_00282D30(v, v, *(float *)(other + 0x10));
+                func_00282CC0(slot->pos, v, slot->target + 0x10);
+            } else {
+                qcopy(slot->pos, slot->target + 0x10);
+            }
+            ratio = func_00283CE0(slot->time);
+            ratio /= func_00283CE0(slot->duration);
+            func_00282D08(slot->pos, slot->start, slot->pos, 1.0f - ratio);
+        }
+        if (!func_00282948(&slot->time))
+            continue;
+        if (*(int *)(slot->target + 0x98) && !slot->hit) {
+            func_00282CF0(v, slot->pos, slot->start);
+            func_00282F20(v, v, 0.033333335f);
+            damage = Class31DEE8At(D_00139568[0x1C])->f74;
+            func_002A8C00(&packet, owner, 0x210000, v, damage);
+            packet.kind = 1;
+            packet.mode = 3;
+            packet.id = *(short *)(owner + 0xAA);
+            func_002A8E20(slot->target, &packet);
+            slot->hit = 1;
+            func_0031F6E8(slot->pos, 10, 1);
+            func_0032D758(slot->target, 28, *(int *)(owner + 0xB8));
+        }
+        if (func_00282948(&slot->life)) {
+            slot->owner = 0;
+            --*(int *)(ctx + 0x1C);
+        }
+    }
+}
 
 INCLUDE_ASM("asm/game", func_0031E3A8);
 
@@ -438,7 +698,21 @@ void func_0031E750(char *p)
     *(float *)(p + 60) = 1.0f;
 }
 
-INCLUDE_ASM("asm/game", func_0031E7D8);
+void func_0031E7D8(float *out, float *a, float *b, float *c, float *d, float t)
+{
+    float t2, t3, x, y, z;
+    if (t == 0.0f) { qcopy(out, a); return; }
+    if (t == 1.0f) { qcopy(out, b); return; }
+    t2 = t*t;
+    t3 = t2*t;
+    y = d[0]-b[0]-(c[0]-a[0]); x = c[0]-a[0]-y; z = b[0]-c[0];
+    out[0] = y*t3 + x*t2 + z*t + a[0];
+    y = d[1]-b[1]-(c[1]-a[1]); x = c[1]-a[1]-y; z = b[1]-c[1];
+    out[1] = y*t3 + x*t2 + z*t + a[1];
+    y = d[2]-b[2]-(c[2]-a[2]); x = c[2]-a[2]-y; z = b[2]-c[2];
+    out[2] = y*t3 + x*t2 + z*t + a[2];
+    out[3] = 0.0f;
+}
 
 void func_0031E8F8(char *p, float scale)
 {

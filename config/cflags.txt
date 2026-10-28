@@ -1350,3 +1350,11 @@ src/game/002BCC58-g8.c	-O2 -G8 -ffunction-sections -g -fno-gcse
 src/game/002BDEB0.c	-O2 -G0 -ffunction-sections -g
 src/game/002C3430-fade.c	-O2 -G0 -ffunction-sections -g -frac2-hazard-labels
 src/game/002EB1E0.c	-O2 -G0 -ffunction-sections -frac2-gcse-unsplit-edges
+src/game/00300618-state.c	-O2 -G0 -ffunction-sections -g
+src/game/00308600-ribbon-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-hazard-labels
+src/game/00308600-ammo-g8.c	-O2 -G8 -ffunction-sections -g
+src/game/0030C188-g8.c	-O2 -G8 -Wa,-G64 -ffunction-sections -g
+src/game/0030DB88-g8.c	-O2 -G8 -Wa,-G64 -ffunction-sections -g
+src/game/0030F7B0-loot-g8.c	-O2 -G8 -ffunction-sections -fno-gcse
+src/game/0030F7B0-spawn.c	-O2 -G0 -mno-split-addresses -ffunction-sections -frac2-qcopy
+src/game/0031D070-qcopy.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
