@@ -120,9 +120,8 @@ void func_L17_003E3148(u8 *a0)
 
 INCLUDE_ASM("asm/levels", func_L17_003E31E8);
 
-INCLUDE_ASM("asm/levels", func_L17_003E41A8);
 
-INCLUDE_ASM("asm/levels", func_L17_003E4560);
+
 
 void func_L17_003E47E8(s32 a0) {
     s32 s1 = *(s32 *)(a0 + 0x68);
@@ -136,11 +135,13 @@ void func_L17_003E47E8(s32 a0) {
     func_327E68(a0, s1 + 0x350, 1, 1, 2.5f);
 }
 
-/* func_L17_003E4860 is a near miss: nonmatching/levels/func_L17_003E4860.c */
-/* func_L17_003E4860 is defined in L02_003CE9A8-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L17_003E48E0);
 
+
+/* Claims the shared slot at state+0x720 for this object (index into the object array):
+   taken when free or when its holder is in state 0xFE/0xFD, then in mode 1 handed to the
+   nearest candidate; returns 1 once this object holds it in mode 2. func_L17_003E6F20
+   releases it. */
 INCLUDE_ASM("asm/levels", func_L17_003E6DE8);
 
 void func_L17_003E6F20(s32 a0)
@@ -180,13 +181,10 @@ s32 func_L17_003E7010(s32 a0) {
     return D_L17_001C0018 == *(s32 *)(s0 + 0x250);
 }
 
-INCLUDE_ASM("asm/levels", func_L17_003E7068);
-
 INCLUDE_ASM("asm/levels", func_L17_003E8A58);
 
 INCLUDE_ASM("asm/levels", func_L17_00417DB0);
 
-INCLUDE_ASM("asm/levels", func_L17_00418A68);
 
 
 INCLUDE_ASM("asm/levels", func_L17_0041E208);
@@ -195,14 +193,14 @@ INCLUDE_ASM("asm/levels", func_L17_0041EAA8);
 
 INCLUDE_ASM("asm/levels", func_L17_0041ED58);
 
-INCLUDE_ASM("asm/levels", func_L17_0041F180);
+/* func_L17_0041F180 is defined in L17_collision.c. */
 
 INCLUDE_ASM("asm/levels", func_L17_0041F478);
 
 INCLUDE_ASM("asm/levels", func_L17_0041F8F0);
 
-INCLUDE_ASM("asm/levels", func_L17_00420758);
+/* func_L17_00420758 is defined in L17_collision.c. */
 
-INCLUDE_ASM("asm/levels", func_L17_00420A50);
+/* func_L17_00420A50 is defined in L17_00420A50-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L17_00420E08);
