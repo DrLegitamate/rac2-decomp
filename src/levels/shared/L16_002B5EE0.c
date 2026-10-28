@@ -31,7 +31,7 @@ extern void func_00283738(char *a, char *b, char *c);
 /* steers the object along the ground normal the terrain query returns */
 /* func_L16_00395C00 uses its dedicated compiler profile. */
 
-INCLUDE_ASM("asm/levels", func_L16_00395D30);
+/* func_L16_00395D30 is defined in L16_00395D30-g16.c. */
 
 INCLUDE_ASM("asm/levels", func_L16_00395ED0);
 
@@ -66,7 +66,7 @@ INCLUDE_ASM("asm/levels", func_L16_004051A8);
 
 INCLUDE_ASM("asm/levels", func_L16_0040BED0);
 
-INCLUDE_ASM("asm/levels", func_L16_0040C5F0);
+/* func_L16_0040C5F0 is defined in L16_0040C5F0-g8.c. */
 
 extern char *D_L16_001B2C0C __attribute__((sda));
 extern char *D_L16_001B2B1C __attribute__((sda));

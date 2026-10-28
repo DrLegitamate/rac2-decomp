@@ -1,18 +1,6 @@
-/* Retained manual C reconstruction, 25 October 2026; not matching.
- * Profile: -O2 -G0 -ffunction-sections.
- * 568/572 bytes. A measured input-record prefix, signed button words and separate snapshot
- * lifetime reproduce the input fallback and ring updates more closely. The entry load
- * destination/prologue, resident rematerialization and input-axis allocation still differ. The
- * frame-order profile did not improve the result. Reopen with independent evidence for those
- * lifetimes.
- * Checks: us: func_L18_002D0C00: 0 of 3 places match; us2: func_L18_002D0C00: 0 of 3 places
- * match; pal: func_L18_002D0C00 is in neither catalogue of pal.
- * No linked build or runtime validation. This header was added after candidate checks; the
- * copied standalone file was not recompiled after retention.
- */
-
+/* Near miss, worker w3 batch 3: 572/572 B, 0/3, 12 lines. Unit L18_002CFD68-qcopy.c; D_L18_001AFBB0 is a sda array (macro tied load); ring updates reload the index fields; ring pointer as local. Left: snapshot/base register swap in the first block (retail $a1/$a0), sra order in the pressed-bits sum, addu operand order. */
 #include "common.h"
-extern s32 D_L18_001AFBB0;
+extern s32 D_L18_001AFBB0[] __attribute__((sda));
 extern u8 D_00189E20[];
 /* Partial input record: only the observed axes and button words are modeled. */
 typedef struct {
@@ -36,25 +24,27 @@ extern void func_00283698(void *, void *);
 extern void func_L18_002D0850(void);
 extern void func_L00_002C2DE8(void);
 extern void func_L18_002DEFF8(void);
+typedef struct { u8 b[16]; } Rac2Q;
 void func_L18_002D0C00(void)
 {
     u8 *base;
-    u8 *snapshot;
     s32 index;
-    if (D_L18_001AFBB0) {
+    u8 *ring;
+    u8 *snapshot;
+    if (D_L18_001AFBB0[0]) {
         func_L00_002B2BD0();
         return;
     }
     snapshot = D_00189E20 + 0x2030;
-    qcopy(snapshot, snapshot - 0x1FB0);
+    qcopy(snapshot, D_00189E20 + 0x80);
     if (D_00138180.held & 3) {
-        if (*(s16 *)(snapshot - 0xBDC) < 1) *(s16 *)(snapshot - 0xBDC) = 1;
+        if (*(s16 *)(D_00189E20 + 0x1454) < 1) *(s16 *)(D_00189E20 + 0x1454) = 1;
     } else func_00282978(snapshot - 0xBDC);
     base = D_00189E20;
     if (*(s32 *)(base + 0x2294) == 16) *(s16 *)(base + 0x1454) = 0;
     base[0x22C3] = func_L00_002D3400();
-    *(float *)(base + 0x1FB4) = D_00138180.vertical;
     *(float *)(base + 0x1FB0) = D_00138180.horizontal;
+    *(float *)(base + 0x1FB4) = D_00138180.vertical;
     *(s32 *)(base + 0x270) = 0;
     *(float *)(base + 0x24BC) = func_L00_002B3900();
     if (func_00282E20(base + 0x1FB0) < 0.25f) {
@@ -63,12 +53,12 @@ void func_L18_002D0C00(void)
     }
     *(float *)(base + 0x24B8) = func_L00_002B3900();
     func_L18_002D7650();
-    index = *(s32 *)(base + 0x23BC);
-    *(float *)(base + 0x233C + index * 4) = *(float *)(base + 0x98);
-    *(s32 *)(base + 0x23BC) = (index + 1) % 32;
+    ((float *)(base + 0x233C))[*(s32 *)(base + 0x23BC)] = *(float *)(base + 0x98);
+    *(s32 *)(base + 0x23BC) = (*(s32 *)(base + 0x23BC) + 1) % 32;
     if (++*(s32 *)(base + 0x23C0) > 32) *(s32 *)(base + 0x23C0) = 32;
     index = *(s32 *)(base + 0x23C4);
-    qcopy((base + 0x1D90 + index * 16), (base + 0x80));
+    ring = base + 0x1D90;
+    qcopy(ring + index * 16, base + 0x80);
     *(s32 *)(base + 0x23C4) = (index + 1) % 32;
     if (++*(s32 *)(base + 0x23C8) > 32) *(s32 *)(base + 0x23C8) = 32;
     func_00283410(base, base + 0x90);

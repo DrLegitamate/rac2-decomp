@@ -108,10 +108,6 @@ void func_L13_0038C470(u8 *a0) {
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L13_0038C578);
-
-INCLUDE_ASM("asm/levels", func_L13_0038C810);
-
 /* func_L13_00397600 is in L13_00397600.c. */
 
 /* func_L13_00397A18 is in L13_00397A18.c. */
@@ -274,8 +270,6 @@ void func_L13_003FE970(u8 *a0) {
 }
 
 INCLUDE_ASM("asm/levels", func_L13_004067F8);
-
-INCLUDE_ASM("asm/levels", func_L13_0041A398);
 
 INCLUDE_ASM("asm/levels", func_L13_0041A550);
 

@@ -76,7 +76,6 @@ extern float func_002702C8_1(int *dst, float a, float b, float c, float d, float
 
 INCLUDE_ASM("asm/levels", func_L00_0041ABB8);
 
-INCLUDE_ASM("asm/levels", func_L00_0041AD40);
 
 
 
@@ -176,7 +175,6 @@ INCLUDE_ASM("asm/levels", func_L00_0041B1B8);
 
 INCLUDE_ASM("asm/levels", func_L00_0041B840);
 
-INCLUDE_ASM("asm/levels", func_L00_0041BAE8);
 
 INCLUDE_ASM("asm/levels", func_L00_0041BCC8);
 

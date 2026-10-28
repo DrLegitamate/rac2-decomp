@@ -24,7 +24,7 @@ extern BatchA_A18_u8 D_0018C0D4;
 
 /* func_L18_002CFD68 is defined in L18_002CFD68-qcopy.c. */
 
-INCLUDE_ASM("asm/levels", func_L18_002CFF48);
+/* func_L18_002CFF48 is defined in L18_002CFD68-qcopy.c. */
 
 INCLUDE_ASM("asm/levels", func_L18_002D0C00);
 
@@ -94,12 +94,10 @@ BatchA_A18_s32 func_L18_0033B628(BatchA_A18_s32 a0, BatchA_A18_s32 a1, BatchA_A1
 
 INCLUDE_ASM("asm/levels", func_L18_0035D238);
 
-extern float func_L18_0035D5F8(BatchA_A18_s32 a0, BatchA_A18_s32 a1, BatchA_A18_s32 a2,
-                               BatchA_A18_s32 a3);
+extern float func_L18_0035D5F8(void *a0, void *a1, void *a2, char *a3, float f12);
 extern BatchA_A18_s32 D_001FE480[];
 
-float func_L18_0035D5A8(BatchA_A18_s32 a0, BatchA_A18_s32 a1, BatchA_A18_s32 a2,
-                        BatchA_A18_s32 a3) {
+float func_L18_0035D5A8(void *a0, void *a1, void *a2, BatchA_A18_s32 a3, float f12) {
     if (a3 == -1) {
         return -1.0f;
     }
@@ -107,10 +105,39 @@ float func_L18_0035D5A8(BatchA_A18_s32 a0, BatchA_A18_s32 a1, BatchA_A18_s32 a2,
     if (a3 == 0) {
         return -1.0f;
     }
-    return func_L18_0035D5F8(a0, a1, a2, a3);
+    return func_L18_0035D5F8(a0, a1, a2, (char *)a3, f12);
 }
 
-INCLUDE_ASM("asm/levels", func_L18_0035D5F8);
+extern f32 func_L18_0035D238(void *, void *, void *, void *, void *, f32);
+extern f32 func_00282C48(f32);
+extern float func_00282E48(char *, void *);
+
+/* GCC 2.9's zero-length trailing array describes the variable point payload. */
+typedef struct { s32 count; u8 reserved04[12]; f32 point[0][4]; } PathPoints;
+
+/* Finds the best projected point on the path, breaking near ties by distance. */
+f32 func_L18_0035D5F8(void *out, void *origin, void *direction, char *path, float scale) {
+    f32 candidate[4];
+    f32 best = 100000000000.0f;
+    f32 score, distance;
+    s32 i = 0;
+    PathPoints *points = (PathPoints *)path;
+    for (; i < points->count - 1; i++) {
+        score = func_L18_0035D238(candidate, origin, direction, points->point[i], points->point[i + 1], scale);
+        if (score < best) {
+            best = score;
+            qcopy(out, candidate);
+        } else if (func_00282C48(score - best) < 0.1f) {
+            distance = func_00282E48((char *)candidate, origin);
+            if (distance < func_00282E48(out, origin)) {
+                best = score;
+                qcopy(out, candidate);
+            }
+        }
+    }
+    return best;
+}
+
 
 /* func_L18_003F50D8 is matched in L18_003F50D8.c (built with -mno-split-addresses). */
 
@@ -121,7 +148,6 @@ INCLUDE_ASM("asm/levels", func_L18_003F5650);
 
 INCLUDE_ASM("asm/levels", func_L18_003F6CA8);
 
-extern float func_00282E48(char *, void *);
 extern void func_002A93B0(void *);
 extern void func_L18_003F74B8(void *a0, void *a1);
 extern void func_002B0990(char *a0, char *a1, BatchA_A18_s32 a2, BatchA_A18_s32 a3, float f12);
@@ -232,9 +258,37 @@ BatchA_A18_s32 func_L18_003F7470(BatchA_A18_u8 *a0) {
     return 0;
 }
 
-INCLUDE_ASM("asm/levels", func_L18_003F74B8);
-
 extern void func_002A7750(BatchA_A18_u8 *a0, BatchA_A18_s32 a1, BatchA_A18_s32 a2);
+extern void func_0029F338(void *);
+extern void func_L01_003E9CF8(void *, int, void *);
+extern void func_L18_003F7590(BatchA_A18_u8 *a0);
+
+void func_L18_003F74B8(void *a0, void *a1)
+{
+    char *s0 = a0;
+    int s2 = (int)a1;
+    char *s1 = *(char **)(s0 + 0x68);
+    short t;
+
+    *(int *)(s1 + 0x20) = 0;
+    func_002A7750(s0, 0x13, 0);
+    *(unsigned short *)(s0 + 0x34) &= 0xEFFF;
+    *(unsigned short *)(s1 + 0x292) -= 1;
+    t = *(unsigned short *)(s1 + 0x292);
+    if (t != -1 || *(short *)(s1 + 0x296) == 0xE) {
+        if (s2 != 0) {
+            func_L18_003F7590(s0);
+        } else {
+            func_L01_003E9CF8(s0, 0, func_L18_003F7590);
+        }
+    } else {
+        if (s2 != 0) {
+            func_0029F338(s0);
+        } else {
+            func_L01_003E9CF8(s0, 0, 0);
+        }
+    }
+}
 
 void func_L18_003F7590(BatchA_A18_u8 *a0) {
     BatchA_A18_s32 p = *(BatchA_A18_s32 *)(a0 + 0x68);
@@ -519,13 +573,13 @@ void func_L18_003FC958(BatchA_A18_u8 *a0, BatchA_A18_s32 a1) {
 
 /* func_L18_003FC9B8 lives in L18_003F7988-copy.c. */
 
-INCLUDE_ASM("asm/levels", func_L18_003FCA38);
+/* func_L18_003FCA38 is defined in L18_003FCA38-g8.c. */
+
+
 
 /* func_L18_003FCC48 lives in L18_003FCC48-particles.c. */
 
 /* func_L18_003FCD70 lives in L18_003FCD70-particles.c. */
-
-INCLUDE_ASM("asm/levels", func_L18_003FD630);
 
 
 /* store -1 into field 0x74 of the object at s[0x68] */

@@ -1,13 +1,17 @@
-/* func_003472B8: Opus closer M1 near miss, 26 October 2026.
+/* func_003472B8: Opus closer M1 near miss, 26 October 2026; W1 28 October 2026.
    Profile: -O2 -G0 -ffunction-sections, own unit.
-   428/428 bytes, 20 differing instructions (was 46). Separate x/y locals per call give retail f20/f21; the `bits` temporary per call gives the sltu form. Left: the table base and the flag base take a1/v1 the other way round, and the pad copy is scheduled earlier. */
+   428/428 bytes, 11 differing instructions (was 20). Separate x/y locals per call give retail f20/f21;
+   the `bits` temporary per call gives the sltu form. W1: the two flag tables D_001A7AF8 and
+   D_001A7A80 as MACRO_ADDR (section .sdata, absolute macro form) change which register takes each
+   %hi. Left: retail has the menu table base in $v1 and the D_001A7AF8 base in $a1 (here $a1 and $a0),
+   `lh $v1,6($v1)` reusing the table register, and the row sum in $a0. */
 #include "common.h"
 #define FLD(base, T, off) (((struct { u8 pad[off]; T v; } *)(base))->v)
 typedef struct { int x; int y; } Pair;
 typedef struct { u8 pad[6]; s16 index; u8 pad8[2]; } MenuEntry;
 extern MenuEntry D_00282998[];
-extern u8 D_001A7AF8[];
-extern u8 D_001A7A80[];
+extern u8 D_001A7AF8[] MACRO_ADDR;
+extern u8 D_001A7A80[] MACRO_ADDR;
 extern Pair ref_003472B8_00;
 extern void func_00335E68(char *, int);
 extern float *func_00335E10(char *);

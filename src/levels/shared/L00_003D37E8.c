@@ -65,7 +65,7 @@ INCLUDE_ASM("asm/levels", func_L00_003D37E8);
 INCLUDE_ASM("asm/levels", func_L00_003D3DE0);
 
 
-INCLUDE_ASM("asm/levels", func_L00_003D3FB0);
+/* func_L00_003D3FB0 lives in L00_003D3FB0-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L00_003D40D8);
 
@@ -205,7 +205,45 @@ INCLUDE_ASM("asm/levels", func_L00_003DBF50);
 
 INCLUDE_ASM("asm/levels", func_L00_003DC3E0);
 
-INCLUDE_ASM("asm/levels", func_L00_003DC640);
+typedef int Quad640 __attribute__((mode(TI)));
+
+extern void func_L00_003DCC48(float f12, float f13, float f14, void *pos, char *a1, int a2, int a3);
+extern int func_0031A768_1(int lo, int hi);
+extern void func_L00_003DC910(char *pos, int a1, float fA, int a2, float fB, char *a3, int t0, float fC);
+extern void func_L00_003DCAC8(char *pos, int a1, int a2, float f12, float f13, char *a3, int t0,
+                              char *src);
+
+/* Effect update by state: 1 starts the burst (one random-angle puff), 2 counts the timer down and draws the two fade rings. */
+void func_L00_003DC640(char *obj)
+{
+    char *s = *(char **)(obj + 0x68);
+    Quad640 pos;
+    float zero, scale;
+    int n;
+
+    switch (*(unsigned char *)(obj + 0x20)) {
+    case 1:
+        pos = *(Quad640 *)(obj + 0x10);
+        func_L00_003DCC48(0.0f, 0.85f, 0.25f, &pos, s + 0x10, 0x103080, 4);
+        scale = *(float *)(obj + 0x2C) * 95.0f;
+        n = func_0031A768_1(0x5F, 0x6F) >> 2;
+        func_L00_003DC910(obj + 0x10, 0x103080, scale, n, func_0031A888_1(), (char *)0xB, 2, -1.0f);
+        break;
+    case 2:
+        if (--*(int *)(s + 0x6C) <= 0)
+            *(int *)(s + 0x6C) = 0;
+        zero = 0.0f;
+        pos = *(Quad640 *)(obj + 0x10);
+        func_L00_003DCC48(zero, 0.85f, 0.25f, &pos, s + 0x10, 0x103080, 4);
+        if (*(int *)(s + 0x7C) == 0) {
+            func_L00_003DCAC8(obj + 0x10, 0x103080, *(int *)(s + 0x6C),
+                              *(float *)(obj + 0x2C) * 45.0f, zero, (char *)0xB, 2, s + 0x50);
+            func_L00_003DCAC8(obj + 0x10, 0x3F3F3F, *(int *)(s + 0x6C),
+                              *(float *)(obj + 0x2C) * 33.75f, zero, (char *)0xB, 2, s + 0x50);
+        }
+        break;
+    }
+}
 
 /* resets a state record: zero words, plus/minus one float flags and two 64-bit fields in the retail store order */
 void func_L00_003DC820(char *p)
@@ -248,8 +286,7 @@ void func_L00_003DC8A8(char *p, float scale)
 }
 
 /* Builds a 144-byte packet, aims a quaternion at the shared 0x001B8C80 vector from pos through three float helpers, derives an offset basis by a fourth, writes the last matrix row from pos plus that offset, then dispatches the packet. */
-void func_L00_003DC910(char *pos, int a1, int a2, char *a3, int t0,
-                       float fA, float fB, float fC)
+void func_L00_003DC910(char *pos, int a1, float fA, int a2, float fB, char *a3, int t0, float fC)
 {
     char pkt[144];
     float m[16];
@@ -290,8 +327,8 @@ void func_L00_003DC910(char *pos, int a1, int a2, char *a3, int t0,
 }
 
 /* Builds a 144-byte packet, derives a quaternion from source floats through four float helpers, writes the last matrix row from a source point plus a computed offset, then dispatches the packet. */
-void func_L00_003DCAC8(char *pos, int a1, int a2, char *a3, int t0,
-                                        char *src, float f12, float f13)
+void func_L00_003DCAC8(char *pos, int a1, int a2, float f12, float f13, char *a3, int t0,
+                       char *src)
 {
     char pkt[144];
     float m[16];
@@ -344,7 +381,7 @@ INCLUDE_ASM("asm/levels", func_L00_003DD6A8);
 
 INCLUDE_ASM("asm/levels", func_L00_003DDEC8);
 
-INCLUDE_ASM("asm/levels", func_L00_003DE088);
+/* func_L00_003DE088 lives in L00_003DE088-g8.c. */
 
 
 /* func_L00_003DE490 is defined in L00_003DE490-basis-g8.c. */

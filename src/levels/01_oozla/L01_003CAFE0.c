@@ -132,7 +132,48 @@ s32 func_L01_003CDB40(u8 *a0)
 }
 
 /* Sends the timer string and steps the 0x2E/0x28/0x2A state fields of the owner. */
-INCLUDE_ASM("asm/levels", func_L01_003CDD00);
+extern s32 func_00283CF0(f32 a0);
+extern void func_L01_003377C8(void *a0);
+extern void func_002A7398(void *a0, s32 a1, s32 a2);
+
+/* Seeds the state block (random timers, the saved position, its mode bytes), lets the table
+   entry it names inherit the object's float at +0x18, then starts either the flagged (0xAC)
+   or the plain animation. */
+void func_L01_003CDD00(u8 *a0)
+{
+    u8 *s0 = *(u8 **)(a0 + 0x68);
+
+    *(u8 *)(s0 + 0x48) = func_00283CF0(30.0f);
+    *(u8 *)(s0 + 0x4A) = func_00283CF0(24.0f);
+    *(f32 *)(a0 + 0x2C) = *(f32 *)(*(u8 **)(a0 + 0x24) + 0x24);
+    qcopy(s0 + 0x60, a0 + 0x10);
+    *(u8 *)(s0 + 0x28) = 3;
+    *(u8 *)(s0 + 0x2E) = 3;
+    *(f32 *)(s0 + 0x30) = 3.0f;
+    *(u32 *)(s0 + 0xB4) = 0;
+    *(s32 *)(s0 + 0xC0) = -1;
+    *(u8 *)(s0 + 0x2A) = 8;
+    if (*(s32 *)(s0 + 0xCC) != -1) {
+        u8 *e = (u8 *)((*(s32 *)(s0 + 0xCC) << 8) + (s32)D_L01_001B255C_sda[0]);
+
+        if (*(u8 *)(e + 0x20) != 0xFE) {
+            if (*(u8 *)(e + 0x20) != 0xFD)
+                *(f32 *)(e + 0x18) = *(f32 *)(a0 + 0x18);
+        }
+    }
+    if (*(s32 *)(s0 + 0xA8) != -1)
+        func_L01_003377C8(D_L01_001FE180[*(s32 *)(s0 + 0xA8)]);
+    if (*(u32 *)(s0 + 0xAC) != 0) {
+        *(u16 *)(a0 + 0x34) &= 0xEFFF;
+        func_002A7398(a0, 0, 0);
+        *(u32 *)(a0 + 0x48) = 0;
+        func_002A7750(a0, 0, 4);
+        return;
+    }
+    *(u16 *)(a0 + 0x34) |= 0x1000;
+    func_002A7398(a0, 1, 0);
+    func_002A7750(a0, 0, 1);
+}
 
 /* Releases the three sub-objects at 0xBC, 0xB4 and 0x26, first bumping the counter at 0x96. */
 void func_L01_003CDE58(u8 *a0)
@@ -282,6 +323,6 @@ INCLUDE_ASM("asm/levels", func_L01_003D8E80);
 
 INCLUDE_ASM("asm/levels", func_L01_003D98E0);
 
-INCLUDE_ASM("asm/levels", func_L01_003DA300);
+/* func_L01_003DA300 is in L01_003DA300-g8.c. */
 
 /* func_L01_003DA3F0 is defined in L01_003DA3F0-g8.c. */
