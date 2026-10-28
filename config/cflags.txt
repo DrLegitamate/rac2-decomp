@@ -1338,3 +1338,13 @@ src/game/00271B90.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrie
 src/game/00270598.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -g
 src/game/002712D8.c	-O2 -G0 -ffunction-sections -g
 src/game/0027F128-font-g8.c	-O2 -G8 -ffunction-sections -Wa,-G32
+src/game/002A7EA0.c	-O2 -G0 -ffunction-sections -frac2-zero-ti-por
+src/game/002B1C20-motion.c	-O2 -G0 -ffunction-sections -g -frac2-gcse-unsplit-edges
+src/game/002B1C20-effects-g8.c	-O2 -G8 -ffunction-sections -g
+src/game/002B6120-keep-block-order.c	-O2 -G0 -ffunction-sections -frac2-keep-block-order
+src/game/002B6120-sound-g8.c	-O2 -G8 -ffunction-sections -Wa,-G32
+src/game/002B7578.c	-O2 -G0 -ffunction-sections -frac2-keep-block-order
+src/game/002BBCB0-g8-qcopy.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por
+src/game/002BD0D0-g8.c	-O2 -G8 -ffunction-sections -g -frac2-qcopy -frac2-qcopy-barrier
+src/game/002BCC58-g8.c	-O2 -G8 -ffunction-sections -g -fno-gcse
+src/game/002BDEB0.c	-O2 -G0 -ffunction-sections -g

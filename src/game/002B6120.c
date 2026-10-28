@@ -92,6 +92,24 @@ extern s32 func_0011AEA0(s32);
 
 extern s32 func_00133688(void);
 
+typedef struct { int offset, size; } SoundEntry;
+
+typedef struct { char pad[0x52fc]; int base; SoundEntry entries[1]; } SoundTable;
+
+typedef struct {
+    unsigned int handle;
+    short track, volume, flags, state, fade, unknown, crossfade, unknown2;
+    int poll_interval, sample_rate;
+    char tail[8];
+} StreamChannel;
+
+typedef struct { u8 pad[0x44]; StreamChannel channel[3]; } StreamState;
+
+extern int D_0014B540[];
+
+extern int func_00133350(int, int, int, int, int, int, int, int, int, int,
+                         void (*)(int, long), unsigned long);
+
 /* Computes the x/y difference between one 16-byte record of the second handle and the record after the first handle's base, dispatches through three helpers and walks a short counter field up or down by one when the last helper's float result stays under a stored threshold. */
 int func_002B6120(char *s1, char *s2)
 {
@@ -162,6 +180,15 @@ int func_002B6318(unsigned char *object)
 }
 
 
+extern char D_001A6AF0[];
+extern int D_001B8840[];
+extern void func_0011AED0(int);
+
+/* Starts a DMA chain at packet: two ref tags sent through VIF DIRECT (9 quadwords from
+   the screen context + 0xC0, 0x25 from D_001A6AF0), counts the frame at D_001B8840 + 0x34,
+   lets one of two builders append, then ends the chain and hands it to func_0011AED0.
+   The cursor is an integer address, so each word stored through it may alias it and it
+   is read again before every store. */
 INCLUDE_ASM("asm/game", func_002B6480);
 
 
@@ -215,7 +242,7 @@ void func_002B6938(void) {
     func_001336D0(func_002B7D88);
 }
 
-INCLUDE_ASM("asm/game", func_002B6958);
+/* func_002B6958 is built from 002B6120-sound-g8.c. */
 
 s32 func_002B6D28(void) {
     if (((CallState *)D_001A63A8)->active==0) return 0;
@@ -226,11 +253,44 @@ s32 func_002B6D28(void) {
 
 INCLUDE_ASM("asm/game", func_002B6D80);
 
-INCLUDE_ASM("asm/game", func_002B6E78);
+extern void func_002B7FB0(int, long);
 
+/* As func_002B6D80 for a non-negative index, with flag 0, the callback func_002B7FB0 and the
+   stores in the order retail's scheduling needs. */
+void func_002B6E78(int index, int mode, int volume)
+{
+    StreamState *s;
+    SoundTable *d;
+    long first, second;
+    int offset;
+
+    if (index < 0) return;
+    s = (StreamState *)D_001A63A8;
+    if (s->channel[0].handle) return;
+    d = (SoundTable *)D_0014B540;
+    offset = d->entries[index].offset;
+    if (!offset) return;
+    s->channel[0].handle = 0xffffffffU;
+    s->channel[0].state = 1;
+    s->channel[0].poll_interval = 10;
+    s->channel[0].sample_rate = 48000;
+    s->channel[0].track = index;
+    s->channel[0].flags = mode;
+    s->channel[0].volume = volume;
+    s->channel[0].crossfade = 0;
+    first = offset + d->base;
+    second = d->entries[index + 1].offset + d->base;
+    func_00133350(first, second, 0, 0, (short)volume, 0, 1, 0, 0, 0,
+                  func_002B7FB0, (unsigned int)&s->channel[0]);
+}
+
+/* While the primary stream channel is playing (handle neither 0 nor -1) and not already in
+   state 9, start entry index + 3 and index + 2 of the stream table (offset plus the table
+   base) on it if entry index + 1 is present: state 9, volume, track and mode recorded, then
+   the stream call with the current handle as its eighth argument and bit 0 of the mode as
+   flag 4. The locations are long sums passed to int parameters (one truncdisi2 each, as in
+   retail), and the statements keep the order retail's scheduling and allocation need. */
 INCLUDE_ASM("asm/game", func_002B6F70);
-
-INCLUDE_ASM("asm/game", func_002B7088);
 
 void func_002B7170(void) {
     ((void (*)(void))func_00133230)();
@@ -275,7 +335,7 @@ void func_002B7340(s32 value)
 }
 
 
-INCLUDE_ASM("asm/game", func_002B7578);
+/* func_002B7578 is matched in 002B7578.c (its own jump-table unit). */
 
 extern char D_001AA1E8[];
 extern void func_0026FEB8(void *);
