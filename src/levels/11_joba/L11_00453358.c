@@ -309,7 +309,7 @@ INCLUDE_ASM("asm/levels", func_L11_00456A48);
 /* Keep the state's points inside the configured radial and angular limits. */
 INCLUDE_ASM("asm/levels", func_L11_00456C20);
 
-INCLUDE_ASM("asm/levels", func_L11_00456EA0);
+/* func_L11_00456EA0 lives in L11_00456EA0-g8.c. */
 
 extern void func_L04_0040A090(int, void *, void *, void *, void *, void *);
 extern char D_L11_001B1E50[] __attribute__((sda));
@@ -386,7 +386,7 @@ INCLUDE_ASM("asm/levels", func_L11_004580E8);
 
 /* func_L11_00458A98 is defined in L11_00453358-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L11_00458C38);
+/* func_L11_00458C38 lives in L11_00458C38-g8.c. */
 
 /* Scales four consecutive 16-byte XYZ vectors in place by one scalar through a vector helper. */
 void func_L11_00458D88(char *p, float scale)

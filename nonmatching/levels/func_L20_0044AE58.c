@@ -1,16 +1,9 @@
-/* Retained C reconstruction; not linked or counted.
+/* Retained exact-C reconstruction: 688/676 bytes.
  * Profile: -O2 -G8 -ffunction-sections.
- * 684/676 bytes. us: 0/1 places; us2: 0/1 places; pal: absent.
- * Remaining: The false null copy source is removed: the retail branch-likely delay slot
- * selects the local vector when the contact word is zero. The full position
- * qcopy and typed callback are retained. Position pointers are formed in their
- * actual branch, and the first RNG value is scaled before the second call,
- * preserving the observed FP lifetime. The 0xA0 frame agrees, but pointer/mode
- * allocation, local ordering and scheduling still differ.
- * Reopen with: Independent branch-local vector/base lifetime evidence; the earlier
- * equal-sized form still had a different FP lifetime and was not an exact match.
+ * US and US2 0/1; PAL absent. Correct float AA2E8, integer A8C28 and pointer C65A0/32C700 returns replace the older false interfaces. The real third FPR gravity argument is restored to zero. Pointer/mode allocation and block/store scheduling remain different; the older 684-byte measurement omitted that physical argument.
+ * No strict linked match. Reopen with independent source, allocation or
+ * compiler evidence for the remaining difference; do not repeat tied forms.
  */
-
 #include "common.h"
 
 #include "include_asm.h"
@@ -33,7 +26,7 @@ extern float func_00283B98(float, float);
 
 extern void func_00282D08(float *out, char *a, char *b, float k);
 
-extern void func_002AA2E8(float *p, float v, float w);
+extern float func_002AA2E8(float *p, float v, float w);
 
 extern void func_00282CC0(void *, void *, void *);
 
@@ -47,12 +40,11 @@ extern void func_00282C88(void *target);
 
 extern float func_002A7878(float lo, float hi);
 
-extern void func_002C65A0(void *, void *, float, float, int, int, int, int, int,
-                           int);
+extern void *func_002C65A0(void *, void *, float, float, float, int, int, int, int, int, int);
 
-extern void func_002A8C28(char *, char *, int, int, float, float, float, int, int);
+extern int func_002A8C28(char *, char *, int, int, float, float, float, int, int);
 
-extern void func_0032C700(void *a0, int a1, int a2, int a3, int a4, int a5, int a6,
+extern void *func_0032C700(void *a0, int a1, int a2, int a3, int a4, int a5, int a6,
                           int a7, float f12, float f13, int s1, int s2, int s3,
                           int s4);
 
@@ -113,7 +105,7 @@ void func_L20_0044AE58(char *arg0) {
         func_00282C88(&buf50);
         a = func_002A7878(2.5f, 3.0f) * 210000.0f;
         b = func_002A7878(0.2f, 0.4f) * 210000.0f;
-        func_002C65A0(base, &buf40, a, b, 0xF,
+        func_002C65A0(base, &buf40, a, b, 0.0f, 0xF,
                       D_L20_001B2460, 3, 0x50, 0, 0);
         func_L00_002E6EF8(&func_L11_0045FEF8, arg0);
     } break;

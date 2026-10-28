@@ -1,28 +1,44 @@
-/* No C yet: the body is decoded below so the next attempt can start from the structure
-   rather than from the disassembly.
+/* Retained exact-C reconstruction: 284/284 bytes.
+ * Profile: -O2 -G8 -ffunction-sections -fno-rerun-loop-opt.
+ * US, US2 and PAL each 0/1. Complete 24x24 eight-neighbor stencil and bank swap replace the comment-only screen. Byte-offset row views retain the measured neighbor order. Disabling the second loop pass recovers 284 bytes and the incrementing inner counter; all FP operations and the inner branch span agree. GPR allocation and outer-row setup remain different.
+ * No strict linked match. Reopen with independent source, allocation or
+ * compiler evidence for the remaining difference; do not repeat tied forms.
+ */
+#include "common.h"
+extern int D_001AEBB8 __attribute__((sda));
+extern int D_001AEBBC __attribute__((sda));
+extern float D_L30_00233A60[];
 
-   The 284-byte extent at 0x00382FB8 (level 30) starts clean - `lw $a0,-0x438($gp)` - so
-   the row is a real function and the only obstacle is the matching itself.
-
-   It reads two of the level's small-data indices (D_001AEBB8 and D_001AEBBC, $gp =
-   0x1AEFF0) and rewrites the 24x24 float table at 0x00233A60: for every cell it sums
-   eight neighbours of the source row, scales the sum by 0.25f, subtracts the third
-   neighbour and then subtracts a sixteenth of that, and stores the result into the
-   destination row (D_001AEBC0). The strides are 0x900 bytes per row of 24 cells and
-   0x60 bytes per cell.
-
-   The sum is taken in the retail order - the cell and its two neighbours in the source
-   row, then the cell and its two neighbours in the neighbour row:
-
-       f0 = p[0] + q[0] + r[-2] + r[0] + p[-1] + p[1] + q[-1] + q[1]
-       f0 = f0 * 0.25f - s;
-       f0 = f0 - f0 * 0.0625f;
-
-   The inner loop counts the eight summands with a3 (1..0x17) and the outer loop with
-   t0 (2..0x17); both the four row addresses and the two 0x900 strides are computed
-   with `mult` inside the loop, so the row pointers are not hoisted. A spelling that
-   keeps the eight loads in the retail order is the open question.
-
-   It needs the -g8 sibling of the level unit: D_001AEBB8 and D_001AEBBC are small
-   data below the boot's $gp, so the unit is built with -G8 and the globals carry the
-   sda attribute. */
+void func_L30_00382FB8(void)
+{
+    int source=D_001AEBB8*0x900;
+    int destination=D_001AEBBC*0x900;
+    int row,column;
+    for(row=1;row<23;row++) {
+        int rowOffset=row*0x60;
+        int previous=(row-1)*0x60+source;
+        int next=(row+1)*0x60+source;
+        int current=rowOffset+(source+4);
+        int out=rowOffset+destination;
+        for(column=1;column<23;column++) {
+            int at=column*4;
+            float sum=*(float *)(previous+at+(char *)D_L30_00233A60)
+                     +*(float *)(next+at+(char *)D_L30_00233A60)
+                     +*(float *)(current+at-8+(char *)D_L30_00233A60)
+                     +*(float *)(current+at+(char *)D_L30_00233A60)
+                     +*(float *)(previous+at-4+(char *)D_L30_00233A60)
+                     +*(float *)(previous+at+4+(char *)D_L30_00233A60)
+                     +*(float *)(next+at-4+(char *)D_L30_00233A60)
+                     +*(float *)(next+at+4+(char *)D_L30_00233A60);
+            float *cell=(float *)(out+at+(char *)D_L30_00233A60);
+            float value=sum*0.25f-*cell;
+            *cell=value-value*0.0625f;
+        }
+    }
+    {
+        int old=D_001AEBB8;
+        int other=D_001AEBBC;
+        D_001AEBBC=old;
+        D_001AEBB8=other;
+    }
+}

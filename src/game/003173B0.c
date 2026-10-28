@@ -434,7 +434,7 @@ unsigned int func_0031AB08(unsigned int param_1)
 
 INCLUDE_ASM("asm/game", func_0031BCC8);
 
-INCLUDE_ASM("asm/game", func_0031C498);
+/* func_0031C498 is in 0031C498.c. */
 
 extern void func_0031C970(char *);
 extern void func_0031CB78(char *, char *, int, int, int, float);

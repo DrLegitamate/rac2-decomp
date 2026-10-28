@@ -1244,7 +1244,51 @@ void func_002C4100(char *p) {
 
 
 /* Follows a selected attachment, randomizes its rotation, and fades by lifetime. */
-INCLUDE_ASM("asm/game", func_002C4500);
+extern float func_002A78D8(float, float);
+extern float func_00283CE0(int);
+
+void func_002C4500(char *object)
+{
+    char *motion = object + 0x20;
+    int angle;
+    float alpha;
+    if (*(float *)(object + 0x10) < 2.0f || *(float *)(object + 0x10) > 1021.0f ||
+        *(float *)(object + 0x14) < 2.0f || *(float *)(object + 0x14) > 1021.0f ||
+        *(float *)(object + 0x18) < 2.0f || *(float *)(object + 0x18) > 1021.0f)
+        goto destroy;
+    if (*(short *)(motion + 0x16) == 1) {
+        qcopy(object + 0x10, *(char **)(*(char **)(motion + 0x1C) + 0x68) + 0xC0);
+    } else if (*(short *)(motion + 0x16) == 3) {
+        qcopy(object + 0x10, *(char **)(*(char **)(motion + 0x1C) + 0x68) + 0xD0);
+    } else if (*(short *)(motion + 0x16) == 2) {
+        qcopy(object + 0x10, *(char **)(*(char **)(motion + 0x1C) + 0x68) + 0x1E0);
+    } else if (*(short *)(motion + 0x16) == 4) {
+        float z = *(float *)(object + 0x18);
+        qcopy(object + 0x10, *(char **)(motion + 0x1C) + 0x10);
+        *(float *)(object + 0x18) = z + 0.2f;
+    } else {
+        func_00282CC0(object + 0x10, object + 0x10, motion);
+    }
+    if (*(float *)(object + 0x10) < 2.0f || *(float *)(object + 0x10) > 1021.0f ||
+        *(float *)(object + 0x14) < 2.0f || *(float *)(object + 0x14) > 1021.0f ||
+        *(float *)(object + 0x18) < 2.0f || *(float *)(object + 0x18) > 1021.0f)
+        goto destroy;
+    angle = *(unsigned char *)(object + 8);
+    angle += func_00283CF0(func_002A78D8(0.0f, 64.0f));
+    if (angle > 255) angle -= 255;
+    *(unsigned char *)(object + 8) = angle;
+    if (func_00282978(object + 0xA)) {
+destroy:
+        func_002B9180(object);
+        return;
+    }
+    alpha = func_00283CE0(*(short *)(object + 0xA));
+    {
+        float scale = func_00283CE0(*(short *)(motion + 0x14));
+        alpha = alpha * *(float *)(motion + 0x10) * scale;
+    }
+    *(int *)(object + 4) = (func_00283CF0(alpha) << 24) | *(int *)(motion + 0x18);
+}
 
 /* decrements a signed short counter and, at zero, rotates a 24-bit identifier beside it and reloads the counter; calls a helper when the identifier's top byte is clear */
 void func_002C4788(u8 *a0) {

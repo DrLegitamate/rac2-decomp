@@ -100,7 +100,7 @@ s32 func_L09_003F9928(char *a0)
     return 1;
 }
 
-INCLUDE_ASM("asm/levels", func_L09_003F9970);
+/* func_L09_003F9970 lives in L09_003F9970.c. */
 
 /* func_L09_003F9A70 is in the sibling -g8 unit. */
 

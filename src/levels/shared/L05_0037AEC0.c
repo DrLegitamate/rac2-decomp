@@ -69,6 +69,6 @@ int func_L05_0037AFD0(char *object, int flag)
 
 
 
-INCLUDE_ASM("asm/levels", func_L05_0037B538);
+/* func_L05_0037B538 is defined in L05_0037B538.c. */
 
 INCLUDE_ASM("asm/levels", func_L05_0037B6C0);

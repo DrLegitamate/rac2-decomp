@@ -1051,7 +1051,44 @@ void func_L04_003A0CE8(f32 *pos, s32 index, s32 mode) {
 }
 
 /* Build the eight cardinal and diagonal neighbor indices for each water tile. */
-INCLUDE_ASM("asm/levels", func_L04_003A1240);
+extern float func_00282C48(float);
+
+/* Record the neighboring cells of the 16-unit grid. */
+void func_L04_003A1240(unsigned char *cells, int count)
+{
+    int i, j;
+    for (i = 0; i < count; i++) {
+        unsigned char *cell = cells + i * 0x1190;
+        cell[0xC] = 255;
+        cell[0xE] = 255;
+        cell[0xD] = 255;
+        cell[0xF] = 255;
+        cell[0x10] = 255;
+        cell[0x11] = 255;
+        cell[0x12] = 255;
+        cell[0x13] = 255;
+        for (j = 0; j < count; j++) {
+            if (i != j) {
+                unsigned char *cell = cells + i * 0x1190;
+                float dx = *(float *)cell - *(float *)(cells + j * 0x1190);
+                float dy = *(float *)(cell + 4) - *(float *)(cells + j * 0x1190 + 4);
+                if (func_00282C48(dx) < 0.1f) {
+                    if (func_00282C48(dy - 16.0f) < 0.1f) cell[0xC] = j;
+                    if (func_00282C48(dy + 16.0f) < 0.1f) cell[0xE] = j;
+                } else if (func_00282C48(dy) < 0.1f) {
+                    if (func_00282C48(dx - 16.0f) < 0.1f) cell[0xD] = j;
+                    if (func_00282C48(dx + 16.0f) < 0.1f) cell[0xF] = j;
+                } else if (func_00282C48(dx + 16.0f) < 0.1f) {
+                    if (func_00282C48(dy - 16.0f) < 0.1f) cell[0x11] = j;
+                    if (func_00282C48(dy + 16.0f) < 0.1f) cell[0x13] = j;
+                } else if (func_00282C48(dx - 16.0f) < 0.1f) {
+                    if (func_00282C48(dy - 16.0f) < 0.1f) cell[0x10] = j;
+                    if (func_00282C48(dy + 16.0f) < 0.1f) cell[0x12] = j;
+                }
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/levels", func_L04_003A14B8);
 

@@ -348,8 +348,8 @@ int func_L05_00445980(void)
 
 INCLUDE_ASM("asm/levels", func_L05_004459B0);
 
-INCLUDE_ASM("asm/levels", func_L05_00445B58);
+/* func_L05_00445B58 lives in L05_00445B58.c. */
 
-INCLUDE_ASM("asm/levels", func_L05_00445C38);
+/* func_L05_00445C38 lives in L05_00445C38-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L05_00445D60);
