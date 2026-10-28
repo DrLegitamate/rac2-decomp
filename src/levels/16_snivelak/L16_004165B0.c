@@ -7,7 +7,7 @@ typedef signed int s32;
 typedef unsigned int u32;
 typedef float f32;
 
-INCLUDE_ASM("asm/levels", func_L16_004165B0);
+/* func_L16_004165B0 is defined in L16_004165B0-fx-g8.c. */
 
 extern void func_002E74B8(char *, char *, char *);
 extern void func_002E7788(char *, char *, f32);
@@ -66,7 +66,6 @@ INCLUDE_ASM("asm/levels", func_L16_00417990);
 
 INCLUDE_ASM("asm/levels", func_L16_00417DB0);
 
-INCLUDE_ASM("asm/levels", func_L16_004182A8);
 
 
 INCLUDE_ASM("asm/levels", func_L16_004189A0);

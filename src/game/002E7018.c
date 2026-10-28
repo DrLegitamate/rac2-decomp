@@ -1,4 +1,4 @@
-#include "include_asm.h"
+#include "common.h"
 
 extern char D_00189E20_9[];
 
@@ -14,9 +14,6 @@ extern void func_00288EA0();
 
 extern void func_002E6D88();
 
-typedef unsigned char u8;
-
-typedef int s32;
 
 typedef struct {
  u8 prefix[0x30];s32 state;u8 gap0[0x1c];u8 *current;u8 gap1[0x138];s32 bank[2];
@@ -107,7 +104,7 @@ INCLUDE_ASM("asm/game", func_002E7338);
 
 /* func_002E7570 is in 002E7018-qcopy.c (grouped lq/sq copies). */
 
-INCLUDE_ASM("asm/game", func_002E76C0);
+/* func_002E76C0 is in 002E76C0-g8.c. */
 
 extern unsigned int D_001A7AF0 __attribute__((sda));
 extern void func_002E76C0(void *, int, int);
@@ -121,7 +118,7 @@ void func_002E7B48(void *object)
 }
 
 
-INCLUDE_ASM("asm/game", func_002E7BC8);
+/* func_002E7BC8 is in 002E7BC8-g8.c. */
 
 
 /* func_002E8190 is matched in 002E7018-g8.c (-G8 small data). */
@@ -149,7 +146,7 @@ void func_002E82C8(int alpha)
 
 INCLUDE_ASM("asm/game", func_002E8368);
 
-INCLUDE_ASM("asm/game", func_002E8BA8);
+/* func_002E8BA8 is matched in 002E8BA8-g8.c. */
 
 
 
@@ -222,7 +219,7 @@ int func_002EB158(int index)
     return 1;
 }
 
-INCLUDE_ASM("asm/game", func_002EB1E0);
+/* func_002EB1E0 is matched in its own unit, 002EB1E0.c (-frac2-gcse-unsplit-edges). */
 
 
 INCLUDE_ASM("asm/game", func_002EB7E8);
@@ -232,7 +229,7 @@ INCLUDE_ASM("asm/game", func_002EBAA8);
 
 INCLUDE_ASM("asm/game", func_002EBC70);
 
-INCLUDE_ASM("asm/game", func_002EBDF0);
+/* func_002EBDF0 is matched in 002EBDF0-g8.c. */
 
 /* func_002EC1C0 is matched in 002E7018-g8.c (-G8 small data). */
 

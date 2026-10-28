@@ -2,6 +2,7 @@
 
 typedef int TI128 __attribute__((mode(TI)));
 
+
 extern void func_00282D30_2(char *dst, char *src, float scale);
 extern void func_002A7750(void *a0, int a1, int a2);
 extern void func_002AB8C0(void *a0, void *a1);
@@ -87,6 +88,10 @@ extern void func_00282C88(void *);
 extern void func_L11_003973F8(char *, int, float, float);
 
 extern char D_00188660[];
+
+extern void func_L11_00456540(char *);
+extern void func_L11_00456378(char *);
+extern void func_L11_00456EA0(void);
 
 INCLUDE_ASM("asm/levels", func_L11_00453358);
 
@@ -219,6 +224,7 @@ void func_L11_00454DD8(char *p)
 
 INCLUDE_ASM("asm/levels", func_L11_00454F18);
 
+/* Initialize the actor settings, process contacts and advance its attack state. */
 INCLUDE_ASM("asm/levels", func_L11_00455DF8);
 
 void func_L11_00456010(char *p)
@@ -229,8 +235,6 @@ void func_L11_00456010(char *p)
         *(unsigned short *)(p + 0x96) = c + 1;
     func_002A8C28(p, p + 0x10, 0x4000000, 1.6f, 1.0f, 1.0f, 0, 1, 0);
 }
-
-INCLUDE_ASM("asm/levels", func_L11_00456070);
 
 extern int func_002B3BA8_6378(char *, int, float, float, int, int);
 
@@ -302,6 +306,7 @@ INCLUDE_ASM("asm/levels", func_L11_00456938);
 
 INCLUDE_ASM("asm/levels", func_L11_00456A48);
 
+/* Keep the state's points inside the configured radial and angular limits. */
 INCLUDE_ASM("asm/levels", func_L11_00456C20);
 
 INCLUDE_ASM("asm/levels", func_L11_00456EA0);
@@ -448,7 +453,7 @@ void func_L11_00459EA0(char *p)
     *(float *)(p + 60) = 1.0f;
 }
 
-INCLUDE_ASM("asm/levels", func_L11_00459F30);
+/* Defined in L11_00459F30-g8.c. */
 
 /* func_L11_0045A3C8 is defined in L11_0045A3C8-flags-g8.c. */
 
@@ -457,9 +462,9 @@ INCLUDE_ASM("asm/levels", func_L11_00459F30);
 
 INCLUDE_ASM("asm/levels", func_L11_0045B5C8);
 
-INCLUDE_ASM("asm/levels", func_L11_0045B6C8);
+/* func_L11_0045B6C8 is defined in L11_0045B6C8-g64.c. */
 
-INCLUDE_ASM("asm/levels", func_L11_0045FA68);
+/* func_L11_0045FA68 is in L11_0045FA68-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L11_0045FDB0);
 

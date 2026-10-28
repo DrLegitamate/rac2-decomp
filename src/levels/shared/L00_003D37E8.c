@@ -1,5 +1,11 @@
 #include "include_asm.h"
 
+extern void func_L00_003D6FB8_1(char *p);
+extern long long func_002E67A0_2(int id);
+extern float func_0031A888_1(void);
+extern void func_002EE178_1(char *dst, char *src, float scale);
+
+
 extern void func_00282D30_2(char *dst, char *src, float scale);
 
 extern void func_L00_003DC820_1(char *pkt);
@@ -63,7 +69,7 @@ INCLUDE_ASM("asm/levels", func_L00_003D3FB0);
 
 INCLUDE_ASM("asm/levels", func_L00_003D40D8);
 
-INCLUDE_ASM("asm/levels", func_L00_003D4548);
+/* func_L00_003D4548 is defined in L00_003D4548-g8.c. */
 
 
 
@@ -101,7 +107,62 @@ void func_L00_003D6FB8(char *p)
     *(float *)(p + 60) = 1.0f;
 }
 
-INCLUDE_ASM("asm/levels", func_L00_003D7250);
+void func_L00_003D7250(int unused, char *pos, int color, int first, int second, float scale)
+{
+    char pkt[144];
+    float m[16];
+    float quat[4];
+    float off[4];
+    long long r;
+    float dx, dy;
+
+    func_L00_003D6FB8_1(pkt);
+    *(int *)(pkt + 80) = 0;
+    *(float *)(pkt + 92) = 1.0f;
+    *(float *)(pkt + 96) = 1.0f;
+    *(float *)(pkt + 104) = 1.0f;
+    *(float *)(pkt + 108) = 1.0f;
+    *(int *)(pkt + 84) = 0;
+    *(int *)(pkt + 88) = 0;
+    *(int *)(pkt + 100) = 0;
+    r = func_002E67A0_2(11);
+    *(long long *)(pkt + 112) = 0;
+    *(long long *)(pkt + 120) = r;
+    *(long long *)(pkt + 128) = 0xFF9000000260LL;
+    *(long long *)(pkt + 136) = 0x8000000048LL;
+    dx = D_L00_001B8C80.x_140 - *(float *)pos;
+    dy = D_L00_001B8C80.y_144 - *(float *)(pos + 4);
+    *(int *)(pkt + 76) = color + first;
+    *(int *)(pkt + 72) = color + first;
+    *(int *)(pkt + 68) = color + first;
+    *(int *)(pkt + 64) = color + first;
+    quat[3] = 0;
+    quat[2] = func_802EE7A8_1(dx, dy);
+    quat[1] = -func_802EE7A8_1(func_802EE2E8_1(pos, &D_L00_001B8C80.x_140),
+                              D_L00_001B8C80.z_148 - *(float *)(pos + 8));
+    quat[0] = func_0031A888_1();
+    func_802EE970_1(m, quat);
+    func_802EE138_1(off, &D_L00_001B8C80.x_140, pos);
+    func_802EE3D0_1(off, off, 0.5f);
+    m[12] = *(float *)(pos) + off[0];
+    m[13] = *(float *)(pos + 4) + off[1];
+    m[14] = *(float *)(pos + 8) + off[2];
+    m[15] = 1.0f;
+    func_002EE178_1(pkt, pkt, scale);
+    func_002EE178_1(pkt + 16, pkt + 16, scale);
+    func_002EE178_1(pkt + 32, pkt + 32, scale);
+    func_002EE178_1(pkt + 48, pkt + 48, scale);
+    func_802EAC30_1(pkt, m, 0);
+    *(int *)(pkt + 76) = color + second;
+    *(int *)(pkt + 72) = color + second;
+    *(int *)(pkt + 68) = color + second;
+    *(int *)(pkt + 64) = color + second;
+    func_002EE178_1(pkt, pkt, 0.5f);
+    func_002EE178_1(pkt + 16, pkt + 16, 0.5f);
+    func_002EE178_1(pkt + 32, pkt + 32, 0.5f);
+    func_002EE178_1(pkt + 48, pkt + 48, 0.5f);
+    func_802EAC30_1(pkt, m, 0);
+}
 
 /* shared native body of family a04928c6 */
 void func_L00_003DA2B0(char *p)
@@ -286,11 +347,10 @@ INCLUDE_ASM("asm/levels", func_L00_003DDEC8);
 INCLUDE_ASM("asm/levels", func_L00_003DE088);
 
 
-INCLUDE_ASM("asm/levels", func_L00_003DE490);
+/* func_L00_003DE490 is defined in L00_003DE490-basis-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L00_003DE950);
 
-INCLUDE_ASM("asm/levels", func_L00_003DF338);
 
 INCLUDE_ASM("asm/levels", func_L00_003DF710);
 
@@ -376,8 +436,6 @@ void func_L00_003E0088(char *pos, int a1, int a2, char *a3, int t0,
     func_L00_003E0020_1(pkt, fA);
     func_802EAC30_1(pkt, m, 0);
 }
-
-INCLUDE_ASM("asm/levels", func_L00_003E0240);
 
 /* resets a state record: zero words, plus/minus one float flags and two 64-bit fields in the retail store order */
 void func_L00_003E0CE8(char *p)

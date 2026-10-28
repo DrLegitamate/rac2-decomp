@@ -256,7 +256,7 @@ INCLUDE_ASM("asm/levels", func_L09_003A01D8);
 
 INCLUDE_ASM("asm/levels", func_L09_003AE8C8);
 
-INCLUDE_ASM("asm/levels", func_L09_003AEA88);
+/* func_L09_003AEA88 is matched in its own unit, src/levels/shared/L09_003AEA88.c (default flags). */
 
 void func_L09_003AEE10(char *object)
 {
@@ -387,8 +387,9 @@ void func_L09_003AF6B0(char *object)
 /* snapshots the object's frame and re-seeds its four steering angles from the new one */
 /* func_L09_003E99E0 is matched in its own unit, src/levels/shared/L09_003E99E0-qcopy.c (-frac2-qcopy -frac2-qcopy-barrier). */
 
-INCLUDE_ASM("asm/levels", func_L09_003E9AA0);
+/* func_L09_003E9AA0 is matched in src/levels/shared/L09_002B7238-g8.c ($gp-relative small data). */
 
+/* Defined in L09_003E9E60.c. */
 INCLUDE_ASM("asm/levels", func_L09_003E9E60);
 
 /* steps the run's frame index and hands the sample it lands on to the linked stage */
@@ -441,8 +442,6 @@ void func_L09_003EA9D0(char *object)
     func_002829A8(p + 0x368);
 }
 
-INCLUDE_ASM("asm/levels", func_L09_003EAB20);
-
 void func_L09_003EAF60(char *object)
 {
     func_002E5CF8(2, 0, object);
@@ -453,6 +452,8 @@ void func_L09_003EAF60(char *object)
 }
 
 /* func_L09_003F65E0 is in L09_003F65E0-g8.c. */
+
+/* Defined in L09_003F65E0.c. */
 
 void func_L09_003F7158(char *object)
 {
@@ -634,4 +635,4 @@ void func_L09_003F8858(char *object)
 INCLUDE_ASM("asm/levels", func_L09_003F8AE0);
 
 
-INCLUDE_ASM("asm/levels", func_L09_003F9108);
+/* func_L09_003F9108 is defined in L09_003F9108-partner.c. */

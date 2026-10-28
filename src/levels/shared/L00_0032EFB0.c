@@ -70,7 +70,7 @@ void func_L00_003340A8(char *a)
         func_002B9180_2(a);
 }
 
-INCLUDE_ASM("asm/levels", func_L00_00335558);
+/* func_L00_00335558 is in L00_00335558.c. */
 
 /* Calls a routine on pointer-plus-10 and, when it returns non-zero, calls a second routine with the pointer itself. */
 void func_L00_00336548(char *p)

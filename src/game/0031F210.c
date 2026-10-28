@@ -1,6 +1,27 @@
 #include "include_asm.h"
 #include "common.h"
 
+extern long long func_0027C878(int id);
+extern float func_002A7940(void);
+extern void func_00282D30(char *dst, char *src, float scale);
+extern float func_00283248(float x, float y);
+extern float func_00282E80(char *p, float *v);
+extern void func_00283410(float *matrix, float *quat);
+extern void func_00282CF0(float *off, float *v, char *p);
+extern void func_00282F20(float *dst, float *src, float angle);
+extern void func_00280B90(char *pkt, float *matrix, int mode);
+/* Camera position used by the facing-vector helpers. */
+typedef struct {
+    char pad_000[0x140];
+    float x_140;
+    float y_144;
+    float z_148;
+} BootAimVector;
+
+extern signed char D_001B5200[];
+
+
+
 extern char D_00189E20_9[];
 
 extern float func_00282C88_1(float *buf);
@@ -87,7 +108,62 @@ void func_003220A8(char *p)
 
 /* func_00322138 is in 0031F210-q.c. */
 
-INCLUDE_ASM("asm/game", func_00322340);
+void func_00322340(int unused, char *pos, int color, int first, int second, float scale)
+{
+    char pkt[144];
+    float m[16];
+    float quat[4];
+    float off[4];
+    long long r;
+    float dx, dy;
+
+    func_003220A8(pkt);
+    *(int *)(pkt + 80) = 0;
+    *(float *)(pkt + 92) = 1.0f;
+    *(float *)(pkt + 96) = 1.0f;
+    *(float *)(pkt + 104) = 1.0f;
+    *(float *)(pkt + 108) = 1.0f;
+    *(int *)(pkt + 84) = 0;
+    *(int *)(pkt + 88) = 0;
+    *(int *)(pkt + 100) = 0;
+    r = func_0027C878(11);
+    *(long long *)(pkt + 112) = 0;
+    *(long long *)(pkt + 120) = r;
+    *(long long *)(pkt + 128) = 0xFF9000000260LL;
+    *(long long *)(pkt + 136) = 0x8000000048LL;
+    dx = ((BootAimVector *)D_001B5200)->x_140 - *(float *)pos;
+    dy = ((BootAimVector *)D_001B5200)->y_144 - *(float *)(pos + 4);
+    *(int *)(pkt + 76) = color + first;
+    *(int *)(pkt + 72) = color + first;
+    *(int *)(pkt + 68) = color + first;
+    *(int *)(pkt + 64) = color + first;
+    quat[3] = 0;
+    quat[2] = func_00283248(dx, dy);
+    quat[1] = -func_00283248(func_00282E80(pos, &((BootAimVector *)D_001B5200)->x_140),
+                              ((BootAimVector *)D_001B5200)->z_148 - *(float *)(pos + 8));
+    quat[0] = func_002A7940();
+    func_00283410(m, quat);
+    func_00282CF0(off, &((BootAimVector *)D_001B5200)->x_140, pos);
+    func_00282F20(off, off, 0.5f);
+    m[12] = *(float *)(pos) + off[0];
+    m[13] = *(float *)(pos + 4) + off[1];
+    m[14] = *(float *)(pos + 8) + off[2];
+    m[15] = 1.0f;
+    func_00282D30(pkt, pkt, scale);
+    func_00282D30(pkt + 16, pkt + 16, scale);
+    func_00282D30(pkt + 32, pkt + 32, scale);
+    func_00282D30(pkt + 48, pkt + 48, scale);
+    func_00280B90(pkt, m, 0);
+    *(int *)(pkt + 76) = color + second;
+    *(int *)(pkt + 72) = color + second;
+    *(int *)(pkt + 68) = color + second;
+    *(int *)(pkt + 64) = color + second;
+    func_00282D30(pkt, pkt, 0.5f);
+    func_00282D30(pkt + 16, pkt + 16, 0.5f);
+    func_00282D30(pkt + 32, pkt + 32, 0.5f);
+    func_00282D30(pkt + 48, pkt + 48, 0.5f);
+    func_00280B90(pkt, m, 0);
+}
 
 
 
@@ -170,7 +246,62 @@ void func_003253A0(char *p)
 }
 
 
-INCLUDE_ASM("asm/game", func_00325638);
+void func_00325638(int unused, char *pos, int color, int first, int second, float scale)
+{
+    char pkt[144];
+    float m[16];
+    float quat[4];
+    float off[4];
+    long long r;
+    float dx, dy;
+
+    func_003253A0(pkt);
+    *(int *)(pkt + 80) = 0;
+    *(float *)(pkt + 92) = 1.0f;
+    *(float *)(pkt + 96) = 1.0f;
+    *(float *)(pkt + 104) = 1.0f;
+    *(float *)(pkt + 108) = 1.0f;
+    *(int *)(pkt + 84) = 0;
+    *(int *)(pkt + 88) = 0;
+    *(int *)(pkt + 100) = 0;
+    r = func_0027C878(11);
+    *(long long *)(pkt + 112) = 0;
+    *(long long *)(pkt + 120) = r;
+    *(long long *)(pkt + 128) = 0xFF9000000260LL;
+    *(long long *)(pkt + 136) = 0x8000000048LL;
+    dx = ((BootAimVector *)D_001B5200)->x_140 - *(float *)pos;
+    dy = ((BootAimVector *)D_001B5200)->y_144 - *(float *)(pos + 4);
+    *(int *)(pkt + 76) = color + first;
+    *(int *)(pkt + 72) = color + first;
+    *(int *)(pkt + 68) = color + first;
+    *(int *)(pkt + 64) = color + first;
+    quat[3] = 0;
+    quat[2] = func_00283248(dx, dy);
+    quat[1] = -func_00283248(func_00282E80(pos, &((BootAimVector *)D_001B5200)->x_140),
+                              ((BootAimVector *)D_001B5200)->z_148 - *(float *)(pos + 8));
+    quat[0] = func_002A7940();
+    func_00283410(m, quat);
+    func_00282CF0(off, &((BootAimVector *)D_001B5200)->x_140, pos);
+    func_00282F20(off, off, 0.5f);
+    m[12] = *(float *)(pos) + off[0];
+    m[13] = *(float *)(pos + 4) + off[1];
+    m[14] = *(float *)(pos + 8) + off[2];
+    m[15] = 1.0f;
+    func_00282D30(pkt, pkt, scale);
+    func_00282D30(pkt + 16, pkt + 16, scale);
+    func_00282D30(pkt + 32, pkt + 32, scale);
+    func_00282D30(pkt + 48, pkt + 48, scale);
+    func_00280B90(pkt, m, 0);
+    *(int *)(pkt + 76) = color + second;
+    *(int *)(pkt + 72) = color + second;
+    *(int *)(pkt + 68) = color + second;
+    *(int *)(pkt + 64) = color + second;
+    func_00282D30(pkt, pkt, 0.5f);
+    func_00282D30(pkt + 16, pkt + 16, 0.5f);
+    func_00282D30(pkt + 32, pkt + 32, 0.5f);
+    func_00282D30(pkt + 48, pkt + 48, 0.5f);
+    func_00280B90(pkt, m, 0);
+}
 
 
 
@@ -219,21 +350,9 @@ void func_00325B70(char *self, char **children, int first, int second)
 }
 
 
-void func_00325D30(char *object, char *entries)
-{
-    int count = 1;
-    do {
-        char *child = *(char **)entries;
-        count--;
-        entries += 4;
-        if (child != 0 && *(short *)(child + 0xAA) == 0xAA2)
-            func_0029F338(child);
-    } while (count >= 0);
-}
+/* func_00325D30 and func_00325DA0 are in 0031F210-group-g8.c. */
 
-INCLUDE_ASM("asm/game", func_00325DA0);
-
-INCLUDE_ASM("asm/game", func_00325EC0);
+/* func_00325EC0 is in 0031F210-effects-g8.c. */
 
 INCLUDE_ASM("asm/game", func_00326198);
 

@@ -1,5 +1,10 @@
 #include "include_asm.h"
 
+extern void func_00270598(char *);
+extern int func_00270838(char *, char *);
+extern int func_002A6640(void *, float *, int *);
+extern int func_00283CF0(float);
+
 /* Family 34e74db3063e7a24 — 108 bytes, 2 placements (18_damosel, 6_notak).
    Same shape as be569dc253cd5555: walk the resident function-pointer table at
    0x1B2180, call each entry while the resident count at 0x1B21C0 says there is
@@ -549,7 +554,7 @@ void func_00270550(char *object) {
         callback(object);
 }
 
-INCLUDE_ASM("asm/game", func_00270598);
+/* func_00270598 is in 00270598.c. */
 
 INCLUDE_ASM("asm/game", func_00270838);
 
@@ -630,13 +635,13 @@ void func_00270B58(float *out, float *p0, float *p1, float *dir0, float *dir1, f
 
 INCLUDE_ASM("asm/game", func_00270EE0);
 
-INCLUDE_ASM("asm/game", func_002712D8);
+/* func_002712D8 is in 002712D8.c. */
 
 /* func_002718B8 uses the quadword-copy profile in 0026EA00-qcopy.c. */
 
 INCLUDE_ASM("asm/game", func_00271958);
 
-INCLUDE_ASM("asm/game", func_00271B90);
+/* func_00271B90 is in 00271B90.c. */
 
 INCLUDE_ASM("asm/game", func_00271FD8);
 
@@ -753,6 +758,8 @@ extern FogPresetView D_001B1640 MACRO_ADDR;
 extern int func_002A6640(void *, float *, int *);
 extern int func_00283CF0(float);
 
+/* Arithmetic follows RAC1's update_camera_environment_from_regions,
+   src/game/effects.c (Lombyte/OpenRAC, GPL-3.0). */
 void func_002735A0(void *position)
 {
     float blend;

@@ -1,4 +1,13 @@
 #include "include_asm.h"
+extern int D_L30_001B2A68 __attribute__((sda));
+extern short D_0018A000;
+extern unsigned long long D_00138180[];
+extern unsigned char D_L30_001B3D30[];
+extern void *D_L30_00260E30[];
+extern int D_L30_00260F30[][2];
+extern void func_2EDB20(void *, void *);
+extern void func_323FB0(void *, int, int);
+extern void func_L30_004135A0(char *);
 
 extern void func_42C028(int);
 extern void func_316DB8(char *);
@@ -12,17 +21,76 @@ void func_L30_00418670(char *a0) {
     func_316DB8(*(char **)(st + 0x50));
 }
 
-INCLUDE_ASM("asm/levels", func_L30_004130E8);
+
+void func_L30_004130E8(char *obj) {
+    int *st = *(int **)(obj + 0x68);
+    int step = 0;
+    D_L30_001B2A68 = 1;
+    D_0018A000 = 5;
+    func_2EDB20(func_L30_004135A0, obj);
+    if (D_00138180[0x1A0 / 8] & 0x9000000000ULL) {
+        func_316DB8(obj);
+        return;
+    }
+    if (((int *)D_00138180)[0x1A4 / 4] & 0x4000) {
+        func_323FB0(st, st[1] - 1, 1);
+        if (st[2] < st[0] - 15) st[2]++;
+    } else if (((int *)D_00138180)[0x1A4 / 4] & 0x1000) {
+        func_323FB0(st, 0, 1);
+        if (st[0] < st[2]) st[2]--;
+    } else if (((int *)D_00138180)[0x1A0 / 4] & 0x2000) {
+        step = (((int *)D_00138180)[0x1A0 / 4] & 15) ? 5 : 1;
+    } else if (((int *)D_00138180)[0x1A0 / 4] & 0x8000) {
+        step = (((int *)D_00138180)[0x1A0 / 4] & 15) ? -5 : -1;
+    }
+    if (step && *(unsigned short *)(obj + 0x96) >= 5) {
+        *(unsigned short *)(obj + 0x96) = 0;
+        switch (D_L30_001B3D30[st[0]]) {
+        case 0: {
+            int value = *(int *)D_L30_00260E30[st[0]];
+            value += step;
+            if (value > D_L30_00260F30[st[0]][1]) value = D_L30_00260F30[st[0]][1];
+            else if (value < D_L30_00260F30[st[0]][0]) value = D_L30_00260F30[st[0]][0];
+            *(int *)D_L30_00260E30[st[0]] = value;
+            break;
+        }
+        case 1: {
+            float value = *(float *)D_L30_00260E30[st[0]] + step * 0.01f;
+            if (value > D_L30_00260F30[st[0]][1]) value = D_L30_00260F30[st[0]][1];
+            else if (value < D_L30_00260F30[st[0]][0]) value = D_L30_00260F30[st[0]][0];
+            *(float *)D_L30_00260E30[st[0]] = value;
+            break;
+        }
+        case 2: {
+            unsigned char value = *(unsigned char *)D_L30_00260E30[st[0]];
+            value += step;
+            if (value > D_L30_00260F30[st[0]][1]) value = D_L30_00260F30[st[0]][1];
+            else if (value < D_L30_00260F30[st[0]][0]) value = D_L30_00260F30[st[0]][0];
+            *(unsigned char *)D_L30_00260E30[st[0]] = value;
+            break;
+        }
+        case 3: {
+            short value = *(short *)D_L30_00260E30[st[0]];
+            value += step;
+            if (value > D_L30_00260F30[st[0]][1]) value = D_L30_00260F30[st[0]][1];
+            else if (value < D_L30_00260F30[st[0]][0]) value = D_L30_00260F30[st[0]][0];
+            *(short *)D_L30_00260E30[st[0]] = value;
+            break;
+        }
+        }
+    }
+    (*(unsigned short *)(obj + 0x96))++;
+}
+
 
 INCLUDE_ASM("asm/levels", func_L30_00413528);
 
-INCLUDE_ASM("asm/levels", func_L30_004135A0);
+/* func_L30_004135A0 is defined in L30_004135A0-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L30_004148F0);
 
 INCLUDE_ASM("asm/levels", func_L30_00415090);
 
-INCLUDE_ASM("asm/levels", func_L30_004153D8);
+/* func_L30_004153D8 is defined in L30_004153D8.c. */
 
 INCLUDE_ASM("asm/levels", func_L30_004158B0);
 
@@ -70,4 +138,4 @@ void func_L30_0041A848(char *a0) {
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L30_0041B848);
+/* func_L30_0041B848 is defined in L30_0041B848.c. */

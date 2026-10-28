@@ -44,14 +44,14 @@ extern void func_32AF78(void *a0);
 
 /* func_L10_00425798 is defined in L10_00425798-flags.c. */
 
-INCLUDE_ASM("asm/levels", func_L10_00424028);
+/* func_L10_00424028 is defined in L10_00424028-g8.c. */
 
 
 INCLUDE_ASM("asm/levels", func_L10_00424528);
 
 INCLUDE_ASM("asm/levels", func_L10_00424CD0);
 
-INCLUDE_ASM("asm/levels", func_L10_00425508);
+/* func_L10_00425508 is defined in L10_00424028-reward-g8.c. */
 
 
 INCLUDE_ASM("asm/levels", func_L10_00424448);
@@ -112,10 +112,10 @@ void func_L10_0042BCA0(u8 *object)
 
 /* func_L10_0042BEE0 is in the sibling file L10_00424028-g8.c (it reads $gp data). */
 
-INCLUDE_ASM("asm/levels", func_L10_0042DF10);
+/* func_L10_0042DF10 is defined in L10_0042DF10-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L10_0042E100);
+/* func_L10_0042E100 is defined in L10_0042E100-g16.c. */
 
 /* Defined in L10_0042E4D0.c. */
 
-INCLUDE_ASM("asm/levels", func_L10_0042E660);
+/* func_L10_0042E660 is defined in L10_0042E660-g8.c. */

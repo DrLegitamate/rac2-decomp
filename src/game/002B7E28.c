@@ -1,6 +1,16 @@
 #include "include_asm.h"
 #include "common.h"
 
+extern char *func_002B9030(int);
+extern int func_00283CF0(float);
+extern float func_002A7878(float, float);
+extern float func_002A78D8(float, float);
+extern int func_002A77E0(int);
+extern int func_002AAE98(float, float, float, float);
+extern unsigned char *D_001F2574, *D_001F25A4;
+extern void func_002B9180(char *);
+extern void func_00282CC0(char *, char *, char *);
+
 #ifndef RAC2_T_REC_F4EC78016
 #define RAC2_T_REC_F4EC78016
 typedef struct Rec_F4ec78016 {
@@ -109,6 +119,50 @@ extern int Fc10c1216_FUN_00283CF0(float);
 
 extern void Fc10c1216_FUN_00282CC0(char *, char *, char *);
 
+extern void func_002B6D80(s32, s32, s32);
+
+extern short D_001A63D4;
+
+#define NOT_SDA __attribute__((section(".data")))
+
+extern short r1_D_001517F0 NOT_SDA;
+
+extern void func_0026FEB8(const char *, ...);
+extern char D_001AA220[];
+
+typedef struct {
+    char pad00[0x2C];
+    short state;
+    char pad2E[2];
+    int value;
+    int quarter;
+} FileLoadVoiceState_002B8048;
+extern FileLoadVoiceState_002B8048 g_fileLoadVoiceState;
+
+typedef struct {
+    char reserved[0x18E];
+    short active;
+    int value;
+} State_2B8518;
+
+extern State_2B8518 D_00138180;
+
+typedef int TI __attribute__((mode(TI)));
+
+extern float func_002B0520(TI *pos);
+extern int D_001A79F0 MACRO_ADDR;
+extern float D_001B1DC0[] MACRO_ADDR;
+
+extern unsigned char *D_001F2544;
+
+extern void func_00300190(char *, char *);
+
+/* func_002BB838 uses the profile in 002BB838-qcopy.c. */
+
+extern int func_00283D38(int, int, float);
+extern unsigned char *D_001F2560;
+
+
 /* Stores the incoming handle into the record's first word and, for a non-negative index, into the next slot of a 112-byte-stride table, then either bumps a state short from 1 to 2 or passes three shorts and one word of a global block to a helper. */
 void func_002B7E28(void *a0, long a1)
 {
@@ -132,7 +186,6 @@ void func_002B7E28(void *a0, long a1)
     }
 }
 
-extern void func_002B6D80(s32, s32, s32);
 void func_002B7EA8(s32 a0, long a1)
 {
     s32 p = (s32)a1;
@@ -149,8 +202,6 @@ void func_002B7EA8(s32 a0, long a1)
                       *(short *)(g + 0x4A));
     }
 }
-
-extern short D_001A63D4;
 
 void func_002B7F08(int arg0, long arg1)
 {
@@ -169,10 +220,6 @@ void func_002B7F08(int arg0, long arg1)
         }
     }
 }
-
-#define NOT_SDA __attribute__((section(".data")))
-
-extern short r1_D_001517F0 NOT_SDA;
 
 /* rac1-decomp src/game/stream.c: func_00217970 */
 void func_002B7F58(int arg0, long arg1) {
@@ -209,8 +256,6 @@ void func_002B7FB0(int arg0, long arg1) {
     }
 }
 
-extern void func_0026FEB8(const char *, ...);
-extern char D_001AA220[];
 void func_002B7FF0(int value, long address)
 {
     char *p = (char *)(int)address;
@@ -224,15 +269,6 @@ void func_002B7FF0(int value, long address)
     if (value == 0)
         *(short *)(p + 10) = 7;
 }
-
-typedef struct {
-    char pad00[0x2C];
-    short state;
-    char pad2E[2];
-    int value;
-    int quarter;
-} FileLoadVoiceState_002B8048;
-extern FileLoadVoiceState_002B8048 g_fileLoadVoiceState;
 
 void func_002B8048(int value, long address)
 {
@@ -259,21 +295,12 @@ INCLUDE_ASM("asm/game", func_002B80B8);
 
 INCLUDE_ASM("asm/game", func_002B8108);
 
-typedef struct {
-    char reserved[0x18E];
-    short active;
-    int value;
-} State_2B8518;
-
-extern State_2B8518 D_00138180;
-
 void func_002B8518(void) {
     D_00138180.active = 0;
     D_00138180.value = 0;
 }
 
 INCLUDE_ASM("asm/game", func_002B8530);
-
 
 INCLUDE_ASM("asm/game", func_002B85F8);
 
@@ -312,14 +339,6 @@ ASM_FUNC("asm/game", func_002B9420);
 INCLUDE_ASM("asm/game", func_002BA048);
 
 INCLUDE_ASM("asm/game", func_002BA0E0);
-
-typedef int TI __attribute__((mode(TI)));
-
-extern void func_002B9180(char *);
-extern void func_00282CC0(char *, char *, char *);
-extern float func_002B0520(TI *pos);
-extern int D_001A79F0 MACRO_ADDR;
-extern float D_001B1DC0[] MACRO_ADDR;
 
 void func_002BA6A0(char *p)
 {
@@ -363,9 +382,6 @@ void func_002BA6A0(char *p)
     s[3] = lim + D_001B1DC0[2];
 }
 
-
-extern unsigned char *D_001F2544;
-
 void func_002BA978(char *self)
 {
     int alpha = *(short *)(self + 0xA) * *(int *)(self + 0x20) / 27;
@@ -376,7 +392,6 @@ void func_002BA978(char *self)
         self[2] = D_001F2544[(27 - *(short *)(self + 0xA)) / 3];
     }
 }
-
 
 /* func_002BABE8 is in 002B7E28-g8.c (its global read uses the retail's one-register
    `lui`/`lw` pair, which only a -G8 unit emits). */
@@ -409,9 +424,6 @@ void func_002BAF68(char *a0)
     if (Fe617c30b_FUN_00282978(a0 + 10) != 0)
         Fe617c30b_FUN_002B9180(a0);
 }
-
-extern void func_002B9180(char *);
-extern void func_00300190(char *, char *);
 
 void func_002BB050(u8 *a0)
 {
@@ -449,11 +461,6 @@ void func_002BB798(char *a0)
         *(int *)(a0 + 4) = (*(int *)(a0 + 4) & 0xFFFFFF)
                          | ((*(int *)(a0 + 32) * 127 / 6) << 24);
 }
-
-/* func_002BB838 uses the profile in 002BB838-qcopy.c. */
-
-extern int func_00283D38(int, int, float);
-extern unsigned char *D_001F2560;
 
 /* blends a sub-object into a position, adds a float field, stores an interpolated value in the
    word at +4 and scales the frame count into a byte table at +2 */
@@ -507,13 +514,41 @@ void func_002BBB70(char *p)
     *(char *)(p + 8) = *(unsigned char *)(p + 8) - 1;
 }
 
-INCLUDE_ASM("asm/game", func_002BBCB0);
+/* func_002BBCB0 is in 002BBCB0-g8-qcopy.c. */
 
 INCLUDE_ASM("asm/game", func_002BBF40);
 
 INCLUDE_ASM("asm/game", func_002BC508);
 
-INCLUDE_ASM("asm/game", func_002BC768);
+char *func_002BC768(char *pos, int spin, int color, float spread, float low, float high, float accel, float size)
+{
+    char *p = func_002B9030(13);
+    char *q;
+    if (p) {
+        qcopy(p + 16, pos);
+        q = p + 32;
+        *(int *)(p + 4) = color;
+        p[9] = func_00283CF0(4.0f) + 64;
+        p[3] = 0x48;
+        *(float *)(p + 12) = size;
+        p[1] = 0;
+        p[8] = 0;
+        p[2] = D_001F2574[0];
+        *(float *)(p + 16) += func_002A78D8(0.0f, spread);
+        *(float *)(p + 20) += func_002A78D8(0.0f, spread);
+        *(float *)(p + 24) += func_002A78D8(0.0f, spread);
+        *(short *)(p + 10) = 10;
+        *(int *)(q + 4) = 0;
+        if (func_002A77E0(2))
+            *(int *)(q + 8) = spin;
+        else
+            *(int *)(q + 8) = -spin;
+        *(int *)(q + 20) = color & 0xffffff;
+        *(float *)(q + 12) = func_002A7878(low, high);
+        *(float *)(q + 16) = accel;
+    }
+    return p;
+}
 
 void func_002BC8E8(char *p)
 {
@@ -548,13 +583,12 @@ void func_002BC8E8(char *p)
     }
 }
 
-
 /* func_002BCB00 is defined in 002BCB00-zero-ti-barrier.c. */
 
-INCLUDE_ASM("asm/game", func_002BCC58);
+/* func_002BCC58 is in 002BCC58-g8.c. */
 
 
-INCLUDE_ASM("asm/game", func_002BD0D0);
+/* func_002BD0D0 is in 002BD0D0-g8.c. */
 
 void func_002BD390(void) {
 }
@@ -588,9 +622,6 @@ void func_002BD398(OBJ_F3c007b59 *o)
     }
 }
 
-extern void func_00282CC0(char *, char *, char *);
-extern int func_00283CF0(float);
-
 void func_002BD500(char *a)
 {
     char *p1 = a + 16;
@@ -609,14 +640,9 @@ void func_002BD500(char *a)
         func_002B9180(a);
 }
 
-
-
-
-
-
 INCLUDE_ASM("asm/game", func_002BDCE8);
 
-INCLUDE_ASM("asm/game", func_002BDEB0);
+/* func_002BDEB0 is in 002BDEB0.c. */
 
 
 /* func_002BE278 uses the quadword-copy profile in 002BE278-qcopy.c. */
@@ -670,11 +696,6 @@ void func_002BE9B8(char *p)
 INCLUDE_ASM("asm/game", func_002BEBC0);
 
 INCLUDE_ASM("asm/game", func_002BEE70);
-
-
-extern void func_002B9180(char *);
-extern int func_002AAE98(float a, float b, float c, float d);
-extern int func_00283CF0(float);
 
 void func_002BF518(char *o)
 {

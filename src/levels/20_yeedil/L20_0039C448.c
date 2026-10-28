@@ -1,6 +1,12 @@
 #include "common.h"
 
 typedef int TI128 __attribute__((mode(TI)));
+typedef union { TI128 q; float f[4]; } Vector;
+typedef struct { unsigned char pad[0x70]; long f70, f78, f80, f88; } QuadPacket;
+typedef union {
+    QuadPacket packet;
+    struct { Vector corners[4]; unsigned int colours[4]; float uv[8]; } geometry;
+} RenderQuad;
 
 extern void func_00282CC0(char *, char *, char *);
 
@@ -17,8 +23,6 @@ extern void func_L00_002E6EF8(void *, int);
 extern void func_L20_0039C5D0(char *);
 
 extern void func_L20_0039C8C8(char *, int, int);
-
-extern void func_L20_0039CC10(void);
 
 extern char D_L20_001C0420[];
 
@@ -41,7 +45,6 @@ INCLUDE_ASM("asm/levels", func_L20_0039CF58);
 
 INCLUDE_ASM("asm/levels", func_L20_0039D340);
 
-/* func_L20_0039D680 is defined in L20_0039C448-g8.c (it reaches a global through $gp). */
 
 extern int D_L20_001B2AC8 __attribute__((sda));
 
@@ -210,18 +213,15 @@ extern char *func_L20_004448A8(char *, char *);
 
 INCLUDE_ASM("asm/levels", func_L20_0039E1E8);
 
-/* func_L20_0039E368 is defined in L20_0039C448-g8.c (it reaches a global through $gp). */
 
 /* func_L20_0039E5F0 is defined in L20_0039C448-g8.c (it reaches a global through $gp). */
 /* func_L20_0039E770 is defined in L20_0039E770.c for its grouped-copy profile. */
 
 /* func_L20_0039E890 is defined in L20_0039C448-g8.c (it reaches a global through $gp). */
 
-/* func_L20_0039E9F8 is defined in L20_0039C448-g8.c (it reaches a global through $gp). */
 
 INCLUDE_ASM("asm/levels", func_L20_0039EBB8);
 
-/* func_L20_0039ED78 is defined in L20_0039C448-g8.c (it reaches a global through $gp). */
 
 INCLUDE_ASM("asm/levels", func_L20_0039EEC8);
 
@@ -245,17 +245,14 @@ INCLUDE_ASM("asm/levels", func_L20_0039F560);
 
 INCLUDE_ASM("asm/levels", func_L20_0039F968);
 
-/* func_L20_003A0320 is defined in L20_0039C448-g8.c (it reaches a global through $gp). */
 
-INCLUDE_ASM("asm/levels", func_L20_003AB090);
+/* func_L20_003AB090 is defined in L20_003AB090.c. */
 
-INCLUDE_ASM("asm/levels", func_L20_003AB4A8);
+/* func_L20_003AB4A8 is defined in L20_003AB090.c. */
 
 INCLUDE_ASM("asm/levels", func_L20_003B0A88);
 
-/* func_L20_003BFEB8 is defined in L20_0039C448-g8.c (it reaches a global through $gp). */
 
-/* func_L20_003C0048 is defined in L20_0039C448-g8.c (it reaches a global through $gp). */
 
 void func_L20_003C02D0(char *arg0) {
     s32 index = *(s32 *)(*(char **)(arg0 + 0x68));
@@ -313,7 +310,6 @@ void func_L20_003C0350(char *arg0) {
 INCLUDE_ASM("asm/levels", func_L20_003E6728);
 
 
-/* func_L20_00408D98 is defined in L20_0039C448-g8.c (it reaches a global through $gp). */
 
 /* func_L20_00409480 is defined in L20_00409480-g8.c (it needs the -G8 profile). */
 
@@ -347,7 +343,6 @@ s32 func_L20_00435178(char *arg0, s32 arg1) {
     return s2;
 }
 
-/* func_L20_00438F98 is defined in L20_0039C448-g8.c (it reaches a global through $gp). */
 
 /* func_L20_004395B0 is in L20_0039C448-g8.c (it reads three floats through $gp); its
    near miss is in nonmatching/levels/func_L20_004395B0.c. */

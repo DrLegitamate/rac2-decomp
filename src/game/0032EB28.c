@@ -1,4 +1,4 @@
-#include "include_asm.h"
+#include "common.h"
 
 #define RAC2_T_OBJ_F7B2F1854
 
@@ -16,10 +16,6 @@ typedef struct {
 
 typedef int TI128 __attribute__((mode(TI)));
 
-typedef float f32;
-
-typedef int s32;
-
 typedef struct Rac2Native_81be3b52930eb806_FallbackInterleavedFloat4Layout {
     unsigned char unknown_00[8];
     float first_0;
@@ -31,8 +27,6 @@ typedef struct Rac2Native_81be3b52930eb806_FallbackInterleavedFloat4Layout {
     float first_3;
     float second_3;
 } Rac2Native_81be3b52930eb806_FallbackInterleavedFloat4Layout;
-
-typedef unsigned char u8;
 
 typedef struct Obj_F7b2f1854 {
     int *f0;
@@ -48,8 +42,6 @@ typedef struct Obj_F7b2f1854 {
     int f40;
     int f44;
 } Obj_F7b2f1854;
-
-typedef unsigned int u32;
 
 typedef struct {
     char reserved[0x30];
@@ -180,7 +172,7 @@ INCLUDE_ASM("asm/game", func_0032FFD8);
 
 INCLUDE_ASM("asm/game", func_00330150);
 
-INCLUDE_ASM("asm/game", func_003304D8);
+/* func_003304D8 is defined in 0032EB28-ground-g8.c. */
 
 
 /* func_00330BC0 uses small data in 0032EB28-g8.c. */
@@ -189,7 +181,7 @@ INCLUDE_ASM("asm/game", func_00330CA0);
 
 /* func_00330E48 is in 0032EB28-g8.c. */
 
-INCLUDE_ASM("asm/game", func_00330EC0);
+/* func_00330EC0 is in 0032EB28-ring-g8.c. */
 
 INCLUDE_ASM("asm/game", func_00331238);
 
@@ -306,10 +298,6 @@ INCLUDE_ASM("asm/game", func_00334550);
 
 
 
-static __inline__ void qcopy(void *dst, const void *src) {
-    __asm__ __volatile__("lq $2,0x0(%1)\n\tsq $2,0x0(%0)"
-                         : : "r"(dst), "r"(src) : "$2", "memory");
-}
 
 typedef int L_34730TI __attribute__((mode(TI)));
 typedef union { unsigned char b[0x2600]; short h[0x1300]; int i[0x980]; float f[0x980]; } L_34730Hero;
@@ -406,6 +394,8 @@ INCLUDE_ASM("asm/game", func_00335270);
 
 
 
+/* Moves camera 5 to a new position/rotation; mode 3 starts a transition back from the
+   previous pose, modes 2 and 3 store the transition duration. */
 INCLUDE_ASM("asm/game", func_00335438);
 
 void func_003355A8(int mode)
@@ -733,7 +723,7 @@ void func_00336508(u8 *a0, s32 a1, s32 a2) {
     *((u32 *)*(u8 **)(o + 0xC) + 3) = (*((u32 *)*(u8 **)(o + 0xC) + 3) & 0x00FFFFFF) | (u32)(a2 << 24);
 }
 
-INCLUDE_ASM("asm/game", func_00336548);
+/* func_00336548 is defined in 0032EB28-math-g8.c. */
 
 Constructor_3361A8 *func_003366D0(Constructor_3361A8 *object) {
     func_00335FB0(object);

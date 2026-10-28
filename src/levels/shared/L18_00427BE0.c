@@ -71,7 +71,7 @@ INCLUDE_ASM("asm/levels", func_L18_00428738);
 
 INCLUDE_ASM("asm/levels", func_L18_00428AE8);
 
-INCLUDE_ASM("asm/levels", func_L18_00428F08);
+/* func_L18_00428F08 lives in L18_00428F08-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L18_0042B008);
 
@@ -127,7 +127,6 @@ void func_L18_0043F040(u8 *obj) {
 }
 
 /* func_L18_0043EF40 is matched in its own unit, L18_0043EF40-g8.c. */
-INCLUDE_ASM("asm/levels", func_L18_0043F428);
 
 INCLUDE_ASM("asm/levels", func_L18_0043FFF8);
 

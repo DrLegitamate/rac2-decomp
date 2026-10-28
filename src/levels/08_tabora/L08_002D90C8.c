@@ -150,8 +150,7 @@ INCLUDE_ASM("asm/levels", func_L08_003D00C8);
 
 /* func_L08_003D0508 is defined in L08_003D0508-qcopy.c. */
 
-INCLUDE_ASM("asm/levels", func_L08_003D2F50);
-
+/* func_L08_003D2F50 is defined in L08_002D90C8-damage-g8.c. */
 
 
 INCLUDE_ASM("asm/levels", func_L08_003D3EF8);

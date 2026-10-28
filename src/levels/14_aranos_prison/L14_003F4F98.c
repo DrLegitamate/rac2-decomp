@@ -1,4 +1,43 @@
 #include "include_asm.h"
+#include "common.h"
+extern char D_L14_001B9500[];
+extern char D_0018A0E0[];
+extern void func_002FC560(unsigned int, unsigned long);
+extern void func_00281DE8(void *, int, int, int);
+extern float func_00283180(float);
+extern float func_00283198(float);
+extern void func_00282F20(void *, void *, float);
+extern void func_00282DD8(void *, void *, void *);
+extern void func_00282D30(void *, void *, float);
+extern void func_00282CC0(void *, void *, void *);
+extern void func_002830C0(void *, void *, void *);
+extern void func_00280B90(void *, int, int);
+
+typedef int PrisonQword __attribute__((mode(TI)));
+typedef struct { PrisonQword v[4]; } PrisonMatrix;
+typedef struct {
+    float pos[4][4];
+    int color[4];
+    float uv[4][2];
+    long long mode;
+    char pad[24];
+} PrisonQuad;
+extern PrisonMatrix D_L14_001B1A00;
+
+
+typedef struct { char pad[0x20]; float rate[4]; unsigned int start[4]; unsigned int end[4]; int timer[4]; float angle[4]; } PrisonVisualState;
+extern void func_L14_004308D0(void *, int, int, int, float, float, float);
+extern float func_L14_00430898(float);
+extern void func_L14_00430E08(void *);
+extern int prisonStartSound(int, int, void *) __asm__("func_002E5CF8");
+typedef struct { char pad[0x74]; unsigned char active; char gap[0x13]; void *owner; } PrisonSoundAnchor;
+extern void func_002E5CF8(int, int, void *);
+extern int func_00282948(void *);
+extern void func_00325DA0(void *, void *);
+extern void func_00282CF0(void *, void *, void *);
+extern float func_00283B98(float, float);
+extern void func_00325C50(void *, void *, int, void *, float);
+extern void func_002B0990(void *, void *, int, int, float);
 
 extern char D_L14_001BF980[];
 
@@ -43,7 +82,68 @@ void func_L14_00413CD8(char *self, char *p1, int p2)
         func_00282D30_6(p1, p1, -1.0f);
 }
 
-INCLUDE_ASM("asm/levels", func_L14_00420B10);
+extern unsigned char *D_L14_001B259C __attribute__((sda));
+extern void func_L03_004199F0(void *);
+extern int func_L02_0032EDD8(void *, void *, int, int *);
+
+typedef struct {
+    int id;
+    unsigned char links[4];
+    unsigned char pad08[24];
+} PrisonGraphNode;
+
+typedef struct {
+    unsigned char pad00[0x80];
+    PrisonGraphNode nodes[32];
+    int count;
+} PrisonGraphState;
+
+/* Looks up the graph nodes of first and second and, when they differ, sets (or with clear,
+   clears) bit 7 of the link between them in both nodes' four link bytes. The links of node 0
+   serve as the base for both scans, and both scans read the two ids from their stack slots. */
+void func_L14_00420B10(int index, void *first, void *second, int clear) {
+    unsigned char *self = D_L14_001B259C + index * 256;
+    PrisonGraphState *state = *(PrisonGraphState **)(self + 0x68);
+    int id0, id1;
+    int i;
+    unsigned char *links;
+    unsigned char *entry;
+
+    if (!self[0x20])
+        func_L03_004199F0(self);
+    id0 = id1 = -1;
+    if (func_L02_0032EDD8(first, state->nodes, state->count, &id0)) {
+        if (func_L02_0032EDD8(second, state->nodes, state->count, &id1)) {
+            if (id0 != id1) {
+                links = state->nodes[0].links;
+                i = 0;
+                do {
+                    entry = &links[id0 * sizeof(PrisonGraphNode) + i];
+                    if ((*entry & 127) == id1) {
+                        if (clear)
+                            *entry &= 127;
+                        else
+                            *entry |= 128;
+                        break;
+                    }
+                    ++i;
+                } while (i < 4);
+                i = 0;
+                do {
+                    entry = &links[id1 * sizeof(PrisonGraphNode) + i];
+                    if ((*entry & 127) == id0) {
+                        if (clear)
+                            *entry &= 127;
+                        else
+                            *entry |= 128;
+                        break;
+                    }
+                    ++i;
+                } while (i < 4);
+            }
+        }
+    }
+}
 
 INCLUDE_ASM("asm/levels", func_L14_00421BC0);
 
@@ -205,7 +305,6 @@ void func_L14_00426DE8(char *a0)
     func_2EF6D8(0, D_001A6480[0xA9], 0, D_001A6480[0xA8], s0);
 }
 
-/* func_L14_00426E60 lives in the -g8 sibling file (it reads two floats through $gp). */
 
 INCLUDE_ASM("asm/levels", func_L14_00426F28);
 
@@ -255,11 +354,29 @@ void func_L14_004286F8(unsigned char *a0)
 
 /* func_L14_00428BA0 lives in the -g8 sibling file (it reads two globals through $gp). */
 
-INCLUDE_ASM("asm/levels", func_L14_00428E68);
+/* func_L14_00428E68 is defined in L14_00428E68-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L14_004295D0);
 
-INCLUDE_ASM("asm/levels", func_L14_004298F0);
+void func_L14_004298F0(unsigned char *self) {
+    unsigned char *state = *(unsigned char **)(self + 0x68);
+    float delta[4] __attribute__((aligned(16)));
+    func_00282948(state + 0x30c);
+    func_00282948(state + 0x310);
+    if (*(unsigned short *)(self + 0x96) < 65535)
+        ++*(unsigned short *)(self + 0x96);
+    func_00325DA0(self, state + 0x308);
+    func_00282CF0(delta, self + 0x10, state + 0x2d0);
+    qcopy(state + 0x2d0, self + 0x10);
+    if (self[0x95] == 1) {
+        *(float *)(state + 0x2fc) = func_00283B98(*(float *)(state + 0x2fc), 0.2094395459f);
+        func_00325C50(self, state + 0x300, 1, delta, *(float *)(state + 0x2fc));
+    } else {
+        *(float *)(state + 0x2fc) = func_00283B98(*(float *)(state + 0x2fc), 0.01163553074002266f);
+        func_00325C50(self, state + 0x300, 0, delta, *(float *)(state + 0x2fc));
+    }
+    func_002B0990(self, state + 0x230, 7, 1, 2.0f);
+}
 
 
 extern void *func_801234F0(float scale);
@@ -292,7 +409,7 @@ void func_L14_0042D018(char *a0)
     func_80321F58(a0, 1, -1);
 }
 
-INCLUDE_ASM("asm/levels", func_L14_0042FB10);
+/* func_L14_0042FB10 is defined in L14_0042FB10-effect-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L14_0042FDA8);
 
@@ -305,7 +422,64 @@ float func_L14_00430898(float x)
     return func_2F6DA0(x * 0.15915494f) * 6.2831855f;
 }
 
-INCLUDE_ASM("asm/levels", func_L14_004308D0);
+/* Builds a camera-facing quad and rotates its texture coordinates about their center. */
+void func_L14_004308D0(void *position, int texture, int color, int mode,
+                     float scale, float distance, float angle)
+{
+    PrisonQuad q;
+    float xy[2];
+    float forward[4], right[4], up[4], center[4], offset[4];
+    PrisonMatrix matrix;
+    float c, s;
+    int i, j;
+    char *u, *v;
+    float (*dst)[4], (*mat)[4];
+
+    func_00281DE8(&q, texture, mode, 128);
+    q.mode = 5;
+    q.color[0] = q.color[1] = q.color[2] = q.color[3] = color;
+    q.uv[0][0] = 0; q.uv[0][1] = 0;
+    q.uv[1][0] = 0; q.uv[1][1] = 1;
+    q.uv[2][0] = 1; q.uv[2][1] = 0;
+    q.uv[3][0] = 1; q.uv[3][1] = 1;
+    c = func_00283180(angle);
+    s = func_00283198(angle);
+    /* Walk the whole packet so the final cursors remain within its storage. */
+    v = (char *)&q + 0x54;
+    u = (char *)&q + 0x50;
+    for (i = 3; i >= 0; i--) {
+        xy[0] = *(float *)u - 0.5f;
+        xy[1] = *(float *)v - 0.5f;
+        *(float *)u = xy[0] * c - xy[1] * s;
+        *(float *)v = xy[0] * s + xy[1] * c;
+        *(float *)u += 0.5f;
+        u += 8;
+        *(float *)v += 0.5f;
+        v += 8;
+    }
+    qcopy(center, position);
+    func_00282CF0(forward, D_L14_001B9500, center);
+    func_00282F20(forward, forward, 1.0f);
+    func_00282DD8(right, forward, D_0018A0E0);
+    func_00282F20(right, right, 1.0f);
+    func_00282DD8(up, right, forward);
+    func_00282D30(offset, forward, distance);
+    func_00282CC0(center, center, offset);
+    matrix.v[0] = D_L14_001B1A00.v[0];
+    matrix.v[1] = D_L14_001B1A00.v[1];
+    matrix.v[2] = D_L14_001B1A00.v[2];
+    matrix.v[3] = D_L14_001B1A00.v[3];
+    dst = q.pos;
+    mat = (float (*)[4])&matrix;
+    for (j = 3; j >= 0; j--, dst++) {
+        func_00282D30(*dst, *mat, scale);
+        mat++;
+        func_002830C0(*dst, *dst, forward);
+    }
+    func_002FC560(0x47, 0x53001);
+    func_00280B90(&q, 0, 0);
+    func_002FC560(0x47, 0x5360B);
+}
 
 INCLUDE_ASM("asm/levels", func_L14_00430B70);
 

@@ -15,7 +15,7 @@ extern s32 D_L08_001B29DC __attribute__((sda));
 extern char *func_32A170(s32 a, s32 b, s32 c);
 extern void func_328A38(s32 a, s32 b);
 
-INCLUDE_ASM("asm/levels", func_L08_00423970);
+/* func_L08_00423970 is isolated in L08_00423970-g8.c. */
 
 /* Walks the 0x68 context's two counters: one stamps the record's byte 0x20D and the other
    gives the modulus the first is folded by, or zero when it is not positive. */
@@ -244,7 +244,7 @@ void func_L08_00425F28(char *a0) {
 
 INCLUDE_ASM("asm/levels", func_L08_00425FE8);
 
-INCLUDE_ASM("asm/levels", func_L08_004262C0);
+/* Collision sweep and movement update are in L08_00423970-motion.c. */
 
 INCLUDE_ASM("asm/levels", func_L08_00426730);
 
@@ -270,8 +270,3 @@ INCLUDE_ASM("asm/levels", func_L08_00429EE8);
 INCLUDE_ASM("asm/levels", func_L08_0042A0B0);
 
 INCLUDE_ASM("asm/levels", func_L08_0042A980);
-
-INCLUDE_ASM("asm/levels", func_L08_0042F660);
-
-
-INCLUDE_ASM("asm/levels", func_L08_0042FCE0);

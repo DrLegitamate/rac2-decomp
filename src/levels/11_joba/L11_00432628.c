@@ -1,10 +1,21 @@
-#include "include_asm.h"
+#include "common.h"
+/* A path stores its point count in a 16-byte header, followed by vectors. */
+struct RotorPaths { char pad[0x2B0]; int choices[4][4]; };
+struct RotorPath { int count; char pad[12]; float points[0][4]; };
+extern char D_00188660[];
+extern void func_3739C0(int);
+extern int func_002E5CF8(int, int, char *);
+extern float func_00283CE0(int);
+extern float func_002AA140(float, float, float);
+extern void func_002AA2E8(float *, float, float);
+extern float func_00282DB0(void *, void *);
+extern float func_00282E48(void *, void *);
 
 extern int D_L11_001B359C __attribute__((sda));
 
 extern void func_32C700();
 
-INCLUDE_ASM("asm/levels", func_L11_00432628);
+/* func_L11_00432628 is defined in L11_00432628-dust.c. */
 
 INCLUDE_ASM("asm/levels", func_L11_00434580);
 
@@ -27,13 +38,142 @@ void func_L11_00434AA8(char *p)
     func_L11_00434D00(p, &v);
 }
 
-INCLUDE_ASM("asm/levels", func_L11_00434F48);
+extern char D_L11_001BA8C0[];
+extern void func_00282CF0(float *, const float *, const float *);
+extern void func_00282F20(char *, char *, float);
+extern void func_00282CC0(char *, char *, char *);
+extern float func_002A7878(float, float);
+extern int func_002A77E0(int);
+extern float func_002A78D8(float, float);
+extern void func_002ACEC0(void *, void *, void *, float);
+extern char *func_002C2210(void *, int, float, float, unsigned int, int, int, void *, int, float);
+extern int func_00283CF0(float);
+void func_L11_00434F48(float *pos, int count) {
+    float velocity[4], origin[4], direction[4], axis[4], offset[4];
+    float size, angle;
+    int i;
+    int sign;
+    char *particle;
+    func_00282CF0(direction, (float *)D_L11_001BA8C0, pos);
+    func_00282F20((char *)offset, (char *)direction, 0.3f);
+    direction[2] = 0;
+    axis[0] = 0;
+    axis[1] = 0;
+    axis[2] = 1.0f;
+    axis[3] = 1.0f;
+    for (i = 0; i < count; i++) {
+        size = func_002A7878(0.5f, 2.0f);
+        sign = func_002A77E0(2);
+        if (!sign) sign--;
+        angle = func_002A7878(-1.0471977f, 1.0471977f);
+        func_002ACEC0(velocity, direction, axis, angle);
+        func_00282F20((char *)velocity, (char *)velocity, func_002A7878(0.05f, 3.0f) * 0.0166666675f);
+        velocity[2] = func_002A7878(1.0f, 5.0f) * 0.0166666675f;
+        func_00282CC0((char *)origin, (char *)pos, (char *)offset);
+        pos[0] += func_002A78D8(0, 0.15f);
+        pos[1] += func_002A78D8(0, 0.15f);
+        pos[2] += func_002A78D8(0, 0.15f);
+        particle = func_002C2210(origin, 60, size * 0.1f, size, 0x8020FF20, 0, sign, velocity, 0, 0.002f);
+        if (particle) particle[9] = func_00283CF0(4.0f) + 0x70;
+        particle = func_002C2210(origin, 60, size * 0.07f, size * 0.7f, 0x7F7F7F7F, 1, -sign, velocity, 0, 0.002f);
+        if (particle) particle[9] = func_00283CF0(4.0f) + 0x70;
+    }
+}
 
-INCLUDE_ASM("asm/levels", func_L11_00435228);
+
+extern float func_00283B98(float, float);
+extern float func_00283180(float);
+extern float func_00282E80(void *, void *);
+extern char D_00189EA0[];
+
+/* Stops the object's sound if its slot still belongs to it, then forgets the slot. */
+static inline void stop_owned_sound(char *state, char *p)
+{
+    int slot = *(int *)(state + 0x14);
+
+    if (slot != -1) {
+        char *e = D_00188660 + slot * 0x70;
+
+        if (*(char **)(e + 0x88) == p && *(unsigned char *)(e + 0x74))
+            func_3739C0(slot);
+    }
+    *(int *)(state + 0x14) = -1;
+}
+
+/* Five-stage mover driven by the parent's state byte: when the parent reaches 2 it starts its
+   sound and moves out along its +0xE0 direction over half a turn (pi/120 a frame); when the
+   parent leaves 2 it does the same back, only while D_00189EA0 is more than 6 away, and at a
+   full turn returns to its saved position and waits again. */
+void func_L11_00435228(char *p)
+{
+    char *state = *(char **)(p + 0x68);
+    char *parent = (char *)(D_L11_001B359C + (*(int *)(state + 8) << 8));
+    float offset[4];
+
+    switch (*(unsigned char *)(p + 0x20)) {
+    case 0:
+        *(unsigned char *)(p + 0x20) = 1;
+        *(float *)(state + 0xC) = 3.1415927f;
+        *(float *)(state + 0x10) = 0;
+        qcopy(state + 0x20, p + 0x10);
+        *(unsigned short *)(p + 0x34) |= 0x800;
+    case 1:
+        if (*(unsigned char *)(parent + 0x20) == 2) {
+            char *e = D_00188660 + *(int *)(state + 0x14) * 0x70;
+
+            if (*(char **)(e + 0x88) != p || !*(unsigned char *)(e + 0x74))
+                *(int *)(state + 0x14) = func_002E5CF8(0, 4, p);
+            *(unsigned char *)(p + 0x20) = 2;
+            *(float *)(state + 0xC) = 3.1415927f;
+            *(float *)(state + 0x10) = 0;
+        } else {
+            stop_owned_sound(state, p);
+        }
+        break;
+    case 2:
+        *(float *)(state + 0x10) += 0.026179943f;
+        *(float *)(state + 0xC) = func_00283B98(*(float *)(state + 0xC), 0.026179943f);
+        if (*(float *)(state + 0x10) >= 3.1415927f) {
+            stop_owned_sound(state, p);
+            *(unsigned char *)(p + 0x20) = 3;
+        } else {
+            func_00282F20((char *)offset, p + 0xE0, (func_00283180(*(float *)(state + 0xC)) + 1.0f) * 5.0f);
+            func_00282CC0(p + 0x10, (char *)offset, state + 0x20);
+        }
+        break;
+    case 3:
+        if (*(unsigned char *)(parent + 0x20) != 2) {
+            char *e = D_00188660 + *(int *)(state + 0x14) * 0x70;
+
+            if (*(char **)(e + 0x88) != p || !*(unsigned char *)(e + 0x74))
+                *(int *)(state + 0x14) = func_002E5CF8(0, 4, p);
+            *(unsigned char *)(p + 0x20) = 4;
+        } else {
+            stop_owned_sound(state, p);
+        }
+        break;
+    case 4:
+        if (func_00282E80(p + 0x10, D_00189EA0) > 6.0f) {
+            *(float *)(state + 0x10) += 0.026179943f;
+            *(float *)(state + 0xC) = func_00283B98(*(float *)(state + 0xC), 0.026179943f);
+            if (*(float *)(state + 0x10) >= 6.2831855f) {
+                stop_owned_sound(state, p);
+                *(unsigned char *)(p + 0x20) = 1;
+                *(float *)(state + 0xC) = 3.1415927f;
+                *(float *)(state + 0x10) = 0;
+                qcopy(p + 0x10, state + 0x20);
+            } else {
+                func_00282F20((char *)offset, p + 0xE0, (func_00283180(*(float *)(state + 0xC)) + 1.0f) * 5.0f);
+                func_00282CC0(p + 0x10, (char *)offset, state + 0x20);
+            }
+        }
+        break;
+    }
+}
 
 INCLUDE_ASM("asm/levels", func_L11_00435600);
 
-INCLUDE_ASM("asm/levels", func_L11_00436350);
+/* func_L11_00436350 is defined in L11_00436350-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L11_00436768);
 
@@ -156,7 +296,7 @@ INCLUDE_ASM("asm/levels", func_L11_00436D08);
 
 INCLUDE_ASM("asm/levels", func_L11_00436F80);
 
-INCLUDE_ASM("asm/levels", func_L11_004375B8);
+/* func_L11_004375B8 is defined in L11_004375B8.c. */
 
 extern unsigned char D_L11_00438880[];
 
@@ -256,9 +396,17 @@ void func_L11_00438320(char *obj, char *direction, float a, float b, float c)
     func_002AAA00(obj + 0xF8, state + 0x2A8, 0, out[2], a, b, c);
 }
 
+struct RotorRecordState { char pad[0x330]; int indices[10]; char gap[0x28]; unsigned char flags[10]; };
+#define ROTOR_FIELD(base,T,off) (((struct { u8 pad[off]; T v; } *)(base))->v)
+#define ROTOR_RECORD(o) ((char *)D_L11_001B359C + (*(int *)(*(char **)((o)+0x68)+0x358)<<8))
+#define ROTOR_INDEXED_RECORD(o,i) ((char *)D_L11_001B359C + (((struct RotorRecordState *)*(char **)((o)+0x68))->indices[i]<<8))
+#define ROTOR_INDEXED_ADDRESS(o,i) ((char *)((((struct RotorRecordState *)*(char **)((o)+0x68))->indices[i]<<8) + D_L11_001B359C))
+/* Updates the positions and orthonormal bases of the ten enabled records. */
 INCLUDE_ASM("asm/levels", func_L11_00438460);
 
-/* func_L11_004386B8: attempt kept in drafts (532 bytes, expected 452). */
+
+#define ROTOR_ADDRESS(o) ((char *)((*(int *)(*(char **)((o)+0x68)+0x358)<<8) + D_L11_001B359C))
+/* Updates the single record selected by the state index at 0x358. */
 INCLUDE_ASM("asm/levels", func_L11_004386B8);
 
 INCLUDE_ASM("asm/levels", func_L11_00438880);
@@ -271,11 +419,68 @@ void func_L11_00438CD8(char *p)
     *(short *)(q + 0x376) = 0;
 }
 
+extern void func_002A7A00(float *, float, float);
+/* Emits a projectile from the next enabled record, with a fifteen-frame delay. */
 INCLUDE_ASM("asm/levels", func_L11_00438CE8);
 
+
+/* Chooses the state-dependent path, then finds its nearest point. */
 INCLUDE_ASM("asm/levels", func_L11_00438F18);
 
-INCLUDE_ASM("asm/levels", func_L11_004390D0);
+/* Follows the current path, steers toward its next point and releases the sound at the end. */
+int func_L11_004390D0(char *object)
+{
+    char *state = *(char **)(object + 0x68);
+    float target[4], direction[4], aim[4], old[4];
+    float speed, duration;
+
+    if (!*(int *)(state + 0x324)) {
+        if (*(int *)(state + 0x38C) != -1) {
+            char *entry = D_00188660 + *(int *)(state + 0x38C) * 0x70;
+            if (*(char **)(entry + 0x88) == object && *(unsigned char *)(entry + 0x74))
+                func_3739C0(*(int *)(state + 0x38C));
+        }
+        *(int *)(state + 0x38C) = -1;
+        return 1;
+    }
+    {
+        char *entry = D_00188660 + *(int *)(state + 0x38C) * 0x70;
+        if (*(char **)(entry + 0x88) != object || !*(unsigned char *)(entry + 0x74))
+            *(int *)(state + 0x38C) = func_002E5CF8(0, 4, object);
+    }
+    qcopy(target, *(char **)(state + 0x324) + *(short *)(state + 0x370) * 16 + 16);
+    speed = func_00283CE0(*(short *)(state + 0x378));
+    duration = func_00283CE0(8);
+    speed = func_002AA140(15.0f, 20.0f, (speed - 2.0f) / duration);
+    func_002AA2E8((float *)(state + 0x32C), speed * (1.0f / 60.0f), 1.0f / 180.0f);
+    func_00282CF0(direction, target, (float *)(object + 0x10));
+    func_00282F20((char *)direction, (char *)direction, *(float *)(state + 0x32C));
+    func_00282CC0(object + 0x10, object + 0x10, (char *)direction);
+    func_00282CF0(old, (float *)(state + 0x50), (float *)(object + 0x10));
+    func_00282F20((char *)old, (char *)old, 1.0f);
+    func_00282F20((char *)direction, (char *)direction, 1.0f);
+    if (func_00282DB0(direction, old) > 0.707f) {
+        qcopy(aim, old);
+        func_L11_00438320(object, (char *)aim, 0.006981317885220051f,
+                         0.006981317885220051f, 0.41887909173965454f);
+    } else {
+        qcopy(aim, direction);
+        func_L11_00438320(object, (char *)aim, 0.006981317885220051f,
+                         0.006981317885220051f, 0.41887909173965454f);
+    }
+    if (func_00282E48(object + 0x10, target) < 4.0f)
+        (*(short *)(state + 0x370))++;
+    if (*(short *)(state + 0x370) < **(int **)(state + 0x324) - 1)
+        return 0;
+    *(int *)(state + 0x324) = 0;
+    if (*(int *)(state + 0x38C) != -1) {
+        char *entry = D_00188660 + *(int *)(state + 0x38C) * 0x70;
+        if (*(char **)(entry + 0x88) == object && *(unsigned char *)(entry + 0x74))
+            func_3739C0(*(int *)(state + 0x38C));
+    }
+    *(int *)(state + 0x38C) = -1;
+    return 1;
+}
 
 /* func_L11_004393D8 is defined in L11_00432628-g8.c (it reaches D_L11_001B12C4
    through $gp). */
@@ -283,7 +488,7 @@ INCLUDE_ASM("asm/levels", func_L11_004390D0);
 /* func_L11_004395C8: attempt kept in drafts (112 bytes, expected 116). */
 /* func_L11_004395C8 is defined in L11_00432628-g8.c (this unit has no $gp access for it). */
 
-INCLUDE_ASM("asm/levels", func_L11_00439640);
+/* func_L11_00439640 is defined in L11_00432628-burst-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L11_00439950);
 

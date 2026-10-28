@@ -1,5 +1,10 @@
 #include "include_asm.h"
 
+extern int D_001A8BB0;
+extern int D_001B1870 __attribute__((section(".sdata")));
+extern char D_00255330[];
+extern void func_0028B4D8(char *);
+
 /* The subtitle counters are small data reached through $gp in retail, so this unit is -G8. */
 extern int D_L00_001A9070[2] __attribute__((sda));
 
@@ -98,4 +103,36 @@ void func_0028B338(int requested)
         *(volatile int *)&D_001B1B6C = fourth;
         *(volatile int *)&D_001B18E4 = active_fourth;
     }
+}
+
+int func_0028B3D0(int slot, int id, int callback, int value1, int value2, int value3, int value4)
+{
+    int index = slot & 15;
+    char *p = D_00255330 + index * 0x90;
+    int flags = slot & 0xfff0;
+    int refresh;
+    int serial;
+    if (D_001A8BB0 == 5 && index != 2 && index != 0) return 0;
+    if (*(int *)(p + 0x2c) == value3 && *(int *)(p + 0x28) == value4 &&
+        *(int *)(p + 0x20) == id && *(int *)(p + 0x24) == flags &&
+        *(int *)(p + 0x30) == callback && *(int *)(p + 0x34) == value1 &&
+        *(int *)(p + 0x38) == value2) return *(int *)(p + 0x64);
+    serial = D_001B1870;
+    *(int *)(p + 0x2c) = value3;
+    refresh = flags & *(int *)(p + 4);
+    *(int *)(p + 0x64) = serial;
+    refresh &= 0x20;
+    serial++;
+    *(int *)(p + 0x28) = value4;
+    *(int *)(p + 0x20) = id;
+    *(int *)(p + 0x30) = callback;
+    *(int *)(p + 0x34) = value1;
+    *(int *)(p + 0x38) = value2;
+    D_001B1870 = serial;
+    *(int *)(p + 0x68) = 1;
+    *(int *)(p + 0x24) = flags;
+    *(int *)(p + 0x7c) = 0;
+    *(int *)(p + 0x70) = 0;
+    if (refresh) func_0028B4D8(p);
+    return *(int *)(p + 0x64);
 }

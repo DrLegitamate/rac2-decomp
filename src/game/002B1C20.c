@@ -43,11 +43,9 @@ Rac2Native_bf55aa2a4d0dd351_SDataCallDispatchFlags func_002B1C20(void *owner, Ra
 
 INCLUDE_ASM("asm/game", func_002B1CC8);
 
-INCLUDE_ASM("asm/game", func_002B1F30);
-
 INCLUDE_ASM("asm/game", func_002B2A10);
 
-INCLUDE_ASM("asm/game", func_002B3380);
+/* func_002B3380 is in 002B1C20-effects-g8.c. */
 
 
 

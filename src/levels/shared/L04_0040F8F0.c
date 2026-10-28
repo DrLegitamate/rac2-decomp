@@ -18,10 +18,13 @@ extern f32 func_0030FE40(f32 x, f32 y);
 extern f32 func_0030F3A0(f32 x);
 extern f32 func_0030F3B8(f32 x);
 
+extern float func_L04_0040F8F0(u8 *, u8 *, int, int, int, int);
+
 extern u8 D_L04_00254E10[];
 
 INCLUDE_ASM("asm/levels", func_L04_0040F8F0);
 
+/* Finds the nearest point on the current route or one of its four links. */
 INCLUDE_ASM("asm/levels", func_L04_00410518);
 
 INCLUDE_ASM("asm/levels", func_L04_00410788);
@@ -42,7 +45,6 @@ void func_L04_00410F10(u8 *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L04_00410F80);
 
 INCLUDE_ASM("asm/levels", func_L04_00411298);
 

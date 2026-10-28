@@ -323,9 +323,8 @@ INCLUDE_ASM("asm/levels", func_L02_003E91F0);
 
 INCLUDE_ASM("asm/levels", func_L02_003E98A8);
 
-INCLUDE_ASM("asm/levels", func_L02_003E9BB0);
 
-INCLUDE_ASM("asm/levels", func_L02_003EA180);
+/* func_L02_003EA180 is in L02_003EA180-g8.c. */
 
 extern void func_31E6A0(char *, int, int);
 

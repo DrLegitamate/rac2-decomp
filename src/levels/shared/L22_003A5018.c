@@ -17,7 +17,7 @@ extern u8 D_001A63A8_4[];
 
 INCLUDE_ASM("asm/levels", func_L22_003A5018);
 
-INCLUDE_ASM("asm/levels", func_L22_003A5BD8);
+/* func_L22_003A5BD8 is in L22_003A5BD8-effects-g32.c. */
 
 /* func_L22_003A5F90 is matched in L22_003A5F90.c. */
 
@@ -235,13 +235,13 @@ INCLUDE_ASM("asm/levels", func_L22_003F5688);
 
 INCLUDE_ASM("asm/levels", func_L22_003FB1F8);
 
-INCLUDE_ASM("asm/levels", func_L22_003FB310);
+/* func_L22_003FB310 is defined in L22_003FB310-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L22_003FB9B8);
 
-INCLUDE_ASM("asm/levels", func_L22_003FBBF0);
+/* func_L22_003FBBF0 is in L22_003FBBF0-particles-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L22_003FC048);
+/* func_L22_003FC048 is in L22_003FC048-particles-g32.c. */
 
 INCLUDE_ASM("asm/levels", func_L22_003FC338);
 

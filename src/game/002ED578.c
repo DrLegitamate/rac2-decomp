@@ -73,7 +73,7 @@ void func_002ED9C0(unsigned char *owner)
     }
 }
 
-INCLUDE_ASM("asm/game", func_002EDA10);
+/* func_002EDA10 is in 002EDA10.c. */
 
 INCLUDE_ASM("asm/game", func_002EE000);
 

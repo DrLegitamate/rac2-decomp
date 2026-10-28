@@ -1,4 +1,20 @@
 #include "include_asm.h"
+#include "common.h"
+
+typedef int GornQuad __attribute__((mode(TI)));
+extern float func_00283198(float);
+extern void func_00282CF0(void *, void *, void *);
+extern void func_00282F20(void *, void *, float);
+
+extern void func_00283098(void *, void *, void *);
+extern void func_0029FC20(void *, int, void *);
+extern void func_00282D30(void *, void *, float);
+extern float func_00282DB0(void *, void *);
+extern float func_00282DF0(void *);
+extern void func_00282CC0(void *, void *, void *);
+extern float func_002831B0(float);
+extern float func_00283180(float);
+extern char D_L15_001B97C0[];
 
 /* ---- shared declarations ---- */
 
@@ -39,7 +55,111 @@ void func_L15_004328E8(void *a0) {
 
 INCLUDE_ASM("asm/levels", func_L15_00432A60);
 
-INCLUDE_ASM("asm/levels", func_L15_00434100);
+extern float func_00283CE0(int);
+extern int func_00283CF0(float);
+extern float func_002A7878(float, float);
+extern float func_00283B98(float, float);
+extern int func_L00_00367720(void);
+extern void func_L05_00379E60(void *, void *, int, int);
+extern void func_L05_0037AE40(void *);
+extern void func_L15_004353E8(char *);
+extern void func_L15_00434610(void *, int);
+extern void func_L15_00435E80(void);
+extern void func_L15_00434D28(void *);
+extern void func_L05_00424990(void *, int, int, int, int, int, int, int, float, int, int, int);
+extern int func_002A77E0(int);
+extern void func_0029F338(void *);
+extern void func_002833F0(void *, void *);
+void func_L15_00434100(unsigned char *object) {
+    float point[4] __attribute__((aligned(16)));
+    unsigned char *state = *(unsigned char **)(object + 0x68);
+    float ratio;
+    switch (object[0x20]) {
+    case 0:
+        object[0x30] = 0xFF;
+        if (!func_L00_00367720()) return;
+        func_L15_004353E8((char *)object);
+        if (*(int *)(state + 0x264))
+            func_L05_00379E60(object, func_L15_00435E80, 0, 0);
+        qcopy(state + 0x430, object + 0x10);
+        break;
+    case 1:
+        func_L15_00434610(object, 0);
+        break;
+    case 2:
+        func_L15_00434610(object, 1);
+        if (func_00282948(state + 0x274)) {
+            object[0x20] = 3;
+            *(int *)(state + 0x274) = 180;
+        }
+        break;
+    case 3:
+        func_L15_00434610(object, 1);
+        ratio = func_00283CE0(*(int *)(state + 0x274)) / func_00283CE0(180);
+        object[0x23] = func_00283CF0((1.0f - ratio) * 95.0f) + 32;
+        if (func_00282948(state + 0x274)) {
+            *(int *)(object + 0x98) = *(int *)(*(char **)(object + 0x24) + 0x10);
+            object[0x20] = 4;
+            *(int *)(state + 0x274) = 600;
+            object[0x23] = 128;
+            *(unsigned short *)(object + 0x34) &= 0xFFF7;
+        }
+        break;
+    case 4:
+        func_L15_00434610(object, 0);
+        if (func_00282948(state + 0x274)) {
+            *(int *)(object + 0x98) = 0;
+            object[0x20] = 5;
+            *(int *)(state + 0x274) = 180;
+            *(unsigned short *)(object + 0x34) |= 8;
+        }
+        break;
+    case 5:
+        func_L15_00434610(object, 1);
+        ratio = func_00283CE0(*(int *)(state + 0x274)) / func_00283CE0(180);
+        object[0x23] = func_00283CF0(ratio * 95.0f) + 32;
+        if (func_00282948(state + 0x274)) {
+            *(int *)(object + 0x98) = *(int *)(*(char **)(object + 0x24) + 0x10);
+            object[0x20] = 2;
+            *(int *)(state + 0x274) = 480;
+            object[0x23] = 32;
+        }
+        break;
+    case 6:
+        point[0] = *(float *)(object + 0x10) + func_002A7878(-3.0f, 3.0f);
+        point[1] = *(float *)(object + 0x14) + func_002A7878(-3.0f, 3.0f);
+        point[2] = *(float *)(object + 0x18) + func_002A7878(-3.0f, 3.0f);
+        if (*(int *)(state + 0x278) == 0) {
+            func_L05_00424990(point, 1, 24, 24, 24, 24, 24, 0, 3.0f, 1, 1, 1);
+            *(int *)(state + 0x278) = 1;
+        }
+        if (func_002A77E0(12) == 0 && *(float *)(object + 0x18) > 350.0f)
+            func_L05_00424990(point, 0, 4, 4, 4, 4, 4, 0, 1.5f, 0, 0, 0);
+        *(float *)(object + 0x18) -= *(float *)(state + 0x27C);
+        *(float *)(state + 0x27C) += 0.0005555555690079927f;
+        *(float *)(state + 0x404) = func_00283B98(*(float *)(state + 0x404), 0.0014544413425028324f);
+        func_002833F0(object + 0xC0, state + 0x400);
+        func_L15_00434D28(object);
+        if (*(float *)(object + 0x10) < 2.0f || *(float *)(object + 0x10) > 1021.0f ||
+            *(float *)(object + 0x14) < 2.0f || *(float *)(object + 0x14) > 1021.0f ||
+            *(float *)(object + 0x18) < 2.0f || *(float *)(object + 0x18) > 1021.0f)
+            func_L05_0037AE40(object);
+        break;
+    case 7:
+        func_00282CC0(object + 0x10, state + 0x410, object + 0x10);
+        *(float *)(state + 0x418) -= 0.003055555745959282f;
+        *(float *)(state + 0x404) = func_00283B98(*(float *)(state + 0x404), 0.02617994323372841f);
+        func_002833F0(object + 0xC0, state + 0x400);
+        if (*(float *)(object + 0x10) < 2.0f || *(float *)(object + 0x10) > 1021.0f ||
+            *(float *)(object + 0x14) < 2.0f || *(float *)(object + 0x14) > 1021.0f ||
+            *(float *)(object + 0x18) < 2.0f || *(float *)(object + 0x18) > 1021.0f) {
+            func_0029F338(object);
+            return;
+        }
+        break;
+    }
+    func_00282948(state + 0x450);
+}
 
 INCLUDE_ASM("asm/levels", func_L15_00434610);
 
@@ -100,7 +220,87 @@ void func_L15_004351E0(char *object, int joint, float radius) {
 
 INCLUDE_ASM("asm/levels", func_L15_004353E8);
 
-INCLUDE_ASM("asm/levels", func_L15_00435838);
+void func_L15_00435838(char *object) {
+    float forward[4], up[4], side[4], axis1[4], axis2[4];
+    float matrix1[16], matrix2[16], delta[4], temp[4];
+    float angle, dot;
+    char *state = *(char **)(object + 0x68);
+    char *owner = (char *)func_002ED688((unsigned char *)object);
+    *(GornQuad *)forward = 0; *(GornQuad *)up = 0; *(GornQuad *)side = 0;
+    *(GornQuad *)axis1 = 0; *(GornQuad *)axis2 = 0;
+    forward[0] = 1.0f; up[2] = 1.0f; side[1] = 1.0f;
+    axis1[2] = 1.0f; axis2[1] = 1.0f;
+    if (*(int *)(owner + 0x120) == 0) return;
+    func_00283098(forward, forward, object + 0xC0);
+    func_00283098(up, up, object + 0xC0);
+    func_00283098(side, side, object + 0xC0);
+    func_0029FC20(object, 14, matrix1);
+    func_0029FC20(object, 15, matrix2);
+    func_00282CF0(delta, D_L15_001B97C0, matrix1 + 12);
+    dot = func_00282DB0(delta, up);
+    func_00282D30(temp, up, dot);
+    func_00282CF0(delta, delta, temp);
+    func_00282F20(delta, delta, 1.0f);
+    angle = (1.5707963705062866f - func_002831B0(func_00282DB0(forward, delta))) * 0.5f;
+    if (func_00282DB0(delta, side) > 0.0f) angle = -angle;
+    func_00282D30(state + 0x4F0, axis1, func_00283198(angle));
+    *(float *)(state + 0x4FC) = func_00283180(angle);
+    func_00282CF0(delta, D_L15_001B97C0, matrix2 + 12);
+    func_00282D30(temp, up, func_00282DB0(delta, up));
+    func_00282CF0(delta, delta, temp);
+    func_00282F20(delta, forward, func_00282DF0(delta));
+    func_00282CC0(delta, temp, delta);
+    func_00282F20(delta, delta, 1.0f);
+    dot = func_00282DB0(delta, up);
+    if (dot <= 0.3142099976539612f) dot = 0.3142099976539612f;
+    angle = (1.5707963705062866f - func_002831B0(dot)) * 0.5f;
+    func_00282D30(state + 0x530, axis2, -func_00283198(angle));
+    *(float *)(state + 0x53C) = func_00283180(angle);
+    func_0029FC20(object, 16, matrix1);
+    func_0029FC20(object, 17, matrix2);
+    func_00282CF0(delta, D_L15_001B97C0, matrix1 + 12);
+    func_00282D30(temp, side, func_00282DB0(delta, side));
+    func_00282CF0(delta, delta, temp);
+    func_00282F20(delta, delta, 1.0f);
+    angle = (1.5707963705062866f - func_002831B0(func_00282DB0(forward, delta))) * 0.5f;
+    if (func_00282DB0(delta, up) > 0.0f) angle = -angle;
+    func_00282D30(state + 0x570, axis2, -func_00283198(angle));
+    *(float *)(state + 0x57C) = func_00283180(angle);
+    func_00282CF0(delta, D_L15_001B97C0, matrix2 + 12);
+    func_00282D30(temp, side, func_00282DB0(delta, side));
+    func_00282CF0(delta, delta, temp);
+    func_00282F20(delta, forward, func_00282DF0(delta));
+    func_00282CC0(delta, temp, delta);
+    func_00282F20(delta, delta, 1.0f);
+    dot = func_00282DB0(delta, side);
+    if (dot <= 0.3142099976539612f) dot = 0.3142099976539612f;
+    angle = (1.5707963705062866f - func_002831B0(dot)) * 0.5f;
+    func_00282D30(state + 0x5B0, axis1, func_00283198(angle));
+    *(float *)(state + 0x5BC) = func_00283180(angle);
+    func_0029FC20(object, 18, matrix1);
+    func_0029FC20(object, 19, matrix2);
+    func_00282D30(side, side, -1.0f);
+    func_00282CF0(delta, D_L15_001B97C0, matrix1 + 12);
+    func_00282D30(temp, side, func_00282DB0(delta, side));
+    func_00282CF0(delta, delta, temp);
+    func_00282F20(delta, delta, 1.0f);
+    angle = (1.5707963705062866f - func_002831B0(func_00282DB0(forward, delta))) * 0.5f;
+    if (func_00282DB0(delta, up) > 0.0f) angle = -angle;
+    func_00282D30(state + 0x5F0, axis2, -func_00283198(angle));
+    *(float *)(state + 0x5FC) = func_00283180(angle);
+    func_00282CF0(delta, D_L15_001B97C0, matrix2 + 12);
+    func_00282D30(temp, side, func_00282DB0(delta, side));
+    func_00282CF0(delta, delta, temp);
+    func_00282F20(delta, forward, func_00282DF0(delta));
+    func_00282CC0(delta, temp, delta);
+    func_00282F20(delta, delta, 1.0f);
+    dot = func_00282DB0(delta, side);
+    if (dot <= 0.3142099976539612f) dot = 0.3142099976539612f;
+    angle = (1.5707963705062866f - func_002831B0(dot)) * 0.5f;
+    func_00282D30(state + 0x630, axis1, -func_00283198(angle));
+    *(float *)(state + 0x63C) = func_00283180(angle);
+}
+
 
 INCLUDE_ASM("asm/levels", func_L15_00435E80);
 
@@ -155,7 +355,7 @@ void func_L15_00436298(char *a0) {
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L15_004363C8);
+/* func_L15_004363C8 is in L15_004363C8-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L15_00436990);
 
@@ -189,11 +389,88 @@ void func_L15_00437B18(void *a0) {
 
 INCLUDE_ASM("asm/levels", func_L15_00437B68);
 
-INCLUDE_ASM("asm/levels", func_L15_00438260);
+/* func_L15_00438260 is in L15_00438260-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L15_00438518);
+/* func_L15_00438518 is in L15_00438518-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L15_00438B00);
+extern int D_L15_001A8FF0[] __attribute__((sda));
+extern char D_00189ED0[];
+extern int func_002A77E0(int);
+extern int func_001163B0(void);
+extern void func_002ACEC0(void *, void *, void *, float);
+extern unsigned char *func_002C2210(void *, int, float, float, unsigned int, int, int, void *, int, float);
+void func_L15_00438B00(char *pos, int count, int mode) {
+    float velocity[4] __attribute__((aligned(16)));
+    float point[4] __attribute__((aligned(16)));
+    float direction[4] __attribute__((aligned(16)));
+    float axis[4] __attribute__((aligned(16)));
+    float extra[4] __attribute__((aligned(16)));
+    int i, sign;
+    float size, angle, speed;
+    u8 *particle;
+
+    func_00282CF0(direction, D_L15_001B97C0, (float *)pos);
+    if (D_L15_001A8FF0[0] == 0) {
+        direction[2] = 0.0f;
+        axis[0] = 0.0f; axis[1] = 0.0f; axis[2] = 1.0f; axis[3] = 1.0f;
+    } else {
+        func_00282CF0(extra, pos, D_00189ED0);
+        func_00282F20(axis, extra, 1.0f);
+        func_00282D30(extra, axis, func_00282DB0(axis, direction));
+        func_00282CF0(direction, direction, extra);
+    }
+    for (i = 0; i < count; i++) {
+        size = func_002A7878(0.75f, 2.0f);
+        sign = func_002A77E0(2);
+        if (sign == 0)
+            sign--;
+        angle = func_002A7878(-1.0471977f, 1.0471977f);
+        func_002ACEC0(velocity, direction, axis, angle);
+        speed = func_002A7878(0.05f, 3.0f) * (1.0f / 60.0f);
+        func_00282F20((char *)velocity, (char *)velocity, speed);
+        velocity[2] = func_002A7878(1.0f, 5.0f) * (1.0f / 60.0f);
+        qcopy(point, pos);
+        point[0] += func_002A78D8(0.0f, 0.15f);
+        point[1] += func_002A78D8(0.0f, 0.15f);
+        point[2] += func_002A78D8(0.0f, 0.15f);
+        if (mode == 0) {
+            if (!(func_001163B0() & 1)) {
+                func_00282D30(velocity, velocity, 1.5f);
+                particle = func_002C2210(point, 60, size * 0.35f, size, 0x7F800000, 0, sign, velocity, 0, 0.002f);
+                if (particle)
+                    particle[9] = func_00283CF0(4.0f) + 0x70;
+                particle = func_002C2210(point, 60, size * 0.245f, size * 0.7f, 0x7F7F7F7F, 1, -sign, velocity, 0, 0.002f);
+            } else {
+                func_00282CF0(extra, D_L15_001B97C0, point);
+                func_00282F20((char *)extra, (char *)extra, speed);
+                func_00282CC0((char *)velocity, (char *)velocity, (char *)extra);
+                particle = func_002C2210(point, 40, size * 2.05f, size, 0x7F800000, 0, sign, velocity, 0, 0.002f);
+                if (particle)
+                    particle[9] = func_00283CF0(4.0f) + 0x70;
+                particle = func_002C2210(point, 40, size * 1.43500006f, size * 0.7f, 0x7F7F7F7F, 1, -sign, velocity, 0, 0.002f);
+            }
+        } else {
+            if (!(func_001163B0() & 1)) {
+                func_00282D30(velocity, velocity, 1.5f);
+                particle = func_002C2210(point, 60, size * 0.3f, size, 0x7F800000, 0, sign, velocity, 0, 0.002f);
+                if (particle)
+                    particle[9] = func_00283CF0(4.0f) + 0x70;
+                particle = func_002C2210(point, 60, size * 0.21000000834465027f, size * 0.7f, 0x7F7F7F7F, 1, -sign, velocity, 0, 0.002f);
+            } else {
+                func_00282CF0(extra, D_L15_001B97C0, point);
+                func_00282F20((char *)extra, (char *)extra, speed);
+                func_00282CC0((char *)velocity, (char *)velocity, (char *)extra);
+                particle = func_002C2210(point, 40, size * 0.25f, size, 0x7F800000, 0, sign, velocity, 0, 0.002f);
+                if (particle)
+                    particle[9] = func_00283CF0(4.0f) + 0x70;
+                particle = func_002C2210(point, 40, size * 0.175f, size * 0.7f, 0x7F7F7F7F, 1, -sign, velocity, 0, 0.002f);
+            }
+        }
+        if (particle)
+            particle[9] = func_00283CF0(4.0f) + 0x70;
+    }
+}
+
 
 /* The level's id lists: the number of groups, the table of the groups' lists (a pointer, read
    through $gp in a branch delay slot and as a bare lui/lw elsewhere: `sda` arrays of unknown size

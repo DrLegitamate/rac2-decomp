@@ -1,5 +1,13 @@
 #include "include_asm.h"
 
+/* Sound fields measured at 0x38/0x3A in the 0xE0-byte resource entries. */
+typedef struct {
+    char pad_00[0x38];
+    short multiple_sound;
+    short single_sound;
+    char pad_3C[0xA4];
+} L00PickupSoundEntry;
+
 #define RAC2_T_VEC16_FC936841D
 
 typedef struct {
@@ -148,7 +156,7 @@ void func_L00_003CBC80(char *p)
     *(float *)(p + 60) = 1.0f;
 }
 
-INCLUDE_ASM("asm/levels", func_L00_003CBD08);
+/* func_L00_003CBD08 is defined in L00_003CBD08-curve.c. */
 
 /* Scales four consecutive 16-byte XYZ vectors in place by one scalar through a vector helper. */
 void func_L00_003CBE28(char *p, float scale)

@@ -30,7 +30,6 @@ extern u32 D_L01_001FFE80[];
 
 INCLUDE_ASM("asm/levels", func_L01_003CAFE0);
 
-INCLUDE_ASM("asm/levels", func_L01_003CB540);
 
 INCLUDE_ASM("asm/levels", func_L01_003CB668);
 
@@ -251,9 +250,8 @@ void func_L01_003CDEA8(u8 *a0)
         func_L01_002F14E8(1, 0, *(f32 *)(state + 0x20) / func_00283CE0(*(short *)(state + 0x24)));
 }
 
-INCLUDE_ASM("asm/levels", func_L01_003CE228);
 
-INCLUDE_ASM("asm/levels", func_L01_003CE868);
+/* func_L01_003CE868 is defined in L01_003CE868-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L01_003CEDA0);
 
@@ -286,4 +284,4 @@ INCLUDE_ASM("asm/levels", func_L01_003D98E0);
 
 INCLUDE_ASM("asm/levels", func_L01_003DA300);
 
-INCLUDE_ASM("asm/levels", func_L01_003DA3F0);
+/* func_L01_003DA3F0 is defined in L01_003DA3F0-g8.c. */

@@ -1,6 +1,22 @@
 #include "include_asm.h"
 #include "common.h"
 
+extern float func_00283CE0(int);
+extern int func_00283CF0(float);
+extern int func_00283D38(int, int, float);
+extern void func_00300190(char *, char *);
+extern int func_00282978(char *);
+extern void func_002B9180(char *);
+extern void func_00282CC0(char *, char *, char *);
+extern void func_00282D30(char *, char *, float);
+
+typedef struct { char pad[0x20]; int buffer; char pad24[0xAC]; int saved; } CaptureState;
+extern int D_001B1598 MACRO_ADDR __attribute__((sda));
+extern int D_001A7344 MACRO_ADDR __attribute__((sda));
+extern int D_001A72D4 __attribute__((sda));
+extern void func_002FC3C0(int);
+extern void func_0011AEA0(int);
+
 extern int F250fbfa4_FUN_00282978(char *p);
 
 extern void F250fbfa4_FUN_002B9180(char *p);
@@ -45,8 +61,6 @@ extern BatchA_A10_u8 D_L03_001FF8C0[];
 
 extern BatchA_A10_u8 D_L03_001FFAC0[];
 
-
-
 extern int func_00288FB8_1 ();
 
 extern void func_0027F5B8 (int v, int p7, long k, int r, int m1);
@@ -58,7 +72,6 @@ typedef int BatchA_A12_s32;
 typedef struct { BatchA_A12_s32 a; BatchA_A12_s32 b; } BatchA_A12_BatchA24;
 
 extern BatchA_A12_BatchA24 D_L08_001FF980;
-
 
 /*
  * Disassembled at 0x002cd220
@@ -72,14 +85,10 @@ extern BatchA_A12_BatchA24 D_L08_001FF980;
  *   - Returns 0
  */
 extern void func_0027C540(long);
-
 extern void func_0029C138(void);
 
 extern void func_0027C660(void);
 
-void func_0027C540(long);
-
-void func_0027C660(void);
 
 /*
  * Function: func_002D2EE0
@@ -99,14 +108,212 @@ void func_0027C660(void);
  * - All external function addresses come from the assigned externals list.
  */
 
-extern void func_0027C540(long arg0);
 
 /* External functions declared with exact aliases from task.externals */
-extern void func_0027C540(long param_1);
 
-/* func_002C7748 is a near miss: see nonmatching/game/func_002C7748.c. */
+/* func_002C7E28 is defined in 002C7E28-qcopy.c. */
 
-INCLUDE_ASM("asm/game", func_002C7748);
+/* func_002C7F78 is defined in 002C7F78.c. */
+
+extern float func_00283B98(float, float);
+extern float func_00283180(float);
+extern float func_00283198(float);
+extern float func_00283C80(float, float);
+extern float func_00282C48(float);
+
+extern float Fbdd4a4aa_FUN_002A89A8(char *a, int b, float f);
+
+extern float Fbdd4a4aa_FUN_00283B98(float a, float b);
+
+extern float Fbdd4a4aa_FUN_00283198(float a);
+
+extern void Fbdd4a4aa_FUN_00282F20(char *a, char *b, float f);
+
+extern float Fbdd4a4aa_FUN_00283CE0(int a);
+
+extern int Fbdd4a4aa_FUN_00283CF0(float a);
+
+extern int D_001B1688 __attribute__((sda));
+
+extern char D_001B5200[];
+
+extern float func_002A7878(float a, float b);
+extern void func_00300248(char *a, char *b);
+
+extern void func_00282D08(float *out, float *a, float *b, float t);
+extern void func_00282CF0(float *out, float *a, float *b);
+extern float func_00282E20(float *v);
+extern float func_00283248(float y, float x);
+
+extern int D_001F2A30;
+
+extern char *D_001A8CFC[] __attribute__((sda));
+extern void func_00339770(void *, int);
+
+extern char D_001F2840[];
+
+/* func_002C9C60 is matched in 002C9C60.c (built with -g). */
+
+extern int D_001A8BB0 __attribute__((sda));
+extern int D_001A7A08 __attribute__((sda));
+extern char D_00259918[];
+extern char D_00259AF8[];
+extern char D_00259AA8[];
+extern int D_001A79F0 __attribute__((sda));
+extern int D_0025B5F8;
+extern void func_00132AF8(int);
+extern void func_002B72E8(int);
+extern int func_00132028(void);
+extern void func_002CAF18(void);
+extern void func_00295C50(int);
+extern int func_0029D830(void);
+extern void func_002DF050(void);
+
+typedef struct {
+    char pad[0x38];
+    char *next;
+    char *previous;
+} Links_2C9CF8;
+
+typedef struct {
+    int f0, pad4, f8;
+    char padC[0x10];
+    int f1C, f20;
+    char pad24[0xB7];
+    char byteDB;
+    char padDC[0xC];
+    int fE8;
+    char padEC[0x18];
+    unsigned int f104;
+    int f108;
+    char pad10C[0x14];
+    int f120;
+    char pad124[0x20];
+    int f144, f148, f14C, f150;
+    char pad154[0x6C];
+    int f1C0, f1C4, f1C8;
+} State_2C9CF8;
+
+/* Uploads the saved screen image back to VRAM in 0x4000-byte strips (0x600 bytes per
+   line of the current height), from the start buffer or, when a0 is set, ending at
+   0x3FB000, after setting the restore mode (2 with a0, else 1) and bumping the frame
+   counter. */
+typedef struct { long q[12]; } GsLoadImage2C9E60 __attribute__((aligned(16)));
+extern int func_001261F0(int);
+extern int func_00126288(GsLoadImage2C9E60 *, short, short, short, short, short, short, short);
+extern int func_001265B0(GsLoadImage2C9E60 *, void *);
+extern int func_001244B8(int, int);
+
+extern void func_002CA070(void);
+extern unsigned int D_L00_001FEC40[2];
+
+extern void func_0027DDC0(int, int, int, int);
+
+/* func_002CAB00 is defined in 002CAB00-g8.c. */
+
+extern short D_001A63AC;
+extern int D_001C51D0;
+extern int D_00239BA0[];
+extern unsigned char D_00139568[];
+extern int func_002B4B70(int, int);
+extern int func_002B49E0(int, int, int, int, void *);
+extern void func_002B7CE0(int);
+extern void func_00294420(int);
+
+typedef struct {
+    char pad00[0x1C];
+    int mode;
+    char pad20[0x04];
+    volatile int count;
+    char pad28[0x08];
+    int field30;
+    char pad34[0x0C];
+    int field40;
+    char pad44[0xB0];
+    int fieldF4;
+} GameState_1F2840;
+
+extern int func_002D5B38(int, char *);
+extern char D_0025BA90[];
+
+extern short D_0018A000[];
+extern void func_0029CE80(void);
+
+typedef struct {
+    char reserved00[0x14];
+    char *source;
+    int value;
+    char reserved1c[0x118];
+    int fallback;
+} CallbackState_2CC490;
+
+typedef struct {
+    char reserved00[0x1C4];
+    int flags;
+} GameState_2CC490;
+
+extern char D_00138180[];
+
+/* The menu entries are 0x50 apart; D_001B1680 holds the selection and D_001A8B84
+ * whether it is enabled. Both scalars and the enable flags are small data: the
+ * -G0 compiler addresses them absolutely, and $gp-relative only in delay slots. */
+typedef struct { char pad[0x1C4]; int flags; } InputState_2CCF68;
+typedef struct { short x, kind; int a, b; } MenuEntry_2CCF68;
+extern int D_001A8B84 __attribute__((sda));
+extern int D_001B1680 __attribute__((sda));
+typedef struct { unsigned char value; } ResidentFlag_2CCF68;
+extern ResidentFlag_2CCF68 D_001A7BC9 __attribute__((sda));
+extern ResidentFlag_2CCF68 D_001A7BCA __attribute__((sda));
+extern ResidentFlag_2CCF68 D_001A7BCB __attribute__((sda));
+extern ResidentFlag_2CCF68 D_001A7BCC __attribute__((sda));
+extern ResidentFlag_2CCF68 D_001A7BCE __attribute__((sda));
+
+extern int D_00138344;
+
+extern int func_0029C168(int);
+
+extern unsigned int func_0026F7C8(void);
+
+extern unsigned int func_0026F7D0(void);
+
+extern unsigned int func_0026F7D8(void);
+
+extern unsigned int func_0026F7E0(void);
+
+extern unsigned int func_0026F7E8(void);
+
+extern unsigned int func_0026F7F0(void);
+
+extern int func_002CB7D0(int);
+
+extern int func_002CB820(int);
+
+extern int func_002CB8A0(int);
+
+extern int func_002CB950(int);
+
+extern void func_002E5E58(int, unsigned int, void *);
+
+typedef struct {
+    char reserved00[0x44];
+    int state;
+    char reserved48[0x8];
+    int handle;
+    int last;
+    int current;
+} MenuObject_2CD4E0;
+
+typedef struct {
+    char reserved00[0x10];
+    int flags;
+} ToggleState_2CD4E0;
+
+extern MenuObject_2CD4E0 D_00259C78;
+extern ToggleState_2CD4E0 *D_00259C44;
+extern int func_0029C248(int first, void *second);
+extern int func_00336EF0(void);
+
+/* func_002C7748 is defined in 002C7748-create-g8.c. */
 
 void func_002C7AE8(char *a0)
 {
@@ -162,17 +369,6 @@ void func_002C7D58(char *self)
     *(float *)(p + 8) -= *(float *)(p + 12);
 }
 
-/* func_002C7E28 is defined in 002C7E28-qcopy.c. */
-
-INCLUDE_ASM("asm/game", func_002C7F78);
-
-extern float func_00283B98(float, float);
-extern float func_00283180(float);
-extern float func_00283198(float);
-extern float func_00283C80(float, float);
-extern float func_00282C48(float);
-extern void func_002B9180(char *);
-
 void func_002C8348(char *a0)
 {
     char *s1 = a0;
@@ -190,22 +386,6 @@ void func_002C8348(char *a0)
     if (t < func_00282C48(*(float *)(s0 + 0xC) + *(float *)(s0 + 0xC)))
         func_002B9180(s1);
 }
-
-extern float Fbdd4a4aa_FUN_002A89A8(char *a, int b, float f);
-
-extern float Fbdd4a4aa_FUN_00283B98(float a, float b);
-
-extern float Fbdd4a4aa_FUN_00283198(float a);
-
-extern void Fbdd4a4aa_FUN_00282F20(char *a, char *b, float f);
-
-extern float Fbdd4a4aa_FUN_00283CE0(int a);
-
-extern int Fbdd4a4aa_FUN_00283CF0(float a);
-
-extern int D_001B1688 __attribute__((sda));
-
-extern char D_001B5200[];
 
 void func_002C8428(char *obj)
 {
@@ -282,7 +462,6 @@ void func_002C87B0(char *a0)
     *(float *)(s1 + 12) = *(float *)(s1 + 12) + *(float *)(s0 + 16);
 }
 
-
 INCLUDE_ASM("asm/game", func_002C8A38);
 
 INCLUDE_ASM("asm/game", func_002C8CA0);
@@ -315,16 +494,6 @@ void func_002C8F40(int *obj)
         Fbdd4a4aa_FUN_002B9180((char *)obj);
 }
 
-extern float func_00283CE0(int a);
-extern int func_00283CF0(float f);
-extern int func_00283D38(int a, int b, float f);
-extern float func_002A7878(float a, float b);
-extern void func_00282CC0(char *a, char *b, char *c);
-extern void func_00282D30(char *a, char *b, float f);
-extern void func_00300190(char *a, char *b);
-extern void func_00300248(char *a, char *b);
-extern int func_00282978(char *p);
-
 void func_002C9098(char *p)
 {
     char *s0 = p + 32;
@@ -351,18 +520,9 @@ void func_002C9098(char *p)
     }
 }
 
-
-INCLUDE_ASM("asm/game", func_002C9218);
+/* func_002C9218 is defined in 002C9218.c. */
 
 INCLUDE_ASM("asm/game", func_002C94C8);
-
-
-
-extern int func_00283CF0(float);
-extern void func_00282D08(float *out, float *a, float *b, float t);
-extern void func_00282CF0(float *out, float *a, float *b);
-extern float func_00282E20(float *v);
-extern float func_00283248(float y, float x);
 
 void func_002C9828(char *path, int clamp, float *out, float *angles, int flags, float t)
 {
@@ -417,9 +577,6 @@ void func_002C9828(char *path, int clamp, float *out, float *angles, int flags, 
     angles[3] = a[3] * (1.0f - t) + b[3] * t;
 }
 
-
-extern int D_001F2A30;
-
 int func_002C9A50(void) {
     return D_001F2A30;
 }
@@ -456,17 +613,11 @@ void func_002C9AD8(s32 *a0) {
  } while(*(s32 *)((u32)base+(v<<2))==0);
 }
 
-extern char *D_001A8CFC[] __attribute__((sda));
-extern void func_00339770(void *, int);
-
 int func_002C9B18(void) {
     if (D_001A8CFC[0] != 0)
         func_00339770(D_001A8CFC[0] + 0x3CAA8, 0);
     return 0;
 }
-
-extern char *D_001A8CFC[] __attribute__((sda));
-extern void func_00339770(void *, int);
 
 int func_002C9B50(void) {
     if (D_001A8CFC[0] != 0)
@@ -490,8 +641,6 @@ int func_002C9B88 (int *p)
   return 0;
 }
 
-extern char D_001F2840[];
-
 int func_002C9C20(void)
 {
     char *b = D_001F2840;
@@ -503,28 +652,35 @@ int func_002C9C20(void)
         *p-- = value;
 }
 
-/* func_002C9C60 is matched in 002C9C60.c (built with -g). */
-
-
-INCLUDE_ASM("asm/game", func_002C9CF8);
-
-/* Uploads the saved screen image back to VRAM in 0x4000-byte strips (0x600 bytes per
-   line of the current height), from the start buffer or, when a0 is set, ending at
-   0x3FB000, after setting the restore mode (2 with a0, else 1) and bumping the frame
-   counter. */
-typedef struct { long q[12]; } GsLoadImage2C9E60 __attribute__((aligned(16)));
-#ifndef MACRO_ADDR
-#define MACRO_ADDR __attribute__((section(".sdata")))
-#endif
-extern int D_001B1598 MACRO_ADDR;
-extern int D_001A7344 MACRO_ADDR;
-extern int D_001A72D4 __attribute__((sda));
-extern void func_002FC3C0(int);
-extern int func_001261F0(int);
-extern int func_00126288(GsLoadImage2C9E60 *, short, short, short, short, short, short, short);
-extern void func_0011AEA0(int);
-extern int func_001265B0(GsLoadImage2C9E60 *, void *);
-extern int func_001244B8(int, int);
+void func_002C9CF8(int mode)
+{
+    func_00132AF8(0x5D);
+    func_002B72E8(0);
+    ((State_2C9CF8 *)D_001F2840)->byteDB = 0;
+    func_00132028();
+    ((State_2C9CF8 *)D_001F2840)->f0 = 1;
+    if (!D_001A8BB0) func_002CAF18();
+    ((State_2C9CF8 *)D_001F2840)->f144 = 0;
+    ((State_2C9CF8 *)D_001F2840)->f148 = 0;
+    ((State_2C9CF8 *)D_001F2840)->fE8 = (D_001A7A08 & 0xFFFF0000) || ((State_2C9CF8 *)D_001F2840)->f108 ? 1 : 0;
+    ((Links_2C9CF8 *)D_00259918)->next = ((State_2C9CF8 *)D_001F2840)->fE8 ? D_00259AF8 : D_00259AA8;
+    ((Links_2C9CF8 *)D_00259AA8)->previous = ((State_2C9CF8 *)D_001F2840)->fE8 ? D_00259AF8 : D_00259918;
+    ((State_2C9CF8 *)D_001F2840)->f8 = ((State_2C9CF8 *)D_001F2840)->f104 ? (int)((State_2C9CF8 *)D_001F2840)->f104 : mode;
+    ((State_2C9CF8 *)D_001F2840)->f1C = 0;
+    ((State_2C9CF8 *)D_001F2840)->f20 = 0;
+    ((State_2C9CF8 *)D_001F2840)->f120 = 0;
+    ((State_2C9CF8 *)D_001F2840)->f1C0 = 0;
+    ((State_2C9CF8 *)D_001F2840)->f1C4 = 0;
+    ((State_2C9CF8 *)D_001F2840)->f1C8 = 0;
+    if (mode != 6) {
+        func_00295C50(D_001A79F0);
+        func_0029D830();
+        D_0025B5F8 = 0;
+        func_002DF050();
+    }
+    ((State_2C9CF8 *)D_001F2840)->f150 = 0;
+    ((State_2C9CF8 *)D_001F2840)->f14C = 1;
+}
 
 void func_002C9E60(int a0)
 {
@@ -553,7 +709,6 @@ void func_002C9E60(int a0)
     }
 }
 
-
 INCLUDE_ASM("asm/game", func_002CA070);
 
 INCLUDE_ASM("asm/game", func_002CA5D0);
@@ -562,8 +717,6 @@ INCLUDE_ASM("asm/game", func_002CA790);
 
 INCLUDE_ASM("asm/game", func_002CA8A8);
 
-extern void func_002CA070(void);
-extern unsigned int D_L00_001FEC40[2];
 void func_002CAA58(void)
 {
     func_002CA070();
@@ -571,15 +724,12 @@ void func_002CAA58(void)
     D_L00_001FEC40[1] = 0;
 }
 
-
 /* A12-struct-2field-24 freshly exact-verified under family reservation */
 void func_002CAA88(void) {
     BatchA_A12_BatchA24 *p = &D_L08_001FF980;
     p->a = 3;
     p->b = 0;
 }
-
-extern void func_0027DDC0(int, int, int, int);
 
 void func_002CAAA0(void)
 {
@@ -594,30 +744,6 @@ void func_002CAAA0(void)
     p[6] = 0;
     p[1] = 0;
 }
-
-INCLUDE_ASM("asm/game", func_002CAB00);
-
-extern short D_001A63AC;
-extern int D_001C51D0;
-extern int D_00239BA0[];
-extern unsigned char D_00139568[];
-extern int func_002B4B70(int, int);
-extern int func_002B49E0(int, int, int, int, void *);
-extern void func_002B7CE0(int);
-extern void func_00294420(int);
-
-typedef struct {
-    char pad00[0x1C];
-    int mode;
-    char pad20[0x04];
-    volatile int count;
-    char pad28[0x08];
-    int field30;
-    char pad34[0x0C];
-    int field40;
-    char pad44[0xB0];
-    int fieldF4;
-} GameState_1F2840;
 
 void func_002CADB0(void)
 {
@@ -671,9 +797,6 @@ INCLUDE_ASM("asm/game", func_002CB510);
 
 INCLUDE_ASM("asm/game", func_002CB648);
 
-extern int func_002D5B38(int, char *);
-extern char D_0025BA90[];
-
 int func_002CB7D0(int mode)
 {
     int result = 0;
@@ -683,14 +806,6 @@ int func_002CB7D0(int mode)
     }
     return result;
 }
-
-
-/* func_002CB820 reads $gp slots: it is defined in 002C7748-g8.c. */
-
-
-
-extern short D_0018A000[];
-extern void func_0029CE80(void);
 
 int func_002CBA58(int mode)
 {
@@ -706,21 +821,6 @@ int func_002CBA58(int mode)
 INCLUDE_ASM("asm/game", func_002CBAE0);
 
 INCLUDE_ASM("asm/game", func_002CBC58);
-
-typedef struct {
-    char reserved00[0x14];
-    char *source;
-    int value;
-    char reserved1c[0x118];
-    int fallback;
-} CallbackState_2CC490;
-
-typedef struct {
-    char reserved00[0x1C4];
-    int flags;
-} GameState_2CC490;
-
-extern char D_00138180[];
 
 int func_002CC490(int a0)
 {
@@ -762,34 +862,7 @@ s32 func_002CC6A0(u8 *p) { *(s32 *)(p + 0x44) = -1; return 0; }
 
 INCLUDE_ASM("asm/game", func_002CC6B0);
 
-
 INCLUDE_ASM("asm/game", func_002CCF68);
-
-extern int D_00138344;
-
-extern int func_0029C168(int);
-
-extern unsigned int func_0026F7C8(void);
-
-extern unsigned int func_0026F7D0(void);
-
-extern unsigned int func_0026F7D8(void);
-
-extern unsigned int func_0026F7E0(void);
-
-extern unsigned int func_0026F7E8(void);
-
-extern unsigned int func_0026F7F0(void);
-
-extern int func_002CB7D0(int);
-
-extern int func_002CB820(int);
-
-extern int func_002CB8A0(int);
-
-extern int func_002CB950(int);
-
-extern void func_002E5E58(int, unsigned int, void *);
 
 int func_002CD0E8(void)
 {
@@ -833,29 +906,7 @@ int func_002CD220(void)
   return 0;
 }
 
-
 INCLUDE_ASM("asm/game", func_002CD3C0);
-
-typedef struct {
-    char reserved00[0x44];
-    int state;
-    char reserved48[0x8];
-    int handle;
-    int last;
-    int current;
-} MenuObject_2CD4E0;
-
-typedef struct {
-    char reserved00[0x10];
-    int flags;
-} ToggleState_2CD4E0;
-
-extern int D_00138344;
-extern short D_001A63AC;
-extern MenuObject_2CD4E0 D_00259C78;
-extern ToggleState_2CD4E0 *D_00259C44;
-extern int func_0029C248(int first, void *second);
-extern int func_00336EF0(void);
 
 int func_002CD4E0(void)
 {
