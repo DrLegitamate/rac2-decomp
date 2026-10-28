@@ -2529,7 +2529,8 @@ the nested random expressions retain the observed call order.
 
 The related `func_L05_00427E10` impact reconstruction passes all four US and
 US2 places and is absent from PAL. Its packet has a 16-byte direction,
-attacker, flags, byte kind/mode, halfword class, float damage and enable word.
+attacker, flags, byte kind/mode, halfword class, float damage and enable word, followed by the callee-read float at +0x24.
+The complete request occupies 0x28 bytes; retail leaves its final word unwritten.
 The indexed target-list loop, unlike the equivalent early pointer
 initialization, retains retail's guarded pointer setup and GPR allocation.
 

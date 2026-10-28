@@ -12,6 +12,7 @@ typedef struct {
     u16 object_class;
     float damage;
     int enabled;
+    float field24;
 } Impact;
 extern float D_L05_001B1530 SDATA(D_L05_001B1530);
 extern float D_L05_001B1534 SDATA(D_L05_001B1534);

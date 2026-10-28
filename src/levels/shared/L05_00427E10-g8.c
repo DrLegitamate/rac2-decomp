@@ -8,7 +8,10 @@ typedef struct {
     u16 object_class;
     float damage;
     int enabled;
+    /* func_002A8E20 reads this word; this retail caller does not initialize it. */
+    float field24;
 } Impact;
+typedef char ImpactExtentCheck[sizeof(Impact) == 0x28 ? 1 : -1];
 extern unsigned char *D_L05_001FB5E0[];
 extern float D_L05_001B1578 SDATA(D_L05_001B1578);
 extern void func_00282F20(void *, void *, float);
