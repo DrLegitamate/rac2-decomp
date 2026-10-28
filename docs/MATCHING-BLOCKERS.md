@@ -546,6 +546,14 @@ The historical sample is retained: 47 of 240 notes mentioned gp/sda/G8; one 23-t
 
 **Current witnesses:** func_L05_0030C930, formerly listed as unresolved, is C, as are func_L05_00444D60, func_L00_00427290 and func_L00_002E73E0. PR #246's func_L20_00444138 passes 1/1 in its dedicated G8/mno-split-addresses unit with separate sda/nosda declarations for one measured bound.
 
+**28 October 2026, retained near miss:** `func_002CC528` is 40 bytes in its
+`-G0` unit. The saved candidate and two source-shape variants (declaration
+order and direct conditional store) retain the same allocation: retail's
+`movn` selects in `$a1` using `$v1`, while the candidate selects in `$v1`
+using `$a1`, then stores `$v1` instead of `$a1`. A dedicated `-G8` replay is
+32/40 bytes. `tools/check.py func_002CC528 --diff` reports 0/28 placements
+for these attempts; the C remains in `nonmatching/game/func_002CC528.c`.
+
 Two documented names may express different addressing forms of one real global. They must derive the same true identity; malformed names, invented addresses or aliases hiding inconsistent bindings are not remedies. PR #244's review corrected such naming defects. Use ref_LNN_XXXXXXXX_kk where a target's identity genuinely varies by placement, not as a substitute for a known correct data name.
 
 **24 October 2026, one declaration for both forms at -G0 (wave 10):** in the level-08 twins `func_L08_0042F440`/`0042FAC0`, `extern s32 D_L08_001B3AA0 __attribute__((sda));` under the file's `-O2 -G0` emits `lui`+`%lo` in ordinary flow and the single `$gp` form inside a `jal`/branch delay slot. Retail's body shows exactly that mix for the same word (absolute `lui a0`/`lw a0` for the increment, `lw`/`sw 0x4AB0($gp)` in two slots), so one sda declaration covers it: no -g8 sibling and no second name were needed. This does not contradict the -G8 `func_002721C8` note below, where the same attribute gives GP throughout; the threshold/profile decides. The lever did not close these two bodies' residual setup order.

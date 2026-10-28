@@ -432,7 +432,7 @@ the placement rules are in `tools/fcheck.py`'s docstring; its tests are
 | [`func_002D08C8`](game/func_002D08C8.c) | 100 | closer M2: 28/28 with `D_001A7A0A` volatile (as declared in src/game/002CD8C0-g8.c); without it the flag load goes into the third test's delay slot as a $gp load where retail has a nop. Everything else is plain C (store of 1 to 0x1F2848 before the inner tests, one sda int[4] for the macro stores, ref_ names for the two $gp words) |
 | [`func_002C5020`](game/func_002C5020.c) | 68 | Candidate is 72 bytes; retail GP-relative load needs file-level -G8 |
 | [`func_002C9A60`](boot/func_002C9A60.c) | 20 | 9 |
-| [`func_002CC528`](game/func_002CC528.c) | 40 | 4 |
+| [`func_002CC528`](game/func_002CC528.c) | 40 | 28 October 2026: -G0 candidate is 40 bytes; final `movn` and store allocate the selected pointer/condition in the opposite registers from retail. Reordering declarations and direct conditional-store forms were unchanged. An isolated -G8 unit is 32/40 bytes. See source and blocker 8. |
 | [`func_002D33C0`](game/func_002D33C0.c) | 60 | 2 instructions differ; global-address lui and stack adjustment order differs |
 | [`func_002E5F40`](game/func_002E5F40.c) | 32 | 1 |
 | [`func_002FCF90`](game/func_002FCF90.c) | 52 | 12 bytes differ; retail schedules zero stores in the return delay slot |
