@@ -268,7 +268,7 @@ int func_L05_003CFC28(int a0)
 
 INCLUDE_ASM("asm/levels", func_L05_003CFC48);
 
-INCLUDE_ASM("asm/levels", func_L05_003CFCF0);
+/* func_L05_003CFCF0 is in L05_003CFCF0-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L05_003CFF90);
 
