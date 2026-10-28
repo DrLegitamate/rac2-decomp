@@ -1479,3 +1479,6 @@ src/levels/shared/L04_0046CE68.c	-O2 -G0 -ffunction-sections -frac2-zero-ti-por
 src/levels/shared/L05_00445C38-g8.c	-O2 -G8 -ffunction-sections -g
 src/levels/shared/L04_00456860.c	-O2 -G0 -ffunction-sections -frac2-zero-ti-por -fno-gcse
 src/levels/01_oozla/L01_00405300-g8.c	-O2 -G8 -ffunction-sections -mno-split-addresses
+
+# Tabora replacement copies retain the measured pointer/quadword boundaries.
+src/levels/08_tabora/L08_003F6D30-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -g

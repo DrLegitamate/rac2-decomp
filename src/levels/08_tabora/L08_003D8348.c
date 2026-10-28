@@ -336,7 +336,7 @@ void func_L08_003D9798(char *object)
 
 INCLUDE_ASM("asm/levels", func_L08_003D9F68);
 
-INCLUDE_ASM("asm/levels", func_L08_003F6D30);
+/* func_L08_003F6D30 is defined in L08_003F6D30-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L08_003F6E18);
 

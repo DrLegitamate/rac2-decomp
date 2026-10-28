@@ -1,3 +1,7 @@
+/* Historical screen superseded by src/levels/08_tabora/L08_003F6D30-g8.c.
+ * Current qcopy/barrier and debug-label hazard support produce a local match
+ * in all three carrying releases; strict linked qualification is pending.
+ */
 /* func_L08_003F6D30 (228 bytes, 1 place) - TI128 copies at offset 0 plus a div.s; no C
  * measured this wave.
  *
