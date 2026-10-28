@@ -44,18 +44,20 @@ void func_0031C498(char *object)
             { char *row = *(char **)(state + 0x278) + 0xD0;
                 func_002ACDE8(row, row, axis); }
         }
+        /* Each snapshot is consumed by the immediately following opaque call;
+         * no C memory access crosses the non-clobbering transfer. */
         if (func_002A77E0(D_001AFAFC) == 1) {
-                qcopy_nc(axis, *(char **)(state + 0x270) + 0x10);
-                func_0031D070(axis, 1);
-            }
-            if (func_002A77E0(D_001AFAFC) == 1) {
-                qcopy_nc(axis, *(char **)(state + 0x274) + 0x10);
-                func_0031D070(axis, 1);
-            }
-            if (func_002A77E0(D_001AFAFC) == 1) {
-                qcopy_nc(axis, *(char **)(state + 0x278) + 0x10);
-                func_0031D070(axis, 1);
-            }
+            qcopy_nc(axis, *(char **)(state + 0x270) + 0x10);
+            func_0031D070(axis, 1);
+        }
+        if (func_002A77E0(D_001AFAFC) == 1) {
+            qcopy_nc(axis, *(char **)(state + 0x274) + 0x10);
+            func_0031D070(axis, 1);
+        }
+        if (func_002A77E0(D_001AFAFC) == 1) {
+            qcopy_nc(axis, *(char **)(state + 0x278) + 0x10);
+            func_0031D070(axis, 1);
+        }
         if (!func_002E59B0(*(void **)(state + 0x278), *(int *)(state + 0x290)))
             *(int *)(state + 0x290) = func_002E5CF8(0, 4, *(void **)(state + 0x278));
     } else {
