@@ -8,8 +8,8 @@ extern RewardSlot D_L05_002A1800[];
 extern int D_L05_00221D10[];
 extern int D_001A79F0 __attribute__((sda));
 extern int D_0013A148[];
-extern int func_332AB8(int);
-extern int func_L05_0037AAC8(int);
+extern int func_002A77E0(int);
+extern int func_002ED8A0(int);
 /* The spawners return the new object, or 0. */
 extern char *func_L05_003CD1A8(char *);
 extern char *func_L05_00425FE0(char *);
@@ -28,12 +28,12 @@ void func_L05_003CFCF0(char *object, int bonus, int unused)
     int slot;
     int chance;
 
-    if (func_332AB8(4) == 0 || D_L05_001AFBF0 == 0) {
-        int choice = func_332AB8(48);
+    if (func_002A77E0(4) == 0 || D_L05_001AFBF0 == 0) {
+        int choice = func_002A77E0(48);
         D_L05_001AFBF0 = 1;
         switch (choice) {
         case 0: case 1: case 2: case 3:
-            slot = func_L05_0037AAC8(6);
+            slot = func_002ED8A0(6);
             if (slot < 0 || D_L05_002A1800[slot].value == D_L05_002A1800[slot].limit)
                 goto ordinary;
             func_L05_003CD1A8(object);
@@ -41,7 +41,7 @@ void func_L05_003CFCF0(char *object, int bonus, int unused)
             D_L05_00221D10[28]++;
             break;
         case 5:
-            slot = func_L05_0037AAC8(2);
+            slot = func_002ED8A0(2);
             if (slot < 0 || D_L05_002A1800[slot].value == D_L05_002A1800[slot].limit)
                 goto fallback;
             func_L05_00425FE0(object);
@@ -49,7 +49,7 @@ void func_L05_003CFCF0(char *object, int bonus, int unused)
             D_L05_00221D10[28]++;
             break;
         case 6:
-            slot = func_L05_0037AAC8(3);
+            slot = func_002ED8A0(3);
             if (slot < 0 || D_L05_002A1800[slot].value == D_L05_002A1800[slot].limit)
                 goto fallback;
             func_L05_00426568(object);
@@ -57,7 +57,7 @@ void func_L05_003CFCF0(char *object, int bonus, int unused)
             D_L05_00221D10[28]++;
             break;
         case 7:
-            slot = func_L05_0037AAC8(4);
+            slot = func_002ED8A0(4);
             if (slot < 0 || D_L05_002A1800[slot].value == D_L05_002A1800[slot].limit) {
         case 4:
         fallback:
@@ -80,7 +80,7 @@ void func_L05_003CFCF0(char *object, int bonus, int unused)
         chance = D_0013A148[D_001A79F0] * 2;
         if (chance > 11)
             chance = 11;
-        if (chance >= func_332AB8(100)) {
+        if (chance >= func_002A77E0(100)) {
             func_L05_003CD1A8(object);
             D_L05_00221D10[24]++;
             D_L05_00221D10[28]++;
