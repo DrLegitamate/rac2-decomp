@@ -2219,6 +2219,8 @@ The qualified GNU opcode table includes the `mult d,s,t` form with `WR_d`. As an
 
 **Decision:** withdraw the unused-multiply/compiler-origin hypothesis for these six bodies. This evidence does not justify `ASM_FUNC` and is not a compiler barrier. The absence of `mflo` alone is insufficient; decode `rd` and follow its uses.
 
+**28 October 2026, retained source control:** `func_L00_0042AC18` now has a complete game `-O2 -G0 -ffunction-sections` attempt in `nonmatching/levels/func_L00_0042AC18.c`. Ordinary C emits both three-operand multiplications; the former screen claiming otherwise is retired. Five trials reach 380/380 bytes but 0/4 placements in each USA release (PAL has no row): sound-record pointer and handle allocation still differ. This is a source-lifetime near miss, with no linked or matching credit.
+
 #### The five catalogue extents have evidence of residual code
 
 | Row | Size | Placements checked | Preceding boot return |
