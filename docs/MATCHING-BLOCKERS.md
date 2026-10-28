@@ -2575,23 +2575,23 @@ Coordinate-offset snapshots retain the real load order before the first writer
 reload. Signed halfword assignments preserve the actual 0x8001/0x8004 writes.
 The separate native-only packet draft corroborates the template extents and
 64-bit fifth argument; its functional-table row is retired in favor of the real
-source definition. These local candidates still require the coordinator's strict
-linked builds.
+source definition. Both implementations pass every carrying placement and the
+strict linked builds in all three releases.
 
 The former diagnostic-only `func_L05_00441D40` and `func_002FF0D8` screens now
 retain meaningful C in `nonmatching/` with the remaining allocation, address and
 store-order differences. Neither is counted as matching C.
 
-The old diagnostic-only refusal of `func_L09_003F9970` is superseded by a local
-C candidate (28 October 2026): its four formerly invalid words are ordinary
+The old diagnostic-only refusal of `func_L09_003F9970` is superseded by qualified
+C (28 October 2026): its four formerly invalid words are ordinary
 quadword transfers, reproduced by default `qcopy`. A measured `MACRO_ADDR` view
 of the scratch symbol keeps its final address setup together. The 256-byte body
 matches both placements in US, US2 and PAL at the default `-O2 -G0
 -ffunction-sections` profile. The actual float returns of `func_002A7E08` and
 `func_002AA458`, and the void return of `func_L02_00332D28`, are retained from
-their existing definitions. Strict linked qualification remains pending.
+their existing definitions. The strict linked builds pass in all three releases.
 
-`func_L20_00443A10` is another local candidate as of 28 October 2026, matching its
+`func_L20_00443A10` is also qualified as of 28 October 2026, matching its
 332-byte placement in US, US2 and PAL at the default `-O2 -G8
 -ffunction-sections` profile. A typed 128-byte heading-reference record selects
 the measured index/base registers; updating the existing heading value keeps
@@ -2599,7 +2599,7 @@ the branch result in its old FP register. Loading the last reference pointer
 after the sine call and before the output stores fixes the tail schedule.
 The float return banks of the math helpers were checked against their retail
 bodies. The old source-order/register trials remain historical measurements;
-strict linked qualification is still required.
+strict linked builds now pass in all three releases.
 
 Further bounded controller measurements on 28 October 2026 are retained outside
 the linked sources. None is a local match, and only US was measured:

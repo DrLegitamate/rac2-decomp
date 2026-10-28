@@ -1,3 +1,9 @@
+/* Current retained result, 28 October 2026: 544/552 bytes at game -O2 -G0. Packet, basis,
+ * corners, UV/color setup and the point loop are reconstructed. Reviewed clears and explicit
+ * corner pointers improve induction; allocation, initialization order and clear-loop condition
+ * still differ. No strict match. Older diagnostic notes below are historical and do not rule
+ * out C. */
+
 /* Retained readable C; not matching and no exact-C credit.
  * 2026-10-28 profile: -O2 -G0 -ffunction-sections.
  * 544/552 compiled/retail bytes. Reconstructs the 0x90-byte packet, basis vectors, quad corner/UV/color setup and dynamic point loop. qzero/qzero_nc and explicit corner pointers improve loop induction but allocation, initialization order and the clear-loop condition still differ.

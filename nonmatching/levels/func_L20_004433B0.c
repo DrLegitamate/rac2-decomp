@@ -1,3 +1,8 @@
+/* Current retained result, 28 October 2026: 344/344 bytes. Object, table-high and best-entry
+ * pointers occupy s4/s5/s3 instead of s3/s4/s5. The pointer return remains truthful; caller
+ * experiments were restored. No strict match. Older diagnostic notes below are historical and
+ * do not rule out C. */
+
 /* 28 October 2026: first full C attempt, 344/344 bytes at
  * -O2 -G8 -ffunction-sections. The object/table-high/best registers
  * cycle s4/s5/s3 instead of s3/s4/s5; table setup also schedules

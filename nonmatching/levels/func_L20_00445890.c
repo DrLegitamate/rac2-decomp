@@ -1,3 +1,8 @@
+/* Current retained result, 28 October 2026: 564/568 bytes. Correcting the real sentinel fixes
+ * object/counter allocation; a canonical SDATA view preserves mixed address forms. List-index
+ * allocation and tail-store/packed-color merging remain. No strict match. Older diagnostic
+ * notes below are historical and do not rule out C. */
+
 /* 28 October 2026: first full C attempt; retained 564/568 bytes at
  * -O2 -G8 -ffunction-sections. Six compiles. Naming the real missing
  * sentinel before the state change fixes object/loop-count allocation;

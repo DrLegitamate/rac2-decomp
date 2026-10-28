@@ -1,3 +1,8 @@
+/* Current retained result, 28 October 2026: 196/200 bytes. Reviewed copies replace the obsolete
+ * MMI-only refusal, but pointer-load coalescing removes the retail v0-to-s0 copy and hoists a
+ * copy address. A 200-byte experiment changed the real load count and was rejected. No strict
+ * match. Older diagnostic notes below are historical and do not rule out C. */
+
 /* Retained readable C; not matching and no exact-C credit.
  * 2026-10-28 profile: -O2 -G0 -ffunction-sections -fno-cse-follow-jumps -fno-cse-skip-blocks -fno-regmove.
  * 196/200 compiled/retail bytes. Approved qcopy, non-clobbering copy and qualified TI-copy profiles were tested. Pointer-load coalescing removes the retail v0-to-s0 copy and hoists the copy address into a branch slot. Disabling cross-block CSE with two loads gives 200 bytes but changes the measured load count; no candidate.

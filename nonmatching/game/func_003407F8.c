@@ -1,3 +1,8 @@
+/* Current retained result, 28 October 2026: 460/464 bytes in all 28 US placements at the G8
+ * profile. Truthful GP/absolute views and a cached owner improve the old 488-byte draft.
+ * Failure setup, short-loop padding, scheduling and final clamp remain different. No strict
+ * match. Older diagnostic notes below are historical and do not rule out C. */
+
 /* Retained readable C; not matching and no exact-C credit.
  * 2026-10-28 bounded retry: Default game G8 profile: 460/464 bytes in all 28 primary placements. Truthful GP and absolute views plus a cached owner pointer remove repeated global loads from the old 488-byte diagnostic. Failure-path setup, a short loop pad, register scheduling and final clamp still differ. The two source branches preserve real pointer-to-pointer reloads; no invented array bounds or accesses.
  * Reopen with an independently measured save-profile or allocation witness.

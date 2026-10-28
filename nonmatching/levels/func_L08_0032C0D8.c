@@ -1,3 +1,8 @@
+/* Current retained result, 28 October 2026: 312/312 bytes at default G0. Only constants 300 and
+ * 1 and their stores swap v0/v1. Field views, source order, -fno-gcse and -fno-regmove do not
+ * close it; the address helper keeps its actual integer return. No strict match. Older
+ * diagnostic notes below are historical and do not rule out C. */
+
 /* Retained readable C; not matching and no exact-C credit.
  * 2026-10-28 bounded retry: Default game G0 profile: 312/312 bytes. Only the two 300/1 integer constants and their stores use swapped v0/v1; all other measured instructions agree. Named state fields, scalar ordering, a heading temporary, -fno-gcse and -fno-regmove did not qualify. Return from func_002AB1F0 is the actual integer address value and is explicitly cast before dereference.
  * Reopen with an independently measured save-profile or allocation witness.

@@ -1,3 +1,8 @@
+/* Current retained result, 28 October 2026: 132/132 bytes with game -mastra-quad-saves, but
+ * mixed s0/ra save widths and order differ. The SDK profile emits 116/132 and lacks FP spills.
+ * The real variadic forwarding body is retained without fabricated frame padding. No strict
+ * match. Older diagnostic notes below are historical and do not rule out C. */
+
 /* Retained readable C; not matching and no exact-C credit.
  * 2026-10-28 bounded retry: Game profile -O2 -G0 -ffunction-sections -mastra-quad-saves: 132/132 bytes, exact varargs forwarding/body but both s0 and ra save width/order differ from retail mixed saves. SDK profile: 116/132 and missing FP argument spills. The register-save area is reached with the existing builtin-next-arg convention; no fabricated frame padding was used.
  * Reopen with an independently measured save-profile or allocation witness.
