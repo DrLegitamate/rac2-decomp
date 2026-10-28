@@ -20,6 +20,19 @@ extern float func_002AA2E8(float *, float, float);
 extern float func_00283198(float);
 extern float func_00283180(float);
 
+typedef struct { float f[4]; } __attribute__((aligned(16))) V_c;
+typedef struct { V_c r[4]; } M_c;
+typedef struct { TI128 q[4]; } QM_c;
+extern float func_00282DB0(void *, void *);
+extern float func_00282C10(float);
+extern float func_00283248(float, float);
+extern void func_00282DD8(void *, void *, void *);
+extern void func_00283430(void *, void *);
+extern void func_00283788(void *, void *, void *);
+extern void func_002830C0(void *, void *, void *);
+extern void func_002AB6D8(void *, void *);
+extern float func_002AA898(float *, float, float *, float, float, float, int);
+
 /* Hero pose tweaks by movement mode: per-mode joint offsets written to the level pose table, clamped (modes 2, 8, 0x82, and the 2/4 substates). */
 void func_L00_002B7B80(void)
 {
@@ -198,4 +211,63 @@ INCLUDE_ASM("asm/levels", func_L00_002B8CB8);
 /* func_L00_002B8E48 is matched in its own unit, src/levels/shared/L00_002B8E48-qcopy.c (-frac2-qcopy -frac2-qcopy-barrier). */
 
 
-INCLUDE_ASM("asm/levels", func_L00_002B8F00);
+/* Hero reference tilt rotation; adapted from RAC1 hero_steering_and_tilt.c (GPL-3.0). */
+void func_L00_002B8F00(V_c *v, M_c *m, void *p, float a, float b, float c) {
+    M_c m0;
+    M_c m1;
+    V_c r;
+    V_c x;
+    float t;
+    float d, pitch, yaw, roll;
+    t = 0.0f;
+    {
+        QM_c *d = (QM_c *)m, *s = (QM_c *)(D_00189E20);
+        d->q[0] = s->q[0];
+        d->q[1] = s->q[1];
+        d->q[2] = s->q[2];
+        d->q[3] = s->q[3];
+    }
+    d = func_00282DB0(v, &m->r[2]);
+    pitch = func_00283248(d, func_00282C10(1.0f - d * d));
+    func_00282DD8(&x, v, &m->r[2]);
+    if (x.f[2] < 0.99f) {
+        roll = func_00283248(x.f[0], x.f[1]);
+        r.f[0] = 0.0f;
+        r.f[1] = 0.0f;
+        r.f[2] = -roll;
+        func_00283430(&m1, &r);
+        func_00283788(m, &m1, m);
+        func_002830C0(&x, &x, &m1);
+        yaw = func_00283248(x.f[2], x.f[0]);
+        r.f[0] = 0.0f;
+        r.f[2] = 0.0f;
+        r.f[1] = -yaw;
+        func_00283430(&m0, &r);
+        func_00283788(m, &m0, m);
+        func_002830C0(&x, &x, &m0);
+    } else {
+        roll = 0.0f;
+        yaw = roll;
+    }
+    if (p) {
+        r.f[2] = pitch;
+        r.f[0] = 0.0f;
+    } else {
+        func_002AA898(&t, pitch, (float *)(D_00189E20 + 0xA4), a, b, c, 0);
+        r.f[0] = 0.0f;
+        r.f[2] = t;
+    }
+    r.f[1] = 0.0f;
+    func_00283430(&m1, &r);
+    func_00283788(m, &m1, m);
+    r.f[1] = yaw;
+    r.f[2] = 0.0f;
+    func_00283430(&m0, &r);
+    func_00283788(m, &m0, m);
+    r.f[2] = roll;
+    r.f[1] = 0.0f;
+    func_00283430(&m1, &r);
+    func_00283788(m, &m1, m);
+    if (p) func_002AB6D8(m, p);
+    else func_002AB6D8(m, D_00189E20 + 0x90);
+}

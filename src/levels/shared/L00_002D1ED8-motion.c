@@ -1,28 +1,4 @@
-/* Nonmatching reconstruction, 2026-10-23. Default game -O2 -G0 profile.
- * US, US2 and PAL: 0/22 placements, exactly 1112 bytes; first instruction
- * mismatch +0x8 (callee-saved GPR allocation). Stack frame and scalar root slots
- * are correct; TI copies and case-local pointer lifetimes still schedule differently.
- * Nine bounded trials covered scalar versus array roots, resident pointer scopes,
- * default/-g and qcopy profiles. qcopy variants were 1104 or 1116 bytes.
- * Reopen with a measured vector-copy/pointer-lifetime remedy for this pattern.
- * The prior screening-only note is retained below as historical context.
- */
-
-/* Not attempted - screened, no C written: 1112 bytes, 22 places.
-
-   The screening: every branch of the body stays inside its own bytes (the `jal`
-   calls excepted), so the row is a whole function and not a catalogue fragment.
-   Ten of the words are MMI (0x78/0x7A/0x7C/0x7E), five `lq`/`sq` pairs, which
-   plain C reaches through a `mode(TI)` copy; no COP2 (VU0) word and no multiply or
-   divide.  Nothing in the row looks like handwritten assembly.
-
-   The body is the game's "the object the caller's argument names" handler in its
-   long form: it builds several matrices, transforms vectors through them, and
-   writes the results into the resident state.  At 1112 bytes it is three times the
-   size of the body this wave matched, and its register allocation (seven
-   callee-saved registers) and the order of its stores have to be reproduced word
-   for word; the budget of this wave went to the smaller rows of the same file. */
-
+#include "common.h"
 
 extern char D_00189E20_8[];
 extern void func_00282D30(void *, const void *, float);
@@ -44,10 +20,11 @@ float func_L00_002D2A10(float time, float acceleration, float height)
 {
     float end[4], direction[4], curve[4], start[4];
     float root0a, root0b, root1a, root1b, root2a, root2b;
-    float half, speed, position;
+    float speed, position;
     char *state = D_00189E20_8;
     switch (*(unsigned char *)(state + 0x22C3)) {
     case 0: {
+        float half;
         if (height < 0.0f) {
             char *pos = state + 0x80;
             func_00282D30(end, state + 0xF0, time);
@@ -55,27 +32,30 @@ float func_L00_002D2A10(float time, float acceleration, float height)
             func_00282CC0(end, end, pos);
             *(MotionQuad *)direction = *(MotionQuad *)(state + 0x80);
             func_L00_0031EC88(direction, end);
-            *(MotionQuad *)direction = *(MotionQuad *)pos;
+            qcopy(direction, pos);
             if (func_002761F8(direction, end, 0x22, 0, 0)) {
                 if (func_L00_002D3EA8(D_L00_001BF240) <= 0.8726647f)
                     height = *(float *)(D_L00_001BF240 - 0x18);
             }
         }
-        state = D_00189E20_8;
         if (height > 0.0f) {
+            char *root = D_00189E20_8;
             half = acceleration * -0.5f;
             if (func_002A88A0(&root0a, &root0b, half,
-                    *(float *)(state + 0xF8) - half,
-                    *(float *)(state + 0x88) - height) > 0
+                    *(float *)(root + 0xF8) - half,
+                    *(float *)(root + 0x88) - height) > 0
                     && root0a > 0.0f)
                 return root0a;
         }
         break;
     } case 1: {
-        char *velocity = state + 0xF0;
-        char *pos = state + 0x80;
-        *(MotionQuad *)direction = *(MotionQuad *)(state + 0x2A0);
+        float half;
+        char *velocity;
+        char *pos;
+        qcopy(direction, state + 0x2A0);
+        velocity = state + 0xF0;
         func_00282F20(direction, direction, acceleration);
+        pos = state + 0x80;
         func_00282D30(direction, direction, -1.0f);
         func_00282D30(end, velocity, time);
         func_00282D30(curve, direction, (time * time + time) * (acceleration * 0.5f));
@@ -94,11 +74,12 @@ float func_L00_002D2A10(float time, float acceleration, float height)
         }
         break;
     } case 2: {
+        float half;
         char *velocity = state + 0xF0;
         char *pos = state + 0x80;
-        curve[0] = 100.0f;
         curve[2] = 100.0f;
         curve[1] = 100.0f;
+        curve[0] = 100.0f;
         func_00282CF0(direction, pos, curve);
         func_00282F20(direction, direction, acceleration);
         func_00282D30(direction, direction, -1.0f);

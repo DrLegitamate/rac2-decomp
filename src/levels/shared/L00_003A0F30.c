@@ -1,4 +1,4 @@
-#include "include_asm.h"
+#include "common.h"
 
 extern float func_00283B98_2(float, float);
 
@@ -50,13 +50,19 @@ extern char *func_L00_0032A088_1();
 
 extern int *func_L00_0032A0B8_1();
 
+typedef int VectorBits __attribute__((mode(TI)));
+typedef union { VectorBits bits; float f[4]; } __attribute__((aligned(16))) BeamVector;
+typedef float Vector[4] __attribute__((aligned(16)));
+typedef struct { float vertices[4][4]; unsigned int colors[4]; float uv[4][2]; u64 registers[4]; } __attribute__((aligned(16))) BeamQuad;
+extern void func_L00_003A2B28(char *);
+
 INCLUDE_ASM("asm/levels", func_L00_003A0F30);
 
 INCLUDE_ASM("asm/levels", func_L00_003A1580);
 
 
 
-INCLUDE_ASM("asm/levels", func_L00_003A2018);
+/* func_L00_003A2018 is defined in L00_003A2018-curve.c. */
 
 /* Shared native body; original game role is unknown. */
 void func_L00_003A2138(int unused, float *p, int n)
@@ -111,7 +117,7 @@ void func_L00_003A25D8(int p0, int p1, int p2, int p3, float v)
     func_00281EB8((char *)p1, 44, p2, 1, s, 0.08f, t);
 }
 
-INCLUDE_ASM("asm/levels", func_L00_003A2668);
+/* func_L00_003A2668 is defined in L00_003A2668-ribbon.c. */
 
 
 /* straight-line constant-store body (no calls, no branches, no loads) */
@@ -162,7 +168,7 @@ void func_L00_003A2BB8(char *p, int v, char *a, char *b)
     func_00282CC0_4(a, a, p + 16);
 }
 
-INCLUDE_ASM("asm/levels", func_L00_003A2C60);
+/* func_L00_003A2C60 is defined in L00_003A2C60-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L00_003A2EE0);
 
@@ -191,8 +197,6 @@ void func_L00_003A5370(int a0)
 }
 
 INCLUDE_ASM("asm/levels", func_L00_003A53E8);
-
-INCLUDE_ASM("asm/levels", func_L00_003A5DC0);
 
 INCLUDE_ASM("asm/levels", func_L00_003A5FC0);
 

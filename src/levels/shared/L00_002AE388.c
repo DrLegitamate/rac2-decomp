@@ -10,7 +10,7 @@ extern unsigned char D_00189E20_26[];
 
 INCLUDE_ASM("asm/levels", func_L00_002AE388);
 
-INCLUDE_ASM("asm/levels", func_L00_002AE5F0);
+/* func_L00_002AE5F0 is defined in L00_002AE388-score.c. */
 
 INCLUDE_ASM("asm/levels", func_L00_002AE888);
 

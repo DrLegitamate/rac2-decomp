@@ -302,7 +302,7 @@ int func_L00_002B3268(float x) {
     return 0;
 }
 
-INCLUDE_ASM("asm/levels", func_L00_002B32F8);
+/* func_L00_002B32F8 is in L00_002B32F8-hero.c. */
 
 INCLUDE_ASM("asm/levels", func_L00_002B35A0);
 
@@ -346,9 +346,6 @@ void func_L00_002B39D8(void)
     D_00189E20.f1B0 = 0.0f;
     D_00189E20.f1B4 = 0.0f;
 }
-
-INCLUDE_ASM("asm/levels", func_L00_002B39F0);
-
 
 /* builds one 64-byte block from a 3-float vector of the incoming scalars and another from a static table record one element in, combines them, then scales the result again from that record */
 void func_L00_002B3DC0(f32 a1, f32 a2, f32 a3) {
@@ -410,8 +407,6 @@ INCLUDE_ASM("asm/levels", func_L00_002B4308);
 INCLUDE_ASM("asm/levels", func_L00_002B4458);
 
 INCLUDE_ASM("asm/levels", func_L00_002B47A8);
-
-INCLUDE_ASM("asm/levels", func_L00_002B4900);
 
 INCLUDE_ASM("asm/levels", func_L00_002B5250);
 

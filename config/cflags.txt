@@ -1368,3 +1368,9 @@ src/game/0032EB28-ground-g8.c	-O2 -G8 -ffunction-sections -g
 src/game/0032EB28-ring-g8.c	-O2 -G8 -ffunction-sections
 src/game/00345358-interpolation.c	-O2 -G0 -ffunction-sections -ffast-math
 src/game/00345358-menu.c	-O2 -G0 -ffunction-sections -fno-strength-reduce
+src/levels/shared/L00_002AE388-score.c	-O2 -G0 -ffunction-sections -ffast-math -g -frac2-hazard-labels
+src/levels/shared/L00_002AFBC0-ground-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-hazard-labels
+src/levels/shared/L00_00388790-qcopy.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
+src/levels/shared/L00_003973E8-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-hazard-labels
+src/levels/shared/L00_00395A88-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-hazard-labels
+src/levels/shared/L00_003A5DC0.c	-O2 -G0 -ffunction-sections
