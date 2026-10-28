@@ -1406,3 +1406,8 @@ src/levels/shared/L05_003CF040-g8.c	-O2 -G8 -ffunction-sections -frac2-keep-bloc
 src/levels/shared/L05_00398F18.c	-O2 -G0 -ffunction-sections -frac2-keep-block-order -frac2-gcse-unsplit-edges
 src/levels/shared/L05_00444FD0.c	-O2 -G0 -ffunction-sections -mno-split-addresses
 src/levels/shared/L06_003E11A0-collision.c	-O2 -G0 -ffunction-sections -ffast-math -frac2-zero-ti-barrier -frac2-qcopy -frac2-qcopy-barrier
+src/levels/shared/L08_0041EBF8-g8.c	-O2 -G8 -ffunction-sections -ffast-math -g -frac2-keep-block-order
+src/levels/shared/L09_003F9108-partner.c	-O2 -G0 -ffunction-sections -frac2-keep-block-order
+src/levels/shared/L11_00397E68-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-zero-ti-por
+src/levels/shared/L11_0046BD18-g8.c	-O2 -G8 -ffunction-sections -g
+src/levels/shared/L13_0040D930-g8.c	-O2 -G8 -ffunction-sections -g

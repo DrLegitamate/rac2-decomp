@@ -1,5 +1,18 @@
 #include "common.h"
 
+
+extern void func_0029F338(void *);
+extern void func_002A7470(void *, int, int, int);
+extern void func_002AF000(void *, float, float, float);
+extern void func_0029FCC0(void *, int, void *);
+extern void func_L08_003B2DB0(void *, void *, void *, int);
+extern float func_002A7878(float, float);
+extern float func_00282DF0(void *);
+extern void func_00282F20(void *, void *, float);
+extern void func_00282CC0(void *, void *, void *);
+extern int func_002A7820(int, int);
+extern void func_L04_00358AE8(void *, void *, int, int, float);
+
 /* family c459a266b43242d6 - 352 bytes, 2 placements
    levels/19_grelbin @0x00412F70, levels/8_tabora @0x0041E630
 
@@ -39,7 +52,42 @@ void func_L08_003D3EB8(u8 *a0)
 
 INCLUDE_ASM("asm/levels", func_L08_003D4190);
 
-INCLUDE_ASM("asm/levels", func_L08_003D4690);
+void func_L08_003D4690(u8 *self)
+{
+    float direction[4] __attribute__((aligned(16)));
+    float position[4] __attribute__((aligned(16)));
+    float velocity[4] __attribute__((aligned(16)));
+    float random[4] __attribute__((aligned(16)));
+    u8 *target = *(u8 **)*(u32 *)(self + 0x68);
+    int i;
+    if (!target || target[0x20] == 0xFE || target[0x20] == 0xFD) {
+        func_0029F338(self);
+        return;
+    }
+    if ((self[0x60] & 2) && self[0x43])
+        func_002A7470(self, 0, 0, 0);
+    if (self[0xBC]) {
+        self[0xBC] = 0;
+        if (self[0x43] != 1) func_002A7470(self, 1, 0, 0);
+        func_002AF000(direction, 1.0f, *(float *)(self+0xF8), -*(float *)(self+0xF4));
+        func_0029FCC0(self, 0, position);
+        func_L08_003B2DB0(self, position, direction, 0x5A);
+        i = 4;
+        do {
+            *(TI128 *)random = 0;
+            random[0] = func_002A7878(-1.0f, 1.0f);
+            random[1] = func_002A7878(-1.0f, 1.0f);
+            random[2] = func_002A7878(-1.0f, 1.0f);
+            *(TI128 *)velocity = *(TI128 *)random;
+            func_00282F20(velocity, velocity, func_00282DF0(direction)*0.65f);
+            func_00282CC0(velocity, direction, velocity);
+            func_00282F20(velocity, velocity, func_002A7878(0.050000004f, 0.10000001f));
+            func_L04_00358AE8(position, velocity, 0x5F2F4F6F, func_002A7820(5,10), 50000.0f);
+        } while (--i >= 0);
+        func_00282F20(direction, direction, 0.008333334f);
+        func_L04_00358AE8(position, direction, 0x2F4F7F7F, func_002A7820(4,7), 500000.0f);
+    }
+}
 
 /* The same resident word, but the 8 case falls through to a 1/2 selector. */
 s32 func_L08_003DB4E8(void)
@@ -109,8 +157,6 @@ INCLUDE_ASM("asm/levels", func_L08_0041E790);
 
 INCLUDE_ASM("asm/levels", func_L08_0041EA88);
 
-INCLUDE_ASM("asm/levels", func_L08_0041EBF8);
-
 INCLUDE_ASM("asm/levels", func_L08_004207D0);
 
 INCLUDE_ASM("asm/levels", func_L08_0042E678);
@@ -125,7 +171,7 @@ void func_L08_004356A0(u8 *a0, void *a1)
     *(volatile TI128 *)*(u32 *)(a0 + 0x68) = *(TI128 *)a1;
 }
 
-INCLUDE_ASM("asm/levels", func_L08_004356B8);
+/* func_L08_004356B8 is defined in L08_004356B8-g8.c. */
 
 
 INCLUDE_ASM("asm/levels", func_L08_00435990);
