@@ -1452,6 +1452,14 @@ These are measured source/ABI effects, not permission to invent barriers or fals
   `func_L00_002B9380`; a direction-last declaration cannot be used to obtain a match.
 - A dead-store observation differed between ordinary code and a delay slot in the sample. Reconfirm actual liveness and control flow; do not manufacture a memory effect to preserve it.
 
+**28 October 2026, loop-layout probe:** `func_0029CF78` polls `0x1000D400`.
+In its original `-O2 -G0` source unit, an explicit forward `goto` to the exit
+followed by a `goto` to the loop compiled to a 40-byte conditional-backedge
+loop (0/28 USA placements). cc1 canonicalized the requested branch-plus-jump
+shape, and the three nops remained after the mask instead of between the load
+and mask. Its retained best remains 44/56 bytes; this confirms that this
+particular label spelling does not unblock the loop layout.
+
 <a id="blocker-40"></a>
 
 ## 40. Smaller things worth knowing
