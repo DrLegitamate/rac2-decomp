@@ -680,9 +680,7 @@ the placement rules are in `tools/fcheck.py`'s docstring; its tests are
 | [`func_L01_003EE8E0`](levels/func_L01_003EE8E0.c) | 112 | Worker w13: 116 bytes vs 112; only one instruction too many, gcc rematerialises 0xFF for the return (addiu $v0,$0,0xFF again after sb $v0,0xA8($s0)) instead of reusing $v0; return 0xFF and r = 0xFF; return r tried. |
 | [`func_L11_00456540`](levels/func_L11_00456540.c) | 148 | Draft w17: same size (148 bytes) but instruction at +0x8 differs; only the two callee-saved registers are swapped (retail p->$s0, q->$s1, ours p->$s1, q->$s0). |
 | [`func_L11_00456938`](levels/func_L11_00456938.c) | 268 | Draft w17: reconnaissance stub only; uses $gp (0x2DB0/0x2DB4/0x2DB8) and 128-bit copies, so a -g8 sibling file is required. |
-| [`func_L11_00456EA0`](levels/func_L11_00456EA0.c) | 220 | Draft w17: reconnaissance stub only; would use $gp (0x2DC4/0x2DC8/0x2DCC), so a -g8 sibling file is required. |
 | [`func_L11_00458A98`](levels/func_L11_00458A98.c) | 232 | Draft w17: reconnaissance stub only; would use $gp (lhu 0x2F94($gp)) and lq/sq. |
-| [`func_L11_00458C38`](levels/func_L11_00458C38.c) | 200 | Draft w17: reconnaissance stub only; would use $gp (0x2FCC/0x2FD0/0x2FD8/0x2FDC), so a -g8 sibling file is required. |
 | [`func_L11_00459D48`](levels/func_L11_00459D48.c) | 252 | Draft w17: reconnaissance stub only; would use $gp (lwc1 0x300C($gp)). |
 | [`func_L11_0045B5C8`](levels/func_L11_0045B5C8.c) | 256 | Draft w17: 252 bytes vs 256, one instruction missing; retail keeps $a0/$a1 for the two globals and puts the q->f0 store in the beq delay slot. |
 | [`func_L07_003E5AC8`](levels/func_L07_003E5AC8.c) | 168 | Chain-walk family: shape A (goto rotation plus sda) reaches 168 bytes with body and test block byte-identical, but the +0x10..+0x20 preheader swaps $v0/$v1 and the dead nop at +0x2C is missing; shape B (local id) is 164 bytes. |
@@ -737,8 +735,6 @@ the placement rules are in `tools/fcheck.py`'s docstring; its tests are
 | [`func_L05_00427988`](levels/func_L05_00427988.c) | 404 | M3 2026-10-26: the scale constant is 1/60 (0x3C888889), not 1/120; needs -G8 -frac2-qcopy. 404/404 bytes; allocation differs (pos in $s7, the +0xC0/+0xD0 pointers computed early) and the pre-division nop pair is missing. |
 | [`func_L05_00427E10`](levels/func_L05_00427E10.c) | 404 | Wave 5 w04 tour 2: no C attempt; MMI/LQ/SQ (op 0x1e). |
 | [`func_L05_00427FA8`](levels/func_L05_00427FA8.c) | 28 | Wave 5 w04 tour 2: no C attempt; starts with addiu $sp,$sp,+0x40 (catalogue entry early). |
-| [`func_L05_00445B58`](levels/func_L05_00445B58.c) | 224 | Wave 5 w04 tour 2: no C attempt; MMI/LQ/SQ (op 0x1e). |
-| [`func_L05_00445C38`](levels/func_L05_00445C38.c) | 292 | Wave 5 w04 tour 2: no C attempt; MMI/LQ/SQ (op 0x1e). |
 | [`func_L05_00445D60`](levels/func_L05_00445D60.c) | 560 | Wave 5 w04 tour 2: no C attempt; MMI/LQ/SQ (op 0x1e). |
 | [`func_L08_003B2DB0`](levels/func_L08_003B2DB0.c) | 444 | First C, 444/444 B, ~5 words off (entry copy addressing; jal slot order); permuter queued (M21). |
 | [`func_L08_003C66F0`](levels/func_L08_003C66F0.c) | 200 | Wave 5 w04 tour 2: no C attempt; MMI/LQ/SQ (op 0x1e). |
@@ -2065,6 +2061,8 @@ the placement rules are in `tools/fcheck.py`'s docstring; its tests are
 | [`func_L06_0047A268`](levels/func_L06_0047A268.c) | 416 | Default game -O2 -G0 profile emits 416 bytes. All three places fail in each release on head allocation/load order. Reopen with measured object types and pointer lifetimes. No strict linked build. |
 | [`func_L13_00409EE8`](levels/func_L13_00409EE8.c) | 440 | 440/440 bytes; The state, loop counter, position and velocity pointers are allocated differently. Shortening the initial position lifetime restores the retail frame size; subsequent scope changes tie. The collision helper really returns 0 or 1. Reopen with allocation evidence. No strict linked build. |
 | [`func_L13_0041AB30`](levels/func_L13_0041AB30.c) | 460 | Game -O2 -G8 -ffunction-sections -frac2-qcopy -g emits 464/460 bytes. US, PAL and US2 each fail 0/2 places; all canonical rows are present. Destination-base hoisting creates an extra saved register. Reopen with pointer-lifetime and allocator evidence. No strict build. |
+
+| [`func_L11_00456C20`](levels/func_L11_00456C20.c) | 640 | USA v1.01 game -O2 -G8: indexed loops reach 640 bytes with the tail from +0x120 exact, but the first loop retains index arithmetic instead of pointer induction. Pointer induction gives 648 bytes and early initialization; explicit do/while adds another callee-save. Diagnose loop/allocation dumps before another source trial. |
 
 - `func_L14_00426F28`: historical 740/744-byte G0 draft, superseded by the matching `L14_00426F28-g8.c` source. G8 scheduling, the actual float helper return and widened unsigned postincrement resolve the differences.
 
