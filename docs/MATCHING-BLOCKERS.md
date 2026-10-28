@@ -2600,3 +2600,32 @@ after the sine call and before the output stores fixes the tail schedule.
 The float return banks of the math helpers were checked against their retail
 bodies. The old source-order/register trials remain historical measurements;
 strict linked qualification is still required.
+
+Further bounded controller measurements on 28 October 2026 are retained outside
+the linked sources. None is a local match, and only US was measured:
+
+- `func_L09_0041A700`: 900/916 bytes, default G8 profile, five compiles. Computing
+  each saturating nibble update's address inside its parity branch improves the
+  first 836-byte version. Retail preserves the counter's high address in s2
+  across the later proximity path; the retained source rebuilds it. The real
+  `enabled` field is reloaded after the counter test even on a path without a call.
+- `func_L15_004353E8`: 1104/1104 bytes, default G0 profile, nine compiles. Moving
+  independent initialization writes closes the FP-vector register and most store
+  residues, leaving two initial stores, the -1 temporary and the final timer store
+  versus six FP stores. Prefix struct/union views and `-g` tie; disabling second
+  scheduling worsens. Helper contracts follow the existing definitions.
+- `func_L20_004433B0`: 344/344 bytes, default G8 profile, three compiles. Branch-local
+  initial index reads and reloading the loop index before its condition label
+  reproduce the branch structure and length, but object/table-high/best cycle
+  s4/s5/s3 rather than s3/s4/s5. The pointer return remains explicit; promotion
+  would require the caller's pointer declaration and explicit stored-address cast.
+- `func_L20_00445890`: retained at 564/568 bytes, default G8 profile, six compiles.
+  Naming the real missing-object sentinel before the state change fixes the
+  object/loop-count register swap. Remaining differences include the list-index
+  GPR, color-tail store merge and high-bit constant slots. A switch worsens to
+  596 bytes; explicit color temporaries and `-frac2-keep-block-order` do not close
+  it. An SDATA view and the absolute view address the same canonical object table.
+
+These deposits need measured pointer-lifetime or scheduling evidence before
+another retry. Their prior diagnostic-only refusals remain historical notes,
+not proof that current helpers or address aliases cannot express the bodies.
