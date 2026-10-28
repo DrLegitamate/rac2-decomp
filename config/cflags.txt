@@ -1395,3 +1395,5 @@ src/levels/shared/L00_0040A4A8.c	-O2 -G0 -ffunction-sections -g -frac2-gcse-unsp
 src/levels/shared/L00_00412928-particles.c	-O2 -G0 -ffunction-sections -fno-strength-reduce
 src/levels/shared/L00_00419668-dbg.c	-O2 -G0 -ffunction-sections -g
 src/levels/shared/L00_00423CA8-g8.c	-O2 -g -G8 -ffunction-sections
+src/levels/shared/L01_0042DE20-g8.c	-O2 -G8 -ffunction-sections -g -frac2-hazard-labels
+src/levels/shared/L02_00422720-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-zero-ti-barrier

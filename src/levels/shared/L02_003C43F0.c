@@ -1,7 +1,26 @@
 #include "include_asm.h"
 #include "common.h"
 
+struct CFPair { int a, b; } __attribute__((packed));
+struct CFQuad { int a, b, c, d; } __attribute__((packed));
+
 typedef int TI128 __attribute__((mode(TI)));
+
+extern void func_0029F338(void *);
+
+struct CD758Object {
+    char pad0[0x10];
+    float pos[4];
+    char pad1[0x48];
+    struct CD758Data *data;
+    char pad2[0x84];
+    float angles[3];
+};
+
+struct CD758Data {
+    char pad[0x370];
+    char *other;
+};
 
 extern void func_00282978(void *);
 
@@ -219,7 +238,47 @@ void func_L02_003C46E0(struct Outer *p)
 /* Clears the three pointer-list flags, updates their counters and copies the vectors. */
 /* Defined in L02_003C4848-helpers.c. */
 
-INCLUDE_ASM("asm/levels", func_L02_003C49A0);
+extern char D_L02_001BA500[];
+/* Two-float interface of the range RNG; other callers in this unit use an older declaration. */
+extern float func_002A7878_range(float, float) __asm__("func_002A7878");
+extern int func_002A77E0(int);
+extern float func_002A78D8(float, float);
+extern void func_002ACEC0(void *, void *, void *, float);
+extern char *func_002C2210(void *, int, float, float, unsigned int, int, int, void *, int, float);
+extern int func_00283CF0(float);
+
+/* Emits paired particles with opposite spin and randomized velocities. */
+void func_L02_003C49A0(float *pos, int count) {
+    float velocity[4], origin[4], direction[4], axis[4], offset[4];
+    float size, angle;
+    int i;
+    int sign;
+    char *particle;
+    func_00282CF0(direction, (float *)D_L02_001BA500, pos);
+    func_00282F20((char *)offset, (char *)direction, 0.3f);
+    direction[2] = 0;
+    axis[0] = 0;
+    axis[1] = 0;
+    axis[2] = 1.0f;
+    axis[3] = 1.0f;
+    for (i = 0; i < count; i++) {
+        size = func_002A7878_range(0.5f, 2.0f);
+        sign = func_002A77E0(2);
+        if (!sign) sign--;
+        angle = func_002A7878_range(-1.0471977f, 1.0471977f);
+        func_002ACEC0(velocity, direction, axis, angle);
+        func_00282F20((char *)velocity, (char *)velocity, func_002A7878_range(0.05f, 3.0f) * 0.0166666675f);
+        velocity[2] = func_002A7878_range(1.0f, 5.0f) * 0.0166666675f;
+        func_00282CC0(origin, pos, offset);
+        pos[0] += func_002A78D8(0, 0.15f);
+        pos[1] += func_002A78D8(0, 0.15f);
+        pos[2] += func_002A78D8(0, 0.15f);
+        particle = func_002C2210(origin, 60, size * 0.1f, size, 0xDDFF1010, 0, sign, velocity, 0, 0.002f);
+        if (particle) particle[9] = func_00283CF0(4.0f) + 0x70;
+        particle = func_002C2210(origin, 60, size * 0.07f, size * 0.7f, 0xDDFF1010, 1, -sign, velocity, 0, 0.002f);
+        if (particle) particle[9] = func_00283CF0(4.0f) + 0x70;
+    }
+}
 
 /* Reads three angles through a helper, bends the object's own angle at +0xF8 into the same
    range, converts all four and hands them to the four-argument report, then applies the
@@ -414,6 +473,8 @@ void func_L02_003CD4A8(struct L02GroupObject *arg0)
     }
 }
 
+/* Removes the owner when its timer expires; otherwise replaces a mismatched child
+   kind and restores the owner's saved position and state. */
 
 extern int D_L02_001B35B8 __attribute__((sda));
 
@@ -439,9 +500,92 @@ void func_L02_003CD8C0(unsigned char *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L02_003CD970);
+extern int D_001A79F0[] __attribute__((sda));
+extern char *D_L02_001B3200 __attribute__((sda));
+extern char D_L02_001B3210[] __attribute__((sda));
+extern void func_002B0178(void *, void *, void *);
+extern void func_002A93B0(void *);
+extern int func_002B0ED8(void *, void *, int);
+extern void func_L02_003CE9A8(void *);
+extern int func_002B3BA8(void *, int, float, float, int, int);
+extern void func_002AFFD8(void *, void *, int);
 
-INCLUDE_ASM("asm/levels", func_L02_003CE4D0);
+void func_L02_003CE4D0(char *obj) {
+    char *d = *(char **)(obj + 0x68);
+    char *entry;
+    int hit;
+    if (*(unsigned char *)(obj + 0x20) == 0) {
+        if (D_001A79F0[0] == 26) {
+            if (D_L02_001A8FF0 == 0) return;
+            func_002B0178(obj + 0x10, obj, obj + 0x10);
+            *(short *)(d + 0x338) = 1;
+            *(int *)(obj + 0x9c) = 3;
+            *(unsigned short *)(obj + 0x34) |= 0x100;
+            *(float *)(d + 0x90) = func_00282E48(obj + 0x10, D_L02_001B3210) - 1.5f;
+        } else {
+            *(int *)(obj + 0x9c) = 12;
+            *(float *)(d + 0x90) = *(float *)(obj + 0x18) - 1.0f;
+        }
+        if (*(int *)(d + 0x210) == -1) {
+            func_0029F338(obj);
+            return;
+        }
+        entry = D_L02_001B3200 + *(int *)(d + 0x210) * 0x30;
+        if (*(short *)(entry + 0x30)) {
+            *(int *)(d + 0x13c) = *(int *)(d + 0x218) = **(int **)(entry + 0x3c);
+        } else *(int *)(d + 0x218) = -1;
+        *(float *)(d + 0x324) = func_002A7878_range(1.0f, 1.332999945f);
+        *(float *)(obj + 0x2c) = *(float *)(*(char **)(obj + 0x24) + 0x24) * *(float *)(d + 0x324);
+        *(char *)(d + 0x48) = func_00283CF0(15.0f);
+        *(char *)(d + 0x4a) = func_00283CF0(6.4f);
+        *(int *)(d + 0x98) = 3;
+        *(float *)(d + 0x80) = 0.2f;
+        *(float *)(d + 0x84) = 0.2f;
+        *(float *)(d + 0x8c) = 0.4f;
+        *(float *)(d + 0x108) = 0.4f;
+        *(float *)(d + 0x134) = 0.05f;
+        *(char *)(d + 0x60) = 11;
+        *(char *)(d + 0x28) = 3;
+        *(float *)(d + 0x30) = 0.3330000043f;
+        *(float *)(d + 0x104) = *(float *)(d + 0x324) * 0.2f;
+        *(float *)(d + 0x100) = *(float *)(d + 0x324) * 0.3f;
+        *(float *)(d + 0x10c) = 0.4f;
+        *(float *)(d + 0x110) = 1.57079649f;
+        *(float *)(d + 0x130) = 0.52359885f;
+        *(int *)(d + 0x138) |= 0x280;
+        *(float *)(d + 0x1dc) = func_002A78D8(18.0f, 22.0f) * 0.01745329425f;
+        *(short *)(d + 0x1e2) = 120;
+        *(short *)(d + 0x1e4) = 180;
+        *(char *)(d + 0x1e8) = 7;
+        *(char *)(d + 0x1e9) = 6;
+        *(float *)(d + 0x1d4) = 3.0f;
+        *(float *)(d + 0x1d0) = 0.06666667014f;
+        *(float *)(d + 0x328) = func_002A7940();
+        if (*(int *)(d + 0x214)) {
+            *(int *)(obj + 0x98) = 0;
+            *(unsigned short *)(obj + 0x34) = (*(unsigned short *)(obj + 0x34) | 0x41) & 0xefff;
+            func_002A7750(obj, 13, 4);
+            if (*(unsigned char *)(obj + 0x43) != 10) func_002A7470(obj, 10, 0, 0);
+        } else {
+            func_002A7750(obj, 1, 0);
+            if (*(unsigned char *)(obj + 0x43)) func_002A7470(obj, 0, 0, 0);
+        }
+        qcopy(d + 0x2e0, obj + 0x10);
+    }
+    if (*(unsigned char *)(obj + 0x31) && func_00282E48(obj + 0x10, D_L02_001BA500) < 24.0f) {
+        func_002A93B0(obj);
+        *(char *)(obj + 0x6f) = 22;
+    }
+    hit = func_002B0ED8(obj, d + 0x50, 0);
+    if (hit) {
+        func_L02_003CE9A8(obj);
+        if (hit >= 4) func_002A7750(obj, 12, -1);
+    }
+    if ((unsigned int)(*(unsigned char *)(obj + 0x95) - 3) >= 2)
+        *(short *)(d + 0x314) = func_002B3BA8(obj, *(int *)(d + 0x210), 16.0f, 0.0f, 0, 0);
+    if (*(short *)(d + 0x338)) func_002AFFD8(obj + 0x10, d + 0x300, 0);
+}
+
 
 /* Runs the kind's entry hook: the first when the level flag is set, the second when the third
    argument is clear, the third with the object's own angle otherwise. */
@@ -472,16 +616,6 @@ void func_L02_003CE908(char *a0) {
     func_002AEC48(a0, q, 0, 0.03f, 0.3000000119209289550781250f);
     func_002B0990(a0, q, 0, 1.79999995231628417968750f, 1);
 }
-
-/* Near miss (see work/wave7-20261013/w04/drafts): the loop, both branch-likely tests and the
-   duplicated `lh` delay-slot loads are retail's; two register copies are missing because this
-   compiler gives the kind byte the other register. 116 bytes against 124. */
-/* Near miss (see work/wave7-20261013/w04/drafts): the loop, both branch-likely tests and the
-   duplicated `lh` delay-slot loads are retail's; two register copies are missing because this
-   compiler gives the kind byte the other register. 116 bytes against 124.
-   wave5-09: same wall from a -G8 unit (needs the .extern for the one-instruction $gp load);
-   candidate 128 bytes, the same two register copies plus a `nop` the retail loop does not have. */
-/* func_L02_003CE9A8 is defined in L02_003CE9A8-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L02_003CEA28);
 
@@ -649,7 +783,7 @@ float func_L02_003D1820(char *a0, char *a1) {
     return func_00282DB0((char *)&v[1], (char *)&v[2]);
 }
 
-INCLUDE_ASM("asm/levels", func_L02_003D1FA0);
+/* func_L02_003D1FA0 is in L02_003D1FA0-g8.c for its small-data accesses. */
 
 /* func_L02_003D28E0 lives in the -g8 sibling: it reads five $gp-relative scalars. */
 
@@ -728,6 +862,8 @@ void func_L02_003D6BC0(char *a0)
 /* Defined in L02_003D6DF8-helpers.c. */
 
 
+
+/* Defined in L02_003D6EE0-g8.c. */
 
 /* Defined in L02_003D7040-g8.c. */
 
@@ -919,12 +1055,11 @@ void func_L02_004012A0(char *a0) {
     ref_L02_004012A0_05(a0, a0 + 0x10, v, 0.0f);
 }
 
-/* func_L02_004013C0 lives in the -g8 sibling: it reads a $gp-relative scalar. */
 
 
 INCLUDE_ASM("asm/levels", func_L02_00401530);
 
-INCLUDE_ASM("asm/levels", func_L02_00401ED8);
+/* Defined in L02_00401ED8-g8.c. */
 
 /* Defined in L02_00402300-g8.c. */
 
@@ -944,7 +1079,6 @@ void func_L02_004024C0(char *a0) {
     *(short *)(*(char **)(a0 + 0x68) + 0x30) = 0;
 }
 
-INCLUDE_ASM("asm/levels", func_L02_00404410);
 
 void func_L02_00404778(void) {
     func_00288CB0(2, 1);

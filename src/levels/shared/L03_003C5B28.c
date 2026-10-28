@@ -151,6 +151,18 @@ u32 func_L03_003CAAC8(u8 *a0, u8 *a1) {
 /* func_L03_003CAAF0 lives in the -g8 sibling: its first call reads a float
    constant through $gp at 0x1354. */
 
+s32 func_L03_00419BD8(u32 a0, u8 *first, u8 *second);
+extern void func_L03_003CAAF0(u8 *, f32 *, f32 *);
+extern s32 func_L03_00419C58(u32, f32 *);
+extern f32 func_00282E80(void *, f32 *);
+extern f32 func_002A89A8(f32 *, s32, f32);
+
+/* Copies one of the two points func_L03_003CAAF0 computes into out: the first
+   that func_L03_00419BD8 accepts, else the first that func_L03_00419C58 finds,
+   else the one with the smaller func_00282E80 against D_00189EA0. One copy per
+   branch: cross-jumping merges them, and their references order the saved
+   registers as retail does. Then raises out[2] by 0.5 and replaces it with
+   func_002A89A8's result. */
 /* func_L03_003CAB80 lives in L03_003CAB80.c. */
 
 extern f32 func_00283B98(f32, f32);
@@ -199,7 +211,7 @@ void func_L03_003D0FC8(u8 *a0, s32 a1, s32 a2) {
     func_002C2210(buf, 0x3C, 0x7F7F7F7F, 1, -s1, s2, 0, f20 * 0.14f, f20 * 0.7f, f21);
 }
 
-INCLUDE_ASM("asm/levels", func_L03_003D9578);
+/* func_L03_003D9578 is defined in L03_003D9578.c. */
 
 INCLUDE_ASM("asm/levels", func_L03_003D9820);
 

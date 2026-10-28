@@ -723,7 +723,6 @@ the placement rules are in `tools/fcheck.py`'s docstring; its tests are
 | [`func_L00_002ECFE8`](levels/func_L00_002ECFE8.c) | 552 | Wave 5 w04 tour 2: no C attempt; MMI/LQ/SQ (op 0x1f). |
 | [`func_L00_003F5390`](levels/func_L00_003F5390.c) | 708 | 26 October 2026 (M24): 708/708 bytes, 39 lines off (register allocation of object and the loop pointers); cooldown-table idiom and indexed hit loop. |
 | [`func_L02_0032F008`](levels/func_L02_0032F008.c) | 12 | Wave 5 w04 tour 2: no C attempt; starts with addiu $sp,$sp,+0xc0 (catalogue entry early). |
-| [`func_L02_00332A80`](levels/func_L02_00332A80.c) | 676 | Retained corrected C: 672/676 bytes. See source for measured release coverage, remaining differences and reopening conditions. |
 | [`func_L02_00333480`](levels/func_L02_00333480.c) | 452 | Readable C reconstruction retained; see the source for release coverage, profile, residuals and reopening conditions. |
 | [`func_L04_0043BC58`](levels/func_L04_0043BC58.c) | 488 | Wave 5 w04 tour 2: no C attempt; MMI/LQ/SQ (op 0x1e). |
 | [`func_L04_00456860`](levels/func_L04_00456860.c) | 396 | Wave 5 w04 tour 2: no C attempt; MMI/LQ/SQ (op 0x1c). |
@@ -1534,7 +1533,6 @@ the placement rules are in `tools/fcheck.py`'s docstring; its tests are
 | [`func_L02_003E98A8`](levels/func_L02_003E98A8.c) | 776 | 25 October 2026: 784/776 bytes. The source vector is now an incomplete view rather than a one-byte object. See retained source for profile, release coverage and reopening condition. |
 | [`func_L02_003EB258`](levels/func_L02_003EB258.c) | 1004 | Corrected complete C remains unlinked. 1064/1004 bytes; see source for measured release coverage, residual differences and reopening conditions. |
 | [`func_L02_00410F68`](levels/func_L02_00410F68.c) | 1336 | Corrected complete C remains unlinked. 1296/1336 bytes; see source for measured release coverage, residual differences and reopening conditions. |
-| [`func_L02_00422720`](levels/func_L02_00422720.c) | 1176 | 1176/1176 bytes, 0/2 in each release. Packet-tag store order, a middle-packet pointer and one address/load schedule remain different; por and quadword copies are compiler-reachable. |
 | [`func_L03_002BC430`](levels/func_L03_002BC430.c) | 2088 | Retained C: 2280/2088 compiled/retail bytes. See the source header for current release coverage, tested profiles and reopening conditions. |
 | [`func_L03_002ECF08`](levels/func_L03_002ECF08.c) | 1008 | Retained C: 1008/1008 compiled/retail bytes. See the source header for current release coverage, tested profiles and reopening conditions. |
 | [`func_L03_00329EF0`](levels/func_L03_00329EF0.c) | 1200 | Retained C: 1264/1200 compiled/retail bytes. See the source header for current release coverage, tested profiles and reopening conditions. |
