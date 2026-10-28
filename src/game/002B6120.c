@@ -251,7 +251,35 @@ s32 func_002B6D28(void) {
     return 1;
 }
 
-INCLUDE_ASM("asm/game", func_002B6D80);
+extern void func_002B7EA8(int, long);
+
+/* If the primary stream channel is idle (handle 0) and table entry index is present, claim
+   it (handle -1, state 1, track, mode, 10 / 48000, volume) and start entries index and
+   index + 1 (offset plus the table base, long sums as in func_002B6F70) on it with flag 1. */
+void func_002B6D80(int index, int mode, int volume)
+{
+    StreamState *s = (StreamState *)D_001A63A8;
+    SoundTable *d;
+    long first, second;
+    int offset;
+
+    if (s->channel[0].handle) return;
+    d = (SoundTable *)D_0014B540;
+    offset = d->entries[index].offset;
+    if (!offset) return;
+    s->channel[0].handle = 0xffffffffU;
+    s->channel[0].state = 1;
+    s->channel[0].track = index;
+    s->channel[0].flags = mode;
+    s->channel[0].poll_interval = 10;
+    s->channel[0].sample_rate = 48000;
+    s->channel[0].volume = volume;
+    s->channel[0].crossfade = 0;
+    first = offset + d->base;
+    second = d->entries[index + 1].offset + d->base;
+    func_00133350(first, second, 0, 0, (short)volume, 0, 1, 0, 0, 1,
+                  func_002B7EA8, (unsigned int)&s->channel[0]);
+}
 
 extern void func_002B7FB0(int, long);
 
