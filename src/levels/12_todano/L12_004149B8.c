@@ -180,7 +180,7 @@ void func_L12_004149B8(Ent49B8 *a0)
 
 INCLUDE_ASM("asm/levels", func_L12_00414C60);
 
-INCLUDE_ASM("asm/levels", func_L12_00414EB8);
+/* func_L12_00414EB8 is in L12_004149B8-effects-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L12_004163E8);
 
@@ -190,7 +190,7 @@ INCLUDE_ASM("asm/levels", func_L12_00417CA8);
 
 INCLUDE_ASM("asm/levels", func_L12_00418418);
 
-INCLUDE_ASM("asm/levels", func_L12_00418D20);
+/* func_L12_00418D20 is in L12_00418D20-g16.c. */
 
 INCLUDE_ASM("asm/levels", func_L12_004190A8);
 
@@ -202,7 +202,7 @@ INCLUDE_ASM("asm/levels", func_L12_004190A8);
 
 INCLUDE_ASM("asm/levels", func_L12_0041A5F8);
 
-INCLUDE_ASM("asm/levels", func_L12_0041A790);
+/* func_L12_0041A790 is matched in L12_0041A790-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L12_0041AEF0);
 

@@ -55,10 +55,11 @@ INCLUDE_ASM("asm/levels", func_L12_00420B78);
 
 /* func_L12_00421110 is defined in L12_0041E3E8-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L12_004212C0);
+/* func_L12_004212C0 is defined in L12_004212C0-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L12_00424370);
 
+extern s32 *D_L12_001FEAC0[];
 typedef int L12_25070Quad __attribute__((mode(TI)));
 
 extern s32 *D_L12_001FEAC0[];
