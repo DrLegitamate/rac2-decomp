@@ -124,14 +124,24 @@ catalogue is written. The normal carry command still performs full cross-release
 alignment and may revisit correspondences; entry maintenance does not do that or
 change source files. These are catalogue repairs, not compiler changes or new C matches.
 
-`FUNCTION_RESIDUES` excludes individually verified one-word remnants by name and
-size. Their immediate predecessors finish with a return and its delay slot across
+`FUNCTION_RESIDUES` excludes individually verified remnants by name and size.
+Their immediate predecessors finish with a return and its delay slot across
 alignment nops, or a closed tail jump before debug-fill bytes. The static scan found
 no incoming branch/call, literal pointer or straight-line address-construction
-reference to these remnants. An identical instruction
-with a different name is left alone. Removed words remain in assembly, and surviving
-identities remain stable when the number of identical copies changes. The rule does
-not classify arbitrary code without a return as filler.
+reference to these remnants. An identical instruction with a different name is
+left alone. Removed words remain in assembly, and surviving identities remain
+stable when the number of identical copies changes. The rule does not classify
+arbitrary code without a return as filler.
+
+`func_00335E28` is a measured 12-byte residue in the boot and all 27 levels. The
+preceding function returns at `0x00335E20`, with `lw $v0,0xC($a0)` in its delay
+slot at `0x00335E24`. The extent then adjusts `$sp` upward by `0x20`, has a nop,
+stores `$f0` through `$v1` at offset `0xC`, and has no return; the next function
+starts after a nop at `0x00335E38`. Every placement has this same boundary. The
+row has no frame to restore and does not establish `$v1`. Across all 28 images,
+no direct branch or call, aligned literal pointer, or nearby `lui` plus low-half
+construction references it. `FUNCTION_RESIDUES` removes only this named extent
+and leaves the retail bytes in place.
 
 A boundary-only PR leaves progress reports for the later maintainer refresh.
 The non-strict report check tolerates obsolete rows only for these named remnants,

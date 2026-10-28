@@ -528,8 +528,6 @@ s32 func_00335E18(u8 *a0) { return *(s32 *)(a0 + 0x4); }
 /* Measured target: byte-identical across all 27 levels. */
 s32 func_00335E20(u8 *a0) { return *(s32 *)(a0 + 0xc); }
 
-INCLUDE_ASM("asm/game", func_00335E28);
-
 void func_00335E38(u8 *a0,f32 f0,f32 f1,f32 f2,f32 f3) {
  (*(f32 **)a0)[0]=f0;(*(f32 **)a0)[1]=f1;
  (*(f32 **)a0)[2]=f2;(*(f32 **)a0)[3]=f3;
