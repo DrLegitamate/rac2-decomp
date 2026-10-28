@@ -117,7 +117,7 @@ u8 *func_L07_003F65E8(s32 group)
 
 /* func_L07_003F6960 is defined in L07_003F4578-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L07_003F6C40);
+/* func_L07_003F6C40 is defined in L07_003F6C40.c. */
 
 /* func_L07_003F6CF0 is defined in L07_003F4578-g8.c (this unit has no $gp access for it). */
 
