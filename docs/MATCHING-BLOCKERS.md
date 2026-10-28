@@ -2579,3 +2579,12 @@ linked builds.
 The former diagnostic-only `func_L05_00441D40` and `func_002FF0D8` screens now
 retain meaningful C in `nonmatching/` with the remaining allocation, address and
 store-order differences. Neither is counted as matching C.
+
+The old diagnostic-only refusal of `func_L09_003F9970` is superseded by a local
+C candidate (28 October 2026): its four formerly invalid words are ordinary
+quadword transfers, reproduced by default `qcopy`. A measured `MACRO_ADDR` view
+of the scratch symbol keeps its final address setup together. The 256-byte body
+matches both placements in US, US2 and PAL at the default `-O2 -G0
+-ffunction-sections` profile. The actual float returns of `func_002A7E08` and
+`func_002AA458`, and the void return of `func_L02_00332D28`, are retained from
+their existing definitions. Strict linked qualification remains pending.
