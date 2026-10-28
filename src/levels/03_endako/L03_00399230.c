@@ -238,7 +238,39 @@ void func_L03_003D1FB0(char *a0)
 
 INCLUDE_ASM("asm/levels", func_L03_003D2018);
 
-INCLUDE_ASM("asm/levels", func_L03_003D20F8);
+extern u8 *D_L03_001B2A1C_tbl[] __asm__("D_L03_001B2A1C") __attribute__((sda));
+
+void func_L03_003D20F8(char *a0)
+{
+    char *s0 = a0;
+    char *s1 = *(char **)(s0 + 0x68);
+    char *s2;
+    void *p;
+
+    func_2B8510(0);
+    s2 = D_00189E20_11;
+    *(u16 *)(s2 + 0x24FC) = 0;
+    func_313378(*(u8 *)(s0 + 0xB0));
+    D_001395C0 = 1;
+    /* Resident bytes shared by all programs, written at their constant addresses
+       (retail's lui $at,0x1A; sb form), as in 0033CB18.c. */
+    *(u8 *)0x001A7B32 = 1;
+    *(u8 *)0x001A7AFB = 1;
+    *(u8 *)0x001A7B33 = 1;
+    *(u8 *)0x001A7AFC = 1;
+    *(u8 *)0x001A7B34 = 1;
+    *(u8 *)0x001A7AFA = 1;
+    func_2BEE78(s0 + 0x10, s0 + 0xF0, 0, 1);
+    p = *(void **)(s1 + 0x2C);
+    if (p != 0) {
+        func_311758(p);
+    }
+    func_311758(D_L03_001B2A1C_tbl[0] + (*(s32 *)s1 << 8));
+    *(s32 *)(s0 + 0x78) = 0x80468CDC;
+    func_32F140(*(s32 *)(s1 + 0x24), -1);
+    func_359FD0(s2 + 0x80, s2 + 0x90);
+    func_30D710(0, -1);
+}
 
 INCLUDE_ASM("asm/levels", func_L03_003D22C8);
 
