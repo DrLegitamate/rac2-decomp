@@ -2084,3 +2084,7 @@ the placement rules are in `tools/fcheck.py`'s docstring; its tests are
 | [`func_L19_00420818`](levels/func_L19_00420818.c) | 812 | 812/812 bytes, USA v1.01 and v2.00 0/1 each; PAL absent. Trigger-table index and movement-pointer capture allocation remain. |
 | [`func_00348EC0`](game/func_00348EC0.c) | 644 | 640/644 bytes, USA v1.01 0/28. Widget rendering recovered; floating setup and scheduling remain different after ten trials. |
 | [`func_L00_00427D50`](levels/func_L00_00427D50.c) | 684 | Preliminary 680/684 bytes, USA v1.01 0/27. Camera smoothing and basis update recovered; final retained angle literal corrected but not rechecked after reprioritization. |
+| [`func_L14_004295D0`](levels/func_L14_004295D0.c) | 796 | 796/796 bytes with game `-O2 -G8 -frac2-qcopy -frac2-qcopy-barrier`; initial constants and velocity scheduling differ, later instruction shapes match. |
+| [`func_L07_003F7968`](levels/func_L07_003F7968.c) | 632 | 632/632 bytes with game `-O2 -G8 -frac2-qcopy -frac2-qcopy-barrier`; one tier-clamp branch annuls its slot while retail uses an ordinary branch. |
+| [`func_002BEBC0`](game/func_002BEBC0.c) | 680 | 672/680 bytes at game `-O2 -G0`, 0/28 USA places; alpha-bound select and subsequent block scheduling differ. |
+| [`func_L00_003EB0C0`](levels/func_L00_003EB0C0.c) | 760 | 752/760 bytes, 0/11 USA places at game `-O2 -G0`; 3x4 matrix frame identified, sentinel-byte constant reuse and list-loop allocation differ. |

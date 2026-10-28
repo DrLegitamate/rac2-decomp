@@ -2629,3 +2629,24 @@ the linked sources. None is a local match, and only US was measured:
 These deposits need measured pointer-lifetime or scheduling evidence before
 another retry. Their prior diagnostic-only refusals remain historical notes,
 not proof that current helpers or address aliases cannot express the bodies.
+
+### Prison oscillator: the ignored message result still affects allocation
+
+`func_L14_00426F28` has a retained game `-O2 -G8` draft at 744/744 bytes.
+Its scalar SDATA views, unsigned timer snapshot and actual float return of
+`func_002AA2E8` reproduce the remainder/FP paths. The query `func_002A9640`
+returns a hit pointer, and `func_L00_0030DD70` returns an integer, as shown by
+its implementation in `L00_002FC7A0.c`. With those contracts the final object
+flag update uses v1 instead of retail's v0 (+0x248 through +0x268). Unsigned
+16-/32-bit snapshots tie; a 64-bit snapshot grows to 752 bytes. A void message
+prototype produced a local byte match but was rejected, and its source marker
+was restored. **Next:** an evidenced object-field scope or allocator-lifetime
+explanation; do not recover the apparent match by discarding the integer return.
+
+`func_L07_003F7968` is likewise a size-exact retained controller (632 bytes,
+game `-O2 -G8 -frac2-qcopy -frac2-qcopy-barrier`). Its sole remaining instruction
+is bnel instead of bnez at +0xE4 in the bounded tier selector. The observed
+child-pointer reloads need no invented volatile fields: ordinary byte/halfword
+accesses already retain them. Independent clamps shorten the body, reversing
+the arms changes block order, and debug labels do not change the branch. This
+compiler rejects `-mno-branch-likely`; no compiler change was made.

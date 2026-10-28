@@ -2,6 +2,8 @@
  * Unaligned string-table copies match their widths. Constant colours,
  * format and lookup intermediates receive a different callee-save order,
  * and the final boolean index selects a pointer rather than a byte offset.
+ * The verified int formatter return leaves the same tie. Explicit format
+ * lifetime and an aligned selector record do not repair it.
  * Next: inspect allocation lifetimes with the current regalloc diagnostic.
  */
 #include "common.h"
@@ -19,7 +21,7 @@ extern int D_L00_001ADE10 SDATA(D_L00_001ADE10);
 extern int D_L00_001ADE18 SDATA(D_L00_001ADE18);
 extern void func_0033AF48(void *);
 extern char *func_00288FB8(int);
-extern void func_00115DA8(char *, const char *, ...);
+extern int func_00115DA8(char *, const char *, ...);
 extern int func_0027FB40(int, int, unsigned long long, unsigned char *, int);
 
 void func_0033C738(char *object)
