@@ -1358,3 +1358,13 @@ src/game/0030DB88-g8.c	-O2 -G8 -Wa,-G64 -ffunction-sections -g
 src/game/0030F7B0-loot-g8.c	-O2 -G8 -ffunction-sections -fno-gcse
 src/game/0030F7B0-spawn.c	-O2 -G0 -mno-split-addresses -ffunction-sections -frac2-qcopy
 src/game/0031D070-qcopy.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
+src/game/00327038-ground-g8.c	-O2 -G8 -ffunction-sections -g
+src/game/0032DD40-g8.c	-O2 -G8 -g -ffunction-sections
+src/game/0032B7D0-qcopy.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -fno-gcse
+src/game/0032DA58-g8.c	-O2 -G8 -ffunction-sections -fstrict-aliasing
+src/game/003281F0-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
+src/game/0032EB28-math-g8.c	-O2 -G8 -ffunction-sections -ffast-math
+src/game/0032EB28-ground-g8.c	-O2 -G8 -ffunction-sections -g
+src/game/0032EB28-ring-g8.c	-O2 -G8 -ffunction-sections
+src/game/00345358-interpolation.c	-O2 -G0 -ffunction-sections -ffast-math
+src/game/00345358-menu.c	-O2 -G0 -ffunction-sections -fno-strength-reduce

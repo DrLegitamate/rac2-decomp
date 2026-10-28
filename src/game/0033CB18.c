@@ -1,4 +1,11 @@
 #include "include_asm.h"
+typedef struct { int ids[2]; } SolTextPair;
+
+extern char D_L00_001AE118[];
+extern int DrawOptionText(int, int, unsigned long, char *, int) __asm__("func_0027FAA8");
+extern void func_0033AF48(void *);
+extern char *func_00288FB8(int);
+extern int func_00115DA8(char *, const char *, ...);
 
 extern void Fc558ca70_FUN_0033AE28(char *p);
 
@@ -87,7 +94,7 @@ char *func_0033CD80(char *object)
 
 
 
-INCLUDE_ASM("asm/game", func_0033D028);
+/* func_0033D028 uses small data in 0033D028-g8.c. */
 
 INCLUDE_ASM("asm/game", func_0033D2C0);
 
@@ -120,7 +127,7 @@ int func_0033D5A0 (char *object, int flags)
   return (flags >> 6) & 1;
 }
 
-typedef struct { int ids[2]; } SolTextPair;
+
 extern SolTextPair D_L00_001AE110;
 extern char D_L00_001AE118[];
 /* Resident byte at 0x001A7BB2 is shared by all programs. */

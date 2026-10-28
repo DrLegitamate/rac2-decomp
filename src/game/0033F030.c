@@ -118,6 +118,8 @@ typedef struct {
 extern MenuEntry D_001FCE0[];
 extern int func_002E5E58(int, unsigned int, void *);
 extern void func_003407F8(MenuState *, MenuEntry *, int);
+extern void *func_00115484(void *, int, unsigned int);
+extern void func_00335E38(void *, float, float, float, float);
 
 /* Moves the selection of a menu's table: the buttons 0x1000 and 0x4000 move the page,
    0x8000 and 0x2000 the column and 0x40 asks for the entry's value, which is then kept
@@ -173,9 +175,50 @@ u8 *func_00340D18(u8 *self)
     return self;
 }
 
-INCLUDE_ASM("asm/game", func_00340D68);
+/* func_00340D68 is in 0033F030-grid-g8.c. */
 
-INCLUDE_ASM("asm/game", func_00341030);
+/* Moves the selection of a menu grid and keeps the selected entry's value at
+   0x214: the buttons 0x1000 and 0x4000 step the row (0x208, wrapping at the row
+   count at 0x210), 0x8000 and 0x2000 the column (0x204, wrapping at 0x20C). A
+   step down is stored, read back and stored again after the wrap test. */
+int func_00341030(char *self, unsigned int buttons, MenuEntry *table)
+{
+    float offset[2];
+    func_00115484(offset, 0, 8);
+    if (table) {
+        float *position;
+        *(int *)(self + 0x214) = 0;
+        position = *(float **)(self + 0x1B0);
+        func_00335E38(self, offset[0] + position[0], offset[1] + position[1], 0.0f, 0.0f);
+        if (buttons & 0x1000) {
+            int n;
+            func_002E5E58(3, 0, 0);
+            *(int *)(self + 0x208) -= 1;
+            n = *(int *)(self + 0x208);
+            if (n < 0) n = *(int *)(self + 0x210) - 1;
+            *(int *)(self + 0x208) = n;
+        } else if (buttons & 0x4000) {
+            int n;
+            func_002E5E58(3, 0, 0);
+            n = *(int *)(self + 0x208) + 1;
+            *(int *)(self + 0x208) = n < *(int *)(self + 0x210) ? n : 0;
+        } else if (buttons & 0x8000) {
+            int n;
+            func_002E5E58(3, 0, 0);
+            *(int *)(self + 0x204) -= 1;
+            n = *(int *)(self + 0x204);
+            if (n < 0) n = *(int *)(self + 0x20C) - 1;
+            *(int *)(self + 0x204) = n;
+        } else if (buttons & 0x2000) {
+            int n;
+            func_002E5E58(3, 0, 0);
+            n = *(int *)(self + 0x204) + 1;
+            *(int *)(self + 0x204) = n < *(int *)(self + 0x20C) ? n : 0;
+        }
+        *(int *)(self + 0x214) = table[*(int *)(self + 0x204) + *(int *)(self + 0x208) * *(int *)(self + 0x20C)].value;
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/game", func_003411B0);
 
