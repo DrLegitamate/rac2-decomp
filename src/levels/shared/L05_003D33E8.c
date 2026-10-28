@@ -1,6 +1,34 @@
 #include "include_asm.h"
 #include "common.h"
 
+extern char *func_0029EFD0(int);
+extern char D_L05_001B96C0[];
+extern void func_002AFFD8(void *, void *, int);
+extern void func_00282DD8(void *, void *, void *);
+extern int func_00283DB8(void *, float);
+extern float func_00282E48(void *, void *);
+extern float func_00282DB0(void *, void *);
+extern float func_002831B0(float);
+extern void func_L05_00425058(void *, void *);
+
+/* Glow ring: four pulsing sprites along the actor's facing, each faded in. */
+typedef int GlowRingVector __attribute__((mode(TI)));
+extern unsigned char ref_L05_00426348_00[];
+extern unsigned char ref_L05_004268E8_00[];
+extern void func_00282CF0(float *, void *, float *);
+extern void func_00282F20(float *, float *, float);
+
+extern int func_00282948(void *);
+extern float func_00283CE0(int);
+extern float func_00282C48(float);
+extern u32 func_00283D38(u32, u32, float);
+extern int func_00283CF0(float);
+
+typedef struct { unsigned char pad[9]; unsigned char fade; } GlowRingSprite;
+extern GlowRingSprite *func_002C2FD8(void *, u32, int, int, int, int, int, float);
+
+typedef struct { float phase[4]; float rate[4]; int alpha[4]; float size[4]; } GlowRingState;
+
 typedef int TI128 __attribute__((mode(TI)));
 
 extern char *D_L05_001B2614 __attribute__((sda));
@@ -227,7 +255,6 @@ void func_L05_0041C410(char *object)
 INCLUDE_ASM("asm/levels", func_L05_0041C708);
 
 
-/* func_L05_0041D498 is defined in L05_003D33E8-g8.c (this unit has no $gp access for it). */
 
 /* func_L05_0041D570 is defined in L05_003D33E8-g8.c (it reaches D_L05_001B1348 through $gp). */
 
@@ -265,7 +292,7 @@ INCLUDE_ASM("asm/levels", func_L05_0041ED18);
 
 INCLUDE_ASM("asm/levels", func_L05_00421860);
 
-INCLUDE_ASM("asm/levels", func_L05_00421908);
+/* func_L05_00421908 is in L05_003D33E8-reward-g8.c: -G8, with its own jump table. */
 
 void func_L05_00424780(char *object)
 {
@@ -292,7 +319,73 @@ void func_L05_00424980(char *object, int value)
     *(int *)(state + 0xC) = value;
 }
 
-INCLUDE_ASM("asm/levels", func_L05_00424990);
+/* Creates a camera-facing burst, sets its lifetime and colors, and shakes
+   the camera when a visible burst is nearby. */
+char *func_L05_00424990(void *pos, int shake, int c20, int c24, int c28,
+                         int c2c, int c30, int unused, int c34, int mode,
+                         int c38, float scale)
+{
+    float toward[4], up[4], sphere[4], cameraDir[4];
+    char *obj = func_0029EFD0(0x116A);
+    char *st;
+
+    if (obj) {
+        st = *(char **)(obj + 0x68);
+        *(unsigned char *)(obj + 0x30) = 255;
+        *(unsigned short *)(obj + 0x32) = 255;
+        obj[0x20] = 0;
+        qcopy(obj + 0x10, pos);
+        *(float *)(obj + 0x1C) = 1.0f;
+        func_00282CF0(toward, D_L05_001B96C0, (float *)(obj + 0x10));
+        func_00282F20(toward, toward, 1.0f);
+        func_002AFFD8(obj + 0x10, up, 1);
+        qcopy(obj + 0xC0, toward);
+        func_00282DD8(obj + 0xD0, obj + 0xC0, up);
+        func_00282F20((float *)(obj + 0xD0), (float *)(obj + 0xD0), 1.0f);
+        func_00282DD8(obj + 0xE0, obj + 0xD0, obj + 0xC0);
+        *(float *)(obj + 0xCC) = *(float *)(obj + 0xDC) = *(float *)(obj + 0xEC) = 0.0f;
+        *(short *)st = 60;
+        *(short *)(st + 2) = 60;
+        *(float *)(st + 8) = scale + scale;
+        *(float *)(st + 0xC) = scale * 4.0f;
+        *(int *)(st + 0x20) = c20;
+        *(int *)(st + 0x24) = c24;
+        *(int *)(st + 0x28) = c28;
+        *(int *)(st + 0x2C) = c2c;
+        *(int *)(st + 0x30) = c30;
+        *(int *)(st + 0x34) = c34;
+        *(int *)(st + 0x1C) = mode;
+        *(int *)(st + 0x38) = c38;
+        *(float *)(st + 0x14) = scale;
+        *(int *)(st + 0x18) = 0;
+        qcopy(sphere, obj + 0x10);
+        sphere[3] = scale * 3.0f;
+        if (func_00283DB8(sphere, 128.0f) == 1) {
+            *(short *)(st + 4) = 10;
+            *(float *)(st + 0x10) = 0.1f;
+            if (func_00282E48(pos, D_L05_001B96C0) < 48.0f && shake) {
+                char *mgr = D_L05_001B96C0 - 0x140;
+
+                *(int *)(mgr + 0x16C) = 0;
+                *(int *)(mgr + 0x168) = 40;
+                *(float *)(mgr + 0x160) = 0.075f;
+            }
+            if (*(int *)(st + 0x18)) {
+                func_00282CF0(cameraDir, obj + 0x10, (float *)D_L05_001B96C0);
+                func_00282F20(cameraDir, cameraDir, 1.0f);
+                if (1.5707964f - func_002831B0(func_00282DB0(cameraDir, D_L05_001B96C0 + 0x230)) < 0.45378566f)
+                    *(int *)(st + 0x18) = 1;
+                else
+                    *(int *)(st + 0x18) = 0;
+            }
+        } else {
+            *(short *)(st + 4) = 0;
+            *(int *)(st + 0x18) = 0;
+        }
+        func_L05_00425058(obj, up);
+    }
+    return obj;
+}
 
 void func_L05_00424C88(char *object)
 {
@@ -307,9 +400,8 @@ void func_L05_00424C88(char *object)
 }
 
 
-INCLUDE_ASM("asm/levels", func_L05_00425058);
+/* func_L05_00425058 is defined in L05_00425058-g8.c. */
 
-/* func_L05_00425FE0 is defined in L05_003D33E8-g8.c (this unit has no $gp access for it). */
 
 /* func_L05_004260B8 is defined in L05_003D33E8-g8.c (it reaches D_L05_001B14FC through $gp). */
 
@@ -342,7 +434,41 @@ void func_L05_00426270(char *object)
     *(float *)(state + 0x38) = 3.0f;
 }
 
-INCLUDE_ASM("asm/levels", func_L05_00426348);
+void func_L05_00426348(unsigned char *a0)
+{
+    GlowRingState *st = *(GlowRingState **)(a0 + 0x68);
+    float m[4];
+    float q[4];
+    float src[4];
+    int i;
+
+    *(GlowRingVector *)src = *(GlowRingVector *)(a0 + 0x10);
+    src[2] += 0.25f;
+    func_00282CF0(m, ref_L05_00426348_00, src);
+    func_00282F20(m, m, -0.3f);
+    func_00282F20(q, m, 0.1f);
+    func_00282CC0((char *)m, (char *)m, (char *)src);
+
+    for (i = 0; i < 4; i++) {
+        float v = st->phase[i] + st->rate[i];
+        u32 color;
+        GlowRingSprite *s;
+        st->phase[i] = v;
+        if (v >= 255.0f)
+            st->phase[i] = v - 255.0f;
+        else if (v <= 0.0f)
+            st->phase[i] = v + 255.0f;
+        if (func_00282948(&st->alpha[i]))
+            st->alpha[i] = 0xFF;
+        v = func_00282C48(0.5f - func_00283CE0(0xFF - st->alpha[i]) * 0.0039215689f);
+        color = func_00283D38(0x502020FF, 0x102020FF, v);
+        s = func_002C2FD8(m, color, func_00283CF0(st->phase[i]) & 0xFF, 0x35, 1, 2, 0, st->size[i]);
+        if (s)
+            s->fade = func_00283CF0(1.0f) + 0x60;
+        func_00282CC0((char *)m, (char *)m, (char *)q);
+    }
+}
+
 
 INCLUDE_ASM("asm/levels", func_L05_00426568);
 
@@ -377,9 +503,42 @@ void func_L05_00426810(char *object)
     *(float *)(state + 0x38) = 2.5f;
 }
 
-INCLUDE_ASM("asm/levels", func_L05_004268E8);
+void func_L05_004268E8(unsigned char *a0)
+{
+    GlowRingState *st = *(GlowRingState **)(a0 + 0x68);
+    float m[4];
+    float q[4];
+    float src[4];
+    int i;
 
-/* func_L05_00426B08 is defined in L05_003D33E8-g8.c (this unit has no $gp access for it). */
+    *(GlowRingVector *)src = *(GlowRingVector *)(a0 + 0x10);
+    src[2] += 0.25f;
+    func_00282CF0(m, ref_L05_004268E8_00, src);
+    func_00282F20(m, m, -0.3f);
+    func_00282F20(q, m, 0.1f);
+    func_00282CC0((char *)m, (char *)m, (char *)src);
+
+    for (i = 0; i < 4; i++) {
+        float v = st->phase[i] + st->rate[i];
+        u32 color;
+        GlowRingSprite *s;
+        st->phase[i] = v;
+        if (v >= 255.0f)
+            st->phase[i] = v - 255.0f;
+        else if (v <= 0.0f)
+            st->phase[i] = v + 255.0f;
+        if (func_00282948(&st->alpha[i]))
+            st->alpha[i] = 0xFF;
+        v = func_00282C48(0.5f - func_00283CE0(0xFF - st->alpha[i]) * 0.0039215689f);
+        color = func_00283D38(0x50207FFF, 0x10207FFF, v);
+        s = func_002C2FD8(m, color, func_00283CF0(st->phase[i]) & 0xFF, 0x35, 1, 2, 0, st->size[i]);
+        if (s)
+            s->fade = func_00283CF0(1.0f) + 0x60;
+        func_00282CC0((char *)m, (char *)m, (char *)q);
+    }
+}
+
+
 
 /* func_L05_00426BE0 is defined in L05_003D33E8-g8.c (it reaches D_L05_001B1504 through $gp). */
 
@@ -425,6 +584,3 @@ INCLUDE_ASM("asm/levels", func_L05_00427988);
 /* func_L05_00427B20 is defined in L05_00427B20.c. */
 
 INCLUDE_ASM("asm/levels", func_L05_00427E10);
-
-
-INCLUDE_ASM("asm/levels", func_L05_00427FC8);

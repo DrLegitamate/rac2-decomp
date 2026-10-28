@@ -1404,3 +1404,5 @@ src/levels/shared/L04_00402D90-aim.c	-O2 -G0 -ffunction-sections -g
 src/levels/shared/L04_0041AD18-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
 src/levels/shared/L05_003CF040-g8.c	-O2 -G8 -ffunction-sections -frac2-keep-block-order
 src/levels/shared/L05_00398F18.c	-O2 -G0 -ffunction-sections -frac2-keep-block-order -frac2-gcse-unsplit-edges
+src/levels/shared/L05_00444FD0.c	-O2 -G0 -ffunction-sections -mno-split-addresses
+src/levels/shared/L06_003E11A0-collision.c	-O2 -G0 -ffunction-sections -ffast-math -frac2-zero-ti-barrier -frac2-qcopy -frac2-qcopy-barrier
