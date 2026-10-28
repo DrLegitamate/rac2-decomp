@@ -215,7 +215,7 @@ INCLUDE_ASM("asm/levels", func_L03_003D20F8);
 
 INCLUDE_ASM("asm/levels", func_L03_003D22C8);
 
-INCLUDE_ASM("asm/levels", func_L03_003D2518);
+/* func_L03_003D2518 is defined in L03_003D2518.c. */
 
 
 extern void *func_0029EFD0(int);
