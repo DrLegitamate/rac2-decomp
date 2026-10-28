@@ -1872,6 +1872,14 @@ unit it emits only two things:
 Every other MMI word — `pmaxw`, `pminw`, `pcpyld`, `pcpyud`, `pexch`, `pextlw` —
 never comes out of a C body.
 
+`func_002829A8` is a 48-byte example at the boot and all 27 level placements.
+The same body uses `pmaxw $at,$at,$v0` in the `beqz` delay slot and `$at` as
+the byte counter. A behaviorally equivalent C reconstruction, adapted from
+RAC1's functional timer note, compiles to 48 bytes but matches 0/28 placements;
+it replaces the `pmaxw` and branch layout. Keep it in
+`nonmatching/game/func_002829A8.c`; the evidence supports maintainer review,
+not an automatic `ASM_FUNC` classification.
+
 `func_00283360` is a 40-byte example: its body is identical in the boot and all
 27 levels, and it uses `vmulx.xyzw`, `vmr32.xyzw`, `vaddw.x/y` and `sqc2`.
 There are 151 direct calls to its placements across the 28 programs, confirming
