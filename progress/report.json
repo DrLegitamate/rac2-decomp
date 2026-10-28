@@ -1,13 +1,13 @@
 {
  "version": 2,
  "measures": {
-  "fuzzy_match_percent": 54.44530907853733,
+  "fuzzy_match_percent": 54.457687421504296,
   "total_code": "5525780",
-  "matched_code": "3008528",
-  "matched_code_percent": 54.44530907853733,
+  "matched_code": "3009212",
+  "matched_code_percent": 54.457687421504296,
   "total_functions": 8578,
-  "matched_functions": 6219,
-  "matched_functions_percent": 72.49941711354629,
+  "matched_functions": 6222,
+  "matched_functions_percent": 72.53439030076942,
   "complete_code": "0",
   "complete_code_percent": 0.0,
   "total_units": 807,
@@ -43,13 +43,13 @@
    "id": "level_code",
    "name": "Level code",
    "measures": {
-    "fuzzy_match_percent": 53.508691278193204,
+    "fuzzy_match_percent": 53.523955578209005,
     "total_code": "4481044",
-    "matched_code": "2397748",
-    "matched_code_percent": 53.508691278193204,
+    "matched_code": "2398432",
+    "matched_code_percent": 53.523955578209005,
     "total_functions": 5452,
-    "matched_functions": 3693,
-    "matched_functions_percent": 67.73661041819516,
+    "matched_functions": 3696,
+    "matched_functions_percent": 67.7916360968452,
     "complete_code": "0",
     "complete_code_percent": 0.0
    }
@@ -73,13 +73,13 @@
    "id": "common",
    "name": "Shared level code",
    "measures": {
-    "fuzzy_match_percent": 47.40110375079126,
+    "fuzzy_match_percent": 47.410019346843434,
     "total_code": "1794608",
-    "matched_code": "850664",
-    "matched_code_percent": 47.40110375079126,
+    "matched_code": "850824",
+    "matched_code_percent": 47.410019346843434,
     "total_functions": 3024,
-    "matched_functions": 2137,
-    "matched_functions_percent": 70.66798941798942,
+    "matched_functions": 2138,
+    "matched_functions_percent": 70.7010582010582,
     "complete_code": "0",
     "complete_code_percent": 0.0
    }
@@ -88,13 +88,13 @@
    "id": "levels",
    "name": "Level-specific code",
    "measures": {
-    "fuzzy_match_percent": 57.588716053537105,
+    "fuzzy_match_percent": 57.608221450278364,
     "total_code": "2686436",
-    "matched_code": "1547084",
-    "matched_code_percent": 57.588716053537105,
+    "matched_code": "1547608",
+    "matched_code_percent": 57.608221450278364,
     "total_functions": 2428,
-    "matched_functions": 1556,
-    "matched_functions_percent": 64.08566721581549,
+    "matched_functions": 1558,
+    "matched_functions_percent": 64.16803953871499,
     "complete_code": "0",
     "complete_code_percent": 0.0
    }
@@ -148,13 +148,13 @@
    "id": "level_03",
    "name": "Level 03: Endako",
    "measures": {
-    "fuzzy_match_percent": 63.436847235761036,
+    "fuzzy_match_percent": 63.612310263194544,
     "total_code": "143620",
-    "matched_code": "91108",
-    "matched_code_percent": 63.436847235761036,
+    "matched_code": "91360",
+    "matched_code_percent": 63.612310263194544,
     "total_functions": 107,
-    "matched_functions": 65,
-    "matched_functions_percent": 60.74766355140187,
+    "matched_functions": 66,
+    "matched_functions_percent": 61.6822429906542,
     "complete_code": "0",
     "complete_code_percent": 0.0
    }
@@ -493,13 +493,13 @@
    "id": "level_30",
    "name": "Level 30: Insomniac Museum",
    "measures": {
-    "fuzzy_match_percent": 29.248753372026485,
+    "fuzzy_match_percent": 29.804626829068912,
     "total_code": "48932",
-    "matched_code": "14312",
-    "matched_code_percent": 29.248753372026485,
+    "matched_code": "14584",
+    "matched_code_percent": 29.804626829068912,
     "total_functions": 55,
-    "matched_functions": 29,
-    "matched_functions_percent": 52.72727272727273,
+    "matched_functions": 30,
+    "matched_functions_percent": 54.54545454545455,
     "complete_code": "0",
     "complete_code_percent": 0.0
    }
@@ -52893,13 +52893,13 @@
   {
    "name": "Level 03: Endako",
    "measures": {
-    "fuzzy_match_percent": 63.436847235761036,
+    "fuzzy_match_percent": 63.612310263194544,
     "total_code": "143620",
-    "matched_code": "91108",
-    "matched_code_percent": 63.436847235761036,
+    "matched_code": "91360",
+    "matched_code_percent": 63.612310263194544,
     "total_functions": 107,
-    "matched_functions": 65,
-    "matched_functions_percent": 60.74766355140187,
+    "matched_functions": 66,
+    "matched_functions_percent": 61.6822429906542,
     "complete_code": "0",
     "complete_code_percent": 0.0,
     "total_units": 1,
@@ -53377,7 +53377,7 @@
     {
      "name": "func_L03_003D20F8",
      "size": "252",
-     "fuzzy_match_percent": 0.0,
+     "fuzzy_match_percent": 100.0,
      "address": "1177952",
      "metadata": {
       "virtual_address": "4006136"
@@ -70956,13 +70956,13 @@
   {
    "name": "Level 30: Insomniac Museum",
    "measures": {
-    "fuzzy_match_percent": 29.248753372026485,
+    "fuzzy_match_percent": 29.804626829068912,
     "total_code": "48932",
-    "matched_code": "14312",
-    "matched_code_percent": 29.248753372026485,
+    "matched_code": "14584",
+    "matched_code_percent": 29.804626829068912,
     "total_functions": 55,
-    "matched_functions": 29,
-    "matched_functions_percent": 52.72727272727273,
+    "matched_functions": 30,
+    "matched_functions_percent": 54.54545454545455,
     "complete_code": "0",
     "complete_code_percent": 0.0,
     "total_units": 1,
@@ -71017,7 +71017,7 @@
     {
      "name": "func_L30_003830D8",
      "size": "272",
-     "fuzzy_match_percent": 0.0,
+     "fuzzy_match_percent": 100.0,
      "address": "361960",
      "metadata": {
       "virtual_address": "3682520"
@@ -71478,13 +71478,13 @@
   {
    "name": "Shared level code",
    "measures": {
-    "fuzzy_match_percent": 47.40110375079126,
+    "fuzzy_match_percent": 47.410019346843434,
     "total_code": "1794608",
-    "matched_code": "850664",
-    "matched_code_percent": 47.40110375079126,
+    "matched_code": "850824",
+    "matched_code_percent": 47.410019346843434,
     "total_functions": 3024,
-    "matched_functions": 2137,
-    "matched_functions_percent": 70.66798941798942,
+    "matched_functions": 2138,
+    "matched_functions_percent": 70.7010582010582,
     "complete_code": "0",
     "complete_code_percent": 0.0,
     "total_units": 1,
@@ -74221,7 +74221,7 @@
     {
      "name": "func_L00_002D6418",
      "size": "160",
-     "fuzzy_match_percent": 0.0,
+     "fuzzy_match_percent": 100.0,
      "address": "207000",
      "metadata": {
       "virtual_address": "2974744"

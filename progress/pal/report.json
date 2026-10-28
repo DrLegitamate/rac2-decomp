@@ -1,13 +1,13 @@
 {
  "version": 2,
  "measures": {
-  "fuzzy_match_percent": 17.319460114027038,
+  "fuzzy_match_percent": 17.32703293405406,
   "total_code": "5704612",
-  "matched_code": "988008",
-  "matched_code_percent": 17.319460114027038,
+  "matched_code": "988440",
+  "matched_code_percent": 17.32703293405406,
   "total_functions": 8672,
-  "matched_functions": 4610,
-  "matched_functions_percent": 53.15959409594096,
+  "matched_functions": 4612,
+  "matched_functions_percent": 53.18265682656826,
   "complete_code": "0",
   "complete_code_percent": 0.0,
   "total_units": 958,
@@ -43,13 +43,13 @@
    "id": "level_code",
    "name": "Level code",
    "measures": {
-    "fuzzy_match_percent": 12.231499524663716,
+    "fuzzy_match_percent": 12.240791166057978,
     "total_code": "4649340",
-    "matched_code": "568684",
-    "matched_code_percent": 12.231499524663716,
+    "matched_code": "569116",
+    "matched_code_percent": 12.240791166057978,
     "total_functions": 5541,
-    "matched_functions": 2477,
-    "matched_functions_percent": 44.70312218011189,
+    "matched_functions": 2479,
+    "matched_functions_percent": 44.739216747879446,
     "complete_code": "0",
     "complete_code_percent": 0.0
    }
@@ -73,13 +73,13 @@
    "id": "common",
    "name": "Shared level code",
    "measures": {
-    "fuzzy_match_percent": 16.47686666212905,
+    "fuzzy_match_percent": 16.485374693710863,
     "total_code": "1880576",
-    "matched_code": "309860",
-    "matched_code_percent": 16.47686666212905,
+    "matched_code": "310020",
+    "matched_code_percent": 16.485374693710863,
     "total_functions": 3032,
-    "matched_functions": 1532,
-    "matched_functions_percent": 50.52770448548813,
+    "matched_functions": 1533,
+    "matched_functions_percent": 50.56068601583114,
     "complete_code": "0",
     "complete_code_percent": 0.0
    }
@@ -88,13 +88,13 @@
    "id": "levels",
    "name": "Level-specific code",
    "measures": {
-    "fuzzy_match_percent": 9.347997879198083,
+    "fuzzy_match_percent": 9.357821757289534,
     "total_code": "2768764",
-    "matched_code": "258824",
-    "matched_code_percent": 9.347997879198083,
+    "matched_code": "259096",
+    "matched_code_percent": 9.357821757289534,
     "total_functions": 2509,
-    "matched_functions": 945,
-    "matched_functions_percent": 37.66440813072938,
+    "matched_functions": 946,
+    "matched_functions_percent": 37.70426464726983,
     "complete_code": "0",
     "complete_code_percent": 0.0
    }
@@ -493,13 +493,13 @@
    "id": "level_30",
    "name": "Level 30: Insomniac Museum",
    "measures": {
-    "fuzzy_match_percent": 15.281126059569173,
+    "fuzzy_match_percent": 15.809938564429583,
     "total_code": "51436",
-    "matched_code": "7860",
-    "matched_code_percent": 15.281126059569173,
+    "matched_code": "8132",
+    "matched_code_percent": 15.809938564429583,
     "total_functions": 58,
-    "matched_functions": 22,
-    "matched_functions_percent": 37.93103448275862,
+    "matched_functions": 23,
+    "matched_functions_percent": 39.6551724137931,
     "complete_code": "0",
     "complete_code_percent": 0.0
    }
@@ -23270,13 +23270,13 @@
   {
    "name": "Level 30: Insomniac Museum",
    "measures": {
-    "fuzzy_match_percent": 15.281126059569173,
+    "fuzzy_match_percent": 15.809938564429583,
     "total_code": "51436",
-    "matched_code": "7860",
-    "matched_code_percent": 15.281126059569173,
+    "matched_code": "8132",
+    "matched_code_percent": 15.809938564429583,
     "total_functions": 58,
-    "matched_functions": 22,
-    "matched_functions_percent": 37.93103448275862,
+    "matched_functions": 23,
+    "matched_functions_percent": 39.6551724137931,
     "complete_code": "0",
     "complete_code_percent": 0.0,
     "total_units": 1,
@@ -23331,7 +23331,7 @@
     {
      "name": "func_L30_003830D8",
      "size": "272",
-     "fuzzy_match_percent": 0.0,
+     "fuzzy_match_percent": 100.0,
      "address": "365344",
      "metadata": {
       "virtual_address": "3694072"
@@ -23819,13 +23819,13 @@
   {
    "name": "Shared level code",
    "measures": {
-    "fuzzy_match_percent": 16.47686666212905,
+    "fuzzy_match_percent": 16.485374693710863,
     "total_code": "1880576",
-    "matched_code": "309860",
-    "matched_code_percent": 16.47686666212905,
+    "matched_code": "310020",
+    "matched_code_percent": 16.485374693710863,
     "total_functions": 3032,
-    "matched_functions": 1532,
-    "matched_functions_percent": 50.52770448548813,
+    "matched_functions": 1533,
+    "matched_functions_percent": 50.56068601583114,
     "complete_code": "0",
     "complete_code_percent": 0.0,
     "total_units": 1,
@@ -26580,7 +26580,7 @@
     {
      "name": "func_L00_002D6418",
      "size": "160",
-     "fuzzy_match_percent": 0.0,
+     "fuzzy_match_percent": 100.0,
      "address": "208872",
      "metadata": {
       "virtual_address": "2976104"
