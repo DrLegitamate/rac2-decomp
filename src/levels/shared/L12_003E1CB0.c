@@ -110,7 +110,7 @@ void func_L12_003E1CB0(s32 a0) {
 
 INCLUDE_ASM("asm/levels", func_L12_003E1EE8);
 
-INCLUDE_ASM("asm/levels", func_L12_003E20F0);
+/* func_L12_003E20F0 is defined in L12_003E20F0-g8.c. */
 
 void func_L12_003E2370(s32 a0) {
     s32 s0 = a0;
