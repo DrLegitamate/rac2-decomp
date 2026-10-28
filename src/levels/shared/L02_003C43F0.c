@@ -239,8 +239,6 @@ void func_L02_003C4E18(char *a0)
     func_L00_002D40A0(v, 0, f20);
 }
 
-INCLUDE_ASM("asm/levels", func_L02_003C4ED8);
-
 /* The level's three trigger boxes, each a lower and an upper bound, and the point they hold:
    the point has to lie inside every box. */
 struct L02Box {
