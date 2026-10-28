@@ -477,7 +477,6 @@ the placement rules are in `tools/fcheck.py`'s docstring; its tests are
 | [`func_L20_00442CD8`](levels/func_L20_00442CD8.c) | 396 | Exact-size G8 candidate; 0/1 places. Only the $gp array address form differs (`addiu $a0,$gp,0x30E8` then indexed load). |
 | [`func_L22_003F54B8`](levels/func_L22_003F54B8.c) | 196 | Candidate is 200 bytes; retail uses the annulled conditional store (`beql $v0,$zero,L; swc1` with the negative pi/2 above the branch), this cc1 emits the plain branch and both arms |
 | [`func_L01_002F21F0`](levels/func_L01_002F21F0.c) | 276 | Recorded candidate is 244 bytes; size does not match retail. |
-| [`func_L01_00378A80`](levels/func_L01_00378A80.c) | 156 | Recorded G8 candidate is 144 bytes; size does not match retail. |
 | [`func_L01_003993C8`](levels/func_L01_003993C8.c) | 324 | Recorded G8 instruction mismatch at +0x4. |
 | [`func_L01_003E9CF8`](levels/func_L01_003E9CF8.c) | 324 | M3 2026-10-26: the draft inverted the reuse test (retail allocates when 0x20 is 0xFE or 0xFD). -G0 with D_001B326C/D_001B3270 as .sdata macro words and the sda store name: the head is exact; 308/324: retail recomputes the entry address twice and copies it through three registers before the five stores (an inline helper?). |
 | [`func_L01_0042A6F0`](levels/func_L01_0042A6F0.c) | 132 | Build refusal recorded; the exact remaining discrepancy was not recorded. |
