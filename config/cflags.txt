@@ -1456,3 +1456,4 @@ src/levels/12_todano/L12_00398E50-spring-g8.c	-O2 -G8 -ffunction-sections -frac2
 src/levels/12_todano/L12_0041A790-g8.c	-O2 -G8 -ffunction-sections -g
 src/levels/12_todano/L12_00418D20-g16.c	-O2 -G16 -Wa,-G16 -ffunction-sections
 src/levels/12_todano/L12_004212C0-g8.c	-O2 -G32 -Wa,-G32 -g -ffunction-sections
+src/levels/13_boldan/L13_00306F38-gate.c	-O2 -G8 -ffunction-sections -frac2-keep-block-order
