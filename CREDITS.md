@@ -72,6 +72,12 @@ address registry. Its validation and splitter extensions are independently autho
 source/profile lookup, isolated compilations and complete-object equality guard.
 The referenced projects and this adaptation are GPL-3.0.
 
+`tools/sdata_aliases.py` adapts only the explicit `SDATA` address-alias metadata
+from [RAC1's `check_macro_slots.py` at `209d3381`](https://github.com/OpenRAC/rac1-decomp/blob/209d3381ebaa8c06d5df98eeabad4adad45bdfb7/tools/check_macro_slots.py)
+(GPL-3.0). RAC2 does not adopt its delay-slot operand transformations. Recognition
+of incomplete-array aliases, metadata placement and fail-closed checks are
+qualified by independently authored controls; canonical storage extents remain unchanged.
+
 The ordinary-C packet cursor views used by `func_0027DB68`, `func_0027E920`
 and `func_0027EA28` also reference Lombyte's GPL-3.0
 [`dma_tag.h` at c41bf1c](https://github.com/lombyte-project/Lombyte/blob/c41bf1c324eecae8006bf82808ad19ed42ee5eb9/include/rnc/rendering/dma_tag.h).

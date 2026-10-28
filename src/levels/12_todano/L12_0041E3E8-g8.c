@@ -2,9 +2,11 @@
 
 typedef int TI128 __attribute__((mode(TI)));
 
-extern f32 D_L12_001B1F50 __attribute__((sda));
-extern f32 D_L12_001B1F58 __attribute__((sda));
-extern f32 D_L12_001B1F60 __attribute__((sda));
+/* The callee reads component bounds through +0x18 and two-float ranges.
+ * Keep the owning allocations incomplete; SDATA describes their measured GP binding. */
+extern f32 D_L12_001B1F50[] SDATA(D_L12_001B1F50);
+extern f32 D_L12_001B1F58[] SDATA(D_L12_001B1F58);
+extern f32 D_L12_001B1F60[] SDATA(D_L12_001B1F60);
 extern s32 D_L12_001B1FA0 __attribute__((sda));
 extern f32 D_L12_001B1FB0 __attribute__((sda));
 extern f32 D_L12_001B1FB4 __attribute__((nosda));
@@ -36,9 +38,9 @@ void func_L12_00421110(u8 *a0)
         a0[0xA8] = 0xFF;
         break;
     case 2:
-        func_L00_0032A258(a0, &D_L12_001B1F60, &D_L12_001B1F58, &D_L12_001B1F50, 0xFFFF, 0,
+        func_L00_0032A258(a0, D_L12_001B1F60, D_L12_001B1F58, D_L12_001B1F50, 0xFFFF, 0,
                           D_L12_001B1FA0, 0, 1, 0xFF, 0);
-        func_L00_0032A258(a0, D_L12_001B1F80, &D_L12_001B1F58, &D_L12_001B1F50, 0xFFFF, 0,
+        func_L00_0032A258(a0, D_L12_001B1F80, D_L12_001B1F58, D_L12_001B1F50, 0xFFFF, 0,
                           D_L12_001B1FA0, 1, 0x1FE, 0xFF, 0);
         func_L00_00324F18(a0, pos, D_L12_001B1FB0, D_L12_001B1FB4, D_L12_001B1FB8);
         func_0032C700(pos, 0, 0x19, 0x14, 0x14, 0x14, 0x2D, 0, *(f32 *)(a0 + 0x2C) * 20.0f, 20.0f,
@@ -101,9 +103,10 @@ void func_L12_00420660(u8 *a0)
 }
 
 extern s32 D_L12_001B22D0 __attribute__((sda));
-extern f32 D_L12_001B2280 __attribute__((sda));
-extern f32 D_L12_001B2288 __attribute__((sda));
-extern f32 D_L12_001B22B0 __attribute__((sda));
+/* These are also unknown-sized component/range blocks, not scalar tuning words. */
+extern f32 D_L12_001B2280[] SDATA(D_L12_001B2280);
+extern f32 D_L12_001B2288[] SDATA(D_L12_001B2288);
+extern f32 D_L12_001B22B0[] SDATA(D_L12_001B22B0);
 extern int func_002A7820(int, int);
 extern int func_00273B70(unsigned char *);
 extern void func_00283098(void *, void *, void *);
@@ -147,7 +150,7 @@ void func_L12_00429868(u8 *a0)
                 *(f32 *)(obj + 0x2C) = *(f32 *)(*(u8 **)(obj + 0x24) + 0x24) *
                                        (*(f32 *)(a0 + 0x2C) / *(f32 *)(*(u8 **)(a0 + 0x24) + 0x24));
                 func_00282AB0(obj + 0xC0, a0 + 0xC0, 0x18);
-                func_L00_0032A258(obj, &D_L12_001B22B0, &D_L12_001B2288, &D_L12_001B2280, 0xFF, -1,
+                func_L00_0032A258(obj, D_L12_001B22B0, D_L12_001B2288, D_L12_001B2280, 0xFF, -1,
                                   D_L12_001B22D0, 0xF, 0xFF, 0xFF, 0);
                 func_0029F338(obj);
             }

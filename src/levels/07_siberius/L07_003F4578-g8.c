@@ -246,8 +246,8 @@ void func_L07_0040F468(u8 *a0)
 
 extern u8 D_00189E20[];
 extern u32 D_L07_001B1E08 MACRO_ADDR;
-extern void func_002AD470(u8 *a, u8 *b, u8 *c, u8 *d, u8 *e, u8 *f);
-extern f32 func_002A0F48(u8 *a);
+extern int func_002AD470(u8 *a, u8 *b, u8 *c, u8 *d, u8 *e, u8 *f);
+extern void func_002A0F48(u8 *a);
 extern f32 func_00282E48(u8 *a, u8 *b);
 
 typedef struct { u8 pad[0xA8]; s32 ids[4]; } Rec;

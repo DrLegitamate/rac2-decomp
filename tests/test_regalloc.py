@@ -86,6 +86,7 @@ class CompilationTests(unittest.TestCase):
         text = regalloc.compile_script(source, work, "-O2 -G32 -Wa,-G32 -frac2-qcopy", ("-dl", "-dg"))
         self.assertIn("-O2 -G32 -frac2-qcopy -dl -dg x.i -o x.s", text)
         self.assertIn("/as -G32 -o x.o x.s", text)
+        self.assertLess(text.index(str(regalloc.build.SDATA_ALIASES)), text.index("/as -G32"))
         self.assertIn(str(source.parent), text)
         self.assertNotIn("build/obj", text)
         self.assertNotIn(".inputs", text)
@@ -101,6 +102,7 @@ class CompilationTests(unittest.TestCase):
         self.assertIn("/xgcc", text)
         self.assertIn("-S -O0 -G2 -dl", text)
         self.assertIn("/as --r5900-pool-li-d -G2", text)
+        self.assertLess(text.index(str(regalloc.build.SDATA_ALIASES)), text.index("/as --r5900"))
         with self.assertRaises(ValueError):
             regalloc.split_flags("-O2 -Wa,-G2,")
 

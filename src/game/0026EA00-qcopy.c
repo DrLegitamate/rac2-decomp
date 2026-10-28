@@ -122,7 +122,7 @@ extern void func_002721C8(void);
 extern void func_00272280(void);
 extern void func_00271FD8(void);
 extern void func_00271B90(void);
-extern void func_00270A48(void);
+extern int func_00270A48(void);
 extern void func_00270EE0(void *);
 extern int func_0026F7B8(void);
 extern void func_00282DD8(void *, void *, void *);

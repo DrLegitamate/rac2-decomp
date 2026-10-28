@@ -13,7 +13,7 @@ extern char D_00189EA0[];
 extern char D_L12_001B9E00[];
 extern float func_00282E80(void *, void *);
 extern int func_00282948(void *);
-extern void func_002AA548(void *, void *, float, float, float, float);
+extern float func_002AA548(void *, void *, float, float, float, float);
 extern void func_00282D30(float, void *, void *);
 
 void func_L12_0041EDB8(u8 *a0)

@@ -22,6 +22,10 @@ typedef double             f64;
 #define NOT_SDA __attribute__((section(".data")))
 /* A global in the small-data area, addressed $gp-relative. */
 #define MACRO_ADDR __attribute__((section(".sdata")))
+/* Explicit GP address view, bound to the same canonical storage by
+ * tools/sdata_aliases.py. Keep the real type/extent (or an incomplete array);
+ * its assembler small-address metadata is not a C object bound.
+ */
 #define SDATA(sym) __asm__(#sym "__gp") MACRO_ADDR
 
 /* Approved EE transfer helpers, adapted from rac1-decomp (GPL-3.0).

@@ -88,6 +88,29 @@ class ObjectCache(unittest.TestCase):
         build.compile_c(self.source)
         self.assertEqual(self.compiler.call_count, 1)
 
+    def test_sdata_metadata_runs_before_assembler_in_both_chains(self):
+        for prefix in ("", "sdk "):
+            self.write(self.root / "config/cflags.txt", "src/game/example.c\t" + prefix + "-O2\n")
+            build.compile_c(self.source)
+            commands = self.commands()
+            metadata = next(i for i, c in enumerate(commands)
+                            if c[:2] == ["python3", str(build.SDATA_ALIASES)])
+            assembler = next(i for i, c in enumerate(commands) if c[0] == str(build.COMPILER / "as"))
+            self.assertEqual(commands[metadata][2:], ["x.s"])
+            self.assertLess(metadata, assembler)
+
+    def test_sdata_transformer_content_invalidates_the_object(self):
+        script = self.root / "tools/sdata_aliases.py"
+        self.write(script, build.SDATA_ALIASES.read_text())
+        with patch.object(build, "SDATA_ALIASES", script):
+            build.compile_c(self.source)
+            before = self.compiler.call_count
+            script.write_text(script.read_text() + "\n# changed metadata support\n")
+            build.compile_c(self.source)
+            self.assertEqual(self.compiler.call_count, before + 1)
+            build.compile_c(self.source)
+            self.assertEqual(self.compiler.call_count, before + 1)
+
     def commands(self):
         lexer = shlex.shlex(self.compiler.call_args.args[0][-1], posix=True, punctuation_chars=";")
         lexer.whitespace_split = True

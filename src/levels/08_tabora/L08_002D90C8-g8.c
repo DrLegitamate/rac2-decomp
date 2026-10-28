@@ -1,3 +1,5 @@
+#include "common.h"
+
 extern char *D_L08_001B29DC __attribute__((sda));
 
 float func_L08_003CCD58(int index) {
@@ -39,7 +41,8 @@ extern char D_L08_0023EC80[];
 extern char D_L08_0023ECF0[];
 extern char D_L08_002A87F0[];
 extern int D_L08_001B01B8[2] __attribute__((sda));
-extern int D_L08_001B01C8[2] __attribute__((sda));
+/* Kind 7 consumes seven halfwords; the full owner extent remains unknown. */
+extern u16 D_L08_001B01C8[] SDATA(D_L08_001B01C8);
 extern int D_L08_001B01D8 __attribute__((sda));
 extern int D_L08_001B01DC __attribute__((sda));
 extern void func_L08_003CFFE8(void);

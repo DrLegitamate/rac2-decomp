@@ -1,9 +1,10 @@
 /*
  * Retained manual C reconstruction; not linked or counted.
- * Profile: -O2 -G8 -ffunction-sections (a sibling of src/levels/11_joba/L11_00453358-g8.c,
- * which includes common.h for qcopy; the rate and argument are read through $gp).
+ * Profile: -O2 -G8 -ffunction-sections; common.h and all required integer/FP
+ * interfaces are visible below. The rate and argument are read through $gp.
  * Retail: 328 bytes; compiled: 328 bytes.
- * Coverage: us: 0/1 (tools/check.py, 2026-10-28, master 1243c8ea).
+ * Contract-correction replay: US 0/1, US2 0/1; PAL ABSENT. The isolated G8 unit
+ * compiles to 328/328 bytes. It remains unlinked and earns no matching credit.
  * Residual: two stores after func_002A7878 are swapped: retail stores the state's +0x24
  * float before the object's +0x23 byte; this C stores +0x23 first. Every other word matches.
  * Found by search: the header order (0x30, 0x32, 0x31, 0x20) and the $gp argument read into
@@ -13,8 +14,12 @@
  * Reopen: a type or spelling for the +0x23 byte or the +0x24 float that changes their
  * scheduling priority.
  */
+#include "common.h"
+
+extern float func_002A7940(void);
+extern float func_002A7878(float, float);
 extern void *func_0029EFD0(int);
-extern void func_002E5DA0(int, int, void *, int);
+extern int func_002E5DA0(int, int, char *, int);
 extern void func_L11_00460258(void *, int);
 extern float D_L11_001B22C4 __attribute__((sda));
 extern int D_L11_001B22CC __attribute__((sda));
@@ -36,7 +41,7 @@ u8 *func_L11_0045FDB0(u8 *owner, void *direction, void *position, float a, float
         *(u16 *)(object + 0x32) = 0xFF;
         object[0x31] = 1;
         object[0x20] = 0;
-        *(long *)(object + 0x38) = *(long *)(owner + 0x38);
+        *(u64 *)(object + 0x38) = *(u64 *)(owner + 0x38);
         qcopy(object + 0x10, position);
         state = *(u8 **)(object + 0x68);
         qcopy(state, direction);
@@ -52,7 +57,7 @@ u8 *func_L11_0045FDB0(u8 *owner, void *direction, void *position, float a, float
         *(float *)(object + 0x2C) = D_L11_001B22C4 * c;
         *(u16 *)(object + 0x34) |= 0x1000;
         func_L11_00460258(object + 0x10, arg);
-        func_002E5DA0(0, 0, object, 0xE7B);
+        func_002E5DA0(0, 0, (char *)object, 0xE7B);
     }
     return object;
 }

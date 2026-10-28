@@ -1,6 +1,5 @@
-#include "include_asm.h"
+#include "common.h"
 
-typedef unsigned char u8;
 typedef int Quadword __attribute__((mode(TI)));
 typedef union EffectVector { Quadword bits; float value[4]; } EffectVector;
 
@@ -14,9 +13,10 @@ extern void func_L00_0032A258(void *, void *, void *, void *, int, int, int, int
 extern void func_0032C700(void *, int, int, int, int, int, int, int, float, float, int, int, int, int);
 extern void func_L00_003263D0(void *, void *, int, int, void *, unsigned int, void *, float, float, float, float);
 extern void func_0029F338(void *);
-extern float D_L09_001AF9E0 __attribute__((sda));
-extern float D_L09_001AF9D8 __attribute__((sda));
-extern float D_L09_001AF9D0 __attribute__((sda));
+/* Required component/range reads do not establish the complete owning allocations. */
+extern float D_L09_001AF9E0[] SDATA(D_L09_001AF9E0);
+extern float D_L09_001AF9D8[] SDATA(D_L09_001AF9D8);
+extern float D_L09_001AF9D0[] SDATA(D_L09_001AF9D0);
 
 /* Death of a three-state object: it picks its animation, waits for the hit, then spawns the
    closing effects and retires itself. */
@@ -42,7 +42,7 @@ void func_L09_003B6550(u8 *self)
     case 2:
         effect = func_L00_00326620(self, 0x12A1, 0);
         if (effect)
-            func_L00_0032A258(effect, &D_L09_001AF9E0, &D_L09_001AF9D8, &D_L09_001AF9D0, 0xFFFF, 0,
+            func_L00_0032A258(effect, D_L09_001AF9E0, D_L09_001AF9D8, D_L09_001AF9D0, 0xFFFF, 0,
                               -1, 0x16, 0xFFFF, 0xFF, 0);
         func_0032C700(self + 0x10, 1, 0x19, 0x14, 0x14, 0x14, 0x2D, 1, 1.0f, 20.0f, 1, 1, 0, 0);
         v.bits = 0;
