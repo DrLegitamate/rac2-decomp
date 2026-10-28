@@ -163,7 +163,61 @@ void func_L15_00434100(unsigned char *object) {
 
 INCLUDE_ASM("asm/levels", func_L15_00434610);
 
-INCLUDE_ASM("asm/levels", func_L15_00434D28);
+extern s32 D_L15_001AEE20[] __attribute__((sda));
+extern s32 D_L15_001B1780[] SDATA(D_L15_001B1780);
+extern s32 D_L15_001B17B0[] SDATA(D_L15_001B17B0);
+extern u8 D_L15_00188660[];
+extern s32 func_00378070(s32 a, s32 b, void *c);
+extern s32 func_003332E0(s32 a);
+extern f32 func_00333378(f32 a, f32 b);
+extern void func_0032A188(void *obj, s32 a, void *out);
+extern void func_003A1060(void *a, void *b, s32 c, s32 d, f32 e, f32 f, f32 g, f32 h, s32 i, s32 j, s32 k, s32 l);
+extern s32 func_00307D78(f32 a);
+extern void func_L15_00434F90(char *object, int a1, int joint, float radius);
+extern void func_L15_004351E0(char *object, int joint, int unused, float radius);
+
+void func_L15_00434D28(void *object)
+{
+    u8 *obj = (u8 *)object;
+    u8 *state = *(u8 **)(obj + 0x68);
+    u8 *slot = D_L15_00188660 + *(s32 *)(state + 0x458) * 0x70;
+    f32 va[4] __attribute__((aligned(16)));
+    f32 vb[4] __attribute__((aligned(16)));
+    s32 n;
+    s32 m;
+    s32 *p;
+
+    if (*(u8 **)(slot + 0x88) != obj || slot[0x74] == 0) {
+        *(s32 *)(state + 0x458) = func_00378070(3, 4, obj);
+    }
+    if (func_003332E0(0xF) == 0 && D_L15_001AEE20[0] < 4) {
+        func_0032A188(obj, D_L15_001B1780[func_003332E0(0xB)], va);
+        func_0032A188(obj, D_L15_001B1780[func_003332E0(0xB)], vb);
+        D_L15_001AEE20[0] = D_L15_001AEE20[0] + 1;
+        func_003A1060(va, vb, 0x19, 0, 0.5f, 0.2f, 0.4020000100135803f, 1.122249960899353f, 0x7F7F7F, 0xFF1010, 0x46, 0x46);
+    }
+    if (*(s32 *)(state + 0x26C) < 7) {
+        n = func_00307D78(8.0f - (f32)*(s32 *)(state + 0x26C));
+        if (n > 0) {
+            m = n;
+            p = D_L15_001B17B0;
+            while (1) {
+                if (func_003332E0(2) != 0) {
+                    func_L15_00434F90((char *)obj, *p, 0, func_00333378(2.0f, 3.0f));
+                    func_L15_004351E0((char *)obj, *p, 0, func_00333378(0.5f, 1.5f));
+                }
+                m--;
+                p++;
+                if (m == 0) break;
+            }
+        }
+    }
+    if (func_003332E0(2) != 0 && *(s32 *)(state + 0x26C) < 2) {
+        func_L15_00434F90((char *)obj, 0x14, 1, 7.0f);
+        func_L15_004351E0((char *)obj, 0x14, 0, func_00333378(3.0f, 4.5f));
+    }
+}
+
 
 
 typedef struct GornEffectCamera {
@@ -186,7 +240,7 @@ extern float func_00283CE0(int);
 
 
 
-void func_L15_004351E0(char *object, int joint, float radius) {
+void func_L15_004351E0(char *object, int joint, int unused, float radius) {
     float initial[4], point[4], velocity[4];
     float heading, speed, tilt, yaw;
     unsigned char *particle;

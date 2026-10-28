@@ -224,3 +224,86 @@ void func_L03_003D21F8(char *a0)
     }
     }
 }
+
+extern s32  D_L03_001B0674 __attribute__((sda));
+extern char D_00189EA0[];
+extern char D_L03_001B9980[];
+
+typedef struct {
+    s32 index;
+    u8 pad04[0x14];
+    f32 f18;
+    f32 f1C;
+    f32 f20;
+} L03_22C8State;
+
+typedef struct {
+    u32 field00;
+    u8 pad04[0xC];
+    u8 field10[1];
+} L03_22C8Entry;
+
+extern L03_22C8Entry *D_L03_001FE700[];
+extern void func_31B920(char *a0, s32 a1, s32 a2);
+extern void func_311758(char *a0);
+extern u32  func_31CFF8(char *a0, void *a1, u32 a2);
+extern void func_4390D0(char *a0, char *a1, s32 a2, s32 a3, s32 a4);
+extern void func_L03_003D2518(char *a0, f32 *a1, f32 *a2);
+extern void func_2EEFE0(f32 *a0, f32 *a1, char *a2);
+extern f32  func_2EF0E0(f32 *a0);
+extern void func_31F5E0(f32 *a0, f32 a1, f32 a2, f32 a3, f32 a4);
+extern void func_2EF298(f32 *a0, f32 *a1, f32 a2);
+extern void func_2EEFB0(char *a0, f32 *a1, char *a2);
+extern void func_439008(char *a0);
+extern void func_31F360(char *a0, f32 *a1, f32 a3, f32 a4, f32 a5, f32 a6, s32 a2);
+extern void func_439060(char *a0);
+extern void func_439240(s32 a0);
+
+void func_L03_003D22C8(char *a0)
+{
+    L03_22C8State *s2 = *(L03_22C8State **)(a0 + 0x68);
+    f32 v0[4] __attribute__((aligned(16)));
+    f32 v1[4] __attribute__((aligned(16)));
+    f32 v2[4] __attribute__((aligned(16)));
+    f32 k;
+    f32 len;
+    f32 one;
+    f32 k2;
+
+    if (D_L03_001B0674 != 0) {
+        return;
+    }
+    switch (*(u8 *)(a0 + 0x20)) {
+    case 0:
+        func_31B920(a0, 1, -1);
+        if (s2->index == -1) {
+            func_311758(a0);
+        }
+        break;
+    case 1:
+        if (func_31CFF8(D_00189EA0, D_L03_001FE700[s2->index]->field10, D_L03_001FE700[s2->index]->field00) != 0) {
+            func_4390D0(D_L03_001B9980, D_L03_001B9980 + 0x10, 1, 0, 0);
+            func_31B920(a0, 2, -1);
+        }
+        break;
+    case 2:
+        k = 0.0027777778450399637f;
+        func_L03_003D2518(a0, v0, v1);
+        one = 1.0f;
+        func_2EEFE0(v2, v0, D_L03_001B9980);
+        k2 = 0.0008726647356525064f;
+        len = func_2EF0E0(v2);
+        func_31F5E0(&s2->f18, len, k, k, one);
+        func_2EF298(v2, v2, s2->f18);
+        func_2EEFB0(D_L03_001B9980, v2, D_L03_001B9980);
+        func_439008(D_L03_001B9980);
+        func_31F360(D_L03_001B9980 + 0x14, &s2->f1C, v1[1], k2, k2, one, 0);
+        func_31F360(D_L03_001B9980 + 0x18, &s2->f20, v1[2], k2, k2, one, 0);
+        func_439060(D_L03_001B9980 + 0x10);
+        if (func_31CFF8(D_00189EA0, D_L03_001FE700[s2->index]->field10, D_L03_001FE700[s2->index]->field00) == 0) {
+            func_439240(1);
+            func_31B920(a0, 1, -1);
+        }
+        break;
+    }
+}

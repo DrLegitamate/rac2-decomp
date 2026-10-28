@@ -341,3 +341,43 @@ void func_L14_003F0F38(char *arg0, char *arg1, float unused_scale, int arg2, int
     fr.rec.f[7] = 1.0f;
     func_00280B90(&fr.rec, fr.mat, 0);
 }
+
+extern float D_L14_001B04B0 __attribute__((sda));
+extern float D_L14_001B04B4 __attribute__((sda));
+extern float D_L14_001B04B8 __attribute__((sda));
+extern void func_00282CC0(void *, void *, void *);
+extern void func_0027C768(void *, float *, float *);
+extern float func_00283198(float);
+extern float func_L14_003E22A8(char *);
+extern float func_L14_003E28E8(float);
+
+typedef struct {
+    float rows[5][4];
+    float pairs[5][2];
+} L14Swing;
+
+void func_L14_003E2688(char *object, L14Swing *base, int index, float *a, float *b, float *c,
+                       int phase0, int phase1)
+{
+    float v[4];
+
+    func_00282D30(v, b, (float)phase1 * 0.125f);
+    func_00282CC0(base->rows[index], a, v);
+    func_00282D30(v, c, (float)phase0 * 0.125f);
+    func_00282CC0(base->rows[index], base->rows[index], v);
+    func_0027C768(base->rows[index], &base->pairs[index][0], &base->pairs[index][1]);
+    base->pairs[index][0] += (1.0f - func_L14_003E22A8(object)) * D_L14_001B04B0
+        * func_00283198(func_L14_003E28E8((D_L14_001B04B4 + D_L14_001B04B4) * (func_L14_003E22A8(object) * 3.1415927f)
+                                          + (float)phase0 * 3.1415927f / D_L14_001B04B8));
+    base->pairs[index][1] += (1.0f - func_L14_003E22A8(object)) * D_L14_001B04B0
+        * func_00283198(func_L14_003E28E8((D_L14_001B04B4 + D_L14_001B04B4) * (func_L14_003E22A8(object) * 3.1415927f)
+                                          + (float)phase1 * 3.1415927f / D_L14_001B04B8));
+    if (1.0f < base->pairs[index][0])
+        base->pairs[index][0] = 1.0f;
+    else if (base->pairs[index][0] < 0.0f)
+        base->pairs[index][0] = 0.0f;
+    if (1.0f < base->pairs[index][1])
+        base->pairs[index][1] = 1.0f;
+    else if (base->pairs[index][1] < 0.0f)
+        base->pairs[index][1] = 0.0f;
+}
