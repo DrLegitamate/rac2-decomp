@@ -79,7 +79,65 @@ extern char D_00189E20[];
 extern void func_00315728(char *, char *, s32, char *, f32);
 extern void func_00315948(char *, char *);
 
-INCLUDE_ASM("asm/levels", func_L16_0041C7A0);
+extern f32 func_00283B98(f32, f32);
+extern f32 func_00283BE0(f32, f32);
+extern s32 func_002829D8(char *);
+extern void func_L16_0041C948(char *);
+extern void func_002A7750(char *, s32, s32);
+
+/* Controls the timed rotation cycle and restores the original settings. */
+void func_L16_0041C7A0(char *self) {
+    char *st = *(char **)(self + 0x68);
+    f32 a, b, angle;
+    switch (*(u8 *)(self + 0x20)) {
+    case 0:
+        *(s32 *)(st + 0) = 0;
+        *(s32 *)(st + 4) = 0;
+        *(s32 *)(st + 8) = 0;
+        *(s32 *)(st + 12) = 0;
+        *(s32 *)(st + 16) = 0;
+        a = *(f32 *)(st + 20);
+        angle = *(f32 *)(self + 0xF0);
+        b = *(f32 *)(st + 24);
+        *(f32 *)(st + 40) = angle;
+        *(s32 *)(st + 36) = *(u8 *)(self + 0xBC);
+        *(f32 *)(st + 32) = b;
+        *(f32 *)(st + 28) = a;
+        func_002A7750(self, 1, -1);
+        break;
+    case 1:
+        if (*(u8 *)(self + 0xBC))
+            func_002A7750(self, 4, -1);
+        break;
+    case 4:
+        if (*(s32 *)(st + 16) < 180) {
+            *(f32 *)(self + 0xF0) = func_00283B98(*(f32 *)(self + 0xF0), 0.0872664749622345f);
+            *(s32 *)(st + 16) += 5;
+        } else func_002A7750(self, 2, -1);
+        break;
+    case 2:
+        if (func_002829D8(st + 20)) func_002A7750(self, 3, -1);
+        break;
+    case 3:
+        if (func_002829D8(st + 24)) func_002A7750(self, 5, -1);
+        func_L16_0041C948(self);
+        break;
+    case 5:
+        if (*(s32 *)(st + 16) > 0) {
+            *(f32 *)(self + 0xF0) = func_00283BE0(*(f32 *)(self + 0xF0), 0.0872664749622345f);
+            *(s32 *)(st + 16) -= 5;
+        } else {
+            *(u8 *)(self + 0xBC) = *(u8 *)(st + 36);
+            *(f32 *)(st + 20) = *(f32 *)(st + 28);
+            *(f32 *)(st + 24) = *(f32 *)(st + 32);
+            a = *(f32 *)(st + 40);
+            *(f32 *)(self + 0xF0) = a;
+            func_002A7750(self, 1, -1);
+        }
+        break;
+    }
+}
+
 
 INCLUDE_ASM("asm/levels", func_L16_0041C990);
 
