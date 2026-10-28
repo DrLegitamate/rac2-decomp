@@ -2519,8 +2519,8 @@ qualification remain unverified.
 
 The reconnaissance stubs for `func_L11_00456EA0`, `func_L11_00458C38`,
 `func_L05_00445B58` and `func_L05_00445C38` have been replaced by real C in
-commit `2c1299e3`. Local checks pass every carrying place in US, US2 and PAL;
-linked qualification remains the coordinator's separate check. Their old
+the linked source tree. Local checks pass every carrying place in US, US2 and
+PAL, and all 84 strict linked programs pass with these implementations. Their old
 GP/quadword-only screens were not evidence against C. The basis helper's
 three homogeneous zeros use a chained float assignment, retaining `mtc1`
 and the measured `swc1` order without volatile accesses. The Joba burst's
