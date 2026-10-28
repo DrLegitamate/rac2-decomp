@@ -236,7 +236,7 @@ void func_L20_00443908(char *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L20_00443A10);
+/* func_L20_00443A10 lives in L20_00443A10-g8.c. */
 
 /* func_L20_00443B60 is defined in L20_00443B60-helpers.c. */
 

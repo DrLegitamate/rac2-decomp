@@ -1,3 +1,11 @@
+/* 28 October 2026: superseded by src/levels/20_yeedil/L20_00443A10-g8.c,
+ * locally exact in US, US2 and PAL. The typed 128-byte heading record view,
+ * updating the existing heading variable and loading the final table pointer
+ * before the output stores close the historical residuals below. Actual
+ * float helper return banks were verified; strict linked qualification is
+ * pending with the maintainer.
+ */
+
 /* func_L20_00443A10 (332 bytes, level 20): near miss - the SIZE is exact and only three
  * register allocations differ.
  *

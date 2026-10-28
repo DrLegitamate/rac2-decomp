@@ -2588,3 +2588,13 @@ matches both placements in US, US2 and PAL at the default `-O2 -G0
 -ffunction-sections` profile. The actual float returns of `func_002A7E08` and
 `func_002AA458`, and the void return of `func_L02_00332D28`, are retained from
 their existing definitions. Strict linked qualification remains pending.
+
+`func_L20_00443A10` is another local candidate as of 28 October 2026, matching its
+332-byte placement in US, US2 and PAL at the default `-O2 -G8
+-ffunction-sections` profile. A typed 128-byte heading-reference record selects
+the measured index/base registers; updating the existing heading value keeps
+the branch result in its old FP register. Loading the last reference pointer
+after the sine call and before the output stores fixes the tail schedule.
+The float return banks of the math helpers were checked against their retail
+bodies. The old source-order/register trials remain historical measurements;
+strict linked qualification is still required.
