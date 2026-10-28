@@ -1,3 +1,12 @@
+/* 28 October 2026: corrected func_002B60B0 to its actual void * return
+ * contract (src/game/002B60B0.c). With that truthful interface the body
+ * is 512/512 bytes but the control lhu/sh use v1 instead of retail v0
+ * at +0x14C/+0x16C in all three US and US2 placements.
+ * Explicit discard, all-four-FP-first argument view, SDATA alias and
+ * -fno-force-mem tie; -fno-schedule-insns worsens. Default profile:
+ * -O2 -G8 -ffunction-sections. The former local candidate used a false
+ * void declaration and is withdrawn. No strict match is claimed.
+ * Reopen with evidence for the post-call halfword value lifetime. */
 #include "common.h"
 
 extern int D_L18_001AFBB0;
@@ -9,7 +18,7 @@ extern float D_L18_001B126C __attribute__((sda));
 extern unsigned short D_L18_001B1240 __attribute__((sda));
 extern char D_L18_001B1308[];
 extern float func_00282E80(void *, void *);
-extern void func_002B60B0(void *, float, float, float, float);
+extern void *func_002B60B0(void *, float, float, float, float);
 extern void func_L18_00426F28(void *, int, int, float);
 extern void func_002A7750(void *, int, int);
 extern void func_0026FEB8(void *, int);
@@ -27,7 +36,7 @@ int func_L18_00428138(char *object)
         if (func_00282E80(object + 0x10, state + 0x220) < D_L18_001B126C &&
             !*(short *)(state + 0x396) && !D_L18_001AFBB0 &&
             D_00189E20.action != 0x6F) {
-            func_002B60B0(object, *(float *)(state + 0x3CC) * 0.00027777778f,
+            (void)func_002B60B0(object, *(float *)(state + 0x3CC) * 0.00027777778f,
                          *(float *)(state + 0x3C8) * 0.016666668f,
                          *(float *)(state + 0x3DC) * 0.0000048481374f,
                          *(float *)(state + 0x3D8) * 0.00029088825f);

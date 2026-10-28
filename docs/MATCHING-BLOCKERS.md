@@ -2543,3 +2543,13 @@ hoisting). `func_L00_00300438` now uses the actual `double` return of
 not match it: scalar pair swaps restore the retail frame but leave
 444/468 bytes. The discarded aggregate swap needed another 16 stack bytes.
 Do not restore the old false integer return to influence allocation.
+
+`func_L18_00428138` was also withdrawn as a local candidate on 28 October 2026:
+`src/game/002B60B0.c` establishes that its helper returns `void *`, while the
+candidate had incorrectly declared `void`. The corrected retained C is 512/512
+bytes at `-O2 -G8 -ffunction-sections`, but its post-call control `lhu`/`sh` use v1
+instead of retail v0 at +0x14C/+0x16C in all three US and US2 placements. Explicit
+discard, the truthful all-four-FP-first argument view, an explicit SDATA alias and
+`-fno-force-mem` tie; `-fno-schedule-insns` worsens the result. Its marker is
+restored. Reopen with evidence for the post-call halfword value lifetime; a false
+helper return type is not an acceptable match.
