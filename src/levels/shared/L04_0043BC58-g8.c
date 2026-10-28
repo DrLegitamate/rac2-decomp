@@ -3,11 +3,11 @@ extern void func_002A7750(void *, int, int);
 extern void func_L00_002E6CF0(void (*)(void *), void *);
 extern void func_L04_0043BEE8(void *);
 extern float func_002AA2E8(void *, float, float);
-extern void func_0032C700(void *, int, float, int, int, int, int, int, int, int, int, int, int, float);
+extern void *func_0032C700(void *, int, float, int, int, int, int, int, int, int, int, int, int, float);
 extern void func_002A0488(void *, int, int, int);
 extern void func_0029F338(void *);
 extern void func_L04_0043BE40(void *);
-extern void func_002AD0E0(void *, int, void *, void *, void *, void *);
+extern int func_002AD0E0(void *, void *, void *, void *, void *, void *);
 extern float D_L04_001B1394 SDATA(D_L04_001B1394);
 extern float D_L04_001B1398 SDATA(D_L04_001B1398);
 extern int D_L04_001B139C SDATA(D_L04_001B139C);
@@ -47,10 +47,10 @@ void func_L04_0043BC58(unsigned char *m)
         break;
     }
     if (*(int *)(p + 0x40))
-        func_002AD0E0(m, *(int *)(p + 0x40), p, temporary, p, temporary);
+        func_002AD0E0(m, *(void **)(p + 0x40), p, temporary, p, temporary);
     if (*(int *)(p + 0x44)) {
         unsigned char *other = *(unsigned char **)(p + 0x48);
-        func_002AD0E0(other, *(int *)(p + 0x44), other + 0x10, other + 0xf0, other + 0x10, other + 0xf0);
+        func_002AD0E0(other, *(void **)(p + 0x44), other + 0x10, other + 0xf0, other + 0x10, other + 0xf0);
         qcopy(p + 0x20, other + 0x10);
     }
 }
