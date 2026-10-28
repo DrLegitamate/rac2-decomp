@@ -16,7 +16,7 @@ extern unsigned char *D_L05_001FB5E0[];
 extern float D_L05_001B1578 SDATA(D_L05_001B1578);
 extern void func_00282F20(void *, void *, float);
 extern void func_002A8E20(void *, Impact *);
-extern void func_L05_00427FC8(void *, void *, int, int, int, int, int, int,
+extern void *func_L05_00427FC8(void *, void *, int, int, int, int, int, int,
                             int, int, int, int, int, float);
 extern void func_00277F48(void *, int, int, void *, float);
 
