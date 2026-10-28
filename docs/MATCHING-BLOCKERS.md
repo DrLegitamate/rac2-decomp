@@ -422,6 +422,12 @@ program builds; the placement count does not multiply distinct-function credit.
 
 **A second form of the class stays a wall:** on `func_L02_00411530` the missing `nop` is a **cop1 latency fill between `mtc1` and `sub.s`**, and retail places the join label *before* it while cc1 glues the nop to the reload. Twenty-nine source variants tested, none moves the label.
 
+`func_00282848`'s corrected 16-byte body is another instance of the first
+form: `lwc1 $f0,-0x76E4($gp) ; nop ; jr $ra ; mul.s $f0,$f0,$f12`. Its C
+candidate has the same 12-byte missing-nop result as the previously measured
+`func_L00_002EDCB8` family; the catalogue prefix correction does not change
+that compiler blocker.
+
 <a id="blocker-05"></a>
 
 ## 5. `nop nop` before `div.s`
@@ -562,6 +568,14 @@ Integer BEQL/BNEL execute the slot on taken paths and annul it on non-taken path
 The historical sample is retained: 47 of 240 notes mentioned gp/sda/G8; one 23-target survey used 11 plain-G0, six G0+sda and six G8 units. Those counts are not a selection algorithm. Inspect relocations and retail accesses. GP is 0x001AEFF0 in boot and levels; a small-data declaration needs a known eligible size.
 
 **Current witnesses:** func_L05_0030C930, formerly listed as unresolved, is C, as are func_L05_00444D60, func_L00_00427290 and func_L00_002E73E0. PR #246's func_L20_00444138 passes 1/1 in its dedicated G8/mno-split-addresses unit with separate sda/nosda declarations for one measured bound.
+
+**28 October 2026, retained near miss:** `func_002CC528` is 40 bytes in its
+`-G0` unit. The saved candidate and two source-shape variants (declaration
+order and direct conditional store) retain the same allocation: retail's
+`movn` selects in `$a1` using `$v1`, while the candidate selects in `$v1`
+using `$a1`, then stores `$v1` instead of `$a1`. A dedicated `-G8` replay is
+32/40 bytes. `tools/check.py func_002CC528 --diff` reports 0/28 placements
+for these attempts; the C remains in `nonmatching/game/func_002CC528.c`.
 
 Two documented names may express different addressing forms of one real global. They must derive the same true identity; malformed names, invented addresses or aliases hiding inconsistent bindings are not remedies. PR #244's review corrected such naming defects. Use ref_LNN_XXXXXXXX_kk where a target's identity genuinely varies by placement, not as a substitute for a known correct data name.
 
@@ -1477,6 +1491,11 @@ Use `rabbitizer.Instruction(word, address, rabbitizer.InstrCategory.R5900).disas
 - **The tree-level fold merges `pi + pi`** into one 2¤Ç constant, where retail doubles ¤Ç at run
   time (`add.s $f1,$f14,$f14`); two separate statements are not folded, so the retail's two
   `add.s` need them.
+- **A float-bit return may need the full R5900-width value.** In `func_002829D8`, retail moves
+  the float bits to a GPR, shifts them into the high word, and compares the signed 64-bit result
+  with 1 before subtracting 2. The -G8 C form using an unsigned 64-bit shift is 76/64 bytes;
+  the union-word form is 100/64. Both match 0/28 USA placements. Do not simplify its first arm
+  to an unconditional -1: positive and nonpositive input bit patterns return different values.
 - **A float's sign bit comes out as `mfc1` plus a sign extension** where retail has `mfc1` plus
   `sra`; the tested union, cast and file-scope forms did not remove it in their recorded profile.
 
@@ -1498,6 +1517,14 @@ These are measured source/ABI effects, not permission to invent barriers or fals
   declaration is preserved. The same prototype constraint affects the retained
   `func_L00_002B9380`; a direction-last declaration cannot be used to obtain a match.
 - A dead-store observation differed between ordinary code and a delay slot in the sample. Reconfirm actual liveness and control flow; do not manufacture a memory effect to preserve it.
+
+**28 October 2026, loop-layout probe:** `func_0029CF78` polls `0x1000D400`.
+In its original `-O2 -G0` source unit, an explicit forward `goto` to the exit
+followed by a `goto` to the loop compiled to a 40-byte conditional-backedge
+loop (0/28 USA placements). cc1 canonicalized the requested branch-plus-jump
+shape, and the three nops remained after the mask instead of between the load
+and mask. Its retained best remains 44/56 bytes; this confirms that this
+particular label spelling does not unblock the loop layout.
 
 <a id="blocker-40"></a>
 
@@ -1929,6 +1956,71 @@ unit it emits only two things:
 
 Every other MMI word — `pmaxw`, `pminw`, `pcpyld`, `pcpyud`, `pexch`, `pextlw` —
 never comes out of a C body.
+
+`func_002829A8` is a 48-byte example at the boot and all 27 level placements.
+The same body uses `pmaxw $at,$at,$v0` in the `beqz` delay slot and `$at` as
+the byte counter. A behaviorally equivalent C reconstruction, adapted from
+RAC1's functional timer note, compiles to 48 bytes but matches 0/28 placements;
+it replaces the `pmaxw` and branch layout. Keep it in
+`nonmatching/game/func_002829A8.c`; the evidence supports maintainer review,
+not an automatic `ASM_FUNC` classification.
+
+`func_00282DF0` is another reachable example: its identical 48-byte body at
+all 28 placements loads a VU0 vector, squares and sums xyz, computes `vsqrt`
+through Q, waits for the result, and transfers it back with `qmfc2`. No C
+attempt is useful under this compiler; leave its marker pending maintainer
+agreement for `ASM_FUNC`.
+
+`func_00282F70` is a 72-byte VU0 vector-scaling helper at all 28 placements.
+It loads an xy vector, forms its squared length, computes a reciprocal square
+root with `vrsqrt`, waits for Q, scales with `vmulq`, and stores with `sqc2`;
+the zero path also uses VU0. The qualified compiler has no C route for this
+body. Keep its marker pending maintainer agreement for `ASM_FUNC`.
+
+`func_00282E80` is the related 48-byte xy-distance helper at all 28
+placements. It subtracts two vectors, squares and sums xy, computes `vsqrt`
+through Q and returns the scalar result through `qmfc2`; its VU0 body likewise
+has no C route under this compiler. Keep the marker pending maintainer review.
+
+`func_002830C0` is a 48-byte vector-matrix transform at all 28 placements.
+It loads the input and four matrix columns with `lqc2`, accumulates the
+products using `vmulax`/`vmadd*`, and writes the result using `sqc2`. The
+qualified compiler has no C route for its COP2/VU0 body; keep the marker
+pending maintainer review.
+
+`func_00283388` is a 48-byte VU0 helper at all 28 placements. It builds four
+vectors with `vmulx`, `vmr32`, `vmove` and `vaddw`, then stores them using
+`sqc2`. As with the other decoded COP2 bodies, it has no C route under the
+qualified compiler; retain the marker pending maintainer review.
+
+`func_00282E48` is the 56-byte xyz-distance counterpart to `func_00282E80`,
+identical across all 28 placements. It subtracts two vectors, squares and sums
+xyz, computes `vsqrt` through Q, and returns the scalar result with `qmfc2`.
+This body likewise has no C route under the qualified compiler; keep the
+marker pending maintainer review.
+
+`func_002833B8` is a 56-byte VU0 matrix initializer at all 28 placements. It
+moves the scalar input to a VU0 register, forms rows using `vmulx`/`vaddx` and
+`vmove`, and stores four quadwords with `sqc2`. No C route exists under the
+qualified compiler; retain its marker pending maintainer review.
+
+`func_00283D00` is a 56-byte scalar division/remainder helper at all 28
+placements. It uses `vdiv` and Q, converts the quotient through `vftoi0` /
+`vitof0`, and finishes the remainder calculation with VU0 instructions. Its
+body likewise has no C route under the qualified compiler; keep the marker
+pending maintainer review.
+
+`func_002837D0` is a 64-byte vector transform at all 28 placements. It loads
+two vectors, forms componentwise and cross-product terms with
+`vopmula`/`vopmsub`, accumulates a dot-product component, and stores the
+result with `sqc2`. Its COP2/VU0 body has no C route under the qualified
+compiler; retain the marker pending maintainer review.
+
+`func_00283360` is a 40-byte example: its body is identical in the boot and all
+27 levels, and it uses `vmulx.xyzw`, `vmr32.xyzw`, `vaddw.x/y` and `sqc2`.
+There are 151 direct calls to its placements across the 28 programs, confirming
+that these are reachable instructions in a real function. No C attempt is
+appropriate; leave `INCLUDE_ASM` until a maintainer agrees to `ASM_FUNC`.
 
 **The rule that follows, and the traps it avoids:**
 

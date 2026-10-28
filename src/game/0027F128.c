@@ -419,7 +419,8 @@ INCLUDE_ASM("asm/game", func_00283AF0);
 
 INCLUDE_ASM("asm/game", func_00283B48);
 
-INCLUDE_ASM("asm/game", func_00283B98);
+/* Byte-identical 72-byte copy of RAC1 func_001FA748, which RAC1 marks ASM_FUNC. */
+ASM_FUNC("asm/game", func_00283B98);
 
 INCLUDE_ASM("asm/game", func_00283BE0);
 

@@ -1,22 +1,21 @@
-/* func_00282848, 72 bytes, 28 placements (all the levels).
-   Not a C row: catalogue defect.  The extent at 0x002EDC48 in level 00 (and
-   at the matching address in the other levels) is six `addiu $sp,$sp,N` pairs
-   with nops - 0x40, 0x40, 0x30, (two nops), 0x10, 0x50, 0x60 - followed by a
-   complete sixteen-byte function:
+/* func_00282848, 72-byte original extent, 28 placements.
+   A measured tools/levels.py entry correction skips the 56-byte prefix and
+   retains the final 16-byte function. In level 00 the original row starts at
+   0x002EDC48 and the function starts at 0x002EDC80; every other placement has
+   the same prefix/body split and bytes. The prefix contains six positive
+   stack adjustments and eight nops after a completed neighboring return.
+   Scans found no branch, jump, address-pair or aligned-word reference into
+   the prefix or to the shortened entry.
+
+   The corrected 16-byte function is:
 
      lwc1   $f0, -0x76E4($gp)
      nop
      jr     $ra
      mul.s  $f0, $f0, $f12
 
-   The six stack adjustments have no prologue before them and no `jr $ra`
-   after them; they are the tail of a neighbour's frame (the same shape as
-   func_00281E88), and the neighbour func_002824B8 ends with its own
-   `jr $ra` and a single `addiu $sp,$sp,0x80` in the delay slot, so the six
-   adjustments belong to neither of them.  No C can be placed on them: one C
-   function cannot be six `addiu $sp,$sp,N`.  A `tools/levels.py` split (the
-   row starts 52 bytes late) is what unblocks the sixteen-byte function, which
-   is the same shape as func_L00_002EDCB8, func_L00_002EDCF0 and
-   func_L00_002EDD38 next to it. */
+   This is the same load/nop/jr/mul shape measured in blocker 4 for
+   func_L00_002EDCB8 and its twins: C emits 12 bytes, omitting the nop before
+   jr. No source or compiler variant is repeated here. */
 
 #include "include_asm.h"
