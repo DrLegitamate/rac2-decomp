@@ -1422,3 +1422,12 @@ src/levels/01_oozla/L01_003BD5E8.c	-O2 -G0 -ffunction-sections -ffast-math
 src/levels/01_oozla/L01_003C9D00.c	-O2 -G8 -ffunction-sections
 src/levels/01_oozla/L01_003BCA38.c	-O2 -G0 -ffunction-sections -g
 src/levels/01_oozla/L01_003CAFE0-packet-g16.c	-O2 -G16 -Wa,-G16 -ffunction-sections
+src/levels/02_maktar_nebula/L02_003E9BB0-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-hazard-labels
+src/levels/02_maktar_nebula/L02_003EA180-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-zero-ti-por -g
+src/levels/03_endako/L03_003844D8-g8.c	-O2 -G8 -mno-split-addresses -ffunction-sections
+src/levels/03_endako/L03_003C72A8-g8.c	-O2 -G8 -ffunction-sections -Wa,-G16 -g -frac2-hazard-labels
+src/levels/03_endako/L03_003D1548-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
+src/levels/03_endako/L03_0041F410-g8.c	-O2 -G8 -ffunction-sections -g
+src/levels/03_endako/L03_0041F178-g8.c	-O2 -G128 -ffunction-sections -Wa,-G128
+src/levels/04_barlow/L04_003E7E68-g32.c	-O2 -G32 -Wa,-G32 -ffunction-sections
+src/levels/04_barlow/L04_003ED3D8.c	-O2 -G0 -ffunction-sections -g -frac2-keep-block-order
