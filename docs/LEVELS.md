@@ -124,14 +124,16 @@ catalogue is written. The normal carry command still performs full cross-release
 alignment and may revisit correspondences; entry maintenance does not do that or
 change source files. These are catalogue repairs, not compiler changes or new C matches.
 
-`FUNCTION_RESIDUES` excludes individually verified one-word remnants by name and
-size. Their immediate predecessors finish with a return and its delay slot across
-alignment nops, or a closed tail jump before debug-fill bytes. The static scan found
-no incoming branch/call, literal pointer or straight-line address-construction
-reference to these remnants. An identical instruction
-with a different name is left alone. Removed words remain in assembly, and surviving
-identities remain stable when the number of identical copies changes. The rule does
-not classify arbitrary code without a return as filler.
+`FUNCTION_RESIDUES` excludes individually verified remnants by name and size. The
+one-word entries' immediate predecessors finish with a return and its delay slot
+across alignment nops, or a closed tail jump before debug-fill bytes. The static scan
+found no incoming branch/call, literal pointer or straight-line address-construction
+reference to those remnants. `func_002702B8` is the measured 12-byte exception: it
+follows a completed return across alignment nops, has no incoming direct reference
+or aligned literal pointer, and falls through into the next prologue. An identical
+instruction with a different name is left alone. Removed bytes remain in assembly,
+and surviving identities remain stable when the number of identical copies changes.
+The rule does not classify arbitrary code without a return as filler.
 
 A boundary-only PR leaves progress reports for the later maintainer refresh.
 The non-strict report check tolerates obsolete rows only for these named remnants,
@@ -167,6 +169,59 @@ address-construction pairs also supplied no entry. The qualified R5900 Ghidra bo
 analysis has no function or incoming reference at these extents. Arbitrary computed
 indirect targets are outside those checks. The conclusion uses the complete
 neighborhood and operand lifetimes, not just the absence of `jr $ra` or FPU nops.
+
+One further row, `func_002702B8` (12 bytes), is the same extent in the boot and all 27
+levels. The previous function returns at `0x002702AC` with its delay slot at
+`0x002702B0`; a nop fills `0x002702B4`. The row is `daddu $v0,$zero,$zero`, nop,
+`sw $zero,0($a0)`, then falls through across a nop into the next function's prologue
+at `0x002702C8`. The level placements have the same neighborhood. Across all 28
+disassemblies there is no direct branch or call to the row, and scanning the loaded
+program segments found no aligned literal pointer to any placement. The measured C
+attempt emits the store before `jr $ra`; it cannot reproduce the row's fallthrough.
+`FUNCTION_RESIDUES` removes this exact named extent by name and size; it does not
+classify other return-less rows. Its fingerprint is identical in PAL and US2. Together
+with the five entries above, regeneration
+removes six distinct catalogue rows and 49 level placements, without changing retail
+bytes.
+
+`func_0029CF48` (12 bytes) is another measured residue in the boot and all 27 levels.
+In the boot, the preceding function returns at `0x0029CF3C` with its delay slot at
+`0x0029CF40`; a nop fills `0x0029CF44`. The row stores `$v0` through `$gp`, has a nop,
+then adjusts `$sp` by `0x50` without a function entry or return; a nop follows before
+the next prologue at `0x0029CF58`. All level placements have the same instruction
+pattern and neighborhood. Across all 28 disassemblies, no direct branch or call,
+aligned literal pointer, or adjacent `lui` plus low-half construction references the
+row. `FUNCTION_RESIDUES` removes only this named 12-byte extent; its normalized
+fingerprint is identical in PAL and US2.
+
+`func_002DE7F0` (28 bytes) is an orphan sequence in the boot and all 27 levels.
+The preceding function returns at `0x002DE7E8` with its delay slot at `0x002DE7EC`.
+The row then adjusts `$sp` by `0x70`, assigns `-1` to `$v0`, stores `$v1` through
+`$gp` at offset `-0x3EEC`, and adjusts `$sp` by another `0x10`; it has no entry
+sequence or return and falls into the next catalogue entry's initializer at
+`0x002DE810`. Across all 28 disassemblies, no direct branch or call, aligned literal
+pointer, or adjacent `lui` plus low-half construction references the row.
+`FUNCTION_RESIDUES` removes only this named 28-byte extent; its normalized
+fingerprint is identical in PAL and US2.
+
+`func_002E3E50` (4 bytes) is a one-instruction extent in the boot and 26 levels.
+The previous function returns at `0x002E3E44` with its delay slot at
+`0x002E3E48`; a nop fills `0x002E3E4C`. The row is `sd $t0,0($t1)` immediately
+before the separate handwritten routine at `0x002E3E54`. Every placement has
+the same return/delay/padding/isolated-store boundary. Across all 27 program
+images, no direct branch or call, aligned literal pointer, or nearby `lui` plus
+low-half construction references the row. `FUNCTION_RESIDUES` removes only
+this named four-byte extent; it leaves the retail word in place.
+
+`func_003411B0` (12 bytes) is a two-store fragment in the boot and all 27 levels.
+The preceding 380-byte function returns at `0x003411A4` with its delay slot at
+`0x003411A8`; a nop fills `0x003411AC`. The row stores zero through `$v1` at offset
+`0xC`, has a nop, stores `$f12` through `$a0` at offset `0x1B8`, then has a nop before
+the next function prologue at `0x003411C0`. The same neighborhood appears at every
+level placement. Across all 28 disassemblies, no direct branch or call, aligned
+literal pointer, or adjacent `lui` plus low-half construction references the row.
+`FUNCTION_RESIDUES` removes only this named 12-byte extent; its normalized
+fingerprint is identical in PAL and US2.
 
 `BOOT_RESIDUES` in `tools/levels.py` records these measured extents. The generator
 derives their normalised fingerprints from the private retail input and excludes
