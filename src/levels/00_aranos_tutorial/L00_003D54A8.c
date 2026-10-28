@@ -2,7 +2,76 @@
 
 
 
-INCLUDE_ASM("asm/levels", func_L00_003DA548);
+extern void func_L00_003DA2B0(char *);
+extern long long func_0027C878(int);
+extern float func_00283248(float, float);
+extern float func_00282E80(void *, void *);
+extern float func_002A7940(void);
+extern void func_00283410(void *, void *);
+extern void func_00282CF0(void *, void *, void *);
+extern void func_00282F20(void *, void *, float);
+extern void func_00282D30(void *, void *, float);
+extern void func_00280B90(void *, void *, int);
+typedef struct { char pad[0x140]; float x,y,z; } AimVector10;
+extern AimVector10 D_L00_001B8C80;
+void func_L00_003DA548(int unused, char *pos, int color, int first, int second, float scale)
+{
+    char pkt[144];
+    float m[16];
+    float quat[4];
+    float off[4];
+    long long r;
+    float dx, dy;
+
+    func_L00_003DA2B0(pkt);
+    *(int *)(pkt + 80) = 0;
+    *(float *)(pkt + 92) = 1.0f;
+    *(float *)(pkt + 96) = 1.0f;
+    *(float *)(pkt + 104) = 1.0f;
+    *(float *)(pkt + 108) = 1.0f;
+    *(int *)(pkt + 84) = 0;
+    *(int *)(pkt + 88) = 0;
+    *(int *)(pkt + 100) = 0;
+    r = func_0027C878(11);
+    *(long long *)(pkt + 112) = 0;
+    *(long long *)(pkt + 120) = r;
+    *(long long *)(pkt + 128) = 0xFF9000000260LL;
+    *(long long *)(pkt + 136) = 0x8000000048LL;
+    dx = D_L00_001B8C80.x - *(float *)pos;
+    dy = D_L00_001B8C80.y - *(float *)(pos + 4);
+    *(int *)(pkt + 76) = color + first;
+    *(int *)(pkt + 72) = color + first;
+    *(int *)(pkt + 68) = color + first;
+    *(int *)(pkt + 64) = color + first;
+    quat[3] = 0;
+    quat[2] = func_00283248(dx, dy);
+    quat[1] = -func_00283248(func_00282E80(pos, &D_L00_001B8C80.x),
+                              D_L00_001B8C80.z - *(float *)(pos + 8));
+    quat[0] = func_002A7940();
+    func_00283410(m, quat);
+    func_00282CF0(off, &D_L00_001B8C80.x, pos);
+    func_00282F20(off, off, 0.5f);
+    m[12] = *(float *)(pos) + off[0];
+    m[13] = *(float *)(pos + 4) + off[1];
+    m[14] = *(float *)(pos + 8) + off[2];
+    m[15] = 1.0f;
+    func_00282D30(pkt, pkt, scale);
+    func_00282D30(pkt + 16, pkt + 16, scale);
+    func_00282D30(pkt + 32, pkt + 32, scale);
+    func_00282D30(pkt + 48, pkt + 48, scale);
+    func_00280B90(pkt, m, 0);
+    *(int *)(pkt + 76) = color + second;
+    *(int *)(pkt + 72) = color + second;
+    *(int *)(pkt + 68) = color + second;
+    *(int *)(pkt + 64) = color + second;
+    func_00282D30(pkt, pkt, 0.5f);
+    func_00282D30(pkt + 16, pkt + 16, 0.5f);
+    func_00282D30(pkt + 32, pkt + 32, 0.5f);
+    func_00282D30(pkt + 48, pkt + 48, 0.5f);
+    func_00280B90(pkt, m, 0);
+}
+
+
 
 /* Tutorial prompts, interaction locks and traversal visibility. */
 extern char D_00189EA0[];

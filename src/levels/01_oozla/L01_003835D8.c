@@ -11,9 +11,9 @@ extern D00189E20_View D_00189E20;
 
 extern void func_00282948();
 
-INCLUDE_ASM("asm/levels", func_L01_003835D8);
+/* func_L01_003835D8 is defined in L01_003835D8-match.c. */
 
-INCLUDE_ASM("asm/levels", func_L01_003839F0);
+/* func_L01_003839F0 is defined in L01_003839F0.c. */
 
 INCLUDE_ASM("asm/levels", func_L01_00388FD0);
 
