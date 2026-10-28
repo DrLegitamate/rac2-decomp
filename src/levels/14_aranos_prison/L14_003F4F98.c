@@ -306,7 +306,7 @@ void func_L14_00426DE8(char *a0)
 }
 
 
-/* func_L14_00426F28 is defined in L14_00426F28-g8.c. */
+INCLUDE_ASM("asm/levels", func_L14_00426F28);
 
 
 /* func_L14_00427250 lives in the -g8 sibling file (it reaches a global through $gp). */

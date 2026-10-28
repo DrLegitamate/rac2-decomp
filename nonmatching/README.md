@@ -2064,8 +2064,12 @@ the placement rules are in `tools/fcheck.py`'s docstring; its tests are
 
 | [`func_L11_00456C20`](levels/func_L11_00456C20.c) | 640 | USA v1.01 game -O2 -G8: indexed loops reach 640 bytes with the tail from +0x120 exact, but the first loop retains index arithmetic instead of pointer induction. Pointer induction gives 648 bytes and early initialization; explicit do/while adds another callee-save. Diagnose loop/allocation dumps before another source trial. |
 
-- `func_L14_00426F28`: historical 740/744-byte G0 draft, superseded by the matching `L14_00426F28-g8.c` source. G8 scheduling, the actual float helper return and widened unsigned postincrement resolve the differences.
+- `func_L14_00426F28`: 744/744-byte G8 near miss with the actual integer text-helper return, float approach-helper return and pointer query return. Only the final flags temporary differs. The earlier void text-helper declaration was rejected and its candidate withdrawn.
 
 - `func_0033C738`: 636/640 bytes, 0/28 USA places at game `-O2 -G0`; correct unaligned table-copy widths, different colour/format allocation and final index form.
 
 - `func_L04_00400AB0`: 648/664 bytes, 0/2 USA places at game `-O2 -G0`; both nearest-point loops match, route-table base motion and pointer allocation differ.
+
+- `func_L14_003CB258`: 640/640 bytes, 0/1 USA place with `-O2 -G8 -frac2-qcopy -frac2-qcopy-barrier`; child-field temporaries and the motion FP pair retain different allocation.
+
+- `func_L14_00430B70`: 656/660 bytes at game `-O2 -G0`; composite loop induction and a retained-position spill differ. Explicit arrays and no-strength-reduce did not repair it.

@@ -273,7 +273,7 @@ void func_L04_00441178(u8 *a0) {
     }
 }
 /* func_L04_0044AAC8 is defined in L04_00422A00-g8.c (it reads small data through $gp). */
-INCLUDE_ASM("asm/levels", func_L04_0044BC90);
+/* func_L04_0044BC90 is defined in L04_0044BC90-g8.c. */
 
 /* Defined in L04_0044BC90-g8.c. */
 INCLUDE_ASM("asm/levels", func_L04_0044C598);
