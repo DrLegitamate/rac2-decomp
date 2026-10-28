@@ -1471,3 +1471,6 @@ src/levels/19_grelbin/L19_003E9400-controller.c	-O2 -G0 -ffunction-sections -g
 src/levels/19_grelbin/L19_003E9400-lift-g8.c	-O2 -G8 -ffunction-sections -frac2-hazard-labels
 src/levels/23_damosel_orbit/L23_00416388-scan.c	-O2 -G8 -ffunction-sections -Wa,-G32
 src/game/00273E98.c	-O2 -G0 -g -ffunction-sections
+
+# Siberius falling-object controller keeps its plain C stack clear materialized.
+src/levels/07_siberius/L07_00410C50.c	-O2 -G0 -ffunction-sections -frac2-zero-ti-por
