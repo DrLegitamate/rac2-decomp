@@ -1880,6 +1880,12 @@ it replaces the `pmaxw` and branch layout. Keep it in
 `nonmatching/game/func_002829A8.c`; the evidence supports maintainer review,
 not an automatic `ASM_FUNC` classification.
 
+`func_00282DF0` is another reachable example: its identical 48-byte body at
+all 28 placements loads a VU0 vector, squares and sums xyz, computes `vsqrt`
+through Q, waits for the result, and transfers it back with `qmfc2`. No C
+attempt is useful under this compiler; leave its marker pending maintainer
+agreement for `ASM_FUNC`.
+
 `func_00283360` is a 40-byte example: its body is identical in the boot and all
 27 levels, and it uses `vmulx.xyzw`, `vmr32.xyzw`, `vaddw.x/y` and `sqc2`.
 There are 151 direct calls to its placements across the 28 programs, confirming
