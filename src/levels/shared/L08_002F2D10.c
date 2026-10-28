@@ -231,7 +231,7 @@ void func_L08_0033CD18(s32 a0, s32 a1, ...) {
     func_L01_00324410(a0, a1, (char *)__builtin_next_arg(a1) - 0x30);
 }
 
-INCLUDE_ASM("asm/levels", func_L08_0034A078);
+
 
 INCLUDE_ASM("asm/levels", func_L08_00363320);
 

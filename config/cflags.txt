@@ -1485,3 +1485,4 @@ src/levels/08_tabora/L08_003F6D30-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy 
 
 # Mixed GP/absolute tuning reads accompany explicit position copy and state clear.
 src/levels/07_siberius/L07_003F6C40.c	-O2 -G0 -ffunction-sections -mno-split-addresses
+src/levels/shared/L08_0034A078.c	-O2 -G0 -ffunction-sections -g
