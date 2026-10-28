@@ -1468,3 +1468,4 @@ src/levels/18_damosel/L18_0042F308.c	-O2 -G32 -Wa,-G32 -ffunction-sections
 src/levels/18_damosel/L18_0043C778-g64.c	-O2 -G64 -Wa,-G64 -ffunction-sections
 src/levels/19_grelbin/L19_003E9400-controller.c	-O2 -G0 -ffunction-sections -g
 src/levels/19_grelbin/L19_003E9400-lift-g8.c	-O2 -G8 -ffunction-sections -frac2-hazard-labels
+src/levels/23_damosel_orbit/L23_00416388-scan.c	-O2 -G8 -ffunction-sections -Wa,-G32
