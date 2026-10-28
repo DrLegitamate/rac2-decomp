@@ -71,14 +71,13 @@ INCLUDE_ASM("asm/levels", func_L00_004003F0);
 
 
 
-INCLUDE_ASM("asm/levels", func_L00_00401168);
+/* func_L00_00401168 is defined in L00_00401168-basis-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L00_00401668);
 
+/* func_L00_00402068 is defined in L00_003FFA70-ring-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_00402068);
-
-INCLUDE_ASM("asm/levels", func_L00_004029E8);
+/* func_L00_004029E8 is matched in L00_003FFA70-g8.c. */
 
 
 extern void func_002FDBD8(void *obj, float f, void *p, void *q);
@@ -150,11 +149,55 @@ extern void func_L00_00403F90(char *arg, void *p);
 
 /* func_L00_00404168 is matched in L00_00404168-por.c (-frac2-zero-ti-por). */
 
-INCLUDE_ASM("asm/levels", func_L00_00404368);
+extern void func_L00_00418730(void *pos, int a, int b, int c, int d, int e, int f, int g, int h,
+                              int k, float scale);
+extern float func_002A7878(float lo, float hi);
+extern float func_002A7940(void);
+extern float func_002A78D8(float a, float b);
+extern int func_002A7820(int lo, int hi);
+extern void func_002AF000(void *out, float x, float y, float z);
+extern void func_00282CF0(void *out, void *a, void *b);
+extern void func_00282CC0(void *out, void *a, void *b);
+extern void func_00282F20(void *out, void *a, float scale);
+extern void func_L00_0033E888(void *pos, void *velocity, float speed, float size,
+                              unsigned int colour, unsigned int colour2, int life, int a, int b,
+                              int c, int d);
+extern char D_L00_001B8DC0[];
+
+/* one func_L00_00418730 effect at pos, then two func_L00_0033E888 particles with random
+   velocities; before each, pos moves 0.3 of the way towards D_L00_001B8DC0 (FastVecSub,
+   scale, FastVecAdd) */
+void func_L00_00404368(float *pos, int unused, int mode)
+{
+    float velocity[4], offset[4], point[4];
+    float pitch, heading, speed;
+    int i;
+
+    func_L00_00418730(pos, 0, 15, 10, 0, 20, 0, 0, 1, 0, 0.1f);
+    for (i = 0; i < 2; i++) {
+        pitch = func_002A7878(-0.9599312f, -1.3962636f);
+        heading = func_002A7940();
+        speed = func_002A7878(0.0f, 0.5f);
+        func_002AF000(velocity, speed * 0.016666668f, heading, pitch);
+        func_00282CF0(offset, D_L00_001B8DC0, pos);
+        func_00282F20(offset, offset, 0.3f);
+        func_00282CC0(pos, pos, offset);
+        speed = func_002A7878(25000.0f, 50000.0f);
+        point[0] = pos[0] + func_002A78D8(0.0f, 0.02f);
+        point[1] = pos[1] + func_002A78D8(0.0f, 0.02f);
+        point[2] = pos[2] + func_002A78D8(0.0f, 0.02f);
+        if (mode)
+            func_L00_0033E888(point, velocity, speed, 0.1f, 0x78ffffff, 0x101e1e1e,
+                              func_002A7820(10, 20), 1, 1, -1, 1);
+        else
+            func_L00_0033E888(point, velocity, speed, 0.1f, 0x78ffffff, 0x101e1e1e,
+                              func_002A7820(25, 60), 1, 1, -1, 1);
+    }
+}
 
 INCLUDE_ASM("asm/levels", func_L00_004045E8);
 
-INCLUDE_ASM("asm/levels", func_L00_00404B48);
+/* func_L00_00404B48 is defined in L00_00404B48-g8.c. */
 
 extern TI128 D_L00_001BF220;
 extern void func_00310440(char *arg);
@@ -164,7 +207,7 @@ extern void func_0035F450(int a, int b, void *c, int d);
 /* func_L00_00404DD8 is matched in L00_003FFA70-qcopy.c (built with -frac2-qcopy
    -frac2-qcopy-barrier). */
 
-INCLUDE_ASM("asm/levels", func_L00_00404ED8);
+/* func_L00_00404ED8 is defined in L00_00404ED8-g.c. */
 
 
 INCLUDE_ASM("asm/levels", func_L00_00405808);

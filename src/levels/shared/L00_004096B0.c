@@ -1,3 +1,43 @@
+#include "common.h"
+
+typedef int Vector128 __attribute__((mode(TI)));
+typedef union { Vector128 bits; float f[4]; } __attribute__((aligned(16))) BeamVector;
+typedef float Vector[4] __attribute__((aligned(16)));
+typedef struct { float vertices[4][4]; unsigned int colors[4]; float uv[4][2]; u64 registers[4]; } __attribute__((aligned(16))) BeamQuad;
+
+extern char *func_0029EFD0(int);
+extern void func_00282CF0(void *, void *, void *);
+extern void func_00282F20(void *, void *, float);
+extern void func_00282DD8(void *, void *, void *);
+extern int func_00283DB8(void *, float);
+extern float func_00282E48(void *, void *);
+extern float func_00282DB0(void *, void *);
+extern float func_002831B0(float);
+extern void func_L00_0040DF58(char *, char *);
+extern char D_L00_001B8C80[];
+typedef struct SpawnState {
+    short life;
+    short timer;
+    short delay;
+    short pad06;
+    float outer, inner, fade, size;
+    int flags, control, kind, red, green, blue, enabled, extra;
+} SpawnState;
+typedef struct SpawnObject {
+    char pad00[0x10];
+    float position[4];
+    char status;
+    char pad21[0xf];
+    unsigned char alpha;
+    char pad31;
+    short color;
+    char pad34[0x34];
+    SpawnState *state;
+    char pad6c[0x54];
+    float forward[4], right[4], up[4];
+} SpawnObject;
+
+
 #include "include_asm.h"
 
 extern int func_00282978_5(char *handle);
@@ -84,7 +124,7 @@ INCLUDE_ASM("asm/levels", func_L00_004096B0);
 
 INCLUDE_ASM("asm/levels", func_L00_00409E48);
 
-INCLUDE_ASM("asm/levels", func_L00_0040A4A8);
+/* func_L00_0040A4A8 is defined in L00_0040A4A8.c. */
 
 
 INCLUDE_ASM("asm/levels", func_L00_0040B098);
@@ -103,7 +143,73 @@ INCLUDE_ASM("asm/levels", func_L00_0040C7D8);
 
 INCLUDE_ASM("asm/levels", func_L00_0040D058);
 
-INCLUDE_ASM("asm/levels", func_L00_0040DC08);
+char *func_L00_0040DC08(float size, char *position, int trigger, int kind, int red, int green, int blue, int enabled, int flags, int extra, int control)
+{
+    Vector128 direction[1], up[1], sphere[1], difference[1];
+    char *object = func_0029EFD0(0xf6d);
+    SpawnState *state;
+    SpawnObject *m;
+    char *camera;
+    float angle;
+    if (object != 0) {
+        m = (SpawnObject *)object;
+        state = m->state;
+        *(unsigned char *)(object + 0x30) = 0xff;
+        *(short *)(object + 0x32) = 0xff;
+        object[0x20] = 0;
+        qcopy(object + 0x10, position);
+        *(float *)(object + 0x1c) = 1.0f;
+        camera = D_L00_001B8C80 + 0x140;
+        func_00282CF0(direction, camera, object + 0x10);
+        func_00282F20(direction, direction, 1.0f);
+        func_002AFFD8(object + 0x10, (char *)up, 1);
+        qcopy(object + 0xc0, direction);
+        func_00282DD8(object + 0xd0, object + 0xc0, up);
+        func_00282F20(object + 0xd0, object + 0xd0, 1.0f);
+        func_00282DD8(object + 0xe0, object + 0xd0, object + 0xc0);
+        m->forward[3] = m->right[3] = m->up[3] = 0.0f;
+        /* Both countdowns start together. */
+        state->timer = state->life = 60;
+        state->outer = size + size;
+        state->inner = size*4.0f;
+        state->kind = kind;
+        state->red = red;
+        state->green = green;
+        state->blue = blue;
+        state->enabled = enabled;
+        state->extra = extra;
+        state->control = control;
+        state->flags = flags;
+        state->size = size;
+        qcopy(sphere, object + 0x10);
+        ((float *)sphere)[3] = size*3.0f;
+        if (func_00283DB8(sphere, 128.0f) == 1) {
+            state->delay = 10;
+            state->fade = 0.1f;
+            if (func_00282E48(position, camera) < 48.0f && trigger != 0) {
+                char *manager = camera - 0x140;
+                *(int *)(manager + 0x16c) = 0;
+                *(volatile float *)(manager + 0x160) = 0.075f;
+                *(volatile int *)(manager + 0x168) = 40;
+            }
+            if (state->flags != 0) {
+                func_00282CF0(difference, object + 0x10, D_L00_001B8C80 + 0x140);
+                func_00282F20(difference, difference, 1.0f);
+                angle = func_002831B0(func_00282DB0(difference, D_L00_001B8C80 + 0x370));
+                if (1.5707963705f - angle < 0.4537856579f)
+                    state->flags = 1;
+                else
+                    state->flags = 0;
+            }
+        } else {
+            state->delay = 0;
+            state->flags = 0;
+        }
+        func_L00_0040DF58(object, (char *)up);
+    }
+    return object;
+}
+
 
 /* Tests the handle cached in the object and, while the handle reports itself already released, drops the next sub-handle, otherwise runs the object's destroy helper. */
 void func_L00_0040DF00(char *object)
@@ -151,7 +257,7 @@ void func_L00_00410D18(void)
 {
 }
 
-INCLUDE_ASM("asm/levels", func_L00_00410D20);
+/* func_L00_00410D20 is defined in L00_00410D20.c. */
 
 /* Calls a helper with a referenced node and three identity bytes of the object, then copies those bytes into a linked record when a node flag bit is set and the record exists with a non-zero leading short. */
 void func_L00_004110D8(Obj_F23626ad8 *p)
@@ -242,7 +348,7 @@ void func_L00_00412088(char *p)
     *(float *)(p + 60) = 1.0f;
 }
 
-INCLUDE_ASM("asm/levels", func_L00_00412110);
+/* func_L00_00412110 is defined in L00_00412110.c. */
 
 /* func_L00_00412230 is defined in x-qcopy.c. */
 
@@ -255,4 +361,4 @@ void func_L00_00412408(Vec16_Fc936841d *object, int index)
     func_00282CC0_15((char *)&object[index - 1], (char *)&object[index - 2], local);
 }
 
-INCLUDE_ASM("asm/levels", func_L00_00412470);
+/* func_L00_00412470 is defined in L00_00412470.c. */
