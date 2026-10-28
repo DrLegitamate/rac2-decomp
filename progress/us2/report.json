@@ -1,13 +1,13 @@
 {
  "version": 2,
  "measures": {
-  "fuzzy_match_percent": 31.75589416135569,
+  "fuzzy_match_percent": 31.76041007349468,
   "total_code": "5580268",
-  "matched_code": "1772064",
-  "matched_code_percent": 31.75589416135569,
+  "matched_code": "1772316",
+  "matched_code_percent": 31.76041007349468,
   "total_functions": 8634,
-  "matched_functions": 5855,
-  "matched_functions_percent": 67.81329627055825,
+  "matched_functions": 5856,
+  "matched_functions_percent": 67.82487838776929,
   "complete_code": "0",
   "complete_code_percent": 0.0,
   "total_units": 948,
@@ -43,13 +43,13 @@
    "id": "level_code",
    "name": "Level code",
    "measures": {
-    "fuzzy_match_percent": 27.243983002522786,
+    "fuzzy_match_percent": 27.249544079924156,
     "total_code": "4531496",
-    "matched_code": "1234560",
-    "matched_code_percent": 27.243983002522786,
+    "matched_code": "1234812",
+    "matched_code_percent": 27.249544079924156,
     "total_functions": 5496,
-    "matched_functions": 3531,
-    "matched_functions_percent": 64.2467248908297,
+    "matched_functions": 3532,
+    "matched_functions_percent": 64.26491994177584,
     "complete_code": "0",
     "complete_code_percent": 0.0
    }
@@ -88,13 +88,13 @@
    "id": "levels",
    "name": "Level-specific code",
    "measures": {
-    "fuzzy_match_percent": 22.773741602090347,
+    "fuzzy_match_percent": 22.783153535525567,
     "total_code": "2677452",
-    "matched_code": "609756",
-    "matched_code_percent": 22.773741602090347,
+    "matched_code": "610008",
+    "matched_code_percent": 22.783153535525567,
     "total_functions": 2469,
-    "matched_functions": 1493,
-    "matched_functions_percent": 60.46982584042122,
+    "matched_functions": 1494,
+    "matched_functions_percent": 60.51032806804374,
     "complete_code": "0",
     "complete_code_percent": 0.0
    }
@@ -148,13 +148,13 @@
    "id": "level_03",
    "name": "Level 03: Endako",
    "measures": {
-    "fuzzy_match_percent": 16.426889134814562,
+    "fuzzy_match_percent": 16.605658182230925,
     "total_code": "140964",
-    "matched_code": "23156",
-    "matched_code_percent": 16.426889134814562,
+    "matched_code": "23408",
+    "matched_code_percent": 16.605658182230925,
     "total_functions": 105,
-    "matched_functions": 58,
-    "matched_functions_percent": 55.23809523809524,
+    "matched_functions": 59,
+    "matched_functions_percent": 56.19047619047619,
     "complete_code": "0",
     "complete_code_percent": 0.0
    }
@@ -4541,13 +4541,13 @@
   {
    "name": "Level 03: Endako",
    "measures": {
-    "fuzzy_match_percent": 16.426889134814562,
+    "fuzzy_match_percent": 16.605658182230925,
     "total_code": "140964",
-    "matched_code": "23156",
-    "matched_code_percent": 16.426889134814562,
+    "matched_code": "23408",
+    "matched_code_percent": 16.605658182230925,
     "total_functions": 105,
-    "matched_functions": 58,
-    "matched_functions_percent": 55.23809523809524,
+    "matched_functions": 59,
+    "matched_functions_percent": 56.19047619047619,
     "complete_code": "0",
     "complete_code_percent": 0.0,
     "total_units": 1,
@@ -5014,9 +5014,9 @@
      }
     },
     {
-     "name": "func_L03_003D20F8",
+     "name": "func_US2_L03_003D3700",
      "size": "252",
-     "fuzzy_match_percent": 0.0,
+     "fuzzy_match_percent": 100.0,
      "address": "1183216",
      "metadata": {
       "virtual_address": "4011776"
