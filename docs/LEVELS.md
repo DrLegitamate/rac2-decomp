@@ -103,6 +103,14 @@ the same way. Each prefix follows a completed `jr $ra` and its delay slot, holds
 filler (0xCDCDCDCD) or unreachable leftovers, and every jump, address pair or data pointer that
 reaches the function already targets the shortened entry.
 
+`func_00282848` is another corrected mixed extent (72 to 16 bytes, skip 56)
+in the boot and all 27 levels. Its prefix follows a completed return and
+contains six positive stack adjustments plus eight nops. Across all 28
+programs, no direct branch or jump, nearby address pair, or aligned loaded
+word points into that prefix or at the shortened entry. The retained 16-byte
+body is the float load/nop/return-delay-multiply form covered by blocker 4;
+the catalogue correction does not claim a C match.
+
 Three more rows were corrected on 26 October 2026: `func_00120354` and `func_00130A8C` skip
 4 bytes (one 0xCDCDCDCD fill word; two data words point at `func_00120354`'s shortened
 entry), and `func_0028FF50` skips 8 (a leftover `sw $v0,0x6C($a1)` and a nop after the

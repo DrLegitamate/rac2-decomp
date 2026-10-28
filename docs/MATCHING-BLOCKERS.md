@@ -405,6 +405,12 @@ program builds; the placement count does not multiply distinct-function credit.
 
 **A second form of the class stays a wall:** on `func_L02_00411530` the missing `nop` is a **cop1 latency fill between `mtc1` and `sub.s`**, and retail places the join label *before* it while cc1 glues the nop to the reload. Twenty-nine source variants tested, none moves the label.
 
+`func_00282848`'s corrected 16-byte body is another instance of the first
+form: `lwc1 $f0,-0x76E4($gp) ; nop ; jr $ra ; mul.s $f0,$f0,$f12`. Its C
+candidate has the same 12-byte missing-nop result as the previously measured
+`func_L00_002EDCB8` family; the catalogue prefix correction does not change
+that compiler blocker.
+
 <a id="blocker-05"></a>
 
 ## 5. `nop nop` before `div.s`
