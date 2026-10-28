@@ -21,7 +21,7 @@ INCLUDE_ASM("asm/levels", func_L22_0039D708);
 INCLUDE_ASM("asm/levels", func_L22_003A15D0);
 
 
-INCLUDE_ASM("asm/levels", func_L22_003A1ED8);
+/* func_L22_003A1ED8 is defined in L22_003A1ED8.c. */
 
 INCLUDE_ASM("asm/levels", func_L22_003A2160);
 
@@ -94,13 +94,12 @@ void func_L22_003A2E10(char *a0, unsigned short a1) {
 INCLUDE_ASM("asm/levels", func_L22_003A2E50);
 
 
-INCLUDE_ASM("asm/levels", func_L22_003A3550);
 
 INCLUDE_ASM("asm/levels", func_L22_003A36A0);
 
 INCLUDE_ASM("asm/levels", func_L22_003A3B50);
 
-INCLUDE_ASM("asm/levels", func_L22_003A3D50);
+/* func_L22_003A3D50 is defined in L22_003A3D50-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L22_003A4128);
 
@@ -135,7 +134,7 @@ void func_L22_003A47E8(char *a0, int flags, int a2, int a3, int a4) {
     D_L22_001B2AB4[0]->f8 = D_L22_001B2AB4[0]->f8 - 1;
 }
 
-INCLUDE_ASM("asm/levels", func_L22_003A4938);
+/* func_L22_003A4938 is defined in L22_0039D708-scan.c. */
 
 extern float D_L22_001B2AA4 __attribute__((sda));
 extern char *D_0018C0B0;
