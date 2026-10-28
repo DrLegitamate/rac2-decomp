@@ -299,7 +299,7 @@ int func_L00_00303388(unsigned char *object)
     return 0;
 }
 
-INCLUDE_ASM("asm/levels", func_L00_00303418);
+/* func_L00_00303418 lives in L00_00303418-sdata.c. */
 
 INCLUDE_ASM("asm/levels", func_L00_00303530);
 

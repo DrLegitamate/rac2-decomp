@@ -2553,3 +2553,29 @@ discard, the truthful all-four-FP-first argument view, an explicit SDATA alias a
 `-fno-force-mem` tie; `-fno-schedule-insns` worsens the result. Its marker is
 restored. Reopen with evidence for the post-call halfword value lifetime; a false
 helper return type is not an acceptable match.
+
+### Scalar-SDA table walks and packet construction
+
+`func_L00_00303418` now has C passing all 27 local places in US, US2 and PAL.
+The previous comment misread the first flag update: `ori` in an unconditional
+branch's delay slot is live. The mixed table-pointer loads use ordinary
+`__attribute__((sda))` declarations with game -G0. They give cc1 a bare scalar
+access; the assembler expands absolute forms in ordinary flow and GP forms in
+branch slots. This preserves the measured duplicated initializer reads without
+inventing volatile accesses. Explicit all-GP or all-absolute views are not the
+same source/profile.
+
+`func_0027DE50` passes all 28 local places in each release. The packet writer's
+measured reloads use a volatile read view and an ordinary write view of the same
+canonical cell, as the existing packet builders do. Each header has its own
+pointer lifetime; the two 16-byte templates are separate measured objects.
+Coordinate-offset snapshots retain the real load order before the first writer
+reload. Signed halfword assignments preserve the actual 0x8001/0x8004 writes.
+The separate native-only packet draft corroborates the template extents and
+64-bit fifth argument; its functional-table row is retired in favor of the real
+source definition. These local candidates still require the coordinator's strict
+linked builds.
+
+The former diagnostic-only `func_L05_00441D40` and `func_002FF0D8` screens now
+retain meaningful C in `nonmatching/` with the remaining allocation, address and
+store-order differences. Neither is counted as matching C.

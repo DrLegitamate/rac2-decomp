@@ -280,7 +280,7 @@ INCLUDE_ASM("asm/game", func_0027D900);
 /* func_0027DDC0 is in 0027B948-g8.c (-G8: retail re-materialises the address of the
    packet pointer for every access, which only that flag reproduces). */
 
-INCLUDE_ASM("asm/game", func_0027DE50);
+/* func_0027DE50 lives in 0027DE50-sdata.c. */
 
 
 INCLUDE_ASM("asm/game", func_0027E018);
