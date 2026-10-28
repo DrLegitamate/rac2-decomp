@@ -2089,3 +2089,4 @@ the placement rules are in `tools/fcheck.py`'s docstring; its tests are
 | [`func_002BEBC0`](game/func_002BEBC0.c) | 680 | 672/680 bytes at game `-O2 -G0`, 0/28 USA places; alpha-bound select and subsequent block scheduling differ. |
 | [`func_L00_003EB0C0`](levels/func_L00_003EB0C0.c) | 760 | 752/760 bytes, 0/11 USA places at game `-O2 -G0`; 3x4 matrix frame identified, sentinel-byte constant reuse and list-loop allocation differ. |
 | [`func_L05_0041CB68`](levels/func_L05_0041CB68.c) | 664 | 668/664 bytes at game `-O2 -G0`; collision-call slot, persistent scratch pointers and particle constant allocation differ. All measured input banks and return contracts retained. |
+| [`func_L00_003EB610`](levels/func_L00_003EB610.c) | 424 | updated 424/424-byte game `-O2 -G8` draft uses reviewed clobbering qcopy/qzero and canonical resident owner storage. The three-copy loop still reverses; `-fno-rerun-loop-opt` leaves the tie, so its marker remains. |
