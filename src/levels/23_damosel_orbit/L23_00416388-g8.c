@@ -528,8 +528,6 @@ extern float D_L23_001B36D0[4] __attribute__((sda));
 
 extern int D_L23_001B371C;
 
-extern C0E8Hero hero_00189E20 __asm__("D_00189E20");
-
 extern int func_00282948(int *);
 
 extern void func_00282CF0(float *, float *, float *);
@@ -548,7 +546,7 @@ void func_L23_0041C0E8(C0E8Moby *arg0) {
     func_00282948(&D_L23_001B371C);
     if (arg0->state == 0x10 && state->dist < D_L23_001B168C && state->level > state->limit &&
         func_00282C48(state->level - state->limit) < D_L23_001B1690) {
-        C0E8Hero *hero = &hero_00189E20;
+        C0E8Hero *hero = (C0E8Hero *)D_00189E20;
 
         if (hero->charge >= 11 && D_L23_001B1694 == 0) {
             D_L23_001B16A4 = 1;
@@ -566,26 +564,26 @@ void func_L23_0041C0E8(C0E8Moby *arg0) {
             else
                 D_L23_001B1694 += 2;
         } else {
-            C0E8Hero *hero = &hero_00189E20;
+            C0E8Hero *hero = (C0E8Hero *)D_00189E20;
 
             if (hero->heat >= 11)
                 D_L23_001B16A8 = 1;
         }
     }
     if (D_L23_001B16A8 != 0 && D_L23_001B1694 > D_L23_001B1698) {
-        C0E8Hero *hero = &hero_00189E20;
+        C0E8Hero *hero = (C0E8Hero *)D_00189E20;
 
         if (hero->charge >= 11)
             D_L23_001B1694 = D_L23_001B1698;
     }
     {
-        C0E8Hero *hero = &hero_00189E20;
+        C0E8Hero *hero = (C0E8Hero *)D_00189E20;
 
         if (hero->charge != 0 && hero->armed == 0)
             D_L23_001B16A8 = 0;
     }
     {
-        C0E8Hero *hero = &hero_00189E20;
+        C0E8Hero *hero = (C0E8Hero *)D_00189E20;
 
         if (hero->charge >= 11 && D_L23_001B16A4 == 0 && D_L23_001B1694 > 0 && D_L23_001B1694 <= D_L23_001B1698)
             D_L23_001B1694 = D_L23_001B1698 + 5;
@@ -597,7 +595,7 @@ void func_L23_0041C0E8(C0E8Moby *arg0) {
     if (D_L23_001B1694 < 0) {
         D_L23_001B1694++;
         if (D_L23_001B371C == 0) {
-            C0E8Hero *hero = &hero_00189E20;
+            C0E8Hero *hero = (C0E8Hero *)D_00189E20;
 
             if (hero->charge != 0 && state->range < 10.0f && state->level > state->limit) {
                 func_00282CF0(v, hero->pos, (float *)&arg0->pos);
@@ -617,7 +615,7 @@ void func_L23_0041C0E8(C0E8Moby *arg0) {
             func_002E5CF8(7, 0, (char *)arg0);
             func_002E5CF8(12, 0, (char *)arg0);
             if (state->range < 15.0f && state->level > state->limit) {
-                C0E8Hero *hero = &hero_00189E20;
+                C0E8Hero *hero = (C0E8Hero *)D_00189E20;
 
                 if (hero->busy == 0) {
                     func_00282CF0(v, hero->pos, (float *)&arg0->pos);
