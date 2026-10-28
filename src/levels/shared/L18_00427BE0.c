@@ -24,7 +24,7 @@ s32 func_L18_00428100(char *a0) {
         func_3DB8F8(a0, ref_L18_002571A0_00);
     return 0;
 }
-INCLUDE_ASM("asm/levels", func_L18_00428138);
+/* func_L18_00428138 lives in L18_00428138-g8.c. */
 
 
 /* Maps the class identifier this level tags an object with to its small integer. The unit is
