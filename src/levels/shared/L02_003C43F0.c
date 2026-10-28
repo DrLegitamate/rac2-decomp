@@ -32,7 +32,7 @@ extern float func_00283248(float, float);
 
 extern float func_00282E20(char *);
 
-extern float func_002A7878(void *, void *, float, float);
+extern float func_002A7878(float, float);
 
 extern float func_002A7940(void);
 
@@ -297,8 +297,6 @@ void func_L02_003C4E18(char *a0)
                   func_801234F0(v[2]), func_801234F0(f20));
     func_L00_002D40A0(v, 0, f20);
 }
-
-INCLUDE_ASM("asm/levels", func_L02_003C4ED8);
 
 /* The level's three trigger boxes, each a lower and an upper bound, and the point they hold:
    the point has to lie inside every box. */
@@ -752,7 +750,51 @@ void func_L02_003CEE40(struct L02Kind330Object *a0) {
 
 INCLUDE_ASM("asm/levels", func_L02_003CEFD8);
 
-INCLUDE_ASM("asm/levels", func_L02_003CF1B8);
+typedef struct {
+    f32 x;
+    f32 y;
+} L02Pair_CF1B8;
+
+typedef struct {
+    s32 a;
+    s32 b;
+} L02Range_CF1B8;
+
+extern L02Pair_CF1B8 D_L02_001B00D0;
+extern L02Pair_CF1B8 D_L02_001B00D8;
+extern L02Range_CF1B8 D_L02_001B00E0;
+typedef struct {
+    L02Range_CF1B8 r[2];
+} L02Ranges_CF1B8;
+
+extern L02Ranges_CF1B8 D_L02_001B00E8;
+
+extern void func_00282C88(void *);
+extern int func_002A77E0(int);
+extern void *func_002C3150(void *, void *, int, int, int, int, float);
+extern void func_002A7A00(void *, float, float);
+
+void func_L02_003CF1B8(u8 *self)
+{
+    L02Pair_CF1B8 speed = D_L02_001B00D0;
+    L02Pair_CF1B8 size = D_L02_001B00D8;
+    L02Range_CF1B8 kind = D_L02_001B00E0;
+    L02Ranges_CF1B8 count = D_L02_001B00E8;
+    f32 vel[4] __attribute__((aligned(16)));
+    f32 pos[4] __attribute__((aligned(16)));
+    s32 i;
+
+    func_00282C88(vel);
+    func_002C3150(self + 0x10, vel, kind.a, func_002A7820(count.r[0].a, count.r[0].b) & 0xFF,
+                  func_002A77E0(0xFF) & 0xFF, 0, size.x);
+    for (i = 0; i < 1; i++) {
+        func_002A7A00(pos, 0.0f, 0.5f);
+        func_00282CC0(pos, pos, self + 0x10);
+        vel[2] = -(func_002A7878(speed.x, speed.y) * 0.016666668f);
+        func_002C3150(pos, vel, kind.b, func_002A7820(count.r[1].a, count.r[1].b) & 0xFF,
+                      func_002A77E0(0xFF) & 0xFF, 0, size.y);
+    }
+}
 
 /* Positions A0 with four angles, then moves it kind six to kind two of length ten. */
 void func_L02_003D1588(char *a0) {
@@ -867,7 +909,7 @@ void func_L02_003D6BC0(char *a0)
 
 /* Defined in L02_003D7040-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L02_003D7140);
+/* func_L02_003D7140 is defined in L02_003D7140-g8.c. */
 
 int func_L02_003D7300(char *a0) {
     return *(int *)(*(char **)(a0 + 0x68) + 0xBC);
