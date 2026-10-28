@@ -2471,3 +2471,46 @@ Three retained near misses from this wave (`func_L09_003FE0C0`, `func_L10_004237
   `D_L18_00189E20+0x2294 == 0x6F`) inside each case of its kind switch after checking
   them before the switch. The duplication is in retail, so the retained C has to spell
   it twice; merging it changes the branch layout.
+
+### Particle and effect pointer lifetimes (28 October 2026)
+
+The following are retained C near misses, not linked matches. Measurements use
+the maintained game compiler at this revision, with the profiles stated below.
+Default `qcopy` is used where a grouped transfer needs register addresses;
+no non-clobbering copy, register pin, false call interface or synthetic access is
+part of these attempts.
+
+- `func_002C3B08`: 628/624 bytes in every US placement with the source unit's
+  `-O2 -G0 -ffunction-sections -g` profile. Plain TI transfers reproduce the
+  object-relative stores; default `qcopy` gives 632 bytes. Raw and typed particle
+  layouts tie with object/current/motion in s1/s2/s0 instead of s2/s0/s1 and one
+  repeated collision-argument move. The current callable extent is 624 bytes;
+  the older 632-byte extent measurement above includes its repaired prefix.
+- `func_002C5120`: 716/732 bytes with the same profile. Raw and typed follower
+  state views retain a 0x60 rather than 0x70 frame and a different interpolation
+  schedule. Delaying the velocity pointer's source declaration does not close it.
+- `func_00316400`: 712/708 bytes at `-O2 -G0 -ffunction-sections`. Explicit
+  `MACRO_ADDR` views of both tables reach 708 bytes, but table/parameter allocation
+  and two floating bound-register pairs differ. Explicit bound locals are worse
+  (772 bytes); a typed 0xA0 record view ties.
+- `func_003166C8`: 772/772 bytes with that profile and `MACRO_ADDR` on the vector
+  constant. The first copy address remains live across the angular updates,
+  shifting record/index/position allocation. A plain TI first copy gives 760
+  bytes and folds its store address.
+- `func_L18_0043EA90`: 852/852 bytes in US levels 18 and 20 at
+  `-O2 -G8 -ffunction-sections`, with state/count swapping s0/s1. Diagnostic
+  objects are identical: state has 12 references, live length 99 and 15 call
+  crossings; count has 6, 66 and 9. Declaration order, aligned point storage and
+  a truthful FP-first declaration of the first helper tie. The dynamic frame and
+  unrolled effect sequence already agree.
+- `func_L30_00415090`: 840/840 bytes at `-O2 -G0 -ffunction-sections`; the final
+  outgoing-argument schedule differs from +0x2C8. The actual `func_002B0CE0`
+  returns a status in v0, including 3 on its success path; retaining its integer
+  return closes the earlier pad-load register difference. Pad scalar/array views,
+  color temporaries/regrouping and a truthful FP-last interleaving do not close
+  the argument setup after nine compiles.
+
+Reopen these deposits with evidence about the original pointer lifetimes or
+argument-evaluation schedule, rather than repeating the tied spellings. Only US
+local checks were run for these near misses; other releases and strict linked
+qualification remain unverified.
