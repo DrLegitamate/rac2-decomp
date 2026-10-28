@@ -1,3 +1,10 @@
+/* func_L05_0041C118 (w2 batch 3, 2026-10-28). Unit -O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier.
+   204/212 bytes. The list head as `extern char *D_L05_001B2528[] MACRO_ADDR;` read as [0] gives retail's tied
+   `lui $v1 ; lw $v1,lo($v1)`. Left: retail compares the tag with `xor $v0,$v0,$a1` (a1 = 0xFBF hoisted into
+   the beqz slot) where this folds it to `xori` (a local, short, static const, ternary, goto, for/while/do
+   all fold); the header stores (retail sh 0x32, sb 0x30, sb 0x31 with v1/v0/a1 constants). */
+#include "common.h"
+
 /* Bounded manual reconstruction, 2026-10-25; not linked.
  * Profile: -O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier.
  * 204/212 bytes; us: 0/4 placements; us2: 0/4 placements; pal: 0/4 placements.
@@ -10,14 +17,13 @@
  * Prior complete variants and diagnostic dumps are preserved privately.
  * No candidate or linked-build credit is claimed.
  */
-#include "common.h"
 
 extern char *func_0029EFD0(int);
 extern void func_00282C88(void *);
 
 extern float func_002A7940(void);
 
-extern char *D_L05_001B2528 NOT_SDA;
+extern char *D_L05_001B2528[] MACRO_ADDR;
 
 extern char *D_L05_001B1300 __attribute__((sda));
 
@@ -43,7 +49,7 @@ void *func_L05_0041C118(char *object)
         cached = D_L05_001B1300;
         *(float *)(p + 0xF8) = random;
         if (cached == 0) {
-            e = D_L05_001B2528;
+            e = D_L05_001B2528[0];
             if (e != 0) {
                 found = 0;
                 do {

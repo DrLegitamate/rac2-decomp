@@ -1,9 +1,4 @@
-/* Retained manual C near miss; no linked or exact-C credit.
- * Profile: -O2 -G8 -ffunction-sections. US: 308/308 bytes, 0/1, exit 1.
- * Full vectors, nullable object return and both independent floating inputs are preserved.
- * Residual: the two saved floating parameters swap f20/f21, with earlier state-base loading.
- * Three meaningful field/lifetime variants emitted identical complete diagnostics.
- * Reopen with independently supported source lifetimes or qualified allocator behavior. */
+/* Near miss, worker w3 batch 3: 308/308 B, 0/1, two swaps. The f20/f21 inputs are now right (0x14 store before 0x1C before 0x18). Left: `lwc1 $f1,gp` vs `lw $s0,0x68($s1)` order, and `sw $s4,0x18` vs `swc1 $f20,0x1C` order. Profile -O2 -G8 -ffunction-sections. */
 #include "common.h"
 
 typedef int TI128 __attribute__((mode(TI)));
@@ -36,9 +31,9 @@ char *func_L20_00449FD0(char *arg0, char *arg1, char *arg2, int arg3,
         state = *(char **)(obj + 0x68);
         *(float *)(obj + 0x2C) = baseRadius * radiusScale;
         qcopy(state, arg2);
-        *(int *)(state + 0x18) = (int)arg3;
-        *(float *)(state + 0x1C) = f13;
         *(float *)(state + 0x14) = f12 * 0.016666668f;
+        *(float *)(state + 0x1C) = f13;
+        *(int *)(state + 0x18) = (int)arg3;
         *(int *)(state + 0x20) = 0x3C;
         *(float *)(state + 0x10) =
             func_002A7878(10.0f, 20.0f) * 0.00027777778f;

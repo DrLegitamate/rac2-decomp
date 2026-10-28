@@ -1,25 +1,14 @@
-/* 0 of 1 places match - last line: 05_feltzin_system: instruction at +0x120 differs
-   Same size (524 bytes) and the same structure, including the grouped quadword copy.
-   Remaining differences, all in one block: retail materialises the stored constant with
-   `lui $a0,0x42` in the delay slot of the `bnel` and stores $a0, and it uses branch-likely
-   for the two guards (`bnel $a0,$s0` / `beql $v1,-1`); here they are plain `bne`/`beq`, the
-   delay slot holds the absolute table address instead of the constant, and the store gets a
-   fresh `lui $v1,0x42`. The same address-temporary difference as func_L05_004155A0: retail
-   loads the table pointer as `lui $v1,%hi ; lw $v1,%lo($v1)`.
-   Profile: the 16-byte copy reaches `addiu $v1,$s1,0x10 ; lq $v0,0($v1) ; sq $v0,0($sp)` only
-   with a dedicated unit built with -frac2-qcopy, and only when the local is a 16-byte-aligned
-   TI128 (`TI128 qbuf;`); a `char buf[16]` keeps the displacement form and stays 4 bytes short.
-   The constant stored at +0x11C is the literal 0x420000 (no symbol in the level's data).
-   Notes: `int one = 1;` gives retail's $s0 (see func_L05_004155A0); the 128-record clear is
-   the body of func_L05_00415D70 with its initialisers assigned after the call; the callback
-   of the last func_2FF698 is func_L00_003E4948 (0x41D190). */
-
-#include "include_asm.h"
-
+/*
+ func_L05_0041C860 (524 bytes, 1 place) - own unit L05_0041C860-qcopy.c, cflags -O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier.
+ 3 masked lines differ (w5, 2026-10-28): the word stored at r+0x11C is `st` ($a0 holds 1), not a constant; the table pointer is an incomplete sda array element
+ (D_L05_001B251C[0]), which restores both branch-likely guards and the size. Open: retail loads the table pointer (`lui;lw`) before the
+ reload of state+0x260, ours after it (same wall in func_L05_004155A0 and func_L05_00415B38).
+ */
+#include "common.h"
 typedef int TI128 __attribute__((mode(TI)));
 
 extern char D_L05_002681E0[];
-extern char *D_L05_001B251C;
+extern char *D_L05_001B251C[] __attribute__((sda));
 
 extern int func_379860(char *object);
 extern char *func_379CA0(char *object);
@@ -83,8 +72,8 @@ void func_L05_0041C860(char *object)
     st = *(int *)(r + 0x110);
     if (st == one) {
         if (*(int *)(state + 0x260) != -1) {
-            *(int *)(r + 0x11C) = 0x420000;
-            *(int *)(r + 0x120) = (int)(D_L05_001B251C + *(int *)(state + 0x260) * 256);
+            *(int *)(r + 0x11C) = st;
+            *(int *)(r + 0x120) = (int)(D_L05_001B251C[0] + *(int *)(state + 0x260) * 256);
         }
         if (*(int *)(r + 0x108) != 0 && *(int *)(r + 0x104) != 0)
             func_L05_0041CB68(object);

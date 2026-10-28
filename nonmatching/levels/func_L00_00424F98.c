@@ -1,13 +1,13 @@
-/* func_L00_00424F98 (380 bytes) - NEAR MISS (M22, 2026-10-26).
+/* func_L00_00424F98 (380 bytes) - near miss (M22, 2026-10-26; W1 28 October 2026).
  * Profile: src/levels/shared/L00_00424F98-g8.c, "-O2 -G8 -ffunction-sections".
- * 380 vs 380 bytes less one word: retail loads the run count with lhu into one
- * register and compares an andi 0xFFFF copy of it (the +1 store uses the raw
- * load); every u16/int/bitfield spelling here folds the andi away, which shifts
- * the rest by one word.  Fixed this round: the input block as a struct (lets the
- * steer load pass the two sda stores), MACRO_ADDR for the boot words, ref_ names
- * for the per-level counters and floats, the best-time compare loading
- * D_001A7390 first, and the local for the y bound.
- */
+ * 376 of 380 bytes, 8 lines off at us level 0 (was 372, 63 lines). One word is missing: retail has
+ * `lwc1 $f0 ; lwc1 $f1 ; nop ; div.s`, here the nop before div.s is not emitted (-g and
+ * -frac2-hazard-labels do not add it; with the divisor as a bare sda scalar it is emitted but the
+ * load then fills the bc1f delay slot, which retail leaves as a nop).
+ * W1 found: the run count is read as `c->count` every time (no local) - the compare then uses the
+ * `andi 0xFFFF` copy of the lhu and the +1 store uses the raw load, as in retail; and the divisor
+ * as an element of an incomplete SDATA array (base placed 4 bytes below it) keeps the $gp load out
+ * of the delay slot. */
 #include "include_asm.h"
 #include "common.h"
 
@@ -41,7 +41,7 @@ extern L00_00424F98_Counter D_0018C750;
 extern s32 ref_L00_00424F98_00 __attribute__((sda));
 extern s32 ref_L00_00424F98_01 __attribute__((sda));
 extern float ref_L00_00424F98_02 __attribute__((sda));
-extern float ref_L00_00424F98_03 __attribute__((sda));
+extern float ref_L00_00424F98_03[] SDATA(ref_L00_00424F98_03);
 
 /* The vehicle's steering and throttle inputs, with the stunt counter: holding the
    stick centred for a second counts one run and records the best time. */
@@ -67,12 +67,11 @@ void func_L00_00424F98(char *obj, float *x, float *y)
     } else {
         t->steer_out = ref_L00_00424F98_02;
         c = &D_0018C750;
-        n = c->count;
-        if (n < 3U) {
+        if (c->count < 3U) {
             ref_L00_00424F98_00++;
             if (ref_L00_00424F98_01 == 0 && ref_L00_00424F98_00 > 0x3C) {
-                if (n < 0xFFFF)
-                    c->count = n + 1;
+                if (c->count < 0xFFFF)
+                    c->count = c->count + 1;
                 if (D_001A7390 > c->best)
                     c->best = D_001A7390;
                 ref_L00_00424F98_01 = 1;
@@ -89,5 +88,5 @@ void func_L00_00424F98(char *obj, float *x, float *y)
             *y = v;
     }
     if (*y == 0.0f)
-        *y = t->throttle / ref_L00_00424F98_03;
+        *y = t->throttle / ref_L00_00424F98_03[1];
 }

@@ -1,3 +1,7 @@
+/* Batch 3 (2026-10-28) handoff notes:
+func_L00_003FEAC8 (w2). Flags -O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier, unit L00_003F8E08-g8-style. 212/212, 9 lines: only base/index s0<->s1 swap (pseudo 87 index gets s0, 88 base gets s1; regalloc.py says index has the higher priority 3/32 vs 1/17) and one mult/daddu order. Tried: base load position (6 orders of base/vec/entry), base as char* /int* /struct, local copy of index, 5 int/float interleavings of the 4th call's prototype, 2 orders of declarations. No change.
+*/
+
 /* 26 October 2026 (M24): -O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier, 212/212 bytes, 9 lines off, registers only: base and index swap s0/s1 (and one mult/move order). Entry through a pointer local, the last callee with its floats before the count, the slot store through a struct view. In the permuter farm. */
 /* from src/levels/shared/L00_003F8E08-g8.c: C that compiles close to the retail's bytes
    but does not match; needs a -G8 unit (the body reads level data through $gp).
@@ -52,7 +56,7 @@ extern float D_L00_001B0C14 __attribute__((sda));
 extern void ref_L00_003FEAC8_00(void *, void *, void *, int);
 extern float ref_L00_003FEAC8_01(void *);
 extern int ref_L00_003FEAC8_02(int, int);
-extern int ref_L00_003FEAC8_03(void *, void *, void *, float, float, int, float);
+extern int ref_L00_003FEAC8_03(void *, void *, void *, float, float, float, int);
 
 typedef struct { int pad[4]; int spawned[1]; } StateSlots;
 
@@ -71,7 +75,7 @@ void func_L00_003FEAC8(char *self, char *arg1, Quad_3feac8 *arg2, int index)
     ref_L00_003FEAC8_00(self, arg1, arg2, index);
     f20 = ref_L00_003FEAC8_01(&vec);
     r = ref_L00_003FEAC8_02(1, 30);
-    r = ref_L00_003FEAC8_03(arg1, &vec, self, f20, f21, r, D_L00_001B0C14);
+    r = ref_L00_003FEAC8_03(arg1, &vec, self, f20, f21, D_L00_001B0C14, r);
     base->spawned[index] = r;
     if (r != 0) {
         *(int *)(r + 0xB8) = self;

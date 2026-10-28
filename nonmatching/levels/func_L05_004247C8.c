@@ -1,7 +1,14 @@
+/* func_L05_004247C8 (w2 batch 3, 2026-10-28). Profile -O2 -G0 -ffunction-sections. 420/420 bytes, 2 differing
+   lines (was 9): only the order of `ori $s4,$s4,0x8080` and `addiu $s5,$zero,0x1D` in the prologue.
+   Fixed here: the first colour is built inline in the call (no `color` local); the second colour calls
+   ref_07 first (`alpha`), then reads the field and masks it. Tried for the prologue pair: i < 30 up-count,
+   while (i-- > 0), do/while, i = 29 first, all 6 orders of the three pre-loop statements, all 35
+   int/float interleavings of the ref_08 prototype, -g, -fno-strength-reduce. No change. */
+#include "common.h"
+
 /* Mid worker 11 near miss (func_L05_004247C8).
    Profile: -O2 -G0 -ffunction-sections.
    Status: same 420 bytes; constants and calls match, only the scheduling of the colour shift/or around the jal delay slot and the order of two prologue constants differ. */
-#include "common.h"
 
 #define FLD(base, T, off) (((struct { u8 pad[off]; T v; } *)(base))->v)
 
@@ -34,14 +41,13 @@ void func_L05_004247C8(char *obj) {
         v[2] = -ref_L05_004247C8_04(angle);
         ref_L05_004247C8_05(v, v, obj + 0xC0);
         ref_L05_004247C8_06(v, v, obj + 0x10);
-        color = ref_L05_004247C8_07(full) << 24;
-        color |= 0x808080;
-        ref_L05_004247C8_08(v, 0x13, color, 1, 0.25f, 0.1f, ref_L05_004247C8_02());
+        ref_L05_004247C8_08(v, 0x13, (ref_L05_004247C8_07(full) << 24) | 0x808080, 1, 0.25f, 0.1f, ref_L05_004247C8_02());
         {
             float half = 0.5f;
+            int alpha = ref_L05_004247C8_07(full * half);
             color = FLD(state, int, 8);
             color &= 0xFFFFFF;
-            color |= ref_L05_004247C8_07(full * half) << 24;
+            color |= alpha << 24;
             ref_L05_004247C8_08(v, 0x13, color, 1, half, 0.1f, ref_L05_004247C8_02());
         }
     }

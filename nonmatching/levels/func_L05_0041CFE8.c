@@ -1,30 +1,43 @@
-/* mid-9 draft: pointer-walk loop (404 B vs 424). Retail keeps three pointer IVs (p, p+0x10, p+0x30 in $s2/$s0/$s1), an up-counter (slti 0x80) and the floats 0.35f/0.08f hoisted into $f21/$f20 (0x40 frame); this cc1 counts down, rematerialises the constants and keeps only one IV. First call arg is 0.025f (0x3CCCCCCD). Needs -G8. */
-#include "common.h"
-
+/*
+ func_L05_0041CFE8 (424 bytes, 1 place) - appended to L05_00314E28-g8.c (-G8); size exact (w5, 2026-10-28), 8 masked lines differ.
+ The loop is `if (high[0x10] == obj) { body }` plus the three pointer increments (no break), float constants as literals in the calls (loop.c hoists them to f20/f21),
+ prologue `t = D; low = t + 0x10; high = t + 0x30; base = t;`, counter `unsigned int` (a signed counter is reversed to a count-down by loop.c).
+ Open: retail's counter is a signed up-counter (slti); in the second call retail loads `lw a3,gp` after `lui a2`.
+ */
+extern char D_L05_002659E0[];
 extern char D_L05_00268E20[];
-extern int D_L05_001B2350 __attribute__((sda));
+extern int D_L05_001B0F48 __attribute__((sda));
+extern int D_L05_001B1340 __attribute__((sda));
+extern float func_002A7940(void);
+extern void func_00281EB8(void *, unsigned int, unsigned int, int, float, float, float);
+extern void func_L05_00416698(void *, void *, unsigned int, int, float);
+extern void func_L05_0041D218(void *, void *, unsigned int, int, float);
 
-extern void func_41D218(char *, char *, int, int, float);
-extern float func_332C18(void);
-extern void func_305768(float, float, float, char *, int, int, int);
+void func_L05_0041CFE8(char *obj)
+{
+    char *t = D_L05_00268E20;
+    char *low = t + 0x10;
+    char *high = t + 0x30;
+    char *base = t;
+    unsigned int i;
 
-void func_L05_0041CFE8(int key) {
-    float a = 0.35f;
-    float b = 0.08f;
-    char *p = D_L05_00268E20;
-    int i;
+    for (i = 0; i < 0x80; i++) {
+        float v;
 
-    i = 0;
-    do {
-        i++;
-        if (*(int *)(p + 0x40) == key) {
-            func_41D218(p, p + 0x10, 0x807F7F7F, D_L05_001B2350, 0.025f);
-            func_41D218(p, p + 0x10, 0x60008000, D_L05_001B2350, 0.05f);
-            func_305768(1.35f, a, func_332C18(), p + 0x30, 0x31, 0x60008000, 1);
-            func_305768(1.0f, a, func_332C18(), p + 0x30, 0x31, 0x807F7F7F, 1);
-            func_305768(0.125f, b, func_332C18(), p + 0x10, 0x31, 0x60008000, 1);
-            func_305768(b, b, func_332C18(), p + 0x10, 0x31, 0x807F7F7F, 1);
+        if (*(char **)(high + 0x10) == obj) {
+            func_L05_0041D218(base, low, 0x807F7F7F, D_L05_001B1340, 0.025f);
+            func_L05_0041D218(base, low, 0x60008000, D_L05_001B1340, 0.05f);
+            v = func_002A7940();
+            func_00281EB8(high, 0x31, 0x60008000, 1, 1.35f, 0.35f, v);
+            v = func_002A7940();
+            func_00281EB8(high, 0x31, 0x807F7F7F, 1, 1.0f, 0.35f, v);
+            v = func_002A7940();
+            func_00281EB8(low, 0x31, 0x60008000, 1, 0.125f, 0.08f, v);
+            v = func_002A7940();
+            func_00281EB8(low, 0x31, 0x807F7F7F, 1, 0.08f, 0.08f, v);
         }
-        p += 0x50;
-    } while (i < 128);
+        base += 0x50;
+        low += 0x50;
+        high += 0x50;
+    }
 }

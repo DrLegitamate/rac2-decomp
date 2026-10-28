@@ -1,3 +1,9 @@
+/* Batch 3 (2026-10-28) handoff notes:
+func_L01_003D8AD0 (304 B): the nonmatching draft is 300 B and 28 masked lines (a0 copy lands in $a3, b in $a2, retail a2/a3; retail has nops in the first three branch slots because its u16 is loaded into $v1 which the branch reads).
+Variant with `u16 s = *(u16*)(a0+0xB2)` loaded once and (short)s for indexes: front half matches except slot fill (ours puts lhu in the beq slot, lhu goes to $a1 not $v1), 296 B / 75 lines.
+Nothing tried made the register order a2/a3 come out.
+*/
+
 /* func_L01_003D8AD0 - 304 bytes.  Worker attempt, 28 October 2026 (draft below).
    Diff-line counts below were measured with a masking that hid offset
    differences; treat them as optimistic.

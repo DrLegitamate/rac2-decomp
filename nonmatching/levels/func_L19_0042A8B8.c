@@ -1,25 +1,9 @@
-/*
- * Retained handwritten near miss; historical evidence only.
- * No linked-image equality or complete retail semantics is established.
- * Compiler: game EE-GCC 2.9-ee-991111b (project profile).
- * Profile: -O2 -G0 -ffunction-sections -mno-split-addresses.
- * Reported final C / retail: 228 / 228 bytes; size equality is not a match.
- * us: 0/1 placements.
- * us2: not run after us mismatch; no exact candidate.
- * pal: not run after us mismatch; no exact candidate.
- * Residual: Nine source trials; the final int-index body is228 bytes with a0x40 frame. The loop body matches under -mno-split-addresses, but the initial list base remains in s2 across its count guard instead of being promoted from v1 afterward. Reopen with a naturally different list-base lifetime, not another equivalent loop.
- * Reopening condition: Express the initial list/count lifetime without extending the persistent base through the guard.
- * Where listed, tools/check.py measurements predate retention; no compilation was rerun for this copy.
- */
+/* Batch 3 (2026-10-28) handoff notes:
+draft.c: new file src/levels/19_grelbin/L19_0042A8B8.c with cflags line `-O2 -G0 -ffunction-sections -mno-split-addresses`; marker removed from L19_0042A860.c. 228/228 B, 9 masked lines (no name fixes done: func_0029F978 etc. still need canonical names).
+Left: retail forms the list address in v1 (lui/addiu v1,-0x28C0), loads the count at 0x44(v1) for the guard, and only then copies it (daddu s2,v1,zero) into the saved reg used by the loop; ours keeps it in s2 from the start (and orders addiu s3,0xE3E / daddu s0 differently).
+Tried: guard through the symbol (folds +0x44 into the symbol: 14 lines), separate list/block locals, count pointer, struct-typed global with for loop (10 lines, folds sym+0x44 as well), loop-condition via symbol, <1 vs <=0.
+*/
 
-/* Historical manual summary: Earlier address-commoning experiments identified list-base lifetime as a blocker. The current manual draft preserves that remaining source-lifetime question. The original map is retained privately; no extracted instruction, opcode, address or generated table is reproduced here. */
-
-/* Not matched, 2026-10-23.
- * Nine source trials; the final int-index body is228 bytes with a0x40 frame. The loop body matches under -mno-split-addresses, but the initial list base remains in s2 across its count guard instead of being promoted from v1 afterward. Reopen with a naturally different list-base lifetime, not another equivalent loop.
- * Profile: -O2 -G0 -ffunction-sections -mno-split-addresses
- * Final us check: func_L19_0042A8B8: 0 of 1 places match (src/levels/19_grelbin/L19_0042A8B8.c); exit 1.
- * This source has not passed a linked build or a runtime test.
- */
 #include "common.h"
 
 extern s32 D_L19_001A8F00;

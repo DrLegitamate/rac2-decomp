@@ -1,18 +1,11 @@
-/* func_L01_003D68C0 - 572 bytes.  Worker attempt, 28 October 2026 (draft below).
-   Diff-line counts below were measured with a masking that hid offset
-   differences; treat them as optimistic.
+/* Batch 3 (2026-10-28) handoff notes:
+func_L01_003D68C0 (572 B): draft.c matches except 2 masked lines in case 3: retail `lhu; sb 0x31; ori; sw $zero,0x98`, ours `lhu; sb; sw 0x98; ori`.
+Needs `extern s32 func_00282948(void *a0);` (s32 return) in the file head. All five globals as `extern T X[] __attribute__((sda))` read as X[0].
+Tried: brute force of all 7-statement orderings of the case-3 block (no change, scheduler decides), 0x98 store typed s32/u32/f32/void*, fl as u16/s32/u32, double store.
+Hypothesis: sw 0x98 gets a higher sched priority than ori in ours because it precedes the D load in the memory chain; retail has ori first.
+*/
 
-   2 masked diff lines (case 3): retail `lhu; sb 0x31; ori; sw 0x98`, draft
-   `lhu; sb; sw 0x98; ori`. Everything else matches.
-   Key finds: all five globals are `extern T X[] __attribute__((sda))` read as
-   X[0] (tied absolute macro form; loads/stores in delay slots become $gp);
-   counter read must come BEFORE the stores that precede it in retail
-   (explicit `cnt = D[0]` / `fl = flags` locals) - plain D[0]++ keeps lhu
-   below sw D.
-   Tried for the last swap: sb/sw98 source order, fl computed before/after the
-   cnt read, fl|1 computed early. */
-
-/* in L01_003CAFE0.c, needs common.h include (its u8..f32 typedefs removed), func_00282948 declared s32-returning. Decls: */
+/* in src/levels/01_oozla/L01_003CAFE0.c; also change the file-top decl to `extern s32 func_00282948(void *a0);` */
 extern s32 D_L01_001AEC38[] __attribute__((sda));
 extern s32 D_L01_001B3468[] __attribute__((sda));
 extern s32 D_L01_001B15E0[] __attribute__((sda));
