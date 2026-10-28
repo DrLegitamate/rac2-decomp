@@ -8,8 +8,8 @@ extern int func_L01_00321178(void *, void *);
 extern float func_00283248(float, float);
 extern void func_002AA800(void *, float, float, int);
 extern float func_002A89A8(float, void *, int);
-extern int func_001234F0(float);
-extern void func_0026FEB8(void *, int, int);
+extern double func_001234F0(float);
+extern void func_0026FEB8(const char *, ...);
 
 void func_L12_003E20F0(char *object)
 {
@@ -41,8 +41,8 @@ void func_L12_003E20F0(char *object)
         } else {
             char *sink = D_L12_001B0B18;
             float floor = func_002A89A8(probeRadius, position, 0);
-            int rounded = func_001234F0(*(float *)(object + 0x18) - floor);
-            func_0026FEB8(sink, rounded, *(short *)(object + 0xB2));
+            double heightDifference = func_001234F0(*(float *)(object + 0x18) - floor);
+            func_0026FEB8(sink, heightDifference, *(short *)(object + 0xB2));
         }
     }
     targetHeight = *(float *)(path + (*(int *)(state + 0x264) << 4) + 0x18);

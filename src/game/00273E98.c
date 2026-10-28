@@ -10,12 +10,12 @@ extern float func_00282DB0(void *, void *);
 extern float func_00282C48(float);
 extern void func_00282CF0(void *, void *, void *);
 extern float func_00282DF0(void *);
-extern void func_002AA2E8(void *, float, float);
+extern float func_002AA2E8(float *, float, float);
 extern void func_002ACE78(void *, void *, float);
 extern void func_00283810(void *, void *, void *, float);
 extern int func_002E5CF8(int, int, void *);
 extern int func_002E5E58(int, int, void *);
-extern void func_002E5F00(int, void *);
+extern int func_002E5F00(int, char *);
 extern void func_00283028(void *, void *, void *);
 extern float D_001BAFC0[];
 
