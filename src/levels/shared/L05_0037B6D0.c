@@ -1,4 +1,4 @@
-#include "include_asm.h"
+#include "common.h"
 
 extern int func_002ED688(char *);
 
@@ -150,7 +150,7 @@ void func_L05_0037BE98(char *obj)
 
 INCLUDE_ASM("asm/levels", func_L05_0037BF48);
 
-INCLUDE_ASM("asm/levels", func_L05_0037C160);
+/* func_L05_0037C160 is in L05_0037C160.c. */
 
 void func_L05_0037CDD8(char *obj, int value)
 {
@@ -214,7 +214,7 @@ INCLUDE_ASM("asm/levels", func_L05_00398618);
 
 INCLUDE_ASM("asm/levels", func_L05_00398A38);
 
-INCLUDE_ASM("asm/levels", func_L05_00398F18);
+/* func_L05_00398F18 is in L05_00398F18.c. */
 
 INCLUDE_ASM("asm/levels", func_L05_00399268);
 
@@ -253,7 +253,7 @@ void func_L05_003CD4C0(char *object)
 
 INCLUDE_ASM("asm/levels", func_L05_003CEFA0);
 
-INCLUDE_ASM("asm/levels", func_L05_003CF040);
+/* func_L05_003CF040 is in L05_003CF040-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L05_003CF350);
 
