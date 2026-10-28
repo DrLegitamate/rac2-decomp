@@ -567,4 +567,26 @@ int func_L00_002D5E30(int *a0, int *a1, int *a2) {
 
 INCLUDE_ASM("asm/levels", func_L00_002D5EB8);
 
-INCLUDE_ASM("asm/levels", func_L00_002D6418);
+extern int D_001A7908 __attribute__((sda));
+extern char *D_L00_001B8E10;
+extern unsigned char D_00189E20[];
+
+int func_L00_002D6418(void)
+{
+    int v;
+
+    if (D_001A7908 == 0)
+        return 0;
+    v = D_L00_001A8F00;
+    if (v == 2 || v == 6)
+        return 0;
+    if (D_L00_001B8E10 != 0 && *(short *)(D_L00_001B8E10 + 0x86) == 5)
+        return 0;
+    if (D_00189E20[0x22B4] != 0 || *(int *)(D_00189E20 + 0x229C) == 0x14 ||
+        *(int *)(D_00189E20 + 0x24CC) == 0)
+        return 0;
+    v = *(int *)(D_00189E20 + 0x2294);
+    if (v == 0x6F || v == 0x31 || v == 0x1C || v == 0x8C)
+        return 0;
+    return 1;
+}

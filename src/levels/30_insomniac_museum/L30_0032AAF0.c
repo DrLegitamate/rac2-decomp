@@ -138,7 +138,6 @@ INCLUDE_ASM("asm/levels", func_L30_00382FB8);
 /* func_L30_003830D8 needs the -g8 sibling: it reaches its globals through $gp.
    Its C is in nonmatching/levels/ for now. */
 
-INCLUDE_ASM("asm/levels", func_L30_003830D8);
 
 INCLUDE_ASM("asm/levels", func_L30_003831E8);
 

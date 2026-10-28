@@ -231,3 +231,34 @@ void func_L30_00404608(char *object) {
     random = func_002A7940();
     func_L16_00405818(object + 0x10, D_L30_001B1570, scale2, value2, random, 1.0f, D_L30_001B15A8, 2, object);
 }
+
+extern float D_L30_001AEBC8 __attribute__((sda));
+extern float D_L30_001AEBCC __attribute__((sda));
+extern int D_L30_001AEBC0 __attribute__((sda));
+extern int D_L30_001AEBC4 __attribute__((sda));
+extern int D_L30_001AEBBC __attribute__((sda));
+
+extern void func_L30_00382FB8(void);
+
+void func_L30_003830D8(void) {
+    if (0.95f <= D_L30_001AEBC8) {
+        D_L30_001AEBC8 = D_L30_001AEBCC;
+        func_L30_00382FB8();
+        D_L30_001AEBC0 = D_L30_001AEBBC;
+        D_L30_001AEBC4 = D_L30_001AEBB8;
+    } else {
+        int x;
+        int y;
+
+        D_L30_001AEBC0 = 2;
+        D_L30_001AEBC4 = 2;
+        for (x = 0; x < 24; x++) {
+            for (y = 0; y < 24; y++) {
+                D_00233A60[D_L30_001AEBC0][y][x] =
+                    func_L30_00382EF0(D_00233A60[D_L30_001AEBBC][y][x],
+                                      D_00233A60[D_L30_001AEBB8][y][x], D_L30_001AEBC8);
+            }
+        }
+    }
+    D_L30_001AEBC8 = D_L30_001AEBC8 + D_L30_001AEBCC;
+}
