@@ -128,7 +128,8 @@ The assembler, `ps2eeas.exe` from ProDG 2.0:
 
 ```sh
 curl -L -o /tmp/sn20.tar.gz https://github.com/AngheloAlf/SN-Systems-ProDG_for_PS2_2.0/releases/download/1/eegcc_sn_v2.73a.tar.gz
-
+```
+```sh
 tar xzf /tmp/sn20.tar.gz -O ee/bin/ps2eeas.exe > toolchain/sn-prodg-2.0/ee/bin/Ps2EeAs.exe
 ```
 
@@ -136,7 +137,8 @@ The linker, `ld.exe` from ProDG 3.01:
 
 ```sh
 curl -L -o /tmp/sn301.tar.gz https://github.com/AngheloAlf/SN-Systems-ProDG_for_PS2_3.01/releases/download/1/eegcc_2.95.3_sn_v1.36.tar.gz
-
+```
+```sh
 tar xzf /tmp/sn301.tar.gz -O ee/bin/ld.exe > toolchain/sn-prodg-2.0/ee/bin/ld.exe
 ```
 
