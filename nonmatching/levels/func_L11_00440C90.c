@@ -7,15 +7,17 @@
  * `git show 431ac503:nonmatching/levels/func_L11_00440C90.c`). That draft now compiles
  * 68 lines off at +0x24, and its 0xDF9 path attaches OTHER and returns 1 where retail
  * returns 0 when func_L02_003D77F8 refuses it.
- * Residual (10 lines): the slot base (state + 0x120) and OTHER swap saved registers -
- * retail keeps OTHER in $s1 and the base in $s2 - and the two `addu` operand orders
- * follow. Control flow, the per-case 1.0 weight, the shared store and the separate
- * `return 0` block all match.
- * Measured: an early `return 0` per test instead of one guarded block (388 bytes, the
- * return block moves); the 1.0 store without a per-case variable (352); the base as
- * `u8 **` indexed or `u8 *` with `* 4` (same 10 lines); assigning the base late,
- * declaring the weight first, copying OTHER to a local (same); no base variable (90).
- * Reopen: a spelling that gives OTHER the lower saved register.
+ * Residual (7 lines, 28 October 2026): reading the slot through `slots` in all four
+ * places (shift form `<< 2` in the first and third) gives retail's saved registers
+ * (OTHER in $s1, base in $s2). What is left: the final call's read, which retail forms
+ * as `state + idx * 4` then `lw 0x120` (state first in the addu), where any
+ * state-based spelling brings the register swap back (12-13 lines); and the weight
+ * store's address temporary ($v1 in retail, $v0 here).
+ * Measured: all combinations of eight index spellings over the four slot reads
+ * (tools/check.py, 4096 compiles) and seven final-read spellings with four prefixes.
+ * Earlier: an early `return 0` per test (388 bytes); the 1.0 store without a per-case
+ * variable (352); copying OTHER to a local (same); no base variable (90).
+ * Reopen: a final-read spelling from state that keeps the slot base live.
  */
 #include "common.h"
 
@@ -33,7 +35,7 @@ s32 func_L11_00440C90(u8 *obj, u8 *other)
     u8 *slots = state + 0x120;
     f32 weight;
 
-    if (*(u8 **)(slots + *(s32 *)(state + 0x18C) * 4) != 0 &&
+    if (*(u8 **)(slots + (*(s32 *)(state + 0x18C) << 2)) != 0 &&
         func_L02_003D77B8(*(u8 **)(slots + *(s32 *)(state + 0x18C) * 4)) != 0) {
         switch (*(s16 *)(other + 0xAA)) {
         case 0xD98:
@@ -53,7 +55,7 @@ s32 func_L11_00440C90(u8 *obj, u8 *other)
             weight = 1.0f;
             break;
         case 0xDF9:
-            if (func_L02_003D77F8(*(u8 **)(slots + *(s32 *)(state + 0x18C) * 4)) != 0)
+            if (func_L02_003D77F8(*(u8 **)(slots + (*(s32 *)(state + 0x18C) << 2))) != 0)
                 return 0;
             *(s32 *)(state + 0x110) += 1;
             weight = 1.0f;
@@ -67,7 +69,7 @@ s32 func_L11_00440C90(u8 *obj, u8 *other)
         }
         *(f32 *)(*(u8 **)(other + 0x68) + 0x20) = weight;
     add:
-        func_L02_003D7868(*(u8 **)(state + *(s32 *)(state + 0x18C) * 4 + 0x120), other);
+        func_L02_003D7868(*(u8 **)(slots + *(s32 *)(state + 0x18C) * 4), other);
         return 1;
     }
     return 0;
