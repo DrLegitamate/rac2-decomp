@@ -1334,3 +1334,4 @@ src/levels/01_oozla/L01_003D26C0-g8.c	-O2 -G8 -ffunction-sections
 src/levels/shared/L22_003F52D8-g8.c	-O2 -G8 -ffunction-sections -g -frac2-zero-ti-por
 
 src/levels/18_damosel/L18_003FB620-particles.c	-O2 -G32 -Wa,-G32 -ffunction-sections
+src/levels/shared/L14_003DE908-g32.c	-O2 -G32 -ffunction-sections -Wa,-G32
