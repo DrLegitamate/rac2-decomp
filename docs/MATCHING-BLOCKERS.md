@@ -1430,6 +1430,11 @@ Use `rabbitizer.Instruction(word, address, rabbitizer.InstrCategory.R5900).disas
 - **The tree-level fold merges `pi + pi`** into one 2¤Ç constant, where retail doubles ¤Ç at run
   time (`add.s $f1,$f14,$f14`); two separate statements are not folded, so the retail's two
   `add.s` need them.
+- **A float-bit return may need the full R5900-width value.** In `func_002829D8`, retail moves
+  the float bits to a GPR, shifts them into the high word, and compares the signed 64-bit result
+  with 1 before subtracting 2. The -G8 C form using an unsigned 64-bit shift is 76/64 bytes;
+  the union-word form is 100/64. Both match 0/28 USA placements. Do not simplify its first arm
+  to an unconditional -1: positive and nonpositive input bit patterns return different values.
 - **A float's sign bit comes out as `mfc1` plus a sign extension** where retail has `mfc1` plus
   `sra`; the tested union, cast and file-scope forms did not remove it in their recorded profile.
 
