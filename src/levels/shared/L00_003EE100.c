@@ -1,6 +1,32 @@
 #include "include_asm.h"
 #include "common.h"
 
+/* func_L00_003F8280: a 16-byte vector with a quadword view, the 4-row basis the vertex
+   transform reads (three axes and a position) and the 144-byte packet with a quad's vertices,
+   colours and UVs. */
+typedef unsigned int QuadWord __attribute__((mode(TI)));
+typedef union { QuadWord word; float v[4]; } Vector;
+typedef struct { Vector row[3]; Vector position; } Frame;
+typedef struct {
+    Vector vertex[4];
+    unsigned int color[4];
+    float uv[4][2];
+    long f70, f78, f80, flags;
+} RenderPacket;
+
+extern Vector D_0018A0E0;
+extern Vector D_L00_001AA310[4];
+extern void func_00281DE8(void *, int, int, int);
+extern void func_00282CC0(void *, void *, void *);
+extern void func_00282D30(void *, void *, float);
+extern void func_002833F0(void *, void *);
+extern void func_00283738(void *, void *, void *);
+extern void func_002830C0(void *, void *, void *);
+extern void func_002FC560(unsigned int, unsigned long long);
+extern void func_0027C768(int, float *, float *);
+extern int func_002A77E0(int);
+extern float func_002A7878(float, float);
+
 /* The 0x50-stride record table both walkers below scan; the retail reaches it through $gp in
    ordinary flow, which the assembler only selects from a bare symbol operand. */
 extern char *D_L00_001B2BB4_1 __attribute__((sda));
@@ -616,7 +642,7 @@ void func_L00_003F3160(char *obj)
 
 extern void ref_L00_003F37A0_00(void *p, char *obj);
 
-extern void func_L00_003F37E8(void);
+extern void func_L00_003F37E8(char *object);
 
 typedef struct Obj_L00_003F37A0 {
     unsigned char pad0[0x20];
@@ -640,9 +666,71 @@ void func_L00_003F37A0(Obj_L00_003F37A0 *obj)
     ref_L00_003F37A0_00((void *)func_L00_003F37E8, (char *)obj);
 }
 
-INCLUDE_ASM("asm/levels", func_L00_003F37E8);
+extern void func_00283098(void *, void *, void *);
+extern float func_00282DB0(void *, void *);
+extern Vector D_L00_0029DAE0[];
+extern Vector D_L00_0029D7C0[];
+extern Vector D_L00_0029CB30[];
+extern short D_L00_0029D170[][4][2];
+extern float D_L00_0029D490[][2];
 
-extern void func_L00_003F3AD0(void);
+/* Draws 50 quads through the object's frame (its basis at 0xC0 and position at 0x10). Per
+   quad, a transformed table point is offset from the 0x001B8C80 vector and normalised, a
+   second table vector is transformed, and both go to func_00282DB0 (its result is unused);
+   the four corners then take their vertices and UVs from tables, and a corner at
+   z = -0.002112 gets a transparent colour. */
+void func_L00_003F37E8(char *object)
+{
+    RenderPacket packet;
+    struct {
+        Frame frame;
+        Vector facing, transformed;
+    } scratch;
+    int *state = *(int **)(object + 0x68);
+    int face, corner;
+    unsigned int color;
+    Vector *matrix;
+
+    packet.f78 = func_0027C878((char *)5);
+    matrix = scratch.frame.row;
+    packet.f80 = 0xff9000000260LL;
+    packet.flags = 0x8000000048LL;
+    packet.f70 = 0;
+    qcopy(matrix, object + 0xc0);
+    qcopy(&scratch.frame.row[1], object + 0xd0);
+    qcopy(&scratch.frame.row[2], object + 0xe0);
+    scratch.frame.position.v[0] = *(float *)(object + 0x10);
+    scratch.frame.position.v[1] = *(float *)(object + 0x14);
+    scratch.frame.position.v[2] = *(float *)(object + 0x18);
+    scratch.frame.position.v[3] = 1.0f;
+    color = (*state << 24) | 0xff0000;
+    packet.color[3] = color;
+    packet.color[2] = color;
+    packet.color[1] = color;
+    packet.color[0] = color;
+    for (face = 0; face < 50; face++) {
+        func_00282D30(&scratch.transformed, &D_L00_0029DAE0[face], 1.0f);
+        func_002830C0(&scratch.transformed, &scratch.transformed, &scratch.frame);
+        func_00282CF0((char *)&scratch.facing, (char *)&scratch.transformed,
+                      (char *)&D_L00_001B8C80.x_140);
+        func_00282F20((char *)&scratch.facing, (char *)&scratch.facing, 1.0f);
+        func_00283098(&scratch.transformed, &D_L00_0029D7C0[face], matrix);
+        func_00282DB0(&scratch.facing, &scratch.transformed);
+        for (corner = 0; corner < 4; corner++) {
+            Vector *position = &D_L00_0029CB30[D_L00_0029D170[face][corner][0]];
+            int uv = D_L00_0029D170[face][corner][1];
+
+            func_00282D30(&packet.vertex[corner], position, 1.0f);
+            packet.uv[corner][0] = D_L00_0029D490[uv][0];
+            packet.uv[corner][1] = D_L00_0029D490[uv][1];
+            if (position->v[2] == -0.002112f)
+                packet.color[corner] = 0xff0000;
+        }
+        func_00280B90((char *)&packet, (float *)&scratch.frame, 0);
+    }
+}
+
+extern void func_L00_003F3AD0(char *);
 
 typedef struct Obj_L00_003F3A88 {
     unsigned char pad0[0x20];
@@ -666,7 +754,63 @@ void func_L00_003F3A88(Obj_L00_003F3A88 *obj)
     ref_L00_003F3A88_00((void *)func_L00_003F3AD0, (char *)obj);
 }
 
-INCLUDE_ASM("asm/levels", func_L00_003F3AD0);
+extern Vector D_L00_0029EDB0[];
+extern Vector D_L00_0029EA90[];
+extern Vector D_L00_0029DE00[];
+extern short D_L00_0029E440[][4][2];
+extern float D_L00_0029E760[][2];
+
+void func_L00_003F3AD0(char *object)
+{
+    RenderPacket packet;
+    struct {
+        Frame frame;
+        Vector facing, transformed;
+    } scratch;
+    int *state = *(int **)(object + 0x68);
+    int face, corner;
+    unsigned int color;
+    Vector *matrix;
+
+    packet.f78 = func_0027C878((char *)5);
+    matrix = scratch.frame.row;
+    packet.f80 = 0xff9000000260LL;
+    packet.flags = 0x8000000048LL;
+    packet.f70 = 0;
+    qcopy(matrix, object + 0xc0);
+    qcopy(&scratch.frame.row[1], object + 0xd0);
+    qcopy(&scratch.frame.row[2], object + 0xe0);
+    scratch.frame.position.v[0] = *(float *)(object + 0x10);
+    scratch.frame.position.v[1] = *(float *)(object + 0x14);
+    scratch.frame.position.v[2] = *(float *)(object + 0x18);
+    scratch.frame.position.v[3] = 1.0f;
+    color = (*state << 24) | 0xff0000;
+    packet.color[3] = color;
+    packet.color[2] = color;
+    packet.color[1] = color;
+    packet.color[0] = color;
+    for (face = 0; face < 50; face++) {
+        func_00282D30(&scratch.transformed, &D_L00_0029EDB0[face], 1.0f);
+        func_002830C0(&scratch.transformed, &scratch.transformed, &scratch.frame);
+        func_00282CF0((char *)&scratch.facing, (char *)&scratch.transformed,
+                      (char *)&D_L00_001B8C80.x_140);
+        func_00282F20((char *)&scratch.facing, (char *)&scratch.facing, 1.0f);
+        func_00283098(&scratch.transformed, &D_L00_0029EA90[face], matrix);
+        func_00282DB0(&scratch.facing, &scratch.transformed);
+        for (corner = 0; corner < 4; corner++) {
+            Vector *position = &D_L00_0029DE00[D_L00_0029E440[face][corner][0]];
+            int uv = D_L00_0029E440[face][corner][1];
+
+            func_00282D30(&packet.vertex[corner], position, 1.0f);
+            packet.uv[corner][0] = D_L00_0029E760[uv][0];
+            packet.uv[corner][1] = D_L00_0029E760[uv][1];
+            if (position->v[2] == 0.001432f)
+                packet.color[corner] = 0xff0000;
+        }
+        func_00280B90((char *)&packet, (float *)&scratch.frame, 0);
+    }
+}
+
 
 
 INCLUDE_ASM("asm/levels", func_L00_003F4210);
@@ -801,7 +945,122 @@ void func_L00_003F71E8(char *a0)
 }
 
 
-INCLUDE_ASM("asm/levels", func_L00_003F8280);
+/* Draws a camera-facing textured quad of the given size at a position, optionally rolled and
+   moved along the camera direction, then redraws it with texture -1 and UVs projected to the
+   screen (from points pulled 20% towards the quad's centre when mode is set), jittered and
+   clamped to [0, 1]. */
+void func_L00_003F8280(Vector *position, float size, float offset, float roll,
+                       float unused, float jitter, int texture, int mode)
+{
+    RenderPacket packet;
+    Frame frame;
+    /* One 64-byte scratch area: the roll angles (later the offset), then the roll rotation,
+       whose first two rows are reused for the projection's centre and point. */
+    struct {
+        Vector angles;
+        union {
+            Vector rotation[3];
+            struct { Vector center, point; } projection;
+        } u;
+    } scratch;
+    Vector *corner;
+
+    func_00281DE8(&packet, texture, 1, 0x80);
+    packet.flags = 0x800000004aULL;
+    packet.color[3] = 0x80808080;
+    packet.color[2] = 0x80808080;
+    packet.color[1] = 0x80808080;
+    packet.color[0] = 0x80808080;
+    packet.uv[0][0] = 0.0f;
+    packet.uv[0][1] = 0.0f;
+    packet.uv[1][0] = 0.0f;
+    packet.uv[1][1] = 1.0f;
+    packet.uv[2][0] = 1.0f;
+    packet.uv[2][1] = 0.0f;
+    packet.uv[3][0] = 1.0f;
+    packet.uv[3][1] = 1.0f;
+    qcopy(&frame.position, position);
+    func_00282CF0((char *)&frame.row[0], (char *)&D_L00_001B8C80.x_140, (char *)&frame.position);
+    func_00282F20((char *)&frame.row[0], (char *)&frame.row[0], 1.0f);
+    func_00282DD8((char *)&frame.row[1], (char *)&frame.row[0], (char *)&D_0018A0E0);
+    func_00282F20((char *)&frame.row[1], (char *)&frame.row[1], 1.0f);
+    func_00282DD8((char *)&frame.row[2], (char *)&frame.row[1], (char *)&frame.row[0]);
+    if (roll != 0.0f) {
+        scratch.angles.word = 0;
+        scratch.angles.v[0] = roll;
+        func_002833F0(scratch.u.rotation, &scratch.angles);
+        func_00283738(frame.row, frame.row, scratch.u.rotation);
+    }
+    func_00282D30(&scratch.angles, &frame.row[0], offset);
+    func_00282CC0(&frame.position, &frame.position, &scratch.angles);
+    {
+        Vector *vertex = packet.vertex;
+        int count;
+        corner = D_L00_001AA310;
+        count = 3;
+        do {
+            func_00282D30(vertex, corner, size);
+            ++corner;
+            --count;
+            func_002830C0(vertex, vertex, &frame);
+            ++vertex;
+        } while (count >= 0);
+    }
+    func_002FC560(0x47, 0x31001ULL);
+    func_00280B90((char *)&packet, 0, 0);
+    if (mode != 0) {
+        int i;
+
+        qcopy(&scratch.u.projection.center, &packet.vertex[0]);
+        {
+            Vector *vertex = &packet.vertex[1];
+            int count;
+            count = 2;
+            do {
+                func_00282CC0(&scratch.u.projection.center, &scratch.u.projection.center,
+                              vertex);
+                ++vertex;
+                --count;
+            } while (count >= 0);
+        }
+        func_00282D30(&scratch.u.projection.center, &scratch.u.projection.center, 0.25f);
+        for (i = 0; i < 4; ++i) {
+            func_00282CF0((char *)&scratch.u.projection.point, (char *)&packet.vertex[i],
+                          (char *)&scratch.u.projection.center);
+            func_00282D30(&scratch.u.projection.point, &scratch.u.projection.point, 0.8f);
+            func_00282CC0(&scratch.u.projection.point, &scratch.u.projection.center,
+                          &scratch.u.projection.point);
+            func_0027C768((int)&scratch.u.projection.point, &packet.uv[i][0], &packet.uv[i][1]);
+            if (func_002A77E0(1) == 0) {
+                packet.uv[i][0] += func_002A7878(-jitter, jitter);
+                packet.uv[i][1] += func_002A7878(-jitter, jitter);
+            }
+            if (packet.uv[i][0] > 1.0f) packet.uv[i][0] = 1.0f;
+            else if (packet.uv[i][0] < 0.0f) packet.uv[i][0] = 0.0f;
+            if (packet.uv[i][1] > 1.0f) packet.uv[i][1] = 1.0f;
+            else if (packet.uv[i][1] < 0.0f) packet.uv[i][1] = 0.0f;
+        }
+    } else {
+        int i;
+
+        for (i = 0; i < 4; ++i) {
+            func_0027C768((int)&packet.vertex[i], &packet.uv[i][0], &packet.uv[i][1]);
+            if (func_002A77E0(1) == 0) {
+                packet.uv[i][0] += func_002A7878(-jitter, jitter);
+                packet.uv[i][1] += func_002A7878(-jitter, jitter);
+            }
+            if (packet.uv[i][0] > 1.0f) packet.uv[i][0] = 1.0f;
+            else if (packet.uv[i][0] < 0.0f) packet.uv[i][0] = 0.0f;
+            if (packet.uv[i][1] > 1.0f) packet.uv[i][1] = 1.0f;
+            else if (packet.uv[i][1] < 0.0f) packet.uv[i][1] = 0.0f;
+        }
+    }
+    func_00281DE8(&packet, -1, 1, 0x80);
+    packet.flags = 0x8000000054ULL;
+    func_002FC560(0x47, 0x33001ULL);
+    func_00280B90((char *)&packet, 0, 0);
+    func_002FC560(0x47, 0x5360bULL);
+}
 
 INCLUDE_ASM("asm/levels", func_L00_003F87B0);
 

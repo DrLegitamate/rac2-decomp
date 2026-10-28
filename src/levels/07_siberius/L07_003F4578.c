@@ -27,9 +27,9 @@ void func_L07_0040FC50(void)
 
 INCLUDE_ASM("asm/levels", func_L07_003F4CC0);
 
-INCLUDE_ASM("asm/levels", func_L07_003F59C0);
+/* func_L07_003F59C0 is defined in L07_003F59C0-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L07_003F5B50);
+/* func_L07_003F5B50 is defined in L07_003F5B50.c. */
 
 /* func_L07_003F6328 is defined in L07_003F6328.c. */
 
@@ -175,7 +175,7 @@ extern void func_00283678(u8 *a, void *b);
 
 INCLUDE_ASM("asm/levels", func_L07_003F80B8);
 
-INCLUDE_ASM("asm/levels", func_L07_003F8430);
+/* func_L07_003F8430 is defined in L07_003F8430-g8.c. */
 
 /* func_L07_003F8780 is defined in L07_003F4578-g8.c (this unit has no $gp access for it). */
 
@@ -211,7 +211,7 @@ typedef struct {
 extern SibRec128 *D_L07_001B23CC;
 
 
-INCLUDE_ASM("asm/levels", func_L07_003F8D90);
+/* func_L07_003F8D90 is defined in L07_003F8D90.c. */
 
 extern void func_002A7470(u8 *a0, s32 a1, s32 a2, s32 a3);
 
@@ -329,7 +329,7 @@ void func_L07_0040EFC8(s32 *a0, f32 *a1, f32 a, f32 b)
     a1[1] = -func_2E49C8(func_2E4508(p2, p1), p1[2] - p2[2]);
 }
 
-INCLUDE_ASM("asm/levels", func_L07_0040F0D0);
+/* func_L07_0040F0D0 is defined in L07_0040F0D0-g32.c. */
 
 /* The object's state record up to its three group words (-1 means none). Indexing the array
    member is the spelling that gives retail's address arithmetic (the +0x94 base as a sum of its

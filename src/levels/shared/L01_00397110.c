@@ -1,13 +1,22 @@
-#include "include_asm.h"
+#include "common.h"
 
-INCLUDE_ASM("asm/levels", func_L01_00397110);
+
+extern float func_002A7878(float, float);
+extern float func_00283180(float);
+extern float func_00283198(float);
+extern void func_00283098(void *, void *, void *);
+extern float func_00282DF0(void *);
+extern void func_00282F20(void *, void *, float);
+extern void func_00282CC0(void *, void *, void *);
+extern int func_00283CF0(float);
+extern char *func_002BAA28(void *, void *, void *, int, int, int, int, int, int);
+extern int func_001163B0(void);
+
+
 
 INCLUDE_ASM("asm/levels", func_L01_003973A0);
 
 
-INCLUDE_ASM("asm/levels", func_L01_00397A28);
-
-/* func_L01_00397C98 is defined in L01_00397C98-qcopy-qcopy-barrier.c. */
 
 extern int D_001A79F0 __attribute__((sda));
 
@@ -67,15 +76,47 @@ void func_L01_00399098(char *a0)
 
 INCLUDE_ASM("asm/levels", func_L01_00399510);
 
-INCLUDE_ASM("asm/levels", func_L01_003B2598);
-
 INCLUDE_ASM("asm/levels", func_L01_003B9798);
 
-INCLUDE_ASM("asm/levels", func_L01_003BD178);
+void func_L01_003BD178(char *m, void *position, int count,
+                      float speed, float rise, float maxRadius, float minRadius,
+                      float size, float endSize)
+{
+    float offset[4], velocity[4], accel[4];
+    int a, b, c;
+    char *particle;
+
+    {
+        int i;
+        for (i = 0; i < count; i++) {
+            float x, y;
+            x = func_00283180(func_002A7878(-3.1415927410125732f, 3.1415927410125732f));
+            offset[0] = x * func_002A7878(minRadius, maxRadius);
+            y = func_00283198(func_002A7878(-3.1415927410125732f, 3.1415927410125732f));
+            y *= func_002A7878(minRadius, maxRadius);
+            offset[1] = y;
+            offset[2] = 0;
+            func_00283098(offset, offset, m + 0xC0);
+            {
+                float range = speed * ((maxRadius - func_00282DF0(offset)) * 0.01666666753590107f) / maxRadius;
+                func_00282F20(velocity, offset, func_002A7878(range * 0.25f, range));
+            }
+            velocity[2] += func_002A7878(rise * 0.25f, rise) * 0.01666666753590107f;
+            qzero_nc(accel);
+            func_00282CC0(offset, offset, position);
+            velocity[3] = size;
+            accel[3] = endSize;
+            a = func_00283CF0(func_002A7878(15.0f, 25.0f));
+            b = func_00283CF0(func_002A7878(20.0f, 40.0f));
+            c = func_00283CF0(func_002A7878(30.0f, 60.0f));
+            particle = func_002BAA28(offset, velocity, accel, 0x50204050, 0x7F7F7F, a, b, c, -1);
+            if (particle && (func_001163B0() & 1))
+                particle[3] = 0x48;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/levels", func_L01_003C91C8);
-
-INCLUDE_ASM("asm/levels", func_L01_003CEB00);
 
 
 INCLUDE_ASM("asm/levels", func_L01_003D2C88);
@@ -140,7 +181,115 @@ void func_L01_004110E0(char *a0)
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L01_004132D8);
+extern void func_L00_004117B8(void *);
+extern void ref_L01_004132D8_00(void (*)(void *), void *);
+extern void func_L00_00411B30(void *);
+extern void func_002A0488(void *, int, int, int);
+extern int func_00283D38(int, int, float);
+extern float func_00283180(float);
+extern void func_L00_004110D8(void *);
+extern void func_00282C88(void *);
+extern void func_L00_004118A8(void *, void *, void *, void *, void *, int, int, int, void *, float);
+extern int func_002A7820(int, int);
+extern void func_002AF000(void *, float, float, float);
+extern float func_002A7940(void);
+extern float func_002A7878(float, float);
+extern int func_001163B0(void);
+extern int func_00277F48(void *, int, void *, int, float);
+extern int func_002829D8(void *);
+extern int func_00282948(void *);
+extern float func_00283B98(float, float);
+typedef struct {
+    char data[0x18];
+    char *target;
+    char end[0x14];
+} ParticleEffectSlot;
+extern char D_00189E20[];
+extern ParticleEffectSlot D_L01_00257920[];
+extern char *D_L01_001C3980[];
+
+void func_L01_004132D8(char *m) {
+    float a[4], b[4];
+    int i;
+
+    qcopy_nc(m + 0x10, D_00189E20);
+    for (i = 0; i < 30; i++) {
+        char *s;
+        char *other;
+        int dead;
+
+        if (!D_L01_00257920[i].target)
+            continue;
+        s = (char *)&D_L01_00257920[i];
+        *(float *)(s + 0xC) = func_00283B98(*(float *)(s + 0xC), 0.20943954586982727f);
+        dead = 0;
+        if (*(signed char *)(*(char **)(s + 0x18) + 0x20) < 0)
+            dead = 1;
+        if (!*(int *)(*(char **)(s + 0x18) + 0x98))
+            dead = 1;
+        if (func_00282948(s))
+            dead = 1;
+        if (func_002829D8(s + 0x1C)) {
+            int count, j;
+            char *target = *(char **)(s + 0x18);
+
+            *(float *)(s + 0x1C) = *(float *)(s + 0x14);
+            count = func_00277F48(target + 0x10, 0, target, 0, 8.0f);
+            for (j = 0; j < count; j++) {
+                other = D_L01_001C3980[j];
+                if ((*(unsigned short *)(other + 0x34) & 0x1000) && other &&
+                    *(unsigned char *)(other + 0x20) != 254 && *(unsigned char *)(other + 0x20) != 253 &&
+                    *(short *)(*(char **)(other + 0x24) + 0x46) == 5)
+                    goto collide;
+            }
+        }
+    random_particles:
+        if (func_001163B0() % 11 == 0) {
+            int j, count;
+
+            {
+                float scale = func_002A7878(0.3f, 0.65f) * 0.0009764999849721789f;
+                float x = *(float *)(*(char **)(s + 0x18) + 0xC) * scale;
+                float y = func_002A7940();
+                float z = func_002A7940();
+
+                func_002AF000(a, x, y, z);
+            }
+            {
+                float scale = func_002A7878(0.3f, 0.65f) * 0.0009764999849721789f;
+                float x = *(float *)(*(char **)(s + 0x18) + 0xC) * scale;
+                float y = func_002A7940();
+                float z = func_002A7940();
+
+                func_002AF000(b, x, y, z);
+            }
+            j = func_002A7820(5, 15);
+            count = func_002A7820(15, 30);
+            func_L00_004118A8(m, *(char **)(s + 0x18), *(char **)(s + 0x18), a, b, 0, j, count, s, 0.0f);
+        }
+        if (dead) {
+            func_L00_004110D8(s);
+            *(char **)(s + 0x18) = 0;
+            continue;
+        }
+        goto timer;
+    collide:
+        func_00282C88(a);
+        func_L00_004118A8(m, *(char **)(s + 0x18), other, a, a, 1, 10, 30, s, *(float *)(s + 0x10));
+        func_L00_004118A8(m, *(char **)(s + 0x18), other, a, a, 0, 10, 30, s, 0.0f);
+        goto random_particles;
+    timer:
+        if (*(int *)(s + 0x24) == 0) {
+            int c = func_00283D38(*(int *)(s + 4), *(int *)(s + 8),
+                                  (func_00283180(*(float *)(s + 0xC)) + 1.0f) * 0.5f);
+
+            func_002A0488(*(char **)(s + 0x18), c & 255, (c >> 8) & 255, (c >> 16) & 255);
+        } else
+            --*(int *)(s + 0x24);
+    }
+    func_L00_00411B30(m);
+    ref_L01_004132D8_00(func_L00_004117B8, m);
+}
 
 
 extern char *D_001B9510;
@@ -155,8 +304,6 @@ extern void func_2CF938(char *, char *);
 
 typedef int TI128 __attribute__((mode(TI)));
 
-
-INCLUDE_ASM("asm/levels", func_L01_0042DE20);
 
 extern void func_2E34A0(void *, char *, char *);
 

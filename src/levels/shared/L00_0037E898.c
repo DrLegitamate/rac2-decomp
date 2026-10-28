@@ -441,9 +441,7 @@ void func_L00_003883B8(char *p)
 
 /* func_L00_00388490 is defined in L00_00388490.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_00388790);
-
-/* func_L00_00389E18 is defined in L00_00389E18-g8-qcopy.c. */
+/* func_L00_00388790 is defined in L00_00388790-qcopy.c. */
 
 /* Family 6eb4f363e5305bed: seed body at func_L00_00387408. */
 void func_L00_00389EB0(char *object)

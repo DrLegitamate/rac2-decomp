@@ -175,7 +175,7 @@ char *func_00345400(char *p)
     return p;
 }
 
-INCLUDE_ASM("asm/game", func_00345490);
+/* func_00345490 is built from 00345358-init.c. */
 
 INCLUDE_ASM("asm/game", func_003458F8);
 
@@ -237,7 +237,7 @@ INCLUDE_ASM("asm/game", func_00346C60);
 
 INCLUDE_ASM("asm/game", func_003472B8);
 
-INCLUDE_ASM("asm/game", func_00347468);
+/* func_00347468 is built from 00345358-selection-g8.c. */
 
 INCLUDE_ASM("asm/game", func_003478F0);
 
@@ -318,7 +318,7 @@ s32 func_00348128(u8 *a0) { return *(s32 *)(a0 + 0x50); }
 /* Measured target: byte-identical across all 27 levels. */
 s32 func_00348130(u8 *a0) { return *(s32 *)(a0 + 0xb0); }
 
-INCLUDE_ASM("asm/game", func_00348138);
+/* func_00348138 is built from 00345358-menu.c. */
 
 char *func_003484C8(char *a0)
 {
@@ -485,7 +485,7 @@ void func_00349670(int param_1, unsigned int param_2)
 /* Measured target: byte-identical across all 27 levels. */
 void func_00349678(u8 *a0, f32 a1) { *(f32 *)(a0 + 0x24) = a1; }
 
-INCLUDE_ASM("asm/game", func_00349680);
+/* func_00349680 is built with float min/max in 00345358-interpolation.c. */
 
 u8 *func_00349918(u8 *a0) {
  s32 *p=(s32 *)(a0+0x2c); s32 i=1;

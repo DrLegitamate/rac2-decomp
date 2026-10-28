@@ -25,7 +25,24 @@ INCLUDE_ASM("asm/game", func_0028CCE0);
 
 INCLUDE_ASM("asm/game", func_0028D1E8);
 
-INCLUDE_ASM("asm/game", func_0028DDD8);
+extern int func_0028B740(void *, int *, int *);
+extern void func_0028B7A8(void *, int *, int *, int, int);
+extern int func_0028E588(int, int);
+extern void func_0028ECD8(int,int,int,int,int,int);
+extern void func_0028E868(int,int,int,int,int,int);
+extern short D_0018B69A;
+int func_0028DDD8(char *o) {
+ int x=*(int *)(o+0x50), y=*(int *)(o+0x54);
+ int w;
+ *(int *)(o+0x58)=256; *(int *)(o+0x5c)=64;
+ func_0028B740(o,&x,&y);
+ func_0028B7A8(o,&x,&y,*(int *)(o+0x6c),0);
+ w=*(int *)(o+0x74)*221 / *(int *)(o+8)+27;
+ func_0028ECD8(func_0028E588(0x7558,1),x,y,w,64,128);
+ func_0028E868(func_0028E588(0x7558,0),x,y,256,64,128);
+ func_0028E868(func_0028E588(0x7558,2),x,y,32,32,D_0018B69A?128:0);
+ return *(int *)(o+0x58);
+}
 
 void func_0028DF38(char *object) { extern void func_0028B950(u8 *); *(int *)(object + 0x58) = 0x20; *(int *)(object + 0x7C) = 0x96; *(int *)(object + 0x5C) = 0x20; func_0028B950((u8 *)object); }
 

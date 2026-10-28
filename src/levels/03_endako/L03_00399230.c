@@ -37,6 +37,35 @@ extern void func_359FD0(char *a0, char *a1);
 extern void func_30D710(s32 a0, s32 a1);
 typedef int TI128 __attribute__((mode(TI)));
 
+typedef struct {
+    /* 0x00 */ char pad0[0x10];
+    /* 0x10 */ char position[0x10];
+    /* 0x20 */ unsigned char state;
+    /* 0x21 */ char pad21[0xB];
+    /* 0x2C */ float scale;
+    /* 0x30 */ unsigned char alpha;
+    /* 0x31 */ char pad31;
+    /* 0x32 */ unsigned short alpha2;
+    /* 0x34 */ char pad34[0x34];
+    /* 0x68 */ void *vars;
+    /* 0x6C */ char pad6C[0x4C];
+    /* 0xB8 */ int owner;
+} L03SpawnObject;
+
+typedef struct {
+    /* 0x00 */ char a[0x10];
+    /* 0x10 */ char b[0x10];
+    /* 0x20 */ char pad20[0x44];
+    /* 0x64 */ float v[3];
+    /* 0x70 */ int kind;
+    /* 0x74 */ char pad74;
+    /* 0x75 */ unsigned char c;
+    /* 0x76 */ unsigned char d;
+    /* 0x77 */ unsigned char e;
+    /* 0x78 */ unsigned char e2;
+} L03SpawnState;
+
+
 INCLUDE_ASM("asm/levels", func_L03_00399230);
 
 
@@ -48,7 +77,7 @@ INCLUDE_ASM("asm/levels", func_L03_003C6E50);
 
 INCLUDE_ASM("asm/levels", func_L03_003C7018);
 
-INCLUDE_ASM("asm/levels", func_L03_003C72A8);
+/* func_L03_003C72A8 is defined in L03_003C72A8-g8.c. */
 
 void func_L03_003C7A40(char *a0)
 {
@@ -96,7 +125,6 @@ INCLUDE_ASM("asm/levels", func_L03_003C8698);
 
 /* func_L03_003CA938 lives in the -G8 sibling L03_00399230-g8.c. */
 
-/* func_L03_003CACA8 is defined in L03_00399230-g8.c (this unit has no $gp access for it). */
 
 INCLUDE_ASM("asm/levels", func_L03_003CAD78);
 
@@ -142,7 +170,7 @@ s32 func_L03_003CF7B8(u8 *a0)
     return (u8)(a0[0x20] - 2) < 3;
 }
 
-INCLUDE_ASM("asm/levels", func_L03_003CF7C8);
+/* func_L03_003CF7C8 is in L03_003CF7C8.c. */
 
 void func_L03_003CFB30(char *a0)
 {
@@ -189,11 +217,10 @@ void func_L03_003D1100(char *a0)
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L03_003D11E0);
+/* func_L03_003D11E0 is in L03_003D11E0-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L03_003D1548);
+/* func_L03_003D1548 is in L03_003D1548-g8.c. */
 
-/* func_L03_003D18F8 is defined in L03_00399230-g8.c (this unit has no $gp access for it). */
 
 INCLUDE_ASM("asm/levels", func_L03_003D19C8);
 
@@ -218,6 +245,7 @@ INCLUDE_ASM("asm/levels", func_L03_003D22C8);
 INCLUDE_ASM("asm/levels", func_L03_003D2518);
 
 
+/* Spawns object class 0xB1B owned by `owner` and fills its 0x10E state record. */
 extern void *func_0029EFD0(int);
 extern void func_002A0F48(void *);
 

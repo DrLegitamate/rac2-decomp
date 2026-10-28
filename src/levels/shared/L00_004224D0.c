@@ -80,7 +80,7 @@ void func_L00_00423BC0(char *a0, void *a1, void *a2, void *a3,
     func_00282CF0_2(a1, &b3, a4);
 }
 
-INCLUDE_ASM("asm/levels", func_L00_00423CA8);
+/* func_L00_00423CA8 is in L00_00423CA8-g8.c. */
 
 /* Returns 0 unless the second argument equals 1; then it takes a pointer out of the first argument's field at +112, adds 352 to it, passes a 16-byte stack buffer and a data symbol to one routine, passes the same buffer and the shifted pointer to a second routine that returns a float, and returns 1 only when that float is below zero. */
 int func_L00_00424070(int a0, int a1)
@@ -300,7 +300,7 @@ void func_L00_00424F58(char *a0, float a, float b)
 
 INCLUDE_ASM("asm/levels", func_L00_00424F98);
 
-INCLUDE_ASM("asm/levels", func_L00_00425118);
+/* func_L00_00425118 is in L00_00425118-g8.c. */
 
 /* Builds three vectors from an owner block, blends the stored value toward the closest of the sampled vector length and the stored reference gap, and writes the remaining gap back. */
 void func_L00_00425490(char *obj)

@@ -102,9 +102,9 @@ s32 func_L09_003F9928(char *a0)
 
 INCLUDE_ASM("asm/levels", func_L09_003F9970);
 
-INCLUDE_ASM("asm/levels", func_L09_003F9A70);
+/* func_L09_003F9A70 is in the sibling -g8 unit. */
 
-INCLUDE_ASM("asm/levels", func_L09_003F9D08);
+/* func_L09_003F9D08 is in the sibling activation unit. */
 
 
 /* computes a local target direction and stores bounded horizontal and vertical angles through the original math helpers */

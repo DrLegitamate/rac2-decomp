@@ -1,4 +1,9 @@
-#include "include_asm.h"
+#include "common.h"
+
+/* Measured child block reached at owner->sub + 0x40. */
+typedef struct { char pad[0x4C]; float height; } Part_28CE0;
+
+
 
 extern void func_L00_00426248(int);
 
@@ -535,7 +540,7 @@ void func_L00_00429CE0(void)
 {
 }
 
-INCLUDE_ASM("asm/levels", func_L00_00429CE8);
+/* func_L00_00429CE8 is defined in L00_00429CE8.c. */
 
 INCLUDE_ASM("asm/levels", func_L00_00429F68);
 
@@ -594,7 +599,7 @@ void func_L00_0042AB48(void)
 
 INCLUDE_ASM("asm/levels", func_L00_0042AC18);
 
-INCLUDE_ASM("asm/levels", func_L00_0042AD98);
+/* func_L00_0042AD98 is defined in L00_0042AD98.c. */
 
 
 extern void r1_func_001F9BF0(void *, void *, void *);

@@ -238,6 +238,3 @@ s32 func_L16_00413638(u8 *arg)
 /* func_L16_00413700 is in L16_00413700-qcopy.c. */
 
 INCLUDE_ASM("asm/levels", func_L16_00413D10);
-
-INCLUDE_ASM("asm/levels", func_L16_00413EC8);
-

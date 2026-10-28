@@ -6,6 +6,21 @@ typedef unsigned int u32;
 typedef signed short s16;
 typedef int s32;
 
+extern void func_2EEF88(void *);
+extern void func_2EEFE0(void *, void *, void *);
+extern void func_2EF0C8(void *, void *, void *);
+extern void func_2EF298(void *, void *, float);
+extern float func_2EF0A0(void *, void *);
+extern void func_2EEFF8(void *, void *, void *, float);
+extern void func_2EEFB0(void *, void *, void *);
+extern float func_2EF190(void *, void *);
+extern float func_2EF158(void *, void *);
+extern void func_31EBA8(void *, float, float);
+extern int func_360A80(int, int, void *);
+extern void func_360780(int);
+extern void func_32CEA0(void *, void *);
+extern u8 D_L03_00188660[];
+
 extern void func_31B920(void *entity, int a, int b);
 extern int func_31B9F0(int id);
 extern void func_320318(void *entity, void *target);
@@ -112,7 +127,7 @@ INCLUDE_ASM("asm/levels", func_L03_003F4638);
 
 INCLUDE_ASM("asm/levels", func_L03_003F5590);
 
-INCLUDE_ASM("asm/levels", func_L03_003F5B70);
+/* func_L03_003F5B70 is in L03_003F5B70-g8.c. */
 
 /* ticks the entity's sub-states, feeds the 0x95 counter to the engine and
  * re-arms its 200-second timer */
@@ -206,7 +221,7 @@ INCLUDE_ASM("asm/levels", func_L03_003F6948);
 
 INCLUDE_ASM("asm/levels", func_L03_003F6BA8);
 
-INCLUDE_ASM("asm/levels", func_L03_003F6E88);
+/* func_L03_003F6E88 is defined in L03_003F6E88-g8.c. */
 
 /* The voice-load state the level shares with the engine: the key at +0x24, a
    cleared word at +0x28 and the busy flag at +0x68. */
@@ -309,7 +324,50 @@ INCLUDE_ASM("asm/levels", func_L03_0041D258);
 
 INCLUDE_ASM("asm/levels", func_L03_0041DAD0);
 
-INCLUDE_ASM("asm/levels", func_L03_0041DCE0);
+/* Projects the state position onto its path, clamps lateral displacement,
+ * advances the path blend nearby, and maintains its movement sound. */
+void func_L03_0041DCE0(u8 *entity) {
+    u8 *state = *(u8 **)(entity + 0x68);
+    u8 *entry = (u8 *)D_L03_001FE700[*(int *)(state + 0x210)];
+    float delta[4], along[4], across[4], axis[4], point[4], scaled[4];
+    float distance;
+    float side;
+    func_2EEF88(axis);
+    func_2EEFE0(along, entry + 0x20, entry + 0x10);
+    along[2] = 0;
+    func_2EF0C8(across, along, axis);
+    func_2EF298(across, across, 1.0f);
+    func_2EF298(along, along, 1.0f);
+    func_2EEFE0(delta, state + 0x1F0, entry + 0x10);
+    delta[2] = 0;
+    distance = func_2EF0A0(delta, across);
+    if (distance > *(float *)(state + 0x218)) distance = *(float *)(state + 0x218);
+    else if (distance < -*(float *)(state + 0x218)) distance = -*(float *)(state + 0x218);
+    func_2EEFF8(point, entry + 0x10, entry + 0x20, *(float *)(state + 0x340));
+    func_2EF298(scaled, across, distance);
+    func_2EEFB0(point, point, scaled);
+    func_2EEFE0(delta, state + 0x1F0, point);
+    delta[2] = 0;
+    side = func_2EF0A0(delta, along);
+    if (func_2EF190(state + 0x1F0, point) < 6.0f) {
+        float target = (side < 0.0f);
+        func_31EBA8(state + 0x340, target, 0.016666668f);
+    }
+    if (func_2EF158(entity + 0x10, point) >= 0.5f) {
+        u8 *sound = D_L03_00188660 + *(int *)(state + 0x350) * 0x70;
+        if (*(u8 **)(sound + 0x88) != entity || !sound[0x74])
+            *(int *)(state + 0x350) = func_360A80(0, 4, entity);
+    } else {
+        int slot = *(int *)(state + 0x350);
+        if (slot != -1) {
+            u8 *sound = D_L03_00188660 + slot * 0x70;
+            if (*(u8 **)(sound + 0x88) == entity && sound[0x74]) func_360780(slot);
+        }
+        *(int *)(state + 0x350) = -1;
+    }
+    func_32CEA0(entity, point);
+    *(int *)(state + 0x1A8) = 0;
+}
 
 /* func_L03_0041DFA8 lives in L03_003F09C0-g8.c (it reaches D_L03_001B1BF0
  * through $gp). */
@@ -345,6 +403,6 @@ void func_L03_0041F008(u8 *entity, u32 value) {
 /* func_L03_0041F090 lives in L03_003F09C0-g8.c (it reaches D_L03_001B1C00
  * and D_L03_001B1C04 through $gp). */
 
-INCLUDE_ASM("asm/levels", func_L03_0041F178);
+/* func_L03_0041F178 is defined in L03_0041F178-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L03_0041F410);
+/* func_L03_0041F410 is in L03_0041F410-g8.c. */

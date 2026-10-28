@@ -1,3 +1,9 @@
+#include "common.h"
+extern float func_00283CE0(int);
+extern char *D_L04_001FE340[];
+extern void func_002C96F8(void *, void *, void *, void *, float, float);
+extern void func_002A05A8(void *);
+
 #include "include_asm.h"
 
 extern int func_002A9640(unsigned char *a0, int a1, int a2);
@@ -23,7 +29,49 @@ typedef int Q16_B0e5d8f83 __attribute__((mode(TI)));
 
 INCLUDE_ASM("asm/levels", func_L04_003C8380);
 
-INCLUDE_ASM("asm/levels", func_L04_003E5830);
+extern char D_L04_001B9680[];
+extern void func_00282F20(char *, char *, float);
+extern float func_002A7878_range(float, float) __asm__("func_002A7878");
+extern float func_002A78D8(float, float);
+extern void func_002ACEC0(void *, void *, void *, float);
+extern void func_00282CC0(void *, void *, void *);
+extern char *func_002C2210(void *, int, float, float, unsigned int, int, int, void *, int, float);
+extern int func_00283CF0(float);
+extern void func_00282CF0(void *, void *, void *);
+
+/* Emits paired particles with opposite spin and randomized velocities. */
+void func_L04_003E5830(float *pos, int count) {
+    float velocity[4], origin[4], direction[4], axis[4], offset[4];
+    float size, angle;
+    int i;
+    int sign;
+    char *particle;
+    func_00282CF0(direction, (float *)D_L04_001B9680, pos);
+    func_00282F20((char *)offset, (char *)direction, 0.3f);
+    direction[2] = 0;
+    axis[0] = 0;
+    axis[1] = 0;
+    axis[2] = 1.0f;
+    axis[3] = 1.0f;
+    for (i = 0; i < count; i++) {
+        size = func_002A7878_range(0.5f, 2.0f);
+        sign = func_002A77E0(2);
+        if (!sign) sign--;
+        angle = func_002A7878_range(-1.0471977f, 1.0471977f);
+        func_002ACEC0(velocity, direction, axis, angle);
+        func_00282F20((char *)velocity, (char *)velocity, func_002A7878_range(0.05f, 3.0f) * 0.0166666675f);
+        velocity[2] = func_002A7878_range(1.0f, 5.0f) * 0.0166666675f;
+        func_00282CC0(origin, pos, offset);
+        pos[0] += func_002A78D8(0, 0.15f);
+        pos[1] += func_002A78D8(0, 0.15f);
+        pos[2] += func_002A78D8(0, 0.15f);
+        particle = func_002C2210(origin, 60, size * 0.1f, size, 0x80CA00CB, 0, sign, velocity, 0, 0.002f);
+        if (particle) particle[9] = func_00283CF0(4.0f) + 0x70;
+        particle = func_002C2210(origin, 60, size * 0.07f, size * 0.7f, 0x7F7F7F7F, 1, -sign, velocity, 0, 0.002f);
+        if (particle) particle[9] = func_00283CF0(4.0f) + 0x70;
+    }
+}
+
 
 void *func_L04_003E5E40(unsigned char *a0, void *a1, float f12) {
     unsigned char *obj = func_0029EFD0(a1);
@@ -112,8 +160,6 @@ void func_L04_003F5F30(unsigned char *a0) {
     *(float *)(obj + 0x50) = 2.0f;
 }
 
-
-INCLUDE_ASM("asm/levels", func_L04_003F6200);
 
 void func_L04_003F8FA0(unsigned char *a0) {
     unsigned char *obj = *(unsigned char **)(a0 + 0x68);
@@ -241,8 +287,6 @@ INCLUDE_ASM("asm/levels", func_L04_00400AB0);
 
 INCLUDE_ASM("asm/levels", func_L04_00400D48);
 
-INCLUDE_ASM("asm/levels", func_L04_00400EE0);
-
 typedef union { Q16_B0e5d8f83 q; float f[4]; } EffectVector;
 typedef struct { EffectVector row[4]; } EffectMatrix4;
 extern int func_002A8600(unsigned char **, int, int, int);
@@ -296,7 +340,73 @@ void func_L04_004027B0(unsigned char *object, unsigned char *state) {
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L04_004029D8);
+void func_L04_004029D8(unsigned char *m) {
+    unsigned char *s = *(unsigned char **)(m + 0x68);
+    float f;
+    unsigned char *o;
+    s[0xA2] = s[0x9C];
+    *(Q16_B0e5d8f83 *)(m+0x10) = *(Q16_B0e5d8f83 *)(s+0xB0);
+    *(Q16_B0e5d8f83 *)(m+0xF0) = *(Q16_B0e5d8f83 *)(s+0xC0);
+    s[0xA0] = 0;
+    f = func_00283CE0(s[0xA2]-1);
+    *(float *)(s+0x134) = 0.36916667222976685f - f * 0.011666666716337204f - (1.0f - (float)*(int *)(s+0x1A8)*0.1f)*0.03333333507180214f;
+    *(int *)(s+0x138)=0;
+    *(int *)(s+0x158)=0;
+    *(int *)(s+0x13C)=0;
+    *(short *)(s+0x142)=0;
+    *(short *)(s+0x140)=0;
+    *(int *)(s+0x160)=0;
+    *(int *)(s+0x24C)=0;
+    if (*(int *)(s+0x54)==-1) *(char **)(s+0x110)=D_L04_001FE340[*(int *)(s+0x50)];
+    else *(char **)(s+0x110)=D_L04_001FE340[*(int *)(s+0x54)];
+    *(float *)(s+0xA8)=5.0f;
+    *(float *)(s+0x1F8)=1.0f;
+    *(int *)(s+0xAC)=0;
+    *(int *)(s+0x114)=0;
+    *(int *)(s+0x118)=0;
+    *(int *)(s+0x128)=0;
+    *(int *)(s+0x12C)=0;
+    *(int *)(s+0x130)=0;
+    *(int *)(s+0x244)=0;
+    *(int *)(s+0x1F4)=0;
+    *(int *)(s+0x144)=0;
+    s[0xA4]=0; s[0xA5]=0; *(short *)(s+0xA6)=0;
+    *(int *)(s+0x154)=0;
+    *(int *)(s+0x150)=0;
+    *(int *)(s+0x148)=0;
+    *(int *)(s+0x178)=0;
+    *(int *)(s+0x248)=0;
+    *(int *)(s+0x14C)=0;
+    *(int *)(s+0x15C)=0;
+    s[0xA1]=0;
+    qzero(s+0xD0); qzero(s+0xE0); qzero(s+0x100);
+    o=*(unsigned char **)(s+0x110);
+    func_002C96F8(o,s+0x114,s+0x118,s+0xF0,*(float *)(s+0xA8),*(float *)(o+0x1C));
+    *(float *)(s+0x16C)=func_002A7878_range(-1.5f,1.5f);
+    *(int *)(s+0x174)=func_00283CF0(func_002A7878_range(3.0f,6.0f)*60.0f);
+    *(int *)(s+0x170)=0;
+    *(int *)(m+0x98)=*(int *)(*(unsigned char **)(m+0x24)+0x10);
+    *(unsigned short *)(m+0x34)=(*(unsigned short *)(m+0x34)&0xFFBE)|0x1400;
+    if (!*(void **)(s+0x8C)) {
+        *(void **)(s+0x8C)=func_L04_003E5E40(m,(void *)0x8EF,0.25f);
+        if (!*(void **)(s+0x8C)) goto done;
+    }
+    {
+    unsigned char *child=*(unsigned char **)(s+0x8C);
+    *(unsigned short *)(child+0x34)&=0xFFBE;
+    }
+    *(Q16_B0e5d8f83 *)(*(unsigned char **)(s+0x8C)+0x10)=*(Q16_B0e5d8f83 *)(m+0x10);
+    *(Q16_B0e5d8f83 *)(*(unsigned char **)(s+0x8C)+0xF0)=*(Q16_B0e5d8f83 *)(m+0xF0);
+    (*(unsigned char **)(s+0x8C))[0x30]=0;
+    func_002A05A8(*(void **)(s+0x8C));
+    func_002A0F48(*(void **)(s+0x8C));
+done:
+    *(short *)(s+0x17E)=0; *(short *)(s+0x17C)=-1;
+    *(int *)(s+0x180)=0; m[0x20]=2;
+    *(int *)(s+0x120)=-1;
+    *(int *)(s+0x240)=*(int *)(s+0x1C0)=*(int *)(s+0x124)=
+    *(int *)(s+0x11C)=*(int *)(s+0x1AC)=*(int *)(s+0x1A0)=*(int *)(s+0x19C)=0;
+}
 
 extern float func_00282E48(char *arg0, char *arg1);
 

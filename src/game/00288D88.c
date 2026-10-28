@@ -133,7 +133,7 @@ void func_00288EA0(void)
 
 
 
-INCLUDE_ASM("asm/game", func_00289178);
+/* func_00289178 is in 00289178.c. */
 
 void func_00289AA0(void)
 {
@@ -190,7 +190,31 @@ func_0028A130(int param_1)
   return;
 }
 
-INCLUDE_ASM("asm/game", func_0028A180);
+/* A seven-entry ring of key/value pairs: D_001B1866 counts the entries, D_001B1867 is the
+ * first one's slot. The incomplete sda arrays give retail's absolute macro forms (`la`,
+ * `lui $at` stores) at -G0. */
+extern unsigned char D_001B1866[] __attribute__((sda));
+extern unsigned char D_001B1867[] __attribute__((sda));
+extern short D_001B1848[] __attribute__((sda));
+extern short D_001B1858[] __attribute__((sda));
+
+/* Appends key with its value unless the ring is full or already holds key. Every access
+ * reads the globals directly: local copies of the count and first slot lose the register
+ * copies retail makes around the loop. */
+void func_0028A180(int key, int value)
+{
+    int i;
+
+    if (D_001B1866[0] < 7) {
+        for (i = D_001B1866[0] - 1; i >= 0; i--) {
+            if (D_001B1848[(D_001B1867[0] + i) % 7] == key)
+                return;
+        }
+        D_001B1848[(D_001B1867[0] + D_001B1866[0]) % 7] = key;
+        D_001B1858[(D_001B1867[0] + D_001B1866[0]) % 7] = value;
+        D_001B1866[0]++;
+    }
+}
 
 
 /* func_0028A278 is defined in 0028A278.c with its qualified address profile. */
@@ -239,7 +263,7 @@ char *func_0028B2B8(int size)
 
 /* func_0028B338 is in 00288D88-g8.c. */
 
-INCLUDE_ASM("asm/game", func_0028B3D0);
+/* func_0028B3D0 is in the -G8 sibling. */
 
 /* Calls a callee with (this, word at +32), copies six words from +36..+56 down to +4..+24, calls the function pointer at +48 with this when non-zero, then clears +104. */
 void func_0028B4D8(char *p)

@@ -197,9 +197,7 @@ f32 func_L00_0031A6C8(f32 value, s32 count) {
 
 INCLUDE_ASM("asm/levels", func_L00_0031A710);
 
-/* func_L00_0031AA28 (cubic curve through four control vectors) is a near miss:
-   nonmatching/levels/func_L00_0031AA28.c */
-INCLUDE_ASM("asm/levels", func_L00_0031AA28);
+/* func_L00_0031AA28 is defined in L00_0031AA28-curve.c. */
 
 /* Blends a value toward a target: helper(second,first) halved, scaled by (1 - helper(third*pi)); the first argument and that product go to a two-float helper whose float result is returned. */
 float func_L00_0031ABE0(float a, float b, float c)
@@ -333,7 +331,9 @@ INCLUDE_ASM("asm/levels", func_L00_003200F8);
 
 INCLUDE_ASM("asm/levels", func_L00_00320B70);
 
-INCLUDE_ASM("asm/levels", func_L00_00321878);
+/* Defined in L00_00320B70.c. */
+
+/* func_L00_00321878 is defined in L00_00321878-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L00_00322428);
 
@@ -588,6 +588,6 @@ void func_L00_0032A0E8(void) {
 
 /* func_L00_0032A1A8 is matched in L00_0032A1A8.c (built with -frac2-qcopy). */
 
-INCLUDE_ASM("asm/levels", func_L00_0032A258);
+/* func_L00_0032A258 is matched in L00_0032A258-g8.c (built with -G8). */
 
 INCLUDE_ASM("asm/levels", func_L00_0032A530);

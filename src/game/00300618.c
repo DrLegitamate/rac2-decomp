@@ -344,7 +344,7 @@ INCLUDE_ASM("asm/game", func_00302848);
 
 /* func_00302A20 uses the quadword-copy profile in 00300618-qcopy.c. */
 
-INCLUDE_ASM("asm/game", func_00302A88);
+/* func_00302A88 uses the debug profile in 00300618-state.c. */
 
 
 

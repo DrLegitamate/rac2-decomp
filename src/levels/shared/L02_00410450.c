@@ -92,7 +92,7 @@ void func_L02_00422638(u8 *a0) {
     } while (--i >= 0);
 }
 
-INCLUDE_ASM("asm/levels", func_L02_00422720);
+/* func_L02_00422720 is defined in L02_00422720-g8.c. */
 
 /* func_L02_00422BB8 is defined in L02_00422BB8-g8.c. */
 

@@ -1,5 +1,7 @@
 #include "include_asm.h"
 
+typedef struct { char pad[12]; int active; char gap[4]; unsigned char links[8]; } PathSearchNode;
+
 extern void func_00282CF0_9(char *local, char *first, char *second);
 
 extern void func_00282CC0_15(char *target, char *first, char *local);
@@ -40,7 +42,7 @@ INCLUDE_ASM("asm/levels", func_L00_003AA4C8);
 
 INCLUDE_ASM("asm/levels", func_L00_003AA708);
 
-INCLUDE_ASM("asm/levels", func_L00_003AB388);
+/* func_L00_003AB388 is defined in L00_003AB388-hit.c. */
 
 /* Applies a state record to a 3D point when the record carries a live tag. */
 void func_L00_003AB618(char *a0, char *a1, char *a2)
@@ -97,6 +99,7 @@ INCLUDE_ASM("asm/levels", func_L00_003AE900);
 INCLUDE_ASM("asm/levels", func_L00_003B0A28);
 
 
+/* Searches the node adjacency table with a byte-indexed backtracking stack. */
 typedef struct {
     char pad0[0xC];
     int used;

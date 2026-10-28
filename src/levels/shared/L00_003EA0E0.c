@@ -85,11 +85,10 @@ void func_L00_003EA0E0(char *p, int v, char *a, char *b)
     func_00282CC0_4(a, a, p + 16);
 }
 
-INCLUDE_ASM("asm/levels", func_L00_003EA188);
 
 INCLUDE_ASM("asm/levels", func_L00_003EA408);
 
-INCLUDE_ASM("asm/levels", func_L00_003EA540);
+/* func_L00_003EA540 is defined in its own unit. */
 
 /* shared native body of family 5a97ab89858c */
 void func_L00_003EA860(char *p)
@@ -308,11 +307,9 @@ INCLUDE_ASM("asm/levels", func_L00_003EB7C0);
 
 INCLUDE_ASM("asm/levels", func_L00_003EB8E8);
 
-INCLUDE_ASM("asm/levels", func_L00_003EBC68);
 
 /* func_L00_003EC078 is defined in L00_003EC078-zero-ti-por-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_003EC140);
 
 void func_L00_003ECB00(void)
 {
@@ -366,7 +363,6 @@ void func_L00_003ECB38(char *obj, void *rec, char *mob, float fa, float fb, floa
 
 INCLUDE_ASM("asm/levels", func_L00_003ECC90);
 
-INCLUDE_ASM("asm/levels", func_L00_003ECD80);
 
 INCLUDE_ASM("asm/levels", func_L00_003ED198);
 

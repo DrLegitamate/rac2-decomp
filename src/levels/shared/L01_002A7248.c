@@ -1,6 +1,11 @@
-#include "include_asm.h"
+#include "common.h"
 
-#define MACRO_ADDR __attribute__((section(".sdata")))
+typedef int MotionQuad __attribute__((mode(TI)));
+typedef union { float v[4]; MotionQuad q; } MotionVec;
+
+extern void func_002E3470(void *, void *, void *);
+
+typedef int ClosestPointQuad __attribute__((mode(TI)));
 
 typedef struct { char *p[6]; } Sep6;
 
@@ -186,7 +191,7 @@ INCLUDE_ASM("asm/levels", func_L01_002B0318);
 INCLUDE_ASM("asm/levels", func_L01_002B3458);
 
 
-INCLUDE_ASM("asm/levels", func_L01_002B3788);
+/* func_L01_002B3788 is defined in L01_002B3788-contact.c. */
 
 /* func_L01_002B3D28 is defined in L01_002B3D28.c. */
 
@@ -198,7 +203,7 @@ INCLUDE_ASM("asm/levels", func_L01_002B5EA0);
 
 INCLUDE_ASM("asm/levels", func_L01_002B6948);
 
-INCLUDE_ASM("asm/levels", func_L01_002BE0E0);
+/* func_L01_002BE0E0 is defined in L01_002A7248-timers-g8.c. */
 
 void func_L01_002C1988(unsigned long x) {
     unsigned long mode = 1;
@@ -209,8 +214,6 @@ void func_L01_002C1988(unsigned long x) {
 }
 
 /* func_L01_002C2CF0 is defined in L01_002C2CF0-keep-block-order.c. */
-
-INCLUDE_ASM("asm/levels", func_L01_002C81D0);
 
 void func_L01_002C8990(void) {
     *(unsigned short *)((char *)D_0018C0B0 + 0x34) |= 1;
@@ -425,6 +428,7 @@ int func_L01_003246F8(int key) {
  return -1;
 }
 
+/* RAC1 counterpart: src/overlays/shared/span_particle.c, spawn_span_particle. */
 INCLUDE_ASM("asm/levels", func_L01_00326DD8);
 
 INCLUDE_ASM("asm/levels", func_L01_00331CA0);
@@ -483,11 +487,18 @@ void func_L01_00371228(int a0, int a1) {
 
 INCLUDE_ASM("asm/levels", func_L01_003801B8);
 
-INCLUDE_ASM("asm/levels", func_L01_003808C0);
+/* func_L01_003808C0 is in L01_003808C0-g8.c for its GP accesses. */
 
 INCLUDE_ASM("asm/levels", func_L01_0038EF40);
 
+/* A model with kind 0x12 is exempt from the trigger's visibility switches. */
+#define SPATIAL_TRIGGER_EXEMPT(p) \
+    ((p) && *(char **)((p) + 0x24) && \
+     *(short *)(*(char **)((p) + 0x24) + 0x46) == 0x12)
+
 INCLUDE_ASM("asm/levels", func_L01_003907B8);
+
+#undef SPATIAL_TRIGGER_EXEMPT
 
 void func_L01_003909E0(int a0, int a1, int a2, int a3) {
     unsigned short *p = D_L01_001FB020[a2];

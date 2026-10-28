@@ -84,6 +84,8 @@ void func_L22_00334F78(TI128 *source, u8 red, u8 green, u8 blue, s32 handle, f32
     *(f32 *)(pair + 0x4) = scale / func_2F4BD0(handle);
 }
 
+/* Defined in L22_00334F78.c. */
+
 void func_L22_00335078(u8 *a0)
 {
     u8 *s0 = a0;
@@ -107,6 +109,8 @@ void func_L22_00335078(u8 *a0)
 
 /* func_L22_003398B8 is in the sibling file L22_002D0C98-g8.c (it reads $gp data). */
 
-INCLUDE_ASM("asm/levels", func_L22_0039CDC0);
+/* Defined in L22_003398B8-g8.c. */
+
+/* func_L22_0039CDC0 is in L22_002D0C98-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L22_0039D198);

@@ -323,8 +323,6 @@ int func_002B0E90(void)
     return count;
 }
 
-INCLUDE_ASM("asm/game", func_002B0ED8);
-
 INCLUDE_ASM("asm/game", func_002B1350);
 
 int func_002B1A80(u8 *owner, int b, int *outIndex,

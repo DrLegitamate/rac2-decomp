@@ -1,11 +1,53 @@
-#include "include_asm.h"
+#include "common.h"
 
-typedef unsigned char u8;
-typedef unsigned short u16;
-typedef signed short s16;
-typedef int s32;
-typedef unsigned int u32;
-typedef float f32;
+typedef struct {
+    u8 pad00[0x20];
+    float hit[4];
+    float adjusted[4];
+    float normal[4];
+} CollisionResult;
+
+
+typedef struct { u8 pad_0[0x20]; u8 flags; } FlareMoby;
+typedef struct {
+    FlareMoby *moby; s32 state; f32 intensity; s32 pad_c;
+    s16 alpha[16]; s16 tex[16]; s32 color[16]; f32 dist[16]; f32 scale[16];
+} LensFlare;
+typedef struct {
+    int width, height, half_width, half_height;
+    int left, top, right, bottom;
+} ScreenExtent;
+extern LensFlare D_L08_001B9E00;
+extern u8 D_L08_001B9B00[];
+extern int D_L08_001B0DC0;
+extern ScreenExtent D_001A7340 __attribute__((sda));
+extern f32 func_00282E48(void *, void *);
+extern f32 func_00283CE0(int);
+extern void func_00279BD8(f32 *, void *);
+extern long long func_0027C878(int);
+extern f32 func_00282C48(f32);
+extern int func_00283CF0(f32);
+extern void func_002FC560(int, long long);
+extern void func_0027E018(int, int, int, int, int, int, int, int, long long, long long);
+
+
+extern void func_00282F20(void *, void *, float);
+extern void func_00282CC0(void *, void *, void *);
+extern float func_002A7878(float, float);
+extern float func_00283180(float);
+extern float func_00283198(float);
+
+
+extern int func_00283CF0(float);
+extern char *func_002BAA28(void *, void *, void *, int, int, int, int, int, int);
+extern int func_001163B0(void);
+extern void func_002A8D70(void *, int, int, int, int, int, float, float, float);
+extern void func_00283658(void *, void *);
+extern void func_0029FCC0(void *, int, void *);
+extern void func_L03_00339128(void *, void *, int, int, int, int, int, float);
+extern void func_L01_003120A8(void *, void *, void *, int, int, int, int, float, float);
+extern float func_00283B98(float, float);
+extern int D_0018C0BC;
 
 /* the level's object-handle table entry: 0x100 bytes, indexed by the handle */
 typedef struct {
@@ -210,7 +252,87 @@ void func_L08_003D9208(Ent *a0)
 
 INCLUDE_ASM("asm/levels", func_L08_003D92D8);
 
-INCLUDE_ASM("asm/levels", func_L08_003D9798);
+void func_L08_003D9798(char *object)
+{
+    float origin[4], end[4], start[4], step[4], matrix[12], point[4];
+    float velocity[4], accel[4], position[4];
+    char *state = *(char **)(object + 0x68), *particle;
+    float heading, angle;
+    int a, b, c;
+    func_002A8D70(object,1,1,0,1,0,0.5f,(float)*(u8 *)(state+0x34),1.0f);
+    func_00283658(matrix,object+0xC0);
+    func_0029FCC0(object,1,point);
+    qcopy_nc(origin,point);
+    matrix[2]=0;
+    qcopy_nc(start,origin);
+    func_00282F20(end,matrix,3.0f);
+    if (*(int *)(state+0x250)) {
+        if ((unsigned)(D_0018C0BC-17)<2) end[2]=*(float *)(state+0x218)-start[2];
+        else end[2]=*(float *)(state+0x248)-start[2];
+        if (end[2]>1.2f) end[2]=1.2f;
+        else if(end[2]<-1.2f) end[2]=-1.2f;
+    }
+    func_00282CC0(end,end,start);
+    func_L03_00339128(end,object,1,0x808080,127,30,255,0.5f);
+    func_L01_003120A8(object,start,end,1,0,1,0,(float)*(u8 *)(state+0x34),1.0f);
+    func_00282F20(step,matrix+4,0.1f);
+    func_00282CC0(start,start,step);
+    func_00282CC0(end,end,step);
+    end[2]+=func_002A7878(-0.2f,0.2f);
+    func_L01_003120A8(object,start,end,1,0,1,0,(float)*(u8 *)(state+0x34),1.0f);
+    func_00282F20(step,matrix+4,-0.2f);
+    func_00282CC0(start,start,step);
+    func_00282CC0(end,end,step);
+    end[2]+=func_002A7878(-0.2f,0.2f);
+    func_L01_003120A8(object,start,end,1,0,1,0,(float)*(u8 *)(state+0x34),1.0f);
+    heading=*(float *)(object+0xF8);
+    velocity[3]=0.6f; accel[3]=1.5f;
+    { int i; for(i=1;i>=0;i--) {
+        qcopy_nc(position,origin);
+        position[0]+=func_002A7878(-0.065f,0.065f);
+        position[1]+=func_002A7878(-0.065f,0.065f);
+        position[2]+=func_002A7878(-0.065f,0.065f);
+        velocity[0]=func_00283180(heading)*0.28333336114883423f;
+        velocity[1]=func_00283198(heading)*0.28333336114883423f;
+        velocity[2]=0;
+        velocity[2]=func_002A7878(0,0);
+        angle=func_002A7878(-90,90)*0.01745329424738884f;
+        accel[0]=func_00283180(func_00283B98(heading,angle))*0.008333333767950535f;
+        accel[1]=func_00283198(func_00283B98(heading,angle))*0.008333333767950535f;
+        accel[2]=0;
+        accel[2]=func_002A7878(0.015000000596046448f,0.01833333447575569f);
+        a=func_00283CF0(func_002A7878(2,4));
+        b=func_00283CF0(func_002A7878(12,14.40000057220459f));
+        c=func_00283CF0(func_002A7878(200,240.00001525878906f));
+        particle=func_002BAA28(position,velocity,accel,0x40101080,0x10101080,a,b,c,-1);
+        if(particle && (func_001163B0()&1)) particle[3]=0x48;
+    }
+    }
+    velocity[3]=0.05f; accel[3]=0.07f;
+    { int i; for(i=1;i>=0;i--) {
+        qcopy_nc(position,origin);
+        position[0]+=func_002A7878(-0.2f,0.2f);
+        position[1]+=func_002A7878(-0.2f,0.2f);
+        position[2]+=func_002A7878(-0.2f,0.2f);
+        angle=func_002A7878(-10,10)*0.01745329424738884f;
+        velocity[0]=func_00283180(func_00283B98(heading,angle))*0.20000001788139343f;
+        velocity[1]=func_00283198(func_00283B98(heading,angle))*0.20000001788139343f;
+        velocity[2]=0;
+        velocity[2]=func_002A7878(0,0);
+        angle=func_002A7878(-90,90)*0.01745329424738884f;
+        accel[0]=func_00283180(func_00283B98(heading,angle))*0.008333333767950535f;
+        accel[1]=func_00283198(func_00283B98(heading,angle))*0.008333333767950535f;
+        accel[2]=0;
+        accel[2]=func_002A7878(0.011666666716337204f,0.02500000223517418f);
+        a=func_00283CF0(func_002A7878(2,4));
+        b=func_00283CF0(func_002A7878(20,24));
+        c=func_00283CF0(func_002A7878(200,240.00001525878906f));
+        particle=func_002BAA28(position,velocity,accel,0x801010FF,0x801010FF,a,b,c,-1);
+        if(particle && (func_001163B0()&1)) particle[3]=0x48;
+    }
+    }
+}
+
 
 INCLUDE_ASM("asm/levels", func_L08_003D9F68);
 
@@ -218,7 +340,7 @@ INCLUDE_ASM("asm/levels", func_L08_003F6D30);
 
 INCLUDE_ASM("asm/levels", func_L08_003F6E18);
 
-INCLUDE_ASM("asm/levels", func_L08_003F76C0);
+
 
 
 extern u32 D_L08_001B9E04;
@@ -226,11 +348,68 @@ extern u32 D_L08_001B9E04;
 /* 128-bit copies reach lq/sq only through TImode. */
 typedef int TQ_003F79E0 __attribute__((mode(TI)));
 
-/* func_L08_003F79E0: 124 bytes against retail's 104; the four bound constants take
-   different FPRs and the frame grows. Deposited in nonmatching/levels/. */
 /* func_L08_003F79E0 is defined in L08_003F79E0-qcopy-barrier.c. */
 
-INCLUDE_ASM("asm/levels", func_L08_003F7A48);
+/* Projects the flare object to the screen and draws its 12 sprites along the line
+   through the screen centre, faded by distance and by how far off-centre it is
+   (RAC1 draw_lens_flare). The base size is read through a pointer: retail
+   rematerializes its address inside the loop. */
+void func_L08_003F7A48(u8 *object) {
+    u8 *vars = *(u8 **)(object + 0x68);
+    f32 scr[4], ctr[4], d[4], off[4], at[4];
+    f32 dist, fade, fx, fy, half;
+    int i, size, rgba, x, y;
+    long long tex;
+    int *base_size;
+
+    if (D_L08_001B9E00.state != 1 || (D_L08_001B9E00.moby->flags & 0x80)) {
+        D_L08_001B9E00.state = 0;
+        return;
+    }
+    if (D_L08_001B9E00.intensity <= 0.0f)
+        return;
+    dist = func_00282E48(D_L08_001B9B00, vars + 0x10);
+    ctr[0] = func_00283CE0(D_001A7340.half_width);
+    ctr[1] = func_00283CE0(D_001A7340.half_height);
+    base_size = &D_L08_001B0DC0;
+    func_00279BD8(scr, vars + 0x10);
+    scr[0] = (scr[0] - func_00283CE0(D_001A7340.left)) * 0.0625f;
+    scr[1] = (scr[1] - func_00283CE0(D_001A7340.top)) * 0.0625f;
+    d[0] = ctr[0] - scr[0];
+    d[1] = ctr[1] - scr[1];
+    for (i = 0; i < 12; i++) {
+        tex = func_0027C878(D_L08_001B9E00.tex[i] + 0x45);
+        off[0] = d[0] * D_L08_001B9E00.dist[i];
+        off[1] = d[1] * D_L08_001B9E00.dist[i];
+        at[0] = ctr[0] + off[0];
+        at[1] = ctr[1] + off[1];
+        fade = dist - 5.0f;
+        if (fade > 1.0f)
+            fade = 1.0f;
+        else if (fade < 0.0f)
+            fade = 0.0f;
+        fx = func_00282C48(d[0]) / ctr[0] * -5.0f + 5.5f;
+        if (fx > 1.0f)
+            fx = 1.0f;
+        else if (fx < 0.0f)
+            fx = 0.0f;
+        fy = func_00282C48(d[1]) / ctr[1] * -5.0f + 5.5f;
+        if (fy > 1.0f)
+            fy = 1.0f;
+        else if (fy < 0.0f)
+            fy = 0.0f;
+        fade *= fx * fy * D_L08_001B9E00.intensity;
+        rgba = (func_00283CF0(fade * D_L08_001B9E00.alpha[i]) << 24) | (D_L08_001B9E00.color[i] & 0xFFFFFF);
+        size = func_00283CF0(*base_size * D_L08_001B9E00.scale[i]);
+        func_002FC560(0x42, 0x8000000048LL);
+        half = size >> 1;
+        x = func_00283CF0(at[0] - half);
+        y = func_00283CF0(at[1] - half);
+        func_0027E018(x, y, size, size, 0, 0, 0x40, 0x40, rgba, tex);
+    }
+    D_L08_001B9E00.intensity = 0.0f;
+}
+
 
 INCLUDE_ASM("asm/levels", func_L08_0040E9B8);
 
@@ -240,7 +419,53 @@ INCLUDE_ASM("asm/levels", func_L08_0040FAE8);
 
 INCLUDE_ASM("asm/levels", func_L08_0041D808);
 
-INCLUDE_ASM("asm/levels", func_L08_00422190);
+extern void func_00283098(void *, void *, void *);
+extern void func_00282F20(void *, void *, float);
+extern int func_00283CF0(float);
+extern char *func_002BAA28(void *, void *, void *, int, int, int, int, int, int);
+extern int func_001163B0(void);
+extern float func_00283180(float);
+extern float func_00283198(float);
+extern void func_00282CC0(void *, void *, void *);
+
+void func_L08_00422190(char *m, void *position, int count,
+                      float speed, float rise, float maxRadius, float minRadius,
+                      float size, float endSize)
+{
+    float offset[4], velocity[4], accel[4];
+    int a, b, c;
+    char *particle;
+
+    {
+        int i;
+        for (i = 0; i < count; i++) {
+            float x, y;
+            x = func_00283180(func_002A7878(-3.1415927410125732f, 3.1415927410125732f));
+            offset[0] = x * func_002A7878(minRadius, maxRadius);
+            y = func_00283198(func_002A7878(-3.1415927410125732f, 3.1415927410125732f));
+            y *= func_002A7878(minRadius, maxRadius);
+            offset[1] = y;
+            offset[2] = 0;
+            func_00283098(offset, offset, m + 0xC0);
+            {
+                float range = speed * ((maxRadius - func_00282DF0(offset)) * 0.01666666753590107f) / maxRadius;
+                func_00282F20(velocity, offset, func_002A7878(range * 0.25f, range));
+            }
+            velocity[2] += func_002A7878(rise * 0.25f, rise) * 0.01666666753590107f;
+            qzero_nc(accel);
+            func_00282CC0(offset, offset, position);
+            velocity[3] = size;
+            accel[3] = endSize;
+            a = func_00283CF0(func_002A7878(15.0f, 25.0f));
+            b = func_00283CF0(func_002A7878(20.0f, 40.0f));
+            c = func_00283CF0(func_002A7878(30.0f, 60.0f));
+            particle = func_002BAA28(offset, velocity, accel, 0x50204050, 0x7F7F7F, a, b, c, -1);
+            if (particle && (func_001163B0() & 1))
+                particle[3] = 0x48;
+        }
+    }
+}
+
 
 extern f32 func_002A7940(void);
 extern s32 func_002A7820(s32, s32);
@@ -332,7 +557,7 @@ void func_L08_00422EE0(Ent *a0)
     func_L08_00422B98(a0);
 }
 
-INCLUDE_ASM("asm/levels", func_L08_00423010);
+/* func_L08_00423010 is in its own unit. */
 
 INCLUDE_ASM("asm/levels", func_L08_004233E0);
 

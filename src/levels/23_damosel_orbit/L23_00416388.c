@@ -103,7 +103,7 @@ INCLUDE_ASM("asm/levels", func_L23_004190C8);
 
 /* func_L23_004196B8 is matched in L23_004196B8.c (built with -frac2-qcopy -frac2-qcopy-barrier). */
 
-INCLUDE_ASM("asm/levels", func_L23_00419970);
+/* func_L23_00419970 is matched in L23_00416388-scan.c. */
 
 /* One when exactly one bit of the mask is set and the shared predicate rejects its index. */
 s32 func_L23_00419CE0(u64 arg0) {

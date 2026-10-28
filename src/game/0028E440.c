@@ -225,7 +225,36 @@ void func_0028F078(int a0, int a1, int a2, int a3, int a4, int a5, unsigned int 
     ref_L00_001B2608_00 = (int *)((char *)ref_L00_001B2608_00 + 0x50);
 }
 
-INCLUDE_ASM("asm/game", func_0028F278);
+/* alpha is copied before a9 is reused for the texture height: retail loads the
+   stack argument at the top and sign-extends it in place for the colour word.
+   With a9 used only there, combine folds the load into the extension behind the
+   header stores, and the colour loses $v1 to the cursor reloads. */
+void func_0028F278(long long a0, int a1, int a2, int a3, int a4, int a5, int a6, int a7, int a8, int a9)
+{
+    int *p;
+    char *q;
+    int alpha = a9;
+
+    a9 = 1 << (a4 + 4);
+    *(int *)ref_L00_001B2608_00 = 0x10000005;
+    *(int *)((char *)ref_L00_001B2608_00 + 4) = 0;
+    *(int *)((char *)ref_L00_001B2608_00 + 8) = 0;
+    *(int *)((char *)ref_L00_001B2608_00 + 12) = 0x50000005;
+    p = ref_L00_001B2608_00;
+    ref_L00_001B2608_00 = p + 4;
+    q = (char *)ref_L00_001B2608_00;
+    *(long long *)(p + 4) = 0x7400000000008001LL;
+    *(long long *)(q + 8) = 0x05353106;
+    *(long long *)(q + 16) = a0;
+    *(long long *)(q + 24) = 0x156;
+    *(long long *)(q + 32) = ((long long)alpha << 24) | 0x7F7F7F;
+    *(long long *)(q + 40) = a7 | ((long long)a8 << 16);
+    *(long long *)(q + 48) = (a1 + D_001A7350 - 8) | ((long long)(a2 + D_001A7354 - 8) << 16) | ((long long)ref_L00_001B1BBC_01 << 32);
+    *(long long *)(q + 56) = (a7 + (1 << (a3 + 4))) | ((long long)(a8 + a9) << 16);
+    *(long long *)(q + 64) = (a1 + a5 + D_001A7350 - 8) | ((long long)(a2 + a6 + D_001A7354 - 8) << 16) | ((long long)ref_L00_001B1BBC_01 << 32);
+    *(long long *)(q + 72) = 0;
+    ref_L00_001B2608_00 = (int *)((char *)ref_L00_001B2608_00 + 0x50);
+}
 
 
 

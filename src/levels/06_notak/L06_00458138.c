@@ -1,5 +1,43 @@
 #include "common.h"
 
+extern float func_00283B98(float, float);
+typedef struct NotakChild {
+    char pad[0x20];
+    unsigned char state;
+    char pad21[15];
+    unsigned int alpha : 8;
+    unsigned int mode : 8;
+    unsigned int flags : 16;
+} NotakChild;
+extern char *func_0029EFD0(int);
+extern void func_002A0F48(char *);
+extern void func_003514C8(void *, int, void *);
+
+extern void func_002B0A68(char *, int, void *, int, float, float, float, float);
+typedef unsigned int NotakQuad __attribute__((mode(TI)));
+extern char D_00188660[];
+extern char D_00189EA0[];
+/* Keep this absolute address as one assembler macro under -G0. */
+extern char D_L06_001A8F20[] __attribute__((sda));
+extern void func_002A8598(int, int);
+extern void func_002E59F8(int);
+extern int func_002A7820(int, int);
+extern int func_00282948(void *);
+extern float func_00282E80(void *, void *);
+extern void func_L06_0045C6D0(char *);
+extern void *func_0032C700(void *, int, int, int, int, int, int, int,
+                            float, float, int, int, int, int);
+
+extern char D_L06_001B9840[];
+extern void func_00282CF0(float *, const float *, const float *);
+extern void func_00282F20(char *, char *, float);
+extern int func_002A77E0(int);
+extern void func_002ACEC0(void *, void *, void *, float);
+extern void func_00282CC0(void *, void *, void *);
+extern char *func_002C2210(void *, int, float, float, unsigned int, int, int, void *, int, float);
+extern int func_00283CF0(float);
+
+
 extern char *D_L06_001B9890[];
 
 extern char *func_00270280(int);
@@ -67,7 +105,31 @@ extern int func_003A0948(int, int, char *);
 
 extern void func_00350388(char *);
 
-INCLUDE_ASM("asm/levels", func_L06_00458138);
+extern void func_00283098(void *, void *, void *);
+extern double func_001234F0(float);
+extern void func_0026FEB8(char *, ...);
+extern char D_L06_001B18E0[];
+extern void func_L00_003263D0(char *, void *, int, float, int, void *, float, unsigned int, float, float, int);
+void func_L06_00458138(char *a0) {
+    float pos[4], vel[4];
+    int count = 13, i;
+    if (D_L06_001B234C < 0.9f && D_001B2350 < 0.9f) count = 40;
+    for (i = 0; i < count; i++) {
+        pos[0] = func_002A7878(-8.045f, 8.045f);
+        pos[1] = func_00282C48(pos[0] * 0.1243008077f) * 1.745f;
+        pos[2] = func_002A7878(0.0f, 3.99f);
+        vel[0] = pos[0] * 0.0041433605f;
+        vel[1] = -0.13333334f;
+        vel[2] = func_002A7878(3.0f, 7.0f) * 0.0166666675f;
+        func_00283098(pos, pos, a0 + 0xC0);
+        func_00282CC0(pos, pos, a0 + 0x10);
+        func_00283098(vel, vel, a0 + 0xC0);
+        func_0026FEB8(D_L06_001B18E0, func_001234F0(pos[0]), func_001234F0(pos[1]), func_001234F0(pos[2]), func_001234F0(vel[0]), func_001234F0(vel[1]), func_001234F0(vel[2]));
+        func_L00_003263D0(a0, pos, 1, 0.0f, 1, vel, 3.0f, 0x50808040, 1.0f, 5.5f, 0);
+        func_003A0948(0, 0, a0);
+    }
+    func_00350388(a0);
+}
 
 extern char *func_0029EFD0(int);
 extern float func_00283B98(float, float);
@@ -121,8 +183,6 @@ char *func_L06_004583A8(char *a0)
     return obj;
 }
 
-INCLUDE_ASM("asm/levels", func_L06_00458568);
-
 INCLUDE_ASM("asm/levels", func_L06_004587E8);
 
 
@@ -132,7 +192,39 @@ INCLUDE_ASM("asm/levels", func_L06_00459020);
 
 INCLUDE_ASM("asm/levels", func_L06_00459620);
 
-INCLUDE_ASM("asm/levels", func_L06_00459828);
+/* Emits paired particles with opposite spin and randomized velocities. */
+void func_L06_00459828(float *pos, int count) {
+    float velocity[4], origin[4], direction[4], axis[4], offset[4];
+    float size, angle;
+    int i;
+    int sign;
+    char *particle;
+    func_00282CF0(direction, (float *)D_L06_001B9840, pos);
+    func_00282F20((char *)offset, (char *)direction, 0.3f);
+    direction[2] = 0;
+    axis[0] = 0;
+    axis[1] = 0;
+    axis[2] = 1.0f;
+    axis[3] = 1.0f;
+    for (i = 0; i < count; i++) {
+        size = func_002A7878(0.5f, 2.0f);
+        sign = func_002A77E0(2);
+        if (!sign) sign--;
+        angle = func_002A7878(-1.0471977f, 1.0471977f);
+        func_002ACEC0(velocity, direction, axis, angle);
+        func_00282F20((char *)velocity, (char *)velocity, func_002A7878(0.05f, 3.0f) * 0.0166666675f);
+        velocity[2] = func_002A7878(1.0f, 5.0f) * 0.0166666675f;
+        func_00282CC0(origin, pos, offset);
+        pos[0] += func_002A78D8(0, 0.15f);
+        pos[1] += func_002A78D8(0, 0.15f);
+        pos[2] += func_002A78D8(0, 0.15f);
+        particle = func_002C2210(origin, 60, size * 0.1f, size, 0x7F801010, 0, sign, velocity, 0, 0.002f);
+        if (particle) particle[9] = func_00283CF0(4.0f) + 0x70;
+        particle = func_002C2210(origin, 60, size * 0.07f, size * 0.7f, 0x7F7F7F7F, 1, -sign, velocity, 0, 0.002f);
+        if (particle) particle[9] = func_00283CF0(4.0f) + 0x70;
+    }
+}
+
 
 extern float func_0032D788(void *, void *);
 
@@ -385,13 +477,70 @@ void func_L06_0045C350(unsigned char *a0)
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L06_0045C3E8);
-
-INCLUDE_ASM("asm/levels", func_L06_0045C6D0);
+void func_L06_0045C3E8(char *a0)
+{
+    char *state = *(char **)(a0 + 0x68);
+    char *hit;
+    float pos[4];
+    *(unsigned char *)(a0 + 0x23) = 0x80;
+    if (!state) {
+        return;
+    }
+    hit = (char *)func_0035CBA0(a0, 0x4010000, 0);
+    if (hit && *(short *)(*(char **)(hit + 0x20) + 0xAA) != 0xFE5) {
+        if (*(unsigned char *)(a0 + 0x20) == 1) {
+            func_002A8598(*(unsigned char *)(a0 + 0x21), 0);
+        }
+        func_003A0948(1, 0, a0);
+        *(NotakQuad *)pos = 0;
+        pos[2] = 1.0f;
+        func_00282CC0(pos, pos, a0 + 0x10);
+        func_0032C700(pos, 1, 25, 20, 20, 20, 45, 1, 1.25f, 20.0f, 1, 1, 0, 0);
+        func_002B0A68(a0, 0x7F, D_L06_001A8F20, 0xFF, 3.0f, 6.0f, 3.0f, 6.0f);
+        func_L00_00326110(a0, 1, 0.0f);
+        func_00350388(a0);
+    }
+    switch (*(unsigned char *)(a0 + 0x20)) {
+    case 0:
+        *(unsigned char *)(a0 + 0x23) = 0x80;
+        *(int *)state = func_002A7820(40, 250);
+        a0[0x20] = 2;
+        *(int *)(state + 8) = -1;
+        break;
+    case 1:
+        if (func_00282E80(a0 + 0x10, D_00189EA0) < 32.0f) {
+            func_L06_0045C6D0(a0);
+        }
+        if (func_00282948(state + 4)) {
+            *(int *)state = func_002A7820(200, 250);
+            if (*(int *)(state + 8) != -1) {
+                char *snd = D_00188660 + *(int *)(state + 8) * 0x70;
+                if (*(char **)(snd + 0x88) == a0 && *(unsigned char *)(snd + 0x74)) {
+                    func_002E59F8(*(int *)(state + 8));
+                }
+            }
+            *(int *)(state + 8) = -1;
+            a0[0x20] = 2;
+            func_002A8598(*(unsigned char *)(a0 + 0x21), 0);
+        }
+        break;
+    case 2:
+        if (func_00282948(state) && *(unsigned char *)(a0 + 0xBC) == 0) {
+            char *snd;
+            *(int *)(state + 4) = func_002A7820(200, 250);
+            snd = D_00188660 + *(int *)(state + 8) * 0x70;
+            if (*(char **)(snd + 0x88) != a0 || !*(unsigned char *)(snd + 0x74)) {
+                *(int *)(state + 8) = func_003A0948(0, 4, a0);
+            }
+            a0[0x20] = 1;
+            func_002A8598(*(unsigned char *)(a0 + 0x21), 1);
+        }
+        break;
+    }
+    *(unsigned char *)(a0 + 0xA8) = 0xFF;
+}
 
 INCLUDE_ASM("asm/levels", func_L06_004621C8);
-
-INCLUDE_ASM("asm/levels", func_L06_004635E8);
 
 INCLUDE_ASM("asm/levels", func_L06_00464900);
 

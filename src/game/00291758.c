@@ -1,5 +1,10 @@
 #include "include_asm.h"
 
+
+extern void func_00294130(int *, int);
+
+extern void func_00292B88(void *, void *, int, int, int, int, int);
+
 extern void func_00291788(int);
 
 extern void func_00291640(int);
@@ -83,6 +88,10 @@ void func_00291788(int index)
 INCLUDE_ASM("asm/game", func_00291850);
 
 
+/* Texture ranges: the particle renderer (func_002B9420) hands this table to
+   the toSPR DMA channel; C only ever writes it. */
+typedef struct { int a, b; } TextureRange;
+
 INCLUDE_ASM("asm/game", func_00291CA8);
 
 /* func_00291DE0 is matched in its own unit, 00291DE0.c. */
@@ -113,7 +122,7 @@ INCLUDE_ASM("asm/game", func_00292408);
 
 INCLUDE_ASM("asm/game", func_002926B8);
 
-INCLUDE_ASM("asm/game", func_00292888);
+/* func_00292888 is in 00292888-g8.c. */
 
 
 INCLUDE_ASM("asm/game", func_00292B88);
@@ -190,6 +199,7 @@ void func_00293260(int *a0, int a1){
 
 
 INCLUDE_ASM("asm/game", func_002933D0);
+
 
 void func_002934B8(u8 *a0, u8 *a1) {
     *(u8 *)(a0 + 4) = *(u8 *)(a1 + 0);

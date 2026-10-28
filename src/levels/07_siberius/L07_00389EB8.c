@@ -8,7 +8,7 @@ INCLUDE_ASM("asm/levels", func_L07_003E4BD0);
 
 INCLUDE_ASM("asm/levels", func_L07_003E5070);
 
-INCLUDE_ASM("asm/levels", func_L07_003E5198);
+/* func_L07_003E5198 is in L07_003E5198-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L07_003E56B8);
 
@@ -104,7 +104,7 @@ void func_L07_003E6148(char *arg)
 
 INCLUDE_ASM("asm/levels", func_L07_003E61E0);
 
-INCLUDE_ASM("asm/levels", func_L07_003E69B8);
+/* func_L07_003E69B8 is in L07_003E69B8-g8.c. */
 
 /* func_L07_003E6E00 is in the sibling file L07_00389EB8-qcopy.c: its body
    copies a 16-byte vector, which needs the grouped-copy profile. */
@@ -193,9 +193,9 @@ void func_L07_003E7380(char *arg, int a1, int a2, int a3, int a4)
     func_L07_002E2090(arg, a1, a2, arg + 0xF0, r, a3, a4);
 }
 
-INCLUDE_ASM("asm/levels", func_L07_003EA900);
+/* func_L07_003EA900 is in L07_003EA900-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L07_003EB2C0);
+/* func_L07_003EB2C0 is in L07_003EB2C0-g8.c. */
 
 extern void func_00282948(char *);
 

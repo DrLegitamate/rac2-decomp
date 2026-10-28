@@ -1,4 +1,19 @@
 #include "include_asm.h"
+#include "common.h"
+
+extern long long func_0027C878(char *p);
+
+extern float func_00283248(float x, float y);
+
+extern float func_00282E80(char *p, float *v);
+
+extern void func_00283410(float *matrix, float *quat);
+
+extern void func_00282CF0(float *off, float *v, char *p);
+
+extern void func_00280B90(char *pkt, float *matrix, int mode);
+
+typedef struct { char pad[0x2290]; char *object; } EffectContext;
 
 #define RAC2_T_VEC16_FC936841D
 
@@ -15,10 +30,6 @@ typedef struct {
     float z;
     float w;
 } Vec16_Fc936841d;
-
-typedef unsigned char u8;
-
-typedef int s32;
 
 typedef struct {
     u8 field00[0x14];
@@ -113,7 +124,7 @@ extern void func_00280B90(char *pkt, float *matrix, int mode);
 
 INCLUDE_ASM("asm/game", func_00327038);
 
-INCLUDE_ASM("asm/game", func_00327380);
+/* func_00327380 is in 00327038-ground-g8.c. */
 
 
 /* func_00327A60 uses small data in 00327038-g8.c. */
@@ -122,10 +133,10 @@ INCLUDE_ASM("asm/game", func_00327B40);
 
 /* func_00327D08 is matched in 00327038-g8.c (-G8 small data). */
 
-INCLUDE_ASM("asm/game", func_00327D50);
+/* func_00327D50 is in 00327038-ring-g8.c. */
 
 
-INCLUDE_ASM("asm/game", func_003281F0);
+/* func_003281F0 is in 003281F0-g8.c. */
 
 /* func_003285C0 is matched in its own unit, src/game/003285C0-qcopy.c (-frac2-qcopy -frac2-qcopy-barrier). */
 
@@ -567,18 +578,6 @@ void func_0032B378(char *p, float scale)
     F2c74c194_FUN_00282D30(p + 48, p + 48, scale);
 }
 
-extern long long func_0027C878(char *p);
-
-extern float func_00283248(float x, float y);
-
-extern float func_00282E80(char *p, float *v);
-
-extern void func_00283410(float *matrix, float *quat);
-
-extern void func_00282CF0(float *off, float *v, char *p);
-
-extern void func_00280B90(char *pkt, float *matrix, int mode);
-
 /* Builds a 144-byte packet, aims a quaternion at the shared 0x001B5200 vector from pos through three float helpers, derives an offset basis by a fourth, writes the last matrix row from pos plus that offset, then dispatches the packet. */
 void func_0032B3E0(char *pos, int a1, int a2, char *a3, int t0,
                    float f12, float f13, float f14)
@@ -664,7 +663,7 @@ void func_00328F18(char *pos, int a1, int a2, char *a3, int t0,
 
 /* func_0032B598 is in 0032B598-qcopy.c. */
 
-INCLUDE_ASM("asm/game", func_0032B7D0);
+/* func_0032B7D0 is in 0032B7D0-qcopy.c. */
 
 
 /* func_0032BBF0 is defined in 00316BC8-qcopy.c. */
@@ -677,7 +676,7 @@ void func_0032BDC8(Vec16_Fc936841d *object, int index)
     Fc936841d_FUN_00282CC0((char *)&object[index - 1], (char *)&object[index - 2], local);
 }
 
-INCLUDE_ASM("asm/game", func_0032BE30);
+/* func_0032BE30 is defined in 0032BE30-beam.c. */
 
 INCLUDE_ASM("asm/game", func_0032C2E8);
 
@@ -703,9 +702,9 @@ s32 func_0032D700(void *object) {
 INCLUDE_ASM("asm/game", func_0032D758);
 
 
-INCLUDE_ASM("asm/game", func_0032DA58);
+/* func_0032DA58 is in 0032DA58-g8.c. */
 
-INCLUDE_ASM("asm/game", func_0032DD40);
+/* func_0032DD40 is in 0032DD40-g8.c. */
 
 
 /* func_0032E4F0 uses small data in 00327038-g8.c. */
