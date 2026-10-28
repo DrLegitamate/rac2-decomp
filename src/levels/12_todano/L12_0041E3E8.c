@@ -89,7 +89,7 @@ s32 func_L12_00425070(u8 *object)
     return *(s32 *)(state + 0x2B0);
 }
 
-INCLUDE_ASM("asm/levels", func_L12_00425178);
+/* func_L12_00425178 is defined in L12_00425178-g8.c. */
 
 extern s32 *D_L12_001FEAC0[];
 extern char D_00189EA0[];
