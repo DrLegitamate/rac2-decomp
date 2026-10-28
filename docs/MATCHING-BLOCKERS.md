@@ -1905,6 +1905,12 @@ through Q, waits for the result, and transfers it back with `qmfc2`. No C
 attempt is useful under this compiler; leave its marker pending maintainer
 agreement for `ASM_FUNC`.
 
+`func_00282F70` is a 72-byte VU0 vector-scaling helper at all 28 placements.
+It loads an xy vector, forms its squared length, computes a reciprocal square
+root with `vrsqrt`, waits for Q, scales with `vmulq`, and stores with `sqc2`;
+the zero path also uses VU0. The qualified compiler has no C route for this
+body. Keep its marker pending maintainer agreement for `ASM_FUNC`.
+
 `func_00282E80` is the related 48-byte xy-distance helper at all 28
 placements. It subtracts two vectors, squares and sums xy, computes `vsqrt`
 through Q and returns the scalar result through `qmfc2`; its VU0 body likewise
