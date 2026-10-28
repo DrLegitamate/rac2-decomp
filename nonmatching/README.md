@@ -2066,6 +2066,8 @@ the placement rules are in `tools/fcheck.py`'s docstring; its tests are
 | [`func_L13_00409EE8`](levels/func_L13_00409EE8.c) | 440 | 440/440 bytes; The state, loop counter, position and velocity pointers are allocated differently. Shortening the initial position lifetime restores the retail frame size; subsequent scope changes tie. The collision helper really returns 0 or 1. Reopen with allocation evidence. No strict linked build. |
 | [`func_L13_0041AB30`](levels/func_L13_0041AB30.c) | 460 | Game -O2 -G8 -ffunction-sections -frac2-qcopy -g emits 464/460 bytes. US, PAL and US2 each fail 0/2 places; all canonical rows are present. Destination-base hoisting creates an extra saved register. Reopen with pointer-lifetime and allocator evidence. No strict build. |
 
-- `func_L14_00426F28`: 740/744 bytes at game `-O2 -G0`; remainder guard ordering, counter update and FP allocation differ. Retained measured SDATA and typed sound views; next test is faithful G8 scheduling.
+- `func_L14_00426F28`: historical 740/744-byte G0 draft, superseded by the matching `L14_00426F28-g8.c` source. G8 scheduling, the actual float helper return and widened unsigned postincrement resolve the differences.
 
 - `func_0033C738`: 636/640 bytes, 0/28 USA places at game `-O2 -G0`; correct unaligned table-copy widths, different colour/format allocation and final index form.
+
+- `func_L04_00400AB0`: 648/664 bytes, 0/2 USA places at game `-O2 -G0`; both nearest-point loops match, route-table base motion and pointer allocation differ.

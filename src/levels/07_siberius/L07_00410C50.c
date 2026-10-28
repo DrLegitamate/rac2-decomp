@@ -9,7 +9,7 @@ extern float func_002A89A8(void *, int, float);
 extern void func_002A7750(void *, int, int);
 extern void *func_002A9640(void *, int, int);
 extern void func_L01_0031A278(void *, void *, float, float, float);
-extern void func_002A8C28(void *, void *, int, int, int, int, float, float, float);
+extern int func_002A8C28(void *, void *, int, int, int, int, float, float, float);
 extern int func_002E5CF8(int, int, void *);
 extern void func_002B0A68(void *, int, void *, float, float, float, float, int);
 extern void func_0029F338(void *);

@@ -1,3 +1,7 @@
+/* Historical G0 attempt, superseded by the matching G8 source in
+ * src/levels/14_aranos_prison/L14_00426F28-g8.c. Retained only to explain
+ * the scheduling and source-type differences documented below.
+ */
 /* USA v1.01 game -O2 -G0: 740/744 bytes. The signed remainder guard
  * precedes div rather than following it; counter update is one word shorter.
  * FP result preservation and the final comparison register also differ.
