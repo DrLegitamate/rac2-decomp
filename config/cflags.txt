@@ -1477,3 +1477,4 @@ src/levels/07_siberius/L07_00410C50.c	-O2 -G0 -ffunction-sections -frac2-zero-ti
 src/levels/shared/L04_0046CE68.c	-O2 -G0 -ffunction-sections -frac2-zero-ti-por
 
 src/levels/shared/L05_00445C38-g8.c	-O2 -G8 -ffunction-sections -g
+src/levels/shared/L04_00456860.c	-O2 -G0 -ffunction-sections -frac2-zero-ti-por -fno-gcse
