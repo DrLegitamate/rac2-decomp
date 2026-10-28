@@ -152,7 +152,7 @@ Current matched coverage (the three reports from validated builds):
 
 | Version | Release | Functions | Boot code | Level code | Total code |
 | --- | --- | ---: | ---: | ---: | ---: |
-| `SCUS_972.68` | USA v1.01 | 5,623 of 8,584 | 518,316 of 1,044,872 | 1,970,604 of 4,481,044 | 2,488,920 of 5,525,916 (45.04%) |
+| `SCUS_972.68` | USA v1.01 | 6,219 of 8,578 | 610,780 of 1,044,736 | 2,397,748 of 4,481,044 | 3,008,528 of 5,525,780 (54.45%) |
 | `SCES_516.07` | Europe/Australia v1.00 | 4,412 of 8,677 | 388,736 of 1,055,340 | 467,780 of 4,649,340 | 856,516 of 5,704,680 (15.01%) |
 | `SCUS_972.68_v2` | USA v2.00 (Greatest Hits) | 5,304 of 8,639 | 465,284 of 1,048,840 | 853,296 of 4,531,496 | 1,318,580 of 5,580,336 (23.63%) |
 
