@@ -209,7 +209,6 @@ void func_L23_0041B668(char *arg0, float *arg1) {
 
 INCLUDE_ASM("asm/levels", func_L23_0041B9F0);
 
-INCLUDE_ASM("asm/levels", func_L23_0041C0E8);
 
 /* func_L23_0041C578 is defined in L23_00416388-g8.c (it reads $gp data). */
 

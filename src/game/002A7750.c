@@ -307,7 +307,7 @@ float func_002A7E08(struct family_27f9_object *object, float *target, float *val
 /* func_002A7EA0 is in 002A7EA0.c. */
 
 
-INCLUDE_ASM("asm/game", func_002A8240);
+/* func_002A8240 is defined in 002A8240.c. */
 
 
 extern unsigned short *D_001EE5A0[];

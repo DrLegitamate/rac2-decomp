@@ -1,18 +1,8 @@
-/* func_L00_00300438 - 468 bytes.  Worker attempt, 27 October 2026 (draft below).
-
-   Replaces the marker in src/levels/shared/L00_002FC7A0.c (default flags).
-   Semantics decoded: collect (float)e[1],(float)e[0] pairs (e[0]!=0, stride
-   0x20) into an 8-byte pair array on the stack, turn b[] into scaled deltas
-   (1/1024), last b = (limit-b)/1024, bubble sort descending on b swapping
-   pairs, then func_0026FEB8(D_001A95A0, func_00283CF0(a), func_001234F0(b))
-   per element.
-   460 vs 468 B. First loop now matches (do/while(--count)). Remaining:
-   register naming only plus 2 extra copies: retail n=$t1, last=$a1 (copy $t3,
-   copy $t5 for the later loops), stack base $t4, outer index $a0 (caller-
-   saved); mine n=$t3, base $t2, index $s1 (callee-saved, extra save/restore
-   -> 8 B smaller). Retail also computes last=n-1 before the mtc1 of limit.
-   Tried: last as separate var vs reusing count, hoisted float local for
-   limit. */
+/* Retained reconstruction, USA v1.01.
+ * 444/468 bytes with game -O2 -G0. The float-to-double helper now has its actual double return and the formatter remains variadic. Scalar pair swaps restore the 0x1030 frame; the prior aggregate swap needed an extra 16 stack bytes. Remaining differences are loop copies, induction and allocation; the truthful prototype alone does not match.
+ * No strict linked match.
+ */
+#include "common.h"
 
 typedef struct {
     float a;
@@ -21,7 +11,7 @@ typedef struct {
 
 extern char D_001A95A0[];
 extern int func_00283CF0(float);
-extern int func_001234F0(float);
+extern double func_001234F0(float);
 extern void func_0026FEB8(const char *, ...);
 
 void func_L00_00300438(int *entries, int count, int limit) {
@@ -29,6 +19,7 @@ void func_L00_00300438(int *entries, int count, int limit) {
     int n = 0;
     int i, j, sorted;
     float fl;
+    int remaining;
 
     if (count > 0) {
         do {
@@ -49,13 +40,16 @@ void func_L00_00300438(int *entries, int count, int limit) {
         sorted = 1;
         for (j = 0; j < count; j++) {
             if (s[j].b < s[j + 1].b) {
-                F300438Pair t = s[j];
-                s[j] = s[j + 1];
-                s[j + 1] = t;
+                float a = s[j].a;
+                float b = s[j].b;
+                s[j].a = s[j + 1].a;
+                s[j].b = s[j + 1].b;
+                s[j + 1].a = a;
+                s[j + 1].b = b;
                 sorted = 0;
             }
         }
     } while (!sorted);
-    for (i = 0; i < n; i++)
-        func_0026FEB8(D_001A95A0, func_00283CF0(s[i].a), func_001234F0(s[i].b));
+    for (remaining = 0; remaining < n; remaining++)
+        func_0026FEB8(D_001A95A0, func_00283CF0(s[remaining].a), func_001234F0(s[remaining].b));
 }

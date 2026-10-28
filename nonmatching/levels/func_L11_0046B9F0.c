@@ -1,3 +1,14 @@
+/* Current retained result, 28 October 2026: 536/536 bytes; first mismatch remains +0x144.
+ * Adding -fno-gcse to the retained G8 copy/barrier profile ties the prior result. Reopen with a
+ * measured pointer-lifetime or tail-induction witness. No strict match. Older diagnostic notes
+ * below are historical and do not rule out C. */
+
+/* Retained readable C; not matching and no exact-C credit.
+ * 2026-10-28 profile: -O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -fno-gcse.
+ * 536/536 bytes; first mismatch remains +0x144. The new -fno-gcse witness from func_L04_00456860 was tested against the retained source and tied the previous result. The existing tail-induction reopening condition remains applicable.
+ * US object comparison only in this retry; no linked strict-build claim.
+ * Reopen with a measured allocation, scheduling or source-interface witness.
+ */
 /* Retained readable reconstruction; NOT MATCHING and no exact-C credit.
  * Profile: -O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
  * Fresh local measure: 536/536 bytes; 0/2 USA v1.01 placements; first mismatch +0x144.

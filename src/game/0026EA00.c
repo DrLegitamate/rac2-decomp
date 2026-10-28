@@ -849,4 +849,4 @@ int func_00273D10(char *obj)
     return 0;
 }
 
-INCLUDE_ASM("asm/game", func_00273E98);
+/* func_00273E98 is defined in 00273E98.c. */

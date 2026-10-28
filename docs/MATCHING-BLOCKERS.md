@@ -422,6 +422,12 @@ program builds; the placement count does not multiply distinct-function credit.
 
 **A second form of the class stays a wall:** on `func_L02_00411530` the missing `nop` is a **cop1 latency fill between `mtc1` and `sub.s`**, and retail places the join label *before* it while cc1 glues the nop to the reload. Twenty-nine source variants tested, none moves the label.
 
+`func_00282848`'s corrected 16-byte body is another instance of the first
+form: `lwc1 $f0,-0x76E4($gp) ; nop ; jr $ra ; mul.s $f0,$f0,$f12`. Its C
+candidate has the same 12-byte missing-nop result as the previously measured
+`func_L00_002EDCB8` family; the catalogue prefix correction does not change
+that compiler blocker.
+
 <a id="blocker-05"></a>
 
 ## 5. `nop nop` before `div.s`
@@ -562,6 +568,14 @@ Integer BEQL/BNEL execute the slot on taken paths and annul it on non-taken path
 The historical sample is retained: 47 of 240 notes mentioned gp/sda/G8; one 23-target survey used 11 plain-G0, six G0+sda and six G8 units. Those counts are not a selection algorithm. Inspect relocations and retail accesses. GP is 0x001AEFF0 in boot and levels; a small-data declaration needs a known eligible size.
 
 **Current witnesses:** func_L05_0030C930, formerly listed as unresolved, is C, as are func_L05_00444D60, func_L00_00427290 and func_L00_002E73E0. PR #246's func_L20_00444138 passes 1/1 in its dedicated G8/mno-split-addresses unit with separate sda/nosda declarations for one measured bound.
+
+**28 October 2026, retained near miss:** `func_002CC528` is 40 bytes in its
+`-G0` unit. The saved candidate and two source-shape variants (declaration
+order and direct conditional store) retain the same allocation: retail's
+`movn` selects in `$a1` using `$v1`, while the candidate selects in `$v1`
+using `$a1`, then stores `$v1` instead of `$a1`. A dedicated `-G8` replay is
+32/40 bytes. `tools/check.py func_002CC528 --diff` reports 0/28 placements
+for these attempts; the C remains in `nonmatching/game/func_002CC528.c`.
 
 Two documented names may express different addressing forms of one real global. They must derive the same true identity; malformed names, invented addresses or aliases hiding inconsistent bindings are not remedies. PR #244's review corrected such naming defects. Use ref_LNN_XXXXXXXX_kk where a target's identity genuinely varies by placement, not as a substitute for a known correct data name.
 
@@ -1477,6 +1491,11 @@ Use `rabbitizer.Instruction(word, address, rabbitizer.InstrCategory.R5900).disas
 - **The tree-level fold merges `pi + pi`** into one 2¤Ç constant, where retail doubles ¤Ç at run
   time (`add.s $f1,$f14,$f14`); two separate statements are not folded, so the retail's two
   `add.s` need them.
+- **A float-bit return may need the full R5900-width value.** In `func_002829D8`, retail moves
+  the float bits to a GPR, shifts them into the high word, and compares the signed 64-bit result
+  with 1 before subtracting 2. The -G8 C form using an unsigned 64-bit shift is 76/64 bytes;
+  the union-word form is 100/64. Both match 0/28 USA placements. Do not simplify its first arm
+  to an unconditional -1: positive and nonpositive input bit patterns return different values.
 - **A float's sign bit comes out as `mfc1` plus a sign extension** where retail has `mfc1` plus
   `sra`; the tested union, cast and file-scope forms did not remove it in their recorded profile.
 
@@ -1498,6 +1517,14 @@ These are measured source/ABI effects, not permission to invent barriers or fals
   declaration is preserved. The same prototype constraint affects the retained
   `func_L00_002B9380`; a direction-last declaration cannot be used to obtain a match.
 - A dead-store observation differed between ordinary code and a delay slot in the sample. Reconfirm actual liveness and control flow; do not manufacture a memory effect to preserve it.
+
+**28 October 2026, loop-layout probe:** `func_0029CF78` polls `0x1000D400`.
+In its original `-O2 -G0` source unit, an explicit forward `goto` to the exit
+followed by a `goto` to the loop compiled to a 40-byte conditional-backedge
+loop (0/28 USA placements). cc1 canonicalized the requested branch-plus-jump
+shape, and the three nops remained after the mask instead of between the load
+and mask. Its retained best remains 44/56 bytes; this confirms that this
+particular label spelling does not unblock the loop layout.
 
 <a id="blocker-40"></a>
 
@@ -1930,6 +1957,71 @@ unit it emits only two things:
 Every other MMI word — `pmaxw`, `pminw`, `pcpyld`, `pcpyud`, `pexch`, `pextlw` —
 never comes out of a C body.
 
+`func_002829A8` is a 48-byte example at the boot and all 27 level placements.
+The same body uses `pmaxw $at,$at,$v0` in the `beqz` delay slot and `$at` as
+the byte counter. A behaviorally equivalent C reconstruction, adapted from
+RAC1's functional timer note, compiles to 48 bytes but matches 0/28 placements;
+it replaces the `pmaxw` and branch layout. Keep it in
+`nonmatching/game/func_002829A8.c`; the evidence supports maintainer review,
+not an automatic `ASM_FUNC` classification.
+
+`func_00282DF0` is another reachable example: its identical 48-byte body at
+all 28 placements loads a VU0 vector, squares and sums xyz, computes `vsqrt`
+through Q, waits for the result, and transfers it back with `qmfc2`. No C
+attempt is useful under this compiler; leave its marker pending maintainer
+agreement for `ASM_FUNC`.
+
+`func_00282F70` is a 72-byte VU0 vector-scaling helper at all 28 placements.
+It loads an xy vector, forms its squared length, computes a reciprocal square
+root with `vrsqrt`, waits for Q, scales with `vmulq`, and stores with `sqc2`;
+the zero path also uses VU0. The qualified compiler has no C route for this
+body. Keep its marker pending maintainer agreement for `ASM_FUNC`.
+
+`func_00282E80` is the related 48-byte xy-distance helper at all 28
+placements. It subtracts two vectors, squares and sums xy, computes `vsqrt`
+through Q and returns the scalar result through `qmfc2`; its VU0 body likewise
+has no C route under this compiler. Keep the marker pending maintainer review.
+
+`func_002830C0` is a 48-byte vector-matrix transform at all 28 placements.
+It loads the input and four matrix columns with `lqc2`, accumulates the
+products using `vmulax`/`vmadd*`, and writes the result using `sqc2`. The
+qualified compiler has no C route for its COP2/VU0 body; keep the marker
+pending maintainer review.
+
+`func_00283388` is a 48-byte VU0 helper at all 28 placements. It builds four
+vectors with `vmulx`, `vmr32`, `vmove` and `vaddw`, then stores them using
+`sqc2`. As with the other decoded COP2 bodies, it has no C route under the
+qualified compiler; retain the marker pending maintainer review.
+
+`func_00282E48` is the 56-byte xyz-distance counterpart to `func_00282E80`,
+identical across all 28 placements. It subtracts two vectors, squares and sums
+xyz, computes `vsqrt` through Q, and returns the scalar result with `qmfc2`.
+This body likewise has no C route under the qualified compiler; keep the
+marker pending maintainer review.
+
+`func_002833B8` is a 56-byte VU0 matrix initializer at all 28 placements. It
+moves the scalar input to a VU0 register, forms rows using `vmulx`/`vaddx` and
+`vmove`, and stores four quadwords with `sqc2`. No C route exists under the
+qualified compiler; retain its marker pending maintainer review.
+
+`func_00283D00` is a 56-byte scalar division/remainder helper at all 28
+placements. It uses `vdiv` and Q, converts the quotient through `vftoi0` /
+`vitof0`, and finishes the remainder calculation with VU0 instructions. Its
+body likewise has no C route under the qualified compiler; keep the marker
+pending maintainer review.
+
+`func_002837D0` is a 64-byte vector transform at all 28 placements. It loads
+two vectors, forms componentwise and cross-product terms with
+`vopmula`/`vopmsub`, accumulates a dot-product component, and stores the
+result with `sqc2`. Its COP2/VU0 body has no C route under the qualified
+compiler; retain the marker pending maintainer review.
+
+`func_00283360` is a 40-byte example: its body is identical in the boot and all
+27 levels, and it uses `vmulx.xyzw`, `vmr32.xyzw`, `vaddw.x/y` and `sqc2`.
+There are 151 direct calls to its placements across the 28 programs, confirming
+that these are reachable instructions in a real function. No C attempt is
+appropriate; leave `INCLUDE_ASM` until a maintainer agrees to `ASM_FUNC`.
+
 **The rule that follows, and the traps it avoids:**
 
 * A decoded COP2 instruction on a reachable path from a verified entry is evidence
@@ -2219,6 +2311,8 @@ The qualified GNU opcode table includes the `mult d,s,t` form with `WR_d`. As an
 
 **Decision:** withdraw the unused-multiply/compiler-origin hypothesis for these six bodies. This evidence does not justify `ASM_FUNC` and is not a compiler barrier. The absence of `mflo` alone is insufficient; decode `rd` and follow its uses.
 
+**28 October 2026, retained source control:** `func_L00_0042AC18` now has a complete game `-O2 -G0 -ffunction-sections` attempt in `nonmatching/levels/func_L00_0042AC18.c`. Ordinary C emits both three-operand multiplications; the former screen claiming otherwise is retired. Five trials reach 380/380 bytes but 0/4 placements in each USA release (PAL has no row): sound-record pointer and handle allocation still differ. This is a source-lifetime near miss, with no linked or matching credit.
+
 #### The five catalogue extents have evidence of residual code
 
 | Row | Size | Placements checked | Preceding boot return |
@@ -2471,3 +2565,201 @@ Three retained near misses from this wave (`func_L09_003FE0C0`, `func_L10_004237
   `D_L18_00189E20+0x2294 == 0x6F`) inside each case of its kind switch after checking
   them before the switch. The duplication is in retail, so the retained C has to spell
   it twice; merging it changes the branch layout.
+
+### Particle and effect pointer lifetimes (28 October 2026)
+
+The following are retained C near misses, not linked matches. Measurements use
+the maintained game compiler at this revision, with the profiles stated below.
+Default `qcopy` is used where a grouped transfer needs register addresses;
+no non-clobbering copy, register pin, false call interface or synthetic access is
+part of these attempts.
+
+- `func_002C3B08`: 628/624 bytes in every US placement with the source unit's
+  `-O2 -G0 -ffunction-sections -g` profile. Plain TI transfers reproduce the
+  object-relative stores; default `qcopy` gives 632 bytes. Raw and typed particle
+  layouts tie with object/current/motion in s1/s2/s0 instead of s2/s0/s1 and one
+  repeated collision-argument move. The current callable extent is 624 bytes;
+  the older 632-byte extent measurement above includes its repaired prefix.
+- `func_002C5120`: 716/732 bytes with the same profile. Raw and typed follower
+  state views retain a 0x60 rather than 0x70 frame and a different interpolation
+  schedule. Delaying the velocity pointer's source declaration does not close it.
+- `func_00316400`: 712/708 bytes at `-O2 -G0 -ffunction-sections`. Explicit
+  `MACRO_ADDR` views of both tables reach 708 bytes, but table/parameter allocation
+  and two floating bound-register pairs differ. Explicit bound locals are worse
+  (772 bytes); a typed 0xA0 record view ties.
+- `func_003166C8`: 772/772 bytes with that profile and `MACRO_ADDR` on the vector
+  constant. The first copy address remains live across the angular updates,
+  shifting record/index/position allocation. A plain TI first copy gives 760
+  bytes and folds its store address.
+- `func_L18_0043EA90`: 852/852 bytes in US levels 18 and 20 at
+  `-O2 -G8 -ffunction-sections`, with state/count swapping s0/s1. Diagnostic
+  objects are identical: state has 12 references, live length 99 and 15 call
+  crossings; count has 6, 66 and 9. Declaration order, aligned point storage and
+  a truthful FP-first declaration of the first helper tie. The dynamic frame and
+  unrolled effect sequence already agree.
+- `func_L30_00415090`: 840/840 bytes at `-O2 -G0 -ffunction-sections`; the final
+  outgoing-argument schedule differs from +0x2C8. The actual `func_002B0CE0`
+  returns a status in v0, including 3 on its success path; retaining its integer
+  return closes the earlier pad-load register difference. Pad scalar/array views,
+  color temporaries/regrouping and a truthful FP-last interleaving do not close
+  the argument setup after nine compiles.
+
+Reopen these deposits with evidence about the original pointer lifetimes or
+argument-evaluation schedule, rather than repeating the tied spellings. Only US
+local checks were run for these near misses; other releases and strict linked
+qualification remain unverified.
+
+### Effect helpers reopened with current source methods
+
+The reconnaissance stubs for `func_L11_00456EA0`, `func_L11_00458C38`,
+`func_L05_00445B58` and `func_L05_00445C38` have been replaced by real C in
+the linked source tree. Local checks pass every carrying place in US, US2 and
+PAL, and all 84 strict linked programs pass with these implementations. Their old
+GP/quadword-only screens were not evidence against C. The basis helper's
+three homogeneous zeros use a chained float assignment, retaining `mtc1`
+and the measured `swc1` order without volatile accesses. The Joba burst's
+typed integer/FP interleaving keeps both register banks' actual arguments;
+the nested random expressions retain the observed call order.
+
+The related `func_L05_00427E10` impact reconstruction passes all four US and
+US2 places and is absent from PAL. Its packet has a 16-byte direction,
+attacker, flags, byte kind/mode, halfword class, float damage and enable word, followed by the callee-read float at +0x24.
+The complete request occupies 0x28 bytes; retail leaves its final word unwritten.
+The indexed target-list loop, unlike the equivalent early pointer
+initialization, retains retail's guarded pointer setup and GPR allocation.
+
+The remaining recovered drafts are still near misses, with real C and
+measurements in `nonmatching/`: `func_L11_00456938` (260/268, retreat-branch
+folding and probe-copy placement), `func_L05_00445D60` (560/560, index-view
+and output-pointer allocation), and `func_L05_004276E8` (644/640, constant
+hoisting). `func_L00_00300438` now uses the actual `double` return of
+`func_001234F0` and the variadic formatter. That contract correction does
+not match it: scalar pair swaps restore the retail frame but leave
+444/468 bytes. The discarded aggregate swap needed another 16 stack bytes.
+Do not restore the old false integer return to influence allocation.
+
+`func_L18_00428138` was also withdrawn as a local candidate on 28 October 2026:
+`src/game/002B60B0.c` establishes that its helper returns `void *`, while the
+candidate had incorrectly declared `void`. The corrected retained C is 512/512
+bytes at `-O2 -G8 -ffunction-sections`, but its post-call control `lhu`/`sh` use v1
+instead of retail v0 at +0x14C/+0x16C in all three US and US2 placements. Explicit
+discard, the truthful all-four-FP-first argument view, an explicit SDATA alias and
+`-fno-force-mem` tie; `-fno-schedule-insns` worsens the result. Its marker is
+restored. Reopen with evidence for the post-call halfword value lifetime; a false
+helper return type is not an acceptable match.
+
+### Scalar-SDA table walks and packet construction
+
+PR #357 review also withdraws `func_L01_003EC0C0` and `func_L01_00405300`
+from matching C. Removing the volatile table/index accesses preserves their
+752- and 736-byte sizes, but changes the load and floating-argument schedule
+after interpolation calls (USA first differences +0x1CC and +0x204). A measured
+128-byte pose-record view, separate scalar locals and short-lived record pointers
+tie. The ordinary reconstructions remain in `nonmatching/`; every release fails
+its one local place. Their former byte matches do not justify forced reloads.
+
+The same review removes the `damoselSetState` assembler-name alias. The source
+unit uses one canonical `void func_002A7750(void *, int, int)` declaration;
+`func_L18_00441438` retains its local match with that real interface.
+
+`func_L04_00456860` keeps the isolated `-fno-gcse` profile for a measured reason.
+With GCSE enabled, `m + 0x10` is hoisted into the positive-count loop preheader
+and held in s3: the frame grows from retail's 0x90 to 0xA0 and the body from
+396 to 408 bytes. `-frac2-gcse-unsplit-edges`, `-frac2-keep-block-order` and their
+combination all retain that result. Disabling GCSE preserves the in-loop address
+evaluation and the 396-byte body. This is a per-file choice, not a global setting.
+
+`func_L00_00303418` now has C passing all 27 local places in US, US2 and PAL.
+The previous comment misread the first flag update: `ori` in an unconditional
+branch's delay slot is live. The mixed table-pointer loads use ordinary
+`__attribute__((sda))` declarations with game -G0. They give cc1 a bare scalar
+access; the assembler expands absolute forms in ordinary flow and GP forms in
+branch slots. This preserves the measured duplicated initializer reads without
+inventing volatile accesses. Explicit all-GP or all-absolute views are not the
+same source/profile.
+
+`func_0027DE50` passes all 28 local places in each release. Review of PR #357
+removed the volatile qualifiers and the separate assembler-name write alias:
+one ordinary declaration of the packet cursor preserves the measured reloads
+and stores. Each header has its own pointer lifetime; the two 16-byte templates
+are separate measured objects. The coordinate-offset globals are ordinary
+integer objects too; no forced access is needed for this sequence.
+Coordinate-offset snapshots retain the real load order before the first writer
+reload. Signed halfword assignments preserve the actual 0x8001/0x8004 writes.
+The separate native-only packet draft corroborates the template extents and
+64-bit fifth argument; its functional-table row is retired in favor of the real
+source definition. Both implementations pass every carrying placement and the
+strict linked builds in all three releases.
+
+The former diagnostic-only `func_L05_00441D40` and `func_002FF0D8` screens now
+retain meaningful C in `nonmatching/` with the remaining allocation, address and
+store-order differences. Neither is counted as matching C.
+
+The old diagnostic-only refusal of `func_L09_003F9970` is superseded by qualified
+C (28 October 2026): its four formerly invalid words are ordinary
+quadword transfers, reproduced by default `qcopy`. A measured `MACRO_ADDR` view
+of the scratch symbol keeps its final address setup together. The 256-byte body
+matches both placements in US, US2 and PAL at the default `-O2 -G0
+-ffunction-sections` profile. The actual float returns of `func_002A7E08` and
+`func_002AA458`, and the void return of `func_L02_00332D28`, are retained from
+their existing definitions. The strict linked builds pass in all three releases.
+
+`func_L20_00443A10` is also qualified as of 28 October 2026, matching its
+332-byte placement in US, US2 and PAL at the default `-O2 -G8
+-ffunction-sections` profile. A typed 128-byte heading-reference record selects
+the measured index/base registers; updating the existing heading value keeps
+the branch result in its old FP register. Loading the last reference pointer
+after the sine call and before the output stores fixes the tail schedule.
+The float return banks of the math helpers were checked against their retail
+bodies. The old source-order/register trials remain historical measurements;
+strict linked builds now pass in all three releases.
+
+Further bounded controller measurements on 28 October 2026 are retained outside
+the linked sources. None is a local match, and only US was measured:
+
+- `func_L09_0041A700`: 900/916 bytes, default G8 profile, five compiles. Computing
+  each saturating nibble update's address inside its parity branch improves the
+  first 836-byte version. Retail preserves the counter's high address in s2
+  across the later proximity path; the retained source rebuilds it. The real
+  `enabled` field is reloaded after the counter test even on a path without a call.
+- `func_L15_004353E8`: 1104/1104 bytes, default G0 profile, nine compiles. Moving
+  independent initialization writes closes the FP-vector register and most store
+  residues, leaving two initial stores, the -1 temporary and the final timer store
+  versus six FP stores. Prefix struct/union views and `-g` tie; disabling second
+  scheduling worsens. Helper contracts follow the existing definitions.
+- `func_L20_004433B0`: 344/344 bytes, default G8 profile, three compiles. Branch-local
+  initial index reads and reloading the loop index before its condition label
+  reproduce the branch structure and length, but object/table-high/best cycle
+  s4/s5/s3 rather than s3/s4/s5. The pointer return remains explicit; promotion
+  would require the caller's pointer declaration and explicit stored-address cast.
+- `func_L20_00445890`: retained at 564/568 bytes, default G8 profile, six compiles.
+  Naming the real missing-object sentinel before the state change fixes the
+  object/loop-count register swap. Remaining differences include the list-index
+  GPR, color-tail store merge and high-bit constant slots. A switch worsens to
+  596 bytes; explicit color temporaries and `-frac2-keep-block-order` do not close
+  it. An SDATA view and the absolute view address the same canonical object table.
+
+These deposits need measured pointer-lifetime or scheduling evidence before
+another retry. Their prior diagnostic-only refusals remain historical notes,
+not proof that current helpers or address aliases cannot express the bodies.
+
+### Prison oscillator: the ignored message result still affects allocation
+
+`func_L14_00426F28` has a retained game `-O2 -G8` draft at 744/744 bytes.
+Its scalar SDATA views, unsigned timer snapshot and actual float return of
+`func_002AA2E8` reproduce the remainder/FP paths. The query `func_002A9640`
+returns a hit pointer, and `func_L00_0030DD70` returns an integer, as shown by
+its implementation in `L00_002FC7A0.c`. With those contracts the final object
+flag update uses v1 instead of retail's v0 (+0x248 through +0x268). Unsigned
+16-/32-bit snapshots tie; a 64-bit snapshot grows to 752 bytes. A void message
+prototype produced a local byte match but was rejected, and its source marker
+was restored. **Next:** an evidenced object-field scope or allocator-lifetime
+explanation; do not recover the apparent match by discarding the integer return.
+
+`func_L07_003F7968` is likewise a size-exact retained controller (632 bytes,
+game `-O2 -G8 -frac2-qcopy -frac2-qcopy-barrier`). Its sole remaining instruction
+is bnel instead of bnez at +0xE4 in the bounded tier selector. The observed
+child-pointer reloads need no invented volatile fields: ordinary byte/halfword
+accesses already retain them. Independent clamps shorten the body, reversing
+the arms changes block order, and debug labels do not change the branch. This
+compiler rejects `-mno-branch-likely`; no compiler change was made.

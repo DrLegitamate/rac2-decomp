@@ -813,7 +813,7 @@ def build_program(name: str, reference: Path, strict: bool = False) -> tuple[int
     extra, script = dict(placement.values), (directory / "config/rac2.ld").read_text()
     aliases = {}
     if placement.placed:
-        bodies = {a: (sym, n, f"{o.relative_to(directory, walk_up=True).as_posix()}({sec})")
+        bodies = {a: (sym, n, f"{Path(os.path.relpath(o, directory)).as_posix()}({sec})")
                   for sym, (a, n, o, sec) in placement.placed.items()}
         kept = []
         for source in sources:
@@ -845,7 +845,7 @@ def build_program(name: str, reference: Path, strict: bool = False) -> tuple[int
         # Separate passes preserve the branch-table directive checks while allowing
         # relocation-free byte/halfword scalar pools in the same retail assembly file.
         for scalar in (False, True):
-            tables = {a: (n, f"{o.relative_to(directory, walk_up=True).as_posix()}({sec});")
+            tables = {a: (n, f"{Path(os.path.relpath(o, directory)).as_posix()}({sec});")
                       for (o, sec), (a, n) in placement.tables.items()
                       if ((o, sec) in placement.scalar_pools) == scalar}
             kept = []
@@ -884,7 +884,7 @@ def build_program(name: str, reference: Path, strict: bool = False) -> tuple[int
             if tables:
                 sys.exit(f"{name}: compiler data missing from assembly data")
             sources = kept
-        discard = "".join(f"        {o.relative_to(directory, walk_up=True).as_posix()}(*)\n" for o in placement.objects)
+        discard = "".join(f"        {Path(os.path.relpath(o, directory)).as_posix()}(*)\n" for o in placement.objects)
         end = script.rindex("}")
         script = script[:end] + "    /DISCARD/ :\n    {\n" + discard + "    }\n" + script[end:]
         (directory / "config/rac2.ld").write_text(script)

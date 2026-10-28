@@ -103,6 +103,14 @@ the same way. Each prefix follows a completed `jr $ra` and its delay slot, holds
 filler (0xCDCDCDCD) or unreachable leftovers, and every jump, address pair or data pointer that
 reaches the function already targets the shortened entry.
 
+`func_00282848` is another corrected mixed extent (72 to 16 bytes, skip 56)
+in the boot and all 27 levels. Its prefix follows a completed return and
+contains six positive stack adjustments plus eight nops. Across all 28
+programs, no direct branch or jump, nearby address pair, or aligned loaded
+word points into that prefix or at the shortened entry. The retained 16-byte
+body is the float load/nop/return-delay-multiply form covered by blocker 4;
+the catalogue correction does not claim a C match.
+
 Three more rows were corrected on 26 October 2026: `func_00120354` and `func_00130A8C` skip
 4 bytes (one 0xCDCDCDCD fill word; two data words point at `func_00120354`'s shortened
 entry), and `func_0028FF50` skips 8 (a leftover `sw $v0,0x6C($a1)` and a nop after the
@@ -134,6 +142,16 @@ or aligned literal pointer, and falls through into the next prologue. An identic
 instruction with a different name is left alone. Removed bytes remain in assembly,
 and surviving identities remain stable when the number of identical copies changes.
 The rule does not classify arbitrary code without a return as filler.
+
+`func_00335E28` is a measured 12-byte residue in the boot and all 27 levels. The
+preceding function returns at `0x00335E20`, with `lw $v0,0xC($a0)` in its delay
+slot at `0x00335E24`. The extent then adjusts `$sp` upward by `0x20`, has a nop,
+stores `$f0` through `$v1` at offset `0xC`, and has no return; the next function
+starts after a nop at `0x00335E38`. Every placement has this same boundary. The
+row has no frame to restore and does not establish `$v1`. Across all 28 images,
+no direct branch or call, aligned literal pointer, or nearby `lui` plus low-half
+construction references it. `FUNCTION_RESIDUES` removes only this named extent
+and leaves the retail bytes in place.
 
 A boundary-only PR leaves progress reports for the later maintainer refresh.
 The non-strict report check tolerates obsolete rows only for these named remnants,

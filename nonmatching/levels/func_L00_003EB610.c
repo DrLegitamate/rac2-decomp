@@ -1,9 +1,13 @@
-/* Mid worker 7: near miss, shared unit (all 27 places), flags -O2 -G8 -ffunction-sections -frac2-qcopy in its own file.
-   428 B vs 424. Matches: slot search loop (do-while, signed, unsigned char states), alloc, field stores, quad copy
-   source (D_L00_0018C0B0 + 0xC0), `sq $zero` through a pointer local, mapped-entry lookup. Residual: this cc1 reverses
-   the 3-iteration quad-copy loop into a countdown (bgez) where retail keeps `slti t1,3 / bnez` with the counter
-   initialised early; for/while/do-while, int/short/char/long counters, early `j = 0`, indexed or pointer forms all
-   reverse. Register numbers of the search loop then differ (retail: i=a0, p=a1, 0xFD=a2, 0xFE=a3, 0xCB2=t0). */
+/* Updated retained constructor: game -O2 -G8, 424/424 bytes, 0/27 USA.
+ * The reviewed clobbering qcopy/qzero route preserves all actual transfers,
+ * but the three-copy loop still reverses to a countdown. It replaces retail's
+ * slti with a nop and uses bgez instead of bnez; search setup and later GPR
+ * allocation also differ. Disabling the repeated loop pass leaves this tie.
+ * The table uses an explicit unknown-extent GP view, and the shared resident
+ * owner pointer now has its canonical D_0018C0B0 identity.
+ * Next: an evidenced source loop/lifetime structure; do not invent counter uses.
+ */
+#include "common.h"
 typedef int TI128 __attribute__((mode(TI)));
 
 typedef struct {
@@ -12,8 +16,8 @@ typedef struct {
     char pad2[0x84];
 } MappedEntry3EB610;
 
-extern int D_L00_001B0798[] __attribute__((sda));
-extern char *D_L00_0018C0B0;
+extern int D_L00_001B0798[] SDATA(D_L00_001B0798);
+extern char *D_0018C0B0 NOT_SDA;
 extern unsigned char D_00139568[];
 extern MappedEntry3EB610 D_L00_00262570[];
 extern int func_L00_002D3F30(int, int);
@@ -57,18 +61,18 @@ char *func_L00_003EB610(char *a0, char *a1)
         obj[0x30] = 0xFF;
         obj[0x31] = 1;
         *(long long *)(obj + 0x38) = *(long long *)(a0 + 0x38);
-        src = D_L00_0018C0B0;
+        src = D_0018C0B0;
         dst = obj + 0xC0;
         src += 0xC0;
         while (j < 3) {
-            *(TI128 *)dst = *(TI128 *)src;
+            qcopy(dst, src);
             j++;
             src += 16;
             dst += 16;
         }
-        *(TI128 *)zp = 0;
+        qzero(zp);
         *(unsigned short *)(obj + 0x34) = *(unsigned short *)(obj + 0x34) | 0x100;
-        *(TI128 *)(obj + 0x10) = *(TI128 *)a1;
+        qcopy(obj + 0x10, a1);
         *(float *)(obj + 0x2C) = *(float *)(obj + 0x2C) * 0.1f;
         *(int *)(st + 0x38) = -1;
         *(int *)(st + 0x3C) = 0;

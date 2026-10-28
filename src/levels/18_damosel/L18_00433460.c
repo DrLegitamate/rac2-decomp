@@ -42,7 +42,7 @@ extern void func_002AB800(void *, void *);
 
 extern void func_002AB8C0(void *, void *);
 
-extern int func_002A7750(void *, int, int);
+extern void func_002A7750(void *, int, int);
 
 
 extern int func_00283CF0(float);
@@ -211,9 +211,41 @@ extern void func_002AB800(void *, void *);
 
 extern void func_002AB8C0(void *, void *);
 
-extern int func_002A7750(void *, int, int);
 
-INCLUDE_ASM("asm/levels", func_L18_00439FC8);
+void func_L18_00439FC8(u8 *obj) {
+    u8 *state;
+    u8 *p;
+    float f;
+
+    if (D_L18_001C9D40 != 0) return;
+    state = *(u8 **)(obj + 0x68);
+    switch (*(u8 *)(obj + 0x20)) {
+    case 0:
+        *(short *)(state + 0x24) = 0x12;
+        *(float *)(state + 0x20) = 18.0f;
+        func_002A7750(obj, 1, -1);
+        return;
+    case 1:
+        if (func_002E59B0(obj, *(s32 *)(state + 0x68)) == 0) {
+            *(s32 *)(state + 0x68) = func_002E5CF8(0, 4, obj);
+        }
+        p = state + 0x50;
+        *(float *)(obj + 0xF8) = func_00283B98(*(float *)(obj + 0xF8),
+                                               *(float *)(state + 0x64) * 0.000290888245f);
+        f = func_002A96A0(obj, func_002A9640(obj, 0x230000, 0));
+        if (f > 0.0f) {
+            *(u8 *)(state + 0x57) = 0xFF;
+            *(u8 *)(state + 0x58) = 0x40;
+            *(u8 *)(state + 0x59) = 0;
+            func_002AB800(obj, p);
+            *(float *)(state + 0x20) = *(float *)(state + 0x20) - f;
+        }
+        func_002AB8C0(obj, p);
+        *(u8 *)(obj + 0xA8) = 0xFF;
+        return;
+    }
+}
+
 
 INCLUDE_ASM("asm/levels", func_L18_0043C258);
 
@@ -263,6 +295,66 @@ INCLUDE_ASM("asm/levels", func_L18_00440718);
 
 /* func_L18_00441050 is defined in L18_00441050-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L18_00441438);
+typedef struct { char pad[0x74]; unsigned char active; char gap[0x13]; void *owner; } DamoselSoundAnchor;
+extern char D_00188660[];
+extern char D_00189EA0[];
+extern int func_002B3868(void *);
+extern void func_002E59F8(int);
+extern void func_002ABBB8(void *, void *, void *, float, float, int, int, int,
+                         float, float, float, float, int, float, int, int, int, int, int);
+extern void func_002AFEB8(void *, void *, void *, void *, float);
+extern void func_002B0A68(void *, int, void *, float, float, float, float, int);
+extern void func_002A6C58(void *, int, int), func_0029F338(void *);
+extern void func_L00_00426478(void *);
+
+void func_L18_00441438(unsigned char *object)
+{
+    char *state = *(char **)(object + 0x68);
+    char *hit;
+    char *owner;
+    int excluded;
+    float zero, damage;
+    float direction[4];
+    switch (object[0x20]) {
+    case 0:
+        *(int *)(state + 0x100) = -1;
+        *(unsigned short *)(object + 0x34) |= 0x1000;
+        state[0x48] = func_00283CF0(15.0f);
+        state[0x4a] = func_00283CF0(6.0f);
+        func_002A7750(object, 1, -1);
+        break;
+    case 1:
+        if (func_002B3868(object)) {
+            if (*(int *)(state + 0x100) != -1 && ((DamoselSoundAnchor *)(D_00188660 + *(int *)(state + 0x100) * 112))->owner == object && ((DamoselSoundAnchor *)(D_00188660 + *(int *)(state + 0x100) * 112))->active)
+                func_002E59F8(*(int *)(state + 0x100));
+            *(int *)(state + 0x100) = -1;
+        }
+        hit = func_002A9640(object, 0x10000, 0);
+        if (!hit) goto intact;
+        owner = *(char **)(hit + 0x20);
+        excluded = 0;
+        if (owner && (*(short *)(owner + 0xaa) == 0xb69 || *(short *)(owner + 0xaa) == 0xf9e)) excluded = 1;
+        if (excluded) break;
+        zero = 0.0f;
+        damage = func_002A96A0(object, hit);
+        object[0xa8] = 255;
+        *(float *)(state + 0x20) -= damage;
+        if (*(float *)(state + 0x20) <= zero) {
+            func_002ABBB8(object, object + 0x10, 0, zero, zero, 10, 3, 9,
+                         4.0f, 2.0f, 9.0f, zero, -1, 15.0f, 1, 1, -1, 0, 0x810001);
+            func_002E5CF8(0, 0, object);
+            func_00282CF0(direction, (float *)(object + 0x10), (float *)D_00189EA0);
+            func_002AFEB8(object, direction, direction, 0, zero);
+            func_00282F20((char *)direction, (char *)direction, 0.10000001f);
+            func_002B0A68(object, 0x1fff, direction, 3.0f, 6.0f, 3.0f, 6.0f, 255);
+            func_002A6C58(object, 0, 3);
+            func_0029F338(object);
+        }
+        break;
+intact:
+        func_L00_00426478(object);
+        break;
+    }
+}
 
 INCLUDE_ASM("asm/levels", func_L18_00447128);

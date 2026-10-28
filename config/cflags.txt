@@ -1470,6 +1470,23 @@ src/levels/18_damosel/L18_0043C778-g64.c	-O2 -G64 -Wa,-G64 -ffunction-sections
 src/levels/19_grelbin/L19_003E9400-controller.c	-O2 -G0 -ffunction-sections -g
 src/levels/19_grelbin/L19_003E9400-lift-g8.c	-O2 -G8 -ffunction-sections -frac2-hazard-labels
 src/levels/23_damosel_orbit/L23_00416388-scan.c	-O2 -G8 -ffunction-sections -Wa,-G32
+src/game/00273E98.c	-O2 -G0 -g -ffunction-sections
+
+# Siberius falling-object controller keeps its plain C stack clear materialized.
+src/levels/07_siberius/L07_00410C50.c	-O2 -G0 -ffunction-sections -frac2-zero-ti-por
+src/levels/shared/L04_0046CE68.c	-O2 -G0 -ffunction-sections -frac2-zero-ti-por
+
+src/levels/shared/L05_00445C38-g8.c	-O2 -G8 -ffunction-sections -g
+# GCSE hoists the origin into s3 and grows the frame to 0xA0; retail uses 0x90.
+# Unsplit edges and preserved block order still emit 408 bytes instead of 396.
+src/levels/shared/L04_00456860.c	-O2 -G0 -ffunction-sections -frac2-zero-ti-por -fno-gcse
+
+# Tabora replacement copies retain the measured pointer/quadword boundaries.
+src/levels/08_tabora/L08_003F6D30-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -g
+
+# Mixed GP/absolute tuning reads accompany explicit position copy and state clear.
+src/levels/07_siberius/L07_003F6C40.c	-O2 -G0 -ffunction-sections -mno-split-addresses
+src/levels/shared/L08_0034A078.c	-O2 -G0 -ffunction-sections -g
 src/levels/shared/L00_004170A8-qcopy.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
 src/levels/shared/L00_003B3158-g16.c	-O2 -G16 -Wa,-G16 -ffunction-sections
 src/levels/shared/L00_003B3C40-g8-dbg.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por -g

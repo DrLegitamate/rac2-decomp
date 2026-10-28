@@ -39,6 +39,12 @@
  * To unblock: a loop layout in which the mask is scheduled after the load's
  * settling nops and the exit block is placed after the loop with an unconditional
  * jump back.
+ *
+ * 28 October 2026: one explicit-label form (`if (mask == 0) goto done; goto
+ * loop; done: return 0;`) was tried in the original source unit. cc1
+ * canonicalized it to a 40-byte conditional-backedge loop, still with the
+ * mask before three nops, against 56 retail bytes (0/28 USA placements).
+ * The labels did not preserve the forward exit plus unconditional jump.
  */
 
 typedef unsigned int u32;

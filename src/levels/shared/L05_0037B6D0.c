@@ -251,7 +251,7 @@ void func_L05_003CD4C0(char *object)
 }
 
 
-INCLUDE_ASM("asm/levels", func_L05_003CEFA0);
+/* func_L05_003CEFA0 is in L05_003CEFA0.c. */
 
 /* func_L05_003CF040 is in L05_003CF040-g8.c. */
 
@@ -266,9 +266,9 @@ int func_L05_003CFC28(int a0)
     return a0 - 0x953;
 }
 
-INCLUDE_ASM("asm/levels", func_L05_003CFC48);
+/* func_L05_003CFC48 is in L05_003CFC48-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L05_003CFCF0);
+/* func_L05_003CFCF0 is in L05_003CFCF0-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L05_003CFF90);
 

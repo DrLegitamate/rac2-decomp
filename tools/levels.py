@@ -700,6 +700,7 @@ FUNCTION_ENTRY_OFFSETS = {
     "func_00120354": (20, 4),
     "func_00130A8C": (16, 4),
     "func_0028FF50": (184, 8),
+    "func_00282848": (72, 56),
     "func_L00_00428EE0": (32, 24),
 }
 
@@ -742,6 +743,7 @@ FUNCTION_RESIDUES = {
     "func_003411B0": 12,
     "func_002DE7F0": 28,
     "func_002E3E50": 4,
+    "func_00335E28": 12,
 }
 
 
