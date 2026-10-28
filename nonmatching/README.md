@@ -80,6 +80,7 @@ the placement rules are in `tools/fcheck.py`'s docstring; its tests are
 | [`func_L00_003E7C88`](levels/func_L00_003E7C88.c) | 436 | 412/436 bytes as its own -G8 unit, 0/27. The mixed $gp/absolute record count works as one plain extern; retail's loop keeps five induction registers and hoists no constants, cc1 builds fewer and hoists 1/60 and 0x80. |
 | [`func_L18_003FB308`](levels/func_L18_003FB308.c) | 504 | 504/504 bytes in the L18_003F80A0 -G8 unit, 0/1. Only the last countdown step's register choice differs (3 instructions). |
 | [`func_L01_002EABA8`](levels/func_L01_002EABA8.c) | 552 | 552/552 bytes in place, 0/5. Flow and calls match; the saved-register roles of the mode, the gadget index and the player block's high part are permuted. |
+| [`func_L00_003EAA58`](levels/func_L00_003EAA58.c) | 556 | 556/556 bytes in place, 0/27. Flow, calls and constants match; the saved-register roles are permuted. |
 | [`func_L11_0045FDB0`](levels/func_L11_0045FDB0.c) | 328 | Complete standalone context, typed FP helpers and integer sound return restored; G8 replay is 328/328 bytes, US/US2 0/1, PAL ABSENT. Only two stores after a call are swapped (+0x24 float, +0x23 byte). |
 | [`func_L17_003E6DE8`](levels/func_L17_003E6DE8.c) | 312 | Exact-size candidate; 0/1 places. Owner-pointer register copy and claim-path scheduling differ. |
 | [`func_L20_00440598`](levels/func_L20_00440598.c) | 5920 | 26 October 2026 (big29): 1477/1480, 29 instructions in about 12 groups left; qzero_nc would fix 3. See source. |
