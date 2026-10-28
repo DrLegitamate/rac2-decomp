@@ -773,7 +773,7 @@ void func_L02_003D6BC0(char *a0)
 
 /* Defined in L02_003D7040-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L02_003D7140);
+/* func_L02_003D7140 is defined in L02_003D7140-g8.c. */
 
 int func_L02_003D7300(char *a0) {
     return *(int *)(*(char **)(a0 + 0x68) + 0xBC);
