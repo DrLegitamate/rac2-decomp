@@ -1374,3 +1374,12 @@ src/levels/shared/L00_00388790-qcopy.c	-O2 -G0 -ffunction-sections -frac2-qcopy 
 src/levels/shared/L00_003973E8-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-hazard-labels
 src/levels/shared/L00_00395A88-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-hazard-labels
 src/levels/shared/L00_003A5DC0.c	-O2 -G0 -ffunction-sections
+src/levels/shared/L00_003B52C8-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-hazard-labels
+src/levels/shared/L00_003BC108-qcopy.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
+src/levels/shared/L00_003B9CB8-nointerblock-g8.c	-O2 -G8 -ffunction-sections -fno-sched-interblock
+src/levels/shared/L00_003B9CB8-ribbons.c	-O2 -G0 -ffunction-sections -g -frac2-zero-ti-barrier
+src/levels/shared/L00_003DE490-basis-g8.c	-O2 -G8 -ffunction-sections -fno-sched-spec
+src/levels/shared/L00_003D4548-g8.c	-O2 -G8 -ffunction-sections -frac2-keep-block-order
+src/levels/shared/L00_003D37E8-ring-g8.c	-O2 -G8 -ffunction-sections
+src/levels/shared/L00_003E0240-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
+src/levels/shared/L00_003E3A18-g8.c	-O2 -G8 -ffunction-sections -g

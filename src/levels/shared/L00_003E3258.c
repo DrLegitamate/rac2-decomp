@@ -1,4 +1,13 @@
-#include "include_asm.h"
+#include "common.h"
+
+typedef int VectorBits __attribute__((mode(TI)));
+typedef union { VectorBits bits; float f[4]; } __attribute__((aligned(16))) BeamVector;
+typedef float Vector[4] __attribute__((aligned(16)));
+typedef struct { float vertices[4][4]; unsigned int colors[4]; float uv[4][2]; u64 registers[4]; } __attribute__((aligned(16))) BeamQuad;
+extern void func_L00_003EA050(char *);
+extern void func_00282D30(void *, void *, float);
+extern float func_00283CE0(int);
+
 
 #define RAC2_T_VEC16_FC936841D
 
@@ -98,7 +107,66 @@ extern Entry_24efc0 D_L00_0024EFC0[];
 #ifndef RAC2_T_VEC16_FC936841D
 #endif
 
-INCLUDE_ASM("asm/levels", func_L00_003E3258);
+extern char D_0018A0E0[];
+extern unsigned char *D_L00_001FEA14;
+extern char D_L00_001B8DC0[];
+extern char D_L00_001A8F20_1[] __attribute__((sda));
+extern void func_00282CF0(char *, char *, char *);
+extern float func_00283248(float, float);
+extern float func_002A7878(float, float);
+extern float func_002A78D8(float, float);
+extern float func_00283B98(float, float);
+extern void func_002AF000(float *, float, float, float);
+extern int func_002A77E0(int);
+extern char *func_002BDCE8(float *, float, float, int, float *, float, float, unsigned, int);
+extern char *func_002C16C0_1(float *, float *, int, int, unsigned, int, float, float, float, float, float);
+/* Emit twenty paired particles around a position, optionally adding two final flashes. */
+void func_L00_003E3258(float *pos, int unused, int extra)
+{
+    float v[4], dir[4], out[4];
+    float angle, speed, scale, mag, direction;
+    int id, i, n;
+    char *p, *d;
+    func_00282CF0((char *)v, D_L00_001B8DC0, (char *)pos);
+    angle = func_00283248(v[0], v[1]);
+    for (i = 19; i >= 0; i--) {
+        func_00282D30(dir, D_0018A0E0, -(func_002A7878(0.2f, 3.0f) * 0.01666666753590107f));
+        id = func_00283CF0(func_002A78D8(1.0f, 2.0f));
+        speed = func_002A7878(0.3f, 0.75f) * 210000.0f;
+        out[0] = pos[0] + func_002A78D8(0.0f, 0.2f);
+        out[1] = pos[1] + func_002A78D8(0.0f, 0.2f);
+        out[2] = pos[2] + func_002A78D8(0.0f, 0.2f);
+        p = func_002BDCE8(out, 0.0f, 1.0f, id, dir, 1.01f, speed, 0x7F202020, 1);
+        if (p) {
+            p[3] = 68;
+            *(short *)(p + 10) = 90;
+            d = p + 32;
+            p[9] = func_00283CF0(4.0f) + 64;
+            *(float *)(d + 28) = func_00283CE0(5);
+            *(int *)(d + 4) = 3;
+            d[10] = 48;
+            d[11] = p[10];
+        }
+        scale = func_002A7878(1.0f, 2.0f);
+        mag = func_002A7878(0.0f, 1.396263599395752f);
+        direction = func_00283B98(angle, func_002A78D8(0.0f, 1.396263599395752f));
+        func_002AF000(dir, scale * 0.01666666753590107f, direction, mag);
+        out[0] = pos[0] + func_002A78D8(0.0f, 0.1f);
+        out[1] = pos[1] + func_002A78D8(0.0f, 0.1f);
+        out[2] = pos[2] + func_002A78D8(0.0f, 0.1f);
+        func_002C16C0_1(out, dir, 30, 127, 0x7F7F7F, id,
+            func_002A7878(0.1f, 0.5f) * 210000.0f, 500.0f, 1.0f, 0.0f, 1.0f);
+    }
+    if (extra == 1) {
+        char *last;
+        speed = 525000.0f;
+        n = func_002A77E0(255);
+        last = func_002C16C0_1(pos, (float *)D_L00_001A8F20_1, 5, 127, 0x207080, n, speed, 0.0f, 1.0f, 0.0f, 1.0f);
+        if (last) last[2] = *D_L00_001FEA14;
+        last = func_002C16C0_1(pos, (float *)D_L00_001A8F20_1, 5, 127, 0x207080, (n + 128) & 255, speed, 0.0f, 1.0f, 0.0f, 1.0f);
+        if (last) last[2] = *D_L00_001FEA14;
+    }
+}
 
 extern char D_L00_001B8DC0[];
 
@@ -187,8 +255,6 @@ int func_L00_003E39B8(char *object)
         return 0;
     return 1;
 }
-
-INCLUDE_ASM("asm/levels", func_L00_003E3A18);
 
 INCLUDE_ASM("asm/levels", func_L00_003E4508);
 
@@ -421,7 +487,38 @@ INCLUDE_ASM("asm/levels", func_L00_003E8A98);
 
 /* func_L00_003E9490 is defined in L00_003E9490-qcopy.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_003E9540);
+/* Component-wise cubic interpolation, with exact endpoint vector copies. */
+void func_L00_003E9540(float *out, float *b, float *c, float *a, float *d, float t)
+{
+    float t2, t3, p, q, r;
+
+    if (t == 0.0f) {
+        qcopy(out, b);
+        return;
+    }
+    if (t == 1.0f) {
+        qcopy(out, c);
+        return;
+    }
+    t2 = t * t;
+    t3 = t2 * t;
+
+    p = (d[0] - c[0]) - (a[0] - b[0]);
+    q = (a[0] - b[0]) - p;
+    r = c[0] - a[0];
+    out[0] = p * t3 + q * t2 + r * t + b[0];
+
+    p = (d[1] - c[1]) - (a[1] - b[1]);
+    q = (a[1] - b[1]) - p;
+    r = c[1] - a[1];
+    out[1] = p * t3 + q * t2 + r * t + b[1];
+
+    p = (d[2] - c[2]) - (a[2] - b[2]);
+    q = (a[2] - b[2]) - p;
+    r = c[2] - a[2];
+    out[2] = p * t3 + q * t2 + r * t + b[2];
+    out[3] = 0.0f;
+}
 
 /* Shared native body; original game role is unknown. */
 void func_L00_003E9660(int unused, float *p, int n)
@@ -473,7 +570,8 @@ void func_L00_003E9B00(int p0, int p1, int p2, int p3, float v)
     func_00281EB8((char *)p1, 44, p2, 1, s, 0.08f, t);
 }
 
-INCLUDE_ASM("asm/levels", func_L00_003E9B90);
+/* Draw a two-layer ribbon along a sequence of sampled beam points. */
+/* func_L00_003E9B90 is defined in L00_003E9B90-ribbon.c. */
 
 
 /* straight-line constant-store body (no calls, no branches, no loads) */
