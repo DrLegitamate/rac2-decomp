@@ -1,13 +1,23 @@
-#include "include_asm.h"
-
-typedef signed int s32;
-typedef signed short s16;
-typedef unsigned char u8;
-typedef unsigned short u16;
-typedef unsigned int u32;
-typedef float f32;
+#include "common.h"
 
 typedef int TI128 __attribute__((mode(TI)));
+
+extern u8 *func_002ED688(u8 *);
+extern f32 func_00283198(f32);
+extern f32 func_00283180(f32);
+extern void func_00282CC0(void *, void *, void *);
+
+extern void func_00282CF0(u8 *, u8 *, u8 *);
+extern void func_00282D30(u8 *, u8 *, f32);
+
+extern void func_00283098(void *, void *, void *);
+extern void func_0029FC20(u8 *, s32, void *);
+extern f32 func_00282E48(void *, void *);
+extern f32 func_00282DB0(void *, void *);
+extern f32 func_002831B0(f32);
+extern f32 func_00282DF0(void *);
+extern void func_00282F20(void *, void *, f32);
+extern u8 D_L10_001B9680[];
 
 extern u32 *func_0037BA88(u8 *arg0);
 extern s32 func_003351C0(s32 mode);
@@ -64,7 +74,7 @@ extern s32 D_001B0F48 __attribute__((sda));
 
 INCLUDE_ASM("asm/levels", func_L10_003170D0);
 
-INCLUDE_ASM("asm/levels", func_L10_00317528);
+/* func_L10_00317528 is in L10_003170D0-scene.c. */
 
 #define NOT_SDA __attribute__((section(".data")))
 
@@ -121,7 +131,7 @@ void func_L10_00417040(u8 *arg0) {
     *(u16 *)(arg0 + 0x7C) = 0xFF;
 }
 
-INCLUDE_ASM("asm/levels", func_L10_004170F8);
+/* func_L10_004170F8 is in L10_003170D0-path-g8.c. */
 
 /* func_L10_004174C8 is in L10_003170D0-g8.c: it only comes out right with -G8. */
 
@@ -179,7 +189,64 @@ INCLUDE_ASM("asm/levels", func_L10_00417CE0);
 
 INCLUDE_ASM("asm/levels", func_L10_00417F30);
 
-INCLUDE_ASM("asm/levels", func_L10_00418088);
+void func_L10_00418088(u8 *arg0) {
+    u8 *state = *(u8 **)(arg0 + 0x68);
+    f32 x[4] __attribute__((aligned(16)));
+    f32 y[4] __attribute__((aligned(16)));
+    f32 z[4] __attribute__((aligned(16)));
+    f32 qa[4] __attribute__((aligned(16)));
+    f32 qb[4] __attribute__((aligned(16)));
+    f32 ma[16] __attribute__((aligned(16)));
+    f32 mb[16] __attribute__((aligned(16)));
+    f32 dir[4] __attribute__((aligned(16)));
+    f32 tmp[4] __attribute__((aligned(16)));
+    u8 *info;
+    u8 *a, *b;
+    f32 angle, dot;
+    *(TI128 *)x = 0; *(TI128 *)y = 0; *(TI128 *)z = 0;
+    *(TI128 *)qa = 0; *(TI128 *)qb = 0;
+    x[0]=1.0f; y[2]=1.0f; z[1]=1.0f; qa[2]=1.0f; qb[1]=1.0f;
+    info = (u8 *)func_002ED688(*(u8 **)(state + 0x10));
+    if (*(s32 *)(state + 0x14)) {
+        a = *(u8 **)(*(u8 **)(state + 0x10) + 0x68) + 0x2F0;
+        b = *(u8 **)(*(u8 **)(state + 0x10) + 0x68) + 0x330;
+    } else {
+        a = *(u8 **)(*(u8 **)(state + 0x10) + 0x68) + 0x370;
+        b = *(u8 **)(*(u8 **)(state + 0x10) + 0x68) + 0x3B0;
+    }
+    func_00283098(x,x,arg0+0xC0);
+    func_00283098(y,y,arg0+0xC0);
+    func_00283098(z,z,arg0+0xC0);
+    func_0029FC20(arg0,0,ma);
+    func_0029FC20(arg0,1,mb);
+    if (func_00282E48(ma+12, *(u8 **)(info+0x120)+0x10) <= 24.0f)
+        qcopy(dir, state);
+    else {
+        func_00282CF0((u8 *)dir,D_L10_001B9680,(u8 *)(ma+12));
+        qcopy(state, dir);
+    }
+    dot = func_00282DB0(dir,y);
+    func_00282D30((u8 *)tmp,(u8 *)y,dot);
+    func_00282CF0((u8 *)dir,(u8 *)dir,(u8 *)tmp);
+    func_00282F20(dir,dir,1.0f);
+    angle = (1.57079637f-func_002831B0(func_00282DB0(x,dir)))*0.5f;
+    if (func_00282DB0(dir,z)>0.0f) angle=-angle;
+    func_00282D30(a+0x10,(u8 *)qa,func_00283198(angle));
+    *(f32 *)(a+0x1C)=func_00283180(angle);
+    func_00282CF0((u8 *)dir,D_L10_001B9680,(u8 *)(mb+12));
+    dot = func_00282DB0(dir,y);
+    func_00282D30((u8 *)tmp,(u8 *)y,dot);
+    func_00282CF0((u8 *)dir,(u8 *)dir,(u8 *)tmp);
+    func_00282F20(dir,x,func_00282DF0(dir));
+    func_00282CC0((u8 *)dir,(u8 *)tmp,(u8 *)dir);
+    func_00282F20(dir,dir,1.0f);
+    dot=func_00282DB0(dir,y);
+    if(dot<=-0.3f) dot=-0.3f;
+    else if(dot>0.3f) dot=0.3f;
+    angle=(1.57079637f-func_002831B0(dot))*0.5f;
+    func_00282D30(b+0x10,(u8 *)qb,-func_00283198(angle));
+    *(f32 *)(b+0x1C)=func_00283180(angle);
+}
 
 /* Update step of the cloud object: the state byte at +0x20 picks the step (0 re-arms the
    object and queues its effect, 1 spawns it), and the object's own record in the shared
@@ -289,6 +356,19 @@ void func_L10_00418AD8(u8 *arg0) {
 
 INCLUDE_ASM("asm/levels", func_L10_00419188);
 
+extern void func_L10_0041ED50(u8 *arg0);
+extern void func_L10_0041EE00(u8 *arg0);
+extern void func_L00_00414018(void);
+extern s32 func_L00_0042C818(void);
+extern u8 *func_002ED688(u8 *arg0);
+extern f32 func_002A7940(void);
+extern f32 func_00283180(f32 f12);
+extern s32 func_00283D38(s32 a0, s32 a1, f32 f12);
+
+/* State 0 waits for func_L00_00367720, then sets the object up (with an optional
+   callback pair); state 1 sets flag 0x1000 only in level 10 while
+   func_L00_0042C818 is 2, advances the phase at +0x268 by pi/30 and pulses the
+   colour at +0x78 with it.  D_001A79F0 is the current level number. */
 extern f32 func_00309B38(f32 f12, f32 f13);
 extern void func_L10_0041ED50(u8 *arg0);
 extern u8 func_L10_00423780(void);
