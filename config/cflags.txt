@@ -1392,3 +1392,6 @@ src/levels/shared/L00_003FFA70-ring-g8.c	-O2 -G8 -ffunction-sections
 src/levels/shared/L00_00404B48-g8.c	-O2 -G8 -ffunction-sections -fstrict-aliasing
 src/levels/shared/L00_00404ED8-g.c	-O2 -G0 -ffunction-sections -g
 src/levels/shared/L00_0040A4A8.c	-O2 -G0 -ffunction-sections -g -frac2-gcse-unsplit-edges
+src/levels/shared/L00_00412928-particles.c	-O2 -G0 -ffunction-sections -fno-strength-reduce
+src/levels/shared/L00_00419668-dbg.c	-O2 -G0 -ffunction-sections -g
+src/levels/shared/L00_00423CA8-g8.c	-O2 -g -G8 -ffunction-sections
