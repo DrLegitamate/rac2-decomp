@@ -187,12 +187,19 @@ PAL has no corresponding catalogue identity, and all 84 strict programs
 pass with the integrated source set. Different source declarations still
 need a consistent native interface or adapter before a PC-port claim.
 
-The two independent witnesses remain nonmatching: `func_L00_003A2668`
-is 1204/1204 bytes, 0/81 present placements, first difference +0x8.
+The two independent witnesses were nonmatching when measured: `func_L00_003A2668`
+was 1204/1204 bytes, 0/81 present placements, first difference +0x8.
 `func_L23_0041D398` remains 1432/1432, 0/1; a real phase-lifetime split
 instead gives 1412 bytes and a 0xC0 frame. Useful alternatives stay private.
 These negative controls do not establish a general allocator failure or
 justify repeating the same attempts without new evidence.
+
+**Update, 28 October 2026 (pending review):** `func_L00_003A2668` is C in its own
+unit, `src/levels/shared/L00_003A2668-ribbon.c` (default flags), and is placed at
+81/81 (27 in each of US, PAL and US2;
+[PR #348](https://github.com/OpenRAC/rac2-decomp/pull/348)).
+`tools/build.py all --strict` passes in all three releases. `func_L23_0041D398`
+is unchanged.
 
 **Measured phase-storage remedies, 25 October 2026:**
 In retained `func_L00_00398150`, the 96-byte collision query and later
@@ -594,9 +601,16 @@ The approved helpers recover complete transfers without guessing local extents.
 48-byte and 16-byte locals. The ribbon drafts `func_L00_003973E8` and
 `func_L00_00395A88` now copy all four components on the zero-length ray path;
 the old drafts copied only the last two. Their 1480/1488 and 1508/1516-byte
-results remain near misses, with loop lifetimes and saved-register allocation
+results were near misses then, with loop lifetimes and saved-register allocation
 still different. The allocator diagnostic reproduces the ordinary compiled
 objects; it measures interference and priorities, not semantic correctness.
+
+**Update, 28 October 2026 (pending review):** both ribbon functions are C, each in
+its own unit (`src/levels/shared/L00_003973E8-g8.c` and `L00_00395A88-g8.c`, flags
+`-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-hazard-labels`),
+at their full 1488 and 1516 bytes, placed 27/27 in each of US, PAL and US2
+([PR #348](https://github.com/OpenRAC/rac2-decomp/pull/348)).
+`tools/build.py all --strict` passes in all three releases.
 
 Copy independence includes later writes: the fourth matrix row in
 `func_L23_0042A018` and `func_L23_0042A8C0` is followed by a write to its W
@@ -651,12 +665,19 @@ at a fixed stack offset; casting a TImode local to `float *` instead retained a
 pointer across calls and added one saved register (340 bytes). Profile: default
 `-O2 -G0 -ffunction-sections`. The combined tree passes all 84 strict program builds.
 
-The retained [func_L11_0046BD18](../nonmatching/levels/func_L11_0046BD18.c)
-provides a separate integer-address control: decode its multiply-add as R5900
-`madd`, and its quadword transfers as ordinary TI assignments. The reconstruction
-compiles those instruction families but remains 1060/1024 bytes, 0/2 placements
-in each release. This supersedes the historical MMI-only screen without claiming
-a whole-body match; frame and address-expression lifetimes remain open.
+The retained near miss of `func_L11_0046BD18` (formerly
+`nonmatching/levels/func_L11_0046BD18.c`) provided a separate integer-address
+control: decode its multiply-add as R5900 `madd`, and its quadword transfers as
+ordinary TI assignments. That reconstruction compiled those instruction families
+but remained 1060/1024 bytes, 0/2 placements in each release. This supersedes the
+historical MMI-only screen without claiming a whole-body match.
+
+**Update, 28 October 2026 (pending review):** `func_L11_0046BD18` is C in
+[L11_0046BD18-g8.c](../src/levels/shared/L11_0046BD18-g8.c)
+(`-O2 -G8 -ffunction-sections -g`), at 1024 bytes and placed 2/2 in each of US, PAL
+and US2 ([PR #348](https://github.com/OpenRAC/rac2-decomp/pull/348));
+the near-miss file is removed. `tools/build.py all --strict` passes in all three
+releases.
 
 <a id="blocker-12"></a>
 
@@ -1799,11 +1820,22 @@ were left on the table for nothing. The over-broad classes are:
   Eleven and nine spellings were measured. The allocation follows the first textual
   use of a value, so the source's *expression tree* decides it, and a permutation
   search over the statement order is the lever.
+  *Update, 28 October 2026 (pending review):* both are C and placed 27/27 in each of
+  US, PAL and US2: `func_L00_003E9540` in place in `src/levels/shared/L00_003E3258.c`
+  ([PR #348](https://github.com/OpenRAC/rac2-decomp/pull/348)),
+  `func_L00_003BC108` in its own unit `L00_003BC108-qcopy.c`
+  (`-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier`;
+  [PR #348](https://github.com/OpenRAC/rac2-decomp/pull/348)).
 * **The frame's register set follows from the address form.** `func_L05_004268E8`
   and its three colour twins come out with nine callee-saved registers against the
   retail's eight, because the retail has no register at all for the base of the int
   array: it re-materialises it in the loop (`addiu $v1,$s4,0x20`) and adds the offset
   to it, while a base held in a local lets the compiler fold the offset into the store.
+  *Update, 28 October 2026 (pending review):* `func_L05_004268E8` is C in place in
+  `src/levels/shared/L05_003D33E8.c`, placed 4/4 in US and in US2 (it has no C
+  placement in PAL;
+  [PR #348](https://github.com/OpenRAC/rac2-decomp/pull/348)).
+  Its colour twins are not individually rechecked here.
 * **A dead `mult` is a body this compiler did not write.** `func_L00_002FCF18` and
   `func_L00_003FEAC8` carry a `mult` whose result the retail never reads; cc1 does
   not emit a multiply whose result is unused.
