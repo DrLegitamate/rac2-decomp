@@ -6,9 +6,9 @@
 <p align="center">
   <a href="https://openrac.dev"><img src="https://img.shields.io/badge/Website-openrac.dev-ff8a00?logo=googlechrome&logoColor=white" alt="OpenRAC website"></a>
   <a href="https://discord.gg/Sfd2B54PDG"><img src="https://img.shields.io/badge/Discord-Join%20Community-5865F2?logo=discord&logoColor=white" alt="OpenRAC Discord"></a>
-  <a href="https://github.com/OpenRAC/rac2-gc-decomp/actions/workflows/progress.yml"><img src="https://github.com/OpenRAC/rac2-gc-decomp/actions/workflows/progress.yml/badge.svg" alt="Progress report"></a>
-  <a href="https://bytematch.dev/OpenRAC/rac2-gc-decomp"><img src="https://bytematch.dev/OpenRAC/rac2-gc-decomp.svg?mode=shield&label=Code&measure=matched_code_percent" alt="Code matched"></a>
-  <a href="https://bytematch.dev/OpenRAC/rac2-gc-decomp"><img src="https://bytematch.dev/OpenRAC/rac2-gc-decomp.svg?mode=shield&label=Functions&measure=matched_functions" alt="Functions matched"></a>
+  <a href="https://github.com/OpenRAC/rac2-decomp/actions/workflows/progress.yml"><img src="https://github.com/OpenRAC/rac2-decomp/actions/workflows/progress.yml/badge.svg" alt="Progress report"></a>
+  <a href="https://bytematch.dev/OpenRAC/rac2-decomp"><img src="https://bytematch.dev/OpenRAC/rac2-decomp.svg?mode=shield&label=Code&measure=matched_code_percent" alt="Code matched"></a>
+  <a href="https://bytematch.dev/OpenRAC/rac2-decomp"><img src="https://bytematch.dev/OpenRAC/rac2-decomp.svg?mode=shield&label=Functions&measure=matched_functions" alt="Functions matched"></a>
 </p>
 
 A work-in-progress **matching decompilation** of *Ratchet & Clank: Going Commando* (Insomniac
@@ -38,13 +38,13 @@ continuous regression tests.
 ## Progress
 
 Decompilation progress is tracked live on **[openrac.dev](https://openrac.dev)** and
-**[bytematch.dev/OpenRAC/rac2-gc-decomp](https://bytematch.dev/OpenRAC/rac2-gc-decomp)**.
+**[bytematch.dev/OpenRAC/rac2-decomp](https://bytematch.dev/OpenRAC/rac2-decomp)**.
 
 | Version | Region | Target ID | Code Matched | Functions Matched |
 |---|---|---|---|---|
-| v1.01 | USA | `SCUS_972.68` | [![](https://bytematch.dev/OpenRAC/rac2-gc-decomp.svg?mode=shield&label=Code&measure=matched_code_percent)](https://bytematch.dev/OpenRAC/rac2-gc-decomp) | [![](https://bytematch.dev/OpenRAC/rac2-gc-decomp.svg?mode=shield&label=Functions&measure=matched_functions)](https://bytematch.dev/OpenRAC/rac2-gc-decomp) |
-| v1.00 | Europe/Australia | `SCES_516.07` | [![](https://bytematch.dev/OpenRAC/rac2-gc-decomp.svg?mode=shield&label=Code&measure=matched_code_percent&version=SCES_516.07)](https://bytematch.dev/OpenRAC/rac2-gc-decomp/SCES_516.07) | [![](https://bytematch.dev/OpenRAC/rac2-gc-decomp.svg?mode=shield&label=Functions&measure=matched_functions&version=SCES_516.07)](https://bytematch.dev/OpenRAC/rac2-gc-decomp/SCES_516.07) |
-| v2.00 (Greatest Hits) | USA | `SCUS_972.68_v2` | [![](https://bytematch.dev/OpenRAC/rac2-gc-decomp.svg?mode=shield&label=Code&measure=matched_code_percent&version=SCUS_972.68_v2)](https://bytematch.dev/OpenRAC/rac2-gc-decomp/SCUS_972.68_v2) | [![](https://bytematch.dev/OpenRAC/rac2-gc-decomp.svg?mode=shield&label=Functions&measure=matched_functions&version=SCUS_972.68_v2)](https://bytematch.dev/OpenRAC/rac2-gc-decomp/SCUS_972.68_v2) |
+| v1.01 | USA | `SCUS_972.68` | [![](https://bytematch.dev/OpenRAC/rac2-decomp.svg?mode=shield&label=Code&measure=matched_code_percent)](https://bytematch.dev/OpenRAC/rac2-decomp) | [![](https://bytematch.dev/OpenRAC/rac2-decomp.svg?mode=shield&label=Functions&measure=matched_functions)](https://bytematch.dev/OpenRAC/rac2-decomp) |
+| v1.00 | Europe/Australia | `SCES_516.07` | [![](https://bytematch.dev/OpenRAC/rac2-decomp.svg?mode=shield&label=Code&measure=matched_code_percent&version=SCES_516.07)](https://bytematch.dev/OpenRAC/rac2-decomp/SCES_516.07) | [![](https://bytematch.dev/OpenRAC/rac2-decomp.svg?mode=shield&label=Functions&measure=matched_functions&version=SCES_516.07)](https://bytematch.dev/OpenRAC/rac2-decomp/SCES_516.07) |
+| v2.00 (Greatest Hits) | USA | `SCUS_972.68_v2` | [![](https://bytematch.dev/OpenRAC/rac2-decomp.svg?mode=shield&label=Code&measure=matched_code_percent&version=SCUS_972.68_v2)](https://bytematch.dev/OpenRAC/rac2-decomp/SCUS_972.68_v2) | [![](https://bytematch.dev/OpenRAC/rac2-decomp.svg?mode=shield&label=Functions&measure=matched_functions&version=SCUS_972.68_v2)](https://bytematch.dev/OpenRAC/rac2-decomp/SCUS_972.68_v2) |
 
 <!-- progress -->
 | | Functions | Code |
@@ -83,59 +83,108 @@ comparison do not. A near miss belongs in [`nonmatching/`](nonmatching), never i
 
 ## Quick Start
 
-### Prerequisites
+### What you need
 
-- **The disc**: your own copy of *Ratchet & Clank: Going Commando*, USA v1.01, as
-  `baserom/SCUS_972.68.iso` (SHA-256
-  `9db2e33e276133cc283647fa3279b37911955e123d6199d10065547eaa9b1ce5`).
-- **Python 3.12** with the pinned tools: `pip install -r requirements.txt` (splat, spimdisasm,
-  rabbitizer).
-- **SN ProDG 2.0**'s assembler and linker, as
-  `toolchain/sn-prodg-2.0/ee/bin/{Ps2EeAs,ld}.exe`. Proprietary: bring your own, never commit
-  them.
-- **A 32-bit capable Linux** (`gcc -m32`) and **Wine** for the SN tools, or the container
-  image that has both (`tools/docker/run.sh`).
+| What | Notes |
+| --- | --- |
+| Linux x86-64 with 32-bit support (`gcc -m32`) and Wine | or podman/docker, see [Container](#container) |
+| Python 3.12 | `tools/build.py` does not run on 3.11 |
+| Your own disc of the game, USA v1.01 | the main release; PAL and v2.00 are optional |
+| SN ProDG's `ps2eeas.exe` and `ld.exe` | downloaded in step 3; proprietary, never commit them |
 
-### Setup & Build
-
-1. **Clone the repository:**
-   ```sh
-   git clone https://github.com/OpenRAC/rac2-gc-decomp.git
-   cd rac2-gc-decomp
-   ```
-
-2. **Provide your own disc:**
-   ```sh
-   cp /path/to/SCUS_972.68.iso baserom/SCUS_972.68.iso
-   # sha256sum baserom/SCUS_972.68.iso
-   # 9db2e33e276133cc283647fa3279b37911955e123d6199d10065547eaa9b1ce5
-   ```
-
-3. **Install the dependencies and build the compilers:**
-   ```sh
-   python3 -m pip install -r requirements.txt
-   tools/compiler/build.sh               # the game's compiler, into build/compiler/tools/
-   python3 tools/compiler/sdk/build.py   # the SDK units' compiler, into build/compiler/sdk/
-   ```
-
-4. **Dump the disc, build and report:**
-   ```sh
-   python3 tools/levels.py dump          # the boot executable and the 27 level programs
-   python3 tools/build.py all            # one "OK" per program, or the first byte that differs
-   python3 tools/progress.py             # progress/report.json and the table above
-   ```
-
-`tools/build.py boot`, `tools/build.py level 04` and `tools/build.py levels` build a part of
-it. `tools/check.py func_XXXXXXXX --diff` compiles one function with its file's flags and
-shows its instructions beside the retail ones, in seconds.
-
-On macOS, on Windows or on any other host, run the same commands in the build image
-(32-bit Debian with Wine, Python and the build tools):
+### 1. Get the code and the Python tools
 
 ```sh
+git clone https://github.com/OpenRAC/rac2-decomp.git
+cd rac2-decomp
+python3 -m pip install -r requirements.txt     # splat, spimdisasm, rabbitizer (pinned)
+```
+
+### 2. Add your discs
+
+```sh
+cp /path/to/SCUS_972.68.iso        baserom/SCUS_972.68.iso          # USA v1.01, required
+cp /path/to/SCES_516.07.iso        baserom/SCES_516.07.iso          # PAL, optional
+cp /path/to/SCUS_972.68_v2.00.iso  baserom/SCUS_972.68_v2.00.iso    # USA v2.00, optional
+sha256sum baserom/SCUS_972.68.iso
+# 9db2e33e276133cc283647fa3279b37911955e123d6199d10065547eaa9b1ce5
+```
+
+The hashes of the other two are in [`docs/VERSIONS.md`](docs/VERSIONS.md). A pull request
+must build in all three releases, so add them if you plan to send one.
+
+### 3. Download the SN ProDG assembler and linker
+
+Both come from public mirrors of SN Systems' ProDG for PS2: the assembler from 2.0, the
+linker from 3.01. `toolchain/` is in `.gitignore`.
+
+```sh
+mkdir -p toolchain/sn-prodg-2.0/ee/bin /tmp/sn
+curl -L -o /tmp/sn/sn20.tar.gz \
+  https://github.com/AngheloAlf/SN-Systems-ProDG_for_PS2_2.0/releases/download/1/eegcc_sn_v2.73a.tar.gz
+curl -L -o /tmp/sn/sn301.tar.gz \
+  https://github.com/AngheloAlf/SN-Systems-ProDG_for_PS2_3.01/releases/download/1/eegcc_2.95.3_sn_v1.36.tar.gz
+tar xzf /tmp/sn/sn20.tar.gz  -O ee/bin/ps2eeas.exe > toolchain/sn-prodg-2.0/ee/bin/Ps2EeAs.exe
+tar xzf /tmp/sn/sn301.tar.gz -O ee/bin/ld.exe      > toolchain/sn-prodg-2.0/ee/bin/ld.exe
+sha256sum -c <<'EOF'
+c839dd63facabe7b76573c114056be61eaa7b3aa2329dd546930ab8f98898c76  toolchain/sn-prodg-2.0/ee/bin/Ps2EeAs.exe
+80f3724a63ce3c77c8b00d075f5c49448636518700ae251e5d6a6c809bbf5f48  toolchain/sn-prodg-2.0/ee/bin/ld.exe
+EOF
+```
+
+Both lines must print `OK`.
+
+### 4. Build the compilers and dump the discs
+
+```sh
+tools/compiler/build.sh                        # the game's compiler, into build/compiler/tools/
+python3 tools/compiler/sdk/build.py            # the SDK units' compiler, into build/compiler/sdk/
+python3 tools/levels.py dump                   # USA v1.01: the boot executable and 27 levels
+python3 tools/levels.py dump --version pal     # only with the PAL disc
+python3 tools/levels.py dump --version us2     # only with the v2.00 disc
+```
+
+### 5. Build and compare
+
+```sh
+python3 tools/build.py all                     # one "OK" per program, or the first byte that differs
+python3 tools/build.py all --strict --version pal
+python3 tools/build.py all --strict --version us2
+```
+
+All 28 programs print `OK` on a clean checkout. `tools/build.py boot`, `level 04` and `levels`
+build a part of it.
+
+### Working on a function
+
+```sh
+python3 tools/todo.py --max 400                # functions still to match, up to 400 bytes
+python3 tools/check.py func_XXXXXXXX --diff    # compile one function, show it beside retail
+```
+
+Reserve your functions in issue #152 first: see [Tracking](#tracking). `tools/progress.py`
+writes `progress/report.json` and the table above; run it for your own counts, but do not
+commit what it writes.
+
+### Container
+
+On macOS, Windows or a host without 32-bit support, run the same commands in the build image
+(32-bit Debian with Wine and the build tools):
+
+```sh
+bash tools/docker/run.sh tools/compiler/build.sh
 bash tools/docker/run.sh python3 tools/levels.py dump
 bash tools/docker/run.sh python3 tools/build.py all
 ```
+
+- `run.sh` uses podman if installed, else docker. It uses a local `rac2-build:latest` image,
+  else pulls `ghcr.io/openrac/rac2-build`, else builds `tools/docker/Dockerfile` (about 15
+  minutes).
+- The image has Python 3.11, and `tools/build.py` needs 3.12. Until that is fixed, run Python
+  on the host and only the tools in the container (the "faster split" in
+  [`docs/BUILDING.md`](docs/BUILDING.md)), or add Python 3.12 to the image.
+- With SELinux (Fedora, RHEL) the container cannot read the mounted repository. Add
+  `--security-opt label=disable` to the `run` line, or relabel the mount.
 
 For the details:
 
@@ -146,6 +195,35 @@ For the details:
 - [`docs/VERSIONS.md`](docs/VERSIONS.md) – the three releases (v1.01, PAL, v2.00): their dumps, catalogues, builds and reports
 
 ---
+
+## Tracking
+
+- **Reservations.** Before you start, reserve the functions, files or levels you will work on
+  in [issue #152](https://github.com/OpenRAC/rac2-decomp/issues/152): one comment per
+  contributor, edited in place, at most 500 unfinished functions. Read the other comments
+  first and do not overlap them. Release what you finish or drop. [`AGENTS.md`](AGENTS.md) has
+  the exact rules.
+- **What is left.** `python3 tools/todo.py` lists the functions still to match by size
+  (`--min`, `--max`, `--kind boot|shared|level`, `--limit`). Before you start one, look for it
+  in [`nonmatching/README.md`](nonmatching/README.md): an earlier near miss and its notes may
+  be there.
+- **Near misses.** C that does not match goes into `nonmatching/` with a row in its README,
+  and the function keeps its `INCLUDE_ASM` marker in `src/`.
+- **The progress report.** `progress/report.json` and the table above are generated. Only a
+  maintainer refreshes them, on `master`, after merging. Leave both out of your pull request;
+  if you ran `tools/progress.py`, undo it with
+  `git checkout origin/master -- progress/report.json README.md`.
+  `python3 tools/progress.py --check` passes while the report is behind and prints how many
+  new functions wait for the refresh.
+- **Before a pull request**, all must pass:
+  ```sh
+  python3 tools/build.py all --strict          # and with --version pal, --version us2
+  python3 -m unittest discover -s tests
+  python3 tests/check_repository.py
+  python3 tools/progress.py --check
+  ```
+  A function that matches in v1.01 but not in another release stays assembly there:
+  `tools/carry.py --version pal --demote` ([`docs/VERSIONS.md`](docs/VERSIONS.md)).
 
 ## How it works
 
@@ -199,7 +277,7 @@ researching engine quirks, or improving documentation:
   `tools/check.py func_XXXXXXXX --diff` shows a draft beside retail in seconds.
 - Everyone can improve the [shared matching blockers](docs/MATCHING-BLOCKERS.md) through a
   pull request, with discussion in the relevant PR. Coordinate scopes in
-  [issue #152](https://github.com/OpenRAC/rac2-gc-decomp/issues/152).
+  [issue #152](https://github.com/OpenRAC/rac2-decomp/issues/152).
 - Join our **[Discord Community](https://discord.gg/Sfd2B54PDG)** to discuss progress, ask
   questions, and collaborate!
 
