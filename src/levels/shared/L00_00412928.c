@@ -507,7 +507,6 @@ void func_L00_00416A38(Vector *position, float size, float offset, float roll,
 
 INCLUDE_ASM("asm/levels", func_L00_00416F68);
 
-INCLUDE_ASM("asm/levels", func_L00_004170A8);
 
 /* Spawns 25 particles around the object, each drifting away from the camera at a random angle. */
 void func_L00_00417218(char *object)

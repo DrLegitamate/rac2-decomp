@@ -1,11 +1,4 @@
-/* Near miss (M5): 544/544 B, 3 lines off at the 27 places: retail stores the 0xFF alpha
-   byte right after the flags `lhu`, before `obj+0x10` and the work-pointer load; sched1
-   here lifts both above it. Statement order and every mix of struct/byte views of the six
-   head accesses tie. Solved: the body inside `if (object) { ... } return object;` (retail's
-   null exit reaches `return object`), the failure arm `func_0029F338(object); return 0;`,
-   D_0018C0B0 as an incomplete array (split %hi/%lo), and struct views of the work block
-   and object. Profile `-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier`. */
-#include "include_asm.h"
+/* Near miss, worker w3 batch 3: 544/544 B, 0/27 but ONE swap. Profile `-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier` in a new unit; the two quadword stores are qcopy() (was TI assignment), which cut the diff from 3 lines to one swap: retail stores the alpha byte (sb 0x30) before forming &obj->position (addiu s0,s6,0x10), ours after. All 120 orders of the five head statements leave it unchanged. */
 #include "common.h"
 typedef int Quadword __attribute__((mode(TI)));
 typedef union { Quadword bits; float f[4]; } Vector4;
@@ -88,8 +81,8 @@ char *func_L00_0038A748(void *owner,Vector4 *position,Vector4 *velocity)
         ((TrailMoby *)object)->drawMask=initialState;
         ((TrailMoby *)object)->state=0;
         ((TrailMoby *)object)->alpha=initialState;
-        ((TrailMoby *)object)->position=position->bits;
-        work->velocity=velocity->bits;
+        qcopy(&((TrailMoby *)object)->position,position);
+        qcopy(&work->velocity,velocity);
         func_002833F0(object+0xC0,D_0018C0B0[0]+0xF0);
         func_002FE8D8(object+0x10,&direction);
         func_00282F20(&forward,object+0xE0,1);

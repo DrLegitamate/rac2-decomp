@@ -1,5 +1,11 @@
-/* func_L05_00426B08: M15 2026-10-26: 212/212, 4 lines off under -O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier: a Moby struct view fixes the 0xF8 store against the $gp read, and D_L05_001B2528 as an .sdata macro word gives the tied read. Left: retail loads 0xFBF into a register before the loop (xor), cc1 folds it to xori (permuter queued).
- */
+/* Batch 3 (2026-10-28) handoff notes:
+Three twins in L05_003D33E8-g8.c (func_L05_0041D498 id 0x10F9 / D_L05_001D1348 / callee 41D728, func_L05_00425FE0 id 0x117C / D_L05_001B14FC / callee 426270, func_L05_00426B08 id 0x117F / D_L05_001B1504 / callee 426D98): same body, so one fix lands all three.
+Needs NO extra cflags: use qcopy(&m->pos,&src->pos) from common.h (no -frac2-qcopy flags). Canonical callee names func_0029EFD0 (spawn), func_00282C88, func_002A7940. Moby struct view (draft.c) fixes the 0xF8 store; D_L05_001B2528 as `Moby *... __attribute__((section(".sdata")))`.
+4 masked lines left, size equal: retail loads `addiu a1,zero,0xFBF` before the list loop and uses `xor v0,v0,a1` (+movz); ours folds `xori v0,v0,0xFBF`. Tried: int/short/unsigned short/const id local at 4 places, ternary `r = (p->oclass == id) ? p : r`, static inline finder with id parameter, for-loop form: cse folds the constant every time.
+*/
+
+#include "common.h"
+/* replaces the INCLUDE_ASM marker in src/levels/shared/L05_003D33E8-g8.c (-G8 unit, default flags; the file also needs its TI128/D_L05_001B1504/D_L05_001B2528 externs replaced by these) */
 typedef int TI128 __attribute__((mode(TI)));
 
 typedef struct Moby_426B08 {
@@ -34,7 +40,7 @@ Moby_426B08 *func_L05_00426B08(Moby_426B08 *src)
         m->b30 = 0xFF;
         m->h32 = 0xFF;
         m->b31 = 1;
-        m->pos = src->pos;
+        qcopy(&m->pos, &src->pos);
         func_00282C88(m->vF0);
         m->fF8 = func_002A7940();
         if (D_L05_001B1504 == 0) {

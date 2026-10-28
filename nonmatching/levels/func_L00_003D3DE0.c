@@ -1,9 +1,8 @@
-/* func_L00_003D3DE0: first full reconstruction (M9, 2026-10-26).
- * Profile -O2 -G16 -Wa,-G16 -ffunction-sections (the four-slot table at gp+0x12C0 is a
- * 16-byte sda object). 456/456 bytes, 0/27, 39 instructions off. The slot search, calls
- * and tail match; open: retail keeps the 3-quadword copy loop counting up (slti 3) where
- * this reverses it, the moby/state registers sit one temp later (t1/t2), and the
- * 0xFF/0x7F/1 constants and the weapon-table address operands come in another order.
+/*
+ func_L00_003D3DE0 (456 bytes, 27 places) - own unit with -O2 -G16 -ffunction-sections -Wa,-G16; size exact, ~35 masked lines differ (w5, 2026-10-28).
+ The 3-quadword copy now counts up with slti 3 like retail (`qcopy(moby + 0xC0 + j * 16, src); src += 16`: a store whose address is a giv of j blocks
+ loop.c's counter reversal); 0xFF is stored as unsigned char. Open: register roles (retail moby t1 / state t2 / loop pointer t0; `lui a1,0x19` hoisted above
+ the byte stores) and the sb/sb/sh order.
  */
 #include "common.h"
 typedef int Quad __attribute__((mode(TI)));
@@ -43,16 +42,14 @@ char *func_L00_003D3DE0(char *owner, Quad *position)
     if (moby != 0) {
         state = *(char **)(moby + 0x68);
         *(char **)(state + 0x34) = owner;
-        moby[0x30] = 0xFF;
+        *(unsigned char *)(moby + 0x30) = 0xFF;
         *(short *)(moby + 0x32) = 0x7F;
         moby[0x31] = 1;
         *(long long *)(moby + 0x38) = *(long long *)(owner + 0x38);
         src = D_0018C0B0 + 0xC0;
-        dst = moby + 0xC0;
         for (j = 0; j < 3; j++) {
-            qcopy(dst, src);
+            qcopy(moby + 0xC0 + j * 16, src);
             src += 16;
-            dst += 16;
         }
         qzero(moby + 0xF0);
         *(unsigned short *)(moby + 0x34) |= 0x100;

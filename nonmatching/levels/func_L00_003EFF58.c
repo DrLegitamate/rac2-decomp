@@ -1,41 +1,36 @@
-/*
- * Retained manual near miss; not linked or counted.
- * Final measured profile: -O2 -G0 -ffunction-sections.
- * Final C / retail: 328 / 328 bytes.
- * us:0/27 placements, exit1; us2:0/27 placements, exit1.
- * pal:0/27 placements, exit1.
- * 5 bounded source/profile trials; three natural source forms tie.
- * Equal328-byte size and0x50 frame; first difference+0x4, global-load/prologue scheduling and record/normal base allocation differ. The0x50-stride partial record view is measured, with no table-length claim.
- * Reopen only with: An original record-walk or allocator/scheduling witness that resolves the entry and base-register differences.
- * Measured in the dedicated src unit before its marker/profile were restored; this body is retained unchanged modulo this comment.
- * Historical draft and trial variants remain private. Behavior and strict linked equality remain unverified.
+/* func_L00_003EFF58 (328 bytes, 27 places) - NEAR MISS, worker 6, 28 October 2026.
+ * Profile -O2 -G0 -ffunction-sections, in src/levels/shared/L00_003EE100.c in place of the marker
+ * (names with a _2/_4 suffix are second prototype names for the same callees; the table pointer is
+ * read through `D_L00_001B2BB4_2[0]`, an incomplete sda array, which gives retail's absolute lui/lw).
+ * 328/328 bytes, 5 masked diff lines (was 18).
+ * Fixed: statement order velocity, record, normal, with velocity/normal formed from `base[slot]`
+ * (not from record) gave retail's saved-register order (record s0, velocity s1, counter s2, normal s3).
+ * Left: retail loads `daddu $a1,$a3` before `daddu $s0,$v0`; velocity's init is `addiu $s1,$v0,0x20`
+ * (ours from $s0); the end-of-loop increments of s0/s1 come in the other order.
  */
-
-#include "common.h"
-typedef int TI128 __attribute__((mode(TI)));
-/* Table stride0x50 and these field offsets are measured; no table length is claimed. */
-typedef struct { TI128 position,normal,velocity; char *owner; int value,phase; float scale; int first,last; } EffectRecord;
-extern EffectRecord *D_L00_001B2BB4;
-extern void func_00282F20(char *,char *,float);
-extern void func_00282CC0(char *,char *,char *);
-extern void func_00282DD8(char *,char *,char *);
+typedef int TI128_FF58 __attribute__((mode(TI)));
+typedef struct { TI128_FF58 position, normal, velocity; char *owner; int value, phase; float scale; int first, last; } EffectRecord_FF58;
+extern EffectRecord_FF58 *D_L00_001B2BB4_2[] __attribute__((sda));
+extern void func_00282F20_2(char *, char *, float);
+extern void func_00282CC0_2(char *, char *, char *);
+extern void func_00282DD8_2(char *, char *, char *);
 extern float func_002A7940(void);
-extern void func_L00_003F0198(char *,int,float,float,int);
-extern float func_00283B98(float,float);
+extern void func_L00_003F0198_2(char *, int, float, float, int);
+extern float func_00283B98_4(float, float);
 void func_L00_003EFF58(char *owner, int value, char *direction, char *position, float scale)
 {
-    TI128 local;
-    EffectRecord *base = D_L00_001B2BB4;
-    EffectRecord *record;
+    TI128_FF58 local;
+    EffectRecord_FF58 *base = D_L00_001B2BB4_2[0];
+    EffectRecord_FF58 *record;
     char *velocity;
     char *normal;
     int slot, step;
     float angle;
     slot = -1;
     while (++slot <= 0) {
+        velocity = (char *)&base[slot].velocity;
         record = base + slot;
-        velocity = (char *)&record->velocity;
-        normal = (char *)&record->normal;
+        normal = (char *)&base[slot].normal;
         if (record->owner != 0) continue;
         record->value = value;
         record->scale = scale;
@@ -44,14 +39,14 @@ void func_L00_003EFF58(char *owner, int value, char *direction, char *position, 
         qcopy(&record->position,position);
         qcopy(velocity,direction);
         ((float *)&record->velocity)[2] = *(float *)(owner + 0x18);
-        func_00282F20((char *)&local,position,2.0f);
-        func_00282CC0((char *)&local,(char *)&local,velocity);
-        func_00282DD8(normal,velocity,(char *)&local);
+        func_00282F20_2((char *)&local,position,2.0f);
+        func_00282CC0_2((char *)&local,(char *)&local,velocity);
+        func_00282DD8_2(normal,velocity,(char *)&local);
         angle = func_002A7940();
         for (step = 99; step >= 0; step--) {
-            func_L00_003F0198((char *)record,2,angle,0.0f,0);
-            func_L00_003F0198((char *)record,0,angle,0.0f,0);
-            angle = func_00283B98(angle,0.06346652f);
+            func_L00_003F0198_2((char *)record,2,angle,0.0f,0);
+            func_L00_003F0198_2((char *)record,0,angle,0.0f,0);
+            angle = func_00283B98_4(angle,0.06346652f);
         }
         record->first = 0;
         record->last = 0;

@@ -1,17 +1,23 @@
-/* Opus big44, 26 October 2026. Profile: -O2 -G8 -ffunction-sections.
- * 142/142 instructions; 139 identical. Only difference: after the r+0x11C store retail
- * loads the table pointer D_L05_001B251C (lui/lw macro in one register) before reloading
- * state+0x260; this cc1 reloads state+0x260 first (3 words, order only). Queued for the permuter.
- * Fixed against the older draft: callee names are catalogue names; the float copies to
- * the two new children sit inside the create branch; r+0x11C receives 1 (retail stores
- * the $a0 that holds r+0x110, known equal to 1), not state+0x274; func_00282948 returns int.
- */
+/* Batch 3 (2026-10-28) handoff notes:
+# func_L05_00415B38 (568 B, 1 place) -- w5 handoff, 3 differing lines
+
+draft.c is the nonmatching/ draft as its own unit L05_00415B38-g8.c (default -G8 for a -g8 name; remove the marker from L05_00314E28.c) with one change: the table pointer is the incomplete sda array element (`extern char *D_L05_001B251C[] __attribute__((sda)); D_L05_001B251C[0]`). Exact size, every other instruction identical. Remaining 3 lines: order of the table-pointer load against the reload of state+0x260 (retail lui/lw ptr first, then lw idx; ours idx first). Same wall as func_L05_004155A0 and func_L05_0041C860, see the latter's notes for what was tried.
+
+## check.py --diff (masked, differing lines only; ours | retail)
+```
+05_feltzin_system: instruction at +0x15c differs
+  00415C94  lw          $v0, 0x260($s2)              | lui         $v1, 0x1B
+  00415C98  lui         $v1, 0x0                     | lw          $v1, 0x251C($v1)
+  00415C9C  lw          $v1, 0x0($v1)                | lw          $v0, 0x260($s2)
+func_L05_00415B38: 0 of 1 places match (src/levels/05_feltzin_system/L05_00415B38-g8.c)
+masked diff lines: 3
+```
+*/
 
 #include "common.h"
-
 extern char D_00188660[];
 extern char D_L05_002659E0[];
-extern char *D_L05_001B251C;
+extern char *D_L05_001B251C[] __attribute__((sda));
 
 extern int func_L00_00367720(char *object);
 extern char *func_002ED688(char *object);
@@ -83,7 +89,7 @@ void func_L05_00415B38(char *object)
     if (st == one) {
         if (*(int *)(state + 0x260) != -1) {
             *(int *)(r + 0x11C) = 1;
-            *(int *)(r + 0x120) = (int)(D_L05_001B251C + *(int *)(state + 0x260) * 256);
+            *(int *)(r + 0x120) = (int)(D_L05_001B251C[0] + *(int *)(state + 0x260) * 256);
         }
         if (*(int *)(r + 0x108) != 0 && *(int *)(r + 0x104) != 0)
             func_L05_00415F18(object);

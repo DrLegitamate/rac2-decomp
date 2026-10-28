@@ -280,8 +280,6 @@ void func_L00_003827C0(void)
 
 /* func_L00_00382910 is defined in L00_00382910.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_00382AE8);
-
 
 
 INCLUDE_ASM("asm/levels", func_L00_00382F28);
@@ -298,12 +296,6 @@ INCLUDE_ASM("asm/levels", func_L00_00384678);
 
 /* func_L00_00384CA8 is defined in L00_00384CA8-qcopy.c. */
 
-
-INCLUDE_ASM("asm/levels", func_L00_00384E08);
-
-INCLUDE_ASM("asm/levels", func_L00_00385040);
-
-INCLUDE_ASM("asm/levels", func_L00_003851A0);
 
 INCLUDE_ASM("asm/levels", func_L00_003852A0);
 
@@ -379,8 +371,6 @@ void func_L00_00387AC8(Owner_F9e2cd219 *self)
         child->field4C = 1;
     }
 }
-
-INCLUDE_ASM("asm/levels", func_L00_00387BB0);
 
 INCLUDE_ASM("asm/levels", func_L00_00387CA8);
 
@@ -512,8 +502,6 @@ void func_L00_0038A568(Owner_F9e2cd219 *self)
         child->field4C = 1;
     }
 }
-
-INCLUDE_ASM("asm/levels", func_L00_0038A650);
 
 INCLUDE_ASM("asm/levels", func_L00_0038A748);
 
@@ -756,8 +744,6 @@ void func_L00_0038D468(char *object)
     }
 }
 
-
-INCLUDE_ASM("asm/levels", func_L00_0038D650);
 
 INCLUDE_ASM("asm/levels", func_L00_0038DE70);
 

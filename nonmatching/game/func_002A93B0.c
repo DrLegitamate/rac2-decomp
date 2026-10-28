@@ -1,6 +1,10 @@
-/* func_002A93B0: Opus closer M1 near miss, 26 October 2026.
-   Profile: -O2 -G0 -ffunction-sections, own unit (qcopy from common.h).
-   404/404 bytes, 9 differing. Real prototypes (func_00282D30/D60 take the float last), the flag word as an sda incomplete array, stores written out per arm. Left: y lands in $f3 instead of $f1 in the first arm, and the second arm stores 0x74 before 0x70. */
+/* Batch 3 (2026-10-28) handoff notes:
+func_002A93B0 (404 B, 28 places): own unit not needed, it sits in src/game/002A7750.c in place of the marker (file's local qcopy is the same asm as common.h's). Delete the later `extern void func_002A93B0(void *);` line (it conflicts with the definition). draft.c = definition + externs.
+9 masked lines left (size 404 = 404). Retail ends both "hit" arms in ONE shared tail `swc1 $f0,0x70; b end; swc1 $f1,0x74` (cross-jumped) so x and y must be shared variables (merged pseudos); retail has y in $f1 and the 0.000244140625 constant in $f2 (`lwc1 $f1,0xC; mtc1 $at,$f2; mul.s $f1,$f1,$f2`), ours has y in $f2 and the constant in $f1, so arm 2's 0.2f lands in $f2 too and the tails differ.
+Writing the stores per arm with no shared locals gives retail's registers ($f0/$f1/$f2) but then no cross-jump (412 B).
+Tried 16 combos of x/y declaration order x statement order in each arm: best 9, others 12 or +8..16 bytes.
+*/
+
 #include "common.h"
 extern int D_001A8CA0[] __attribute__((sda));
 extern float D_001BAFA0[] ;

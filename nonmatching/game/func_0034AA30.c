@@ -1,3 +1,8 @@
+/* Batch 3 (2026-10-28) handoff notes:
+Flags: -O2 -G0 -ffunction-sections (sibling file of 00345358.c). 480/480 bytes, 4 differing lines at us: retail loads D_001B23A0 (lui $v1 ; lw $v1,0x23A0) before D_001AE79C (lui $at ; lwc1 $f1,-0x1864($at)); here the two loads come in the other order.
+Tried: all 24 orders of the four load statements, inlining each of the three locals (8 combinations), ternary/else forms of the video-mode test, a local for the object's position pointer: best stays 4 lines.
+*/
+
 /* Complete C near miss; NOT linked and no exact-C credit.
  * Measured source unit: src/game/0034AA30.c
  * Game profile: -O2 -G0 -ffunction-sections

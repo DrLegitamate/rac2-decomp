@@ -1,18 +1,11 @@
 /*
- * Retained manual C reconstruction; not linked or counted.
- * Profile: -O2 -G0 -ffunction-sections
- * Retail: 272 bytes; compiled: 272 bytes.
- * Final coverage: us: 0/5; us2: 0/5; pal: 0/5.
- * Residual: 272/272 bytes after actual hit/null/type guards. Both rejected IDs return 0,
- * and the object height is initialized on the null-hit path. Owner/global saved-register
- * roles and vector-pointer setup still differ. The old global address spelling was
- * corrected from retail instructions.
- * Reopen: A real hit-record/owner lifetime witness preserving the corrected guards,
- * initialized height and full16-byte vectors. No false return881 or uninitialized height
- * path.
+ func_L01_0031B300 (272 bytes, 5 places) - default flags (-O2 -G0), in L01_002A7248.c; right size.
+ 12 masked lines differ (w5, 2026-10-28): only the saved-register roles of a0 and the global base g (retail a0 -> s2,
+ g -> s3; ours g -> s2, a0 -> s3). The qcopy now takes the address inline (`qcopy(&w, g + 0x40); h = g + 0x40;`), which gives
+ retail's order `addiu $s0,$sp,0x10` before `addiu $s1,g,0x40`.
+ Reopen: a spelling that ranks a0 above g in the allocator (g read via the symbol each time, g before the call,
+ f20 load elsewhere, local pos pointer, `return 0` for the shared fail label were all worse).
  */
-#include "common.h"
-
 typedef int TI128 __attribute__((mode(TI)));
 typedef union { TI128 q; float f[4]; } Vector;
 
@@ -49,8 +42,8 @@ int func_L01_0031B300(char *a0, int a1, char *a2, char *a3) {
             return 0;
     }
     f20 = *(float *)(a0 + 0x18);
+    qcopy(&w, g + 0x40);
     h = g + 0x40;
-    qcopy(&w, h);
     func_00282F20(w.f, w.f, 1.0f);
     func_00282CF0(&v, a3, g + 0x20);
     f2 = func_00282C48(func_00282DB0(v.f, w.f));
