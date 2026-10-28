@@ -175,7 +175,7 @@ int func_L04_0046B740(void *arg0) {
 
 /* func_L04_0046CD68 is defined in L04_00417308-g8.c (this unit has no $gp access for it). */
 
-INCLUDE_ASM("asm/levels", func_L04_0046CE68);
+
 
 INCLUDE_ASM("asm/levels", func_L04_0046CFB8);
 

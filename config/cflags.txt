@@ -1474,3 +1474,4 @@ src/game/00273E98.c	-O2 -G0 -g -ffunction-sections
 
 # Siberius falling-object controller keeps its plain C stack clear materialized.
 src/levels/07_siberius/L07_00410C50.c	-O2 -G0 -ffunction-sections -frac2-zero-ti-por
+src/levels/shared/L04_0046CE68.c	-O2 -G0 -ffunction-sections -frac2-zero-ti-por
