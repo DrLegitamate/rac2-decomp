@@ -1,6 +1,16 @@
+/* PR #357 review: plain, single-declaration reconstruction; no volatile or
+ * assembler-name aliases. Profile: -O2 -G0 -ffunction-sections.
+ * USA size 752/752 bytes, first mismatch +0x1CC; all three releases
+ * remain nonmatching. A measured 128-byte pose-record view and independent
+ * locals preserve the data accesses, but the table/index loads and angle
+ * argument setup are scheduled differently. Scalar locals and row-pointer
+ * forms tie. Reopen with a real layout/lifetime witness, not forced reloads.
+ */
 #include "common.h"
-/* Retail reloads both the pose table and its index after every call. */
-extern unsigned char * volatile D_L01_001B264C[] __attribute__((sda));
+
+typedef struct { unsigned char pad00[0x30]; float position[4]; unsigned char pad40[0x30]; float rotation[4]; } PoseRecord;
+typedef struct { unsigned char pad00[0x80]; int index; } PoseMotion;
+extern PoseRecord *D_L01_001B264C[] __attribute__((sda));
 extern float func_00283180(float);
 extern void func_00282CF0(void *, void *, void *);
 extern void func_00282D30(void *, void *, float);
@@ -39,24 +49,26 @@ void func_L01_003EC0C0(unsigned char *m)
         if (*(float *)(p + 0x88) > 1.0f) *(float *)(p + 0x88) = 1.0f;
         blend = (1.0f - func_00283180(*(float *)(p + 0x88) * 3.1415927f)) * 0.5f;
         {
-            int index = *(volatile int *)(p + 0x80);
-            unsigned char *target = D_L01_001B264C[0];
-            func_00282CF0(delta, target + index * 128 + 0x30, p + 0x60);
+            int index = ((PoseMotion *)p)->index;
+            PoseRecord *target = D_L01_001B264C[0];
+            func_00282CF0(delta, target[index].position, p + 0x60);
         }
         func_00282D30(delta, delta, blend);
         func_00282CC0(m + 0x10, p + 0x60, delta);
         {
-            int index = *(volatile int *)(p + 0x80);
-            unsigned char *target = D_L01_001B264C[0];
-            *(float *)(m + 0xf8) = func_002AA150(*(float *)(p + 0x78), *(float *)(target + index * 128 + 0x78), blend);
+            int index = ((PoseMotion *)p)->index;
+            PoseRecord *target = D_L01_001B264C[0];
+            *(float *)(m + 0xf8) = func_002AA150(*(float *)(p + 0x78), target[index].rotation[2], blend);
         }
         {
-            unsigned char *target = D_L01_001B264C[0];
-        *(float *)(m + 0xf4) = func_002AA150(*(float *)(p + 0x74), *(float *)(target + *(volatile int *)(p + 0x80) * 128 + 0x74), blend);
+            PoseRecord *target = D_L01_001B264C[0];
+            target += ((PoseMotion *)p)->index;
+            *(float *)(m + 0xf4) = func_002AA150(*(float *)(p + 0x74), target->rotation[1], blend);
         }
         {
-            unsigned char *target = D_L01_001B264C[0];
-        *(float *)(m + 0xf0) = func_002AA150(*(float *)(p + 0x70), *(float *)(target + *(volatile int *)(p + 0x80) * 128 + 0x70), blend);
+            PoseRecord *target = D_L01_001B264C[0];
+            target += ((PoseMotion *)p)->index;
+            *(float *)(m + 0xf0) = func_002AA150(*(float *)(p + 0x70), target->rotation[0], blend);
         }
         if (*(float *)(p + 0x88) >= 1.0f) {
             int handle = *(int *)(p + 0x90);

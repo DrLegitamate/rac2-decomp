@@ -42,7 +42,7 @@ extern void func_002AB800(void *, void *);
 
 extern void func_002AB8C0(void *, void *);
 
-extern int func_002A7750(void *, int, int);
+extern void func_002A7750(void *, int, int);
 
 
 extern int func_00283CF0(float);
@@ -211,7 +211,6 @@ extern void func_002AB800(void *, void *);
 
 extern void func_002AB8C0(void *, void *);
 
-extern int func_002A7750(void *, int, int);
 
 INCLUDE_ASM("asm/levels", func_L18_00439FC8);
 
@@ -264,7 +263,6 @@ INCLUDE_ASM("asm/levels", func_L18_00440718);
 /* func_L18_00441050 is defined in L18_00441050-g8.c. */
 
 typedef struct { char pad[0x74]; unsigned char active; char gap[0x13]; void *owner; } DamoselSoundAnchor;
-extern void damoselSetState(void *, int, int) __asm__("func_002A7750");
 extern char D_00188660[];
 extern char D_00189EA0[];
 extern int func_002B3868(void *);
@@ -290,7 +288,7 @@ void func_L18_00441438(unsigned char *object)
         *(unsigned short *)(object + 0x34) |= 0x1000;
         state[0x48] = func_00283CF0(15.0f);
         state[0x4a] = func_00283CF0(6.0f);
-        damoselSetState(object, 1, -1);
+        func_002A7750(object, 1, -1);
         break;
     case 1:
         if (func_002B3868(object)) {

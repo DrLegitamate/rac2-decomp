@@ -1477,8 +1477,9 @@ src/levels/07_siberius/L07_00410C50.c	-O2 -G0 -ffunction-sections -frac2-zero-ti
 src/levels/shared/L04_0046CE68.c	-O2 -G0 -ffunction-sections -frac2-zero-ti-por
 
 src/levels/shared/L05_00445C38-g8.c	-O2 -G8 -ffunction-sections -g
+# GCSE hoists the origin into s3 and grows the frame to 0xA0; retail uses 0x90.
+# Unsplit edges and preserved block order still emit 408 bytes instead of 396.
 src/levels/shared/L04_00456860.c	-O2 -G0 -ffunction-sections -frac2-zero-ti-por -fno-gcse
-src/levels/01_oozla/L01_00405300-g8.c	-O2 -G8 -ffunction-sections -mno-split-addresses
 
 # Tabora replacement copies retain the measured pointer/quadword boundaries.
 src/levels/08_tabora/L08_003F6D30-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -g

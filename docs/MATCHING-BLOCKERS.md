@@ -2558,6 +2558,25 @@ helper return type is not an acceptable match.
 
 ### Scalar-SDA table walks and packet construction
 
+PR #357 review also withdraws `func_L01_003EC0C0` and `func_L01_00405300`
+from matching C. Removing the volatile table/index accesses preserves their
+752- and 736-byte sizes, but changes the load and floating-argument schedule
+after interpolation calls (USA first differences +0x1CC and +0x204). A measured
+128-byte pose-record view, separate scalar locals and short-lived record pointers
+tie. The ordinary reconstructions remain in `nonmatching/`; every release fails
+its one local place. Their former byte matches do not justify forced reloads.
+
+The same review removes the `damoselSetState` assembler-name alias. The source
+unit uses one canonical `void func_002A7750(void *, int, int)` declaration;
+`func_L18_00441438` retains its local match with that real interface.
+
+`func_L04_00456860` keeps the isolated `-fno-gcse` profile for a measured reason.
+With GCSE enabled, `m + 0x10` is hoisted into the positive-count loop preheader
+and held in s3: the frame grows from retail's 0x90 to 0xA0 and the body from
+396 to 408 bytes. `-frac2-gcse-unsplit-edges`, `-frac2-keep-block-order` and their
+combination all retain that result. Disabling GCSE preserves the in-loop address
+evaluation and the 396-byte body. This is a per-file choice, not a global setting.
+
 `func_L00_00303418` now has C passing all 27 local places in US, US2 and PAL.
 The previous comment misread the first flag update: `ori` in an unconditional
 branch's delay slot is live. The mixed table-pointer loads use ordinary
@@ -2567,10 +2586,12 @@ branch slots. This preserves the measured duplicated initializer reads without
 inventing volatile accesses. Explicit all-GP or all-absolute views are not the
 same source/profile.
 
-`func_0027DE50` passes all 28 local places in each release. The packet writer's
-measured reloads use a volatile read view and an ordinary write view of the same
-canonical cell, as the existing packet builders do. Each header has its own
-pointer lifetime; the two 16-byte templates are separate measured objects.
+`func_0027DE50` passes all 28 local places in each release. Review of PR #357
+removed the volatile qualifiers and the separate assembler-name write alias:
+one ordinary declaration of the packet cursor preserves the measured reloads
+and stores. Each header has its own pointer lifetime; the two 16-byte templates
+are separate measured objects. The coordinate-offset globals are ordinary
+integer objects too; no forced access is needed for this sequence.
 Coordinate-offset snapshots retain the real load order before the first writer
 reload. Signed halfword assignments preserve the actual 0x8001/0x8004 writes.
 The separate native-only packet draft corroborates the template extents and
