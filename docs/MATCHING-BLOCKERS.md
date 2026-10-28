@@ -1886,6 +1886,11 @@ through Q, waits for the result, and transfers it back with `qmfc2`. No C
 attempt is useful under this compiler; leave its marker pending maintainer
 agreement for `ASM_FUNC`.
 
+`func_00282E80` is the related 48-byte xy-distance helper at all 28
+placements. It subtracts two vectors, squares and sums xy, computes `vsqrt`
+through Q and returns the scalar result through `qmfc2`; its VU0 body likewise
+has no C route under this compiler. Keep the marker pending maintainer review.
+
 `func_00283360` is a 40-byte example: its body is identical in the boot and all
 27 levels, and it uses `vmulx.xyzw`, `vmr32.xyzw`, `vaddw.x/y` and `sqc2`.
 There are 151 direct calls to its placements across the 28 programs, confirming
