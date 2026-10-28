@@ -2514,3 +2514,31 @@ Reopen these deposits with evidence about the original pointer lifetimes or
 argument-evaluation schedule, rather than repeating the tied spellings. Only US
 local checks were run for these near misses; other releases and strict linked
 qualification remain unverified.
+
+### Effect helpers reopened with current source methods
+
+The reconnaissance stubs for `func_L11_00456EA0`, `func_L11_00458C38`,
+`func_L05_00445B58` and `func_L05_00445C38` have been replaced by real C in
+commit `2c1299e3`. Local checks pass every carrying place in US, US2 and PAL;
+linked qualification remains the coordinator's separate check. Their old
+GP/quadword-only screens were not evidence against C. The basis helper's
+three homogeneous zeros use a chained float assignment, retaining `mtc1`
+and the measured `swc1` order without volatile accesses. The Joba burst's
+typed integer/FP interleaving keeps both register banks' actual arguments;
+the nested random expressions retain the observed call order.
+
+The related `func_L05_00427E10` impact reconstruction passes all four US and
+US2 places and is absent from PAL. Its packet has a 16-byte direction,
+attacker, flags, byte kind/mode, halfword class, float damage and enable word.
+The indexed target-list loop, unlike the equivalent early pointer
+initialization, retains retail's guarded pointer setup and GPR allocation.
+
+The remaining recovered drafts are still near misses, with real C and
+measurements in `nonmatching/`: `func_L11_00456938` (260/268, retreat-branch
+folding and probe-copy placement), `func_L05_00445D60` (560/560, index-view
+and output-pointer allocation), and `func_L05_004276E8` (644/640, constant
+hoisting). `func_L00_00300438` now uses the actual `double` return of
+`func_001234F0` and the variadic formatter. That contract correction does
+not match it: scalar pair swaps restore the retail frame but leave
+444/468 bytes. The discarded aggregate swap needed another 16 stack bytes.
+Do not restore the old false integer return to influence allocation.
