@@ -1864,6 +1864,12 @@ unit it emits only two things:
 Every other MMI word — `pmaxw`, `pminw`, `pcpyld`, `pcpyud`, `pexch`, `pextlw` —
 never comes out of a C body.
 
+`func_00283360` is a 40-byte example: its body is identical in the boot and all
+27 levels, and it uses `vmulx.xyzw`, `vmr32.xyzw`, `vaddw.x/y` and `sqc2`.
+There are 151 direct calls to its placements across the 28 programs, confirming
+that these are reachable instructions in a real function. No C attempt is
+appropriate; leave `INCLUDE_ASM` until a maintainer agrees to `ASM_FUNC`.
+
 **The rule that follows, and the traps it avoids:**
 
 * A decoded COP2 instruction on a reachable path from a verified entry is evidence
