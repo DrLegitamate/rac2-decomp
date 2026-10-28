@@ -681,6 +681,5 @@ INCLUDE_ASM("asm/levels", func_L05_0041EF00);
 
 /* func_L05_0041FD48 is built with -G8: see L05_00314E28-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L05_0041FE98);
 
 /* func_L05_0041FFF8 is built with -G8: see L05_00314E28-g8.c. */

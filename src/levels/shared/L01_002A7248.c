@@ -188,7 +188,54 @@ INCLUDE_ASM("asm/levels", func_L01_002AE128);
 
 INCLUDE_ASM("asm/levels", func_L01_002B0318);
 
-INCLUDE_ASM("asm/levels", func_L01_002B3458);
+extern void func_L00_002AF7D0(void);
+extern void func_L00_002B1F90(void);
+extern void func_L00_00322EC8(char *a0);
+extern void func_L00_002D2E68(void);
+extern void func_L00_002A6708(void);
+extern void func_L00_002A53B8(void);
+extern void func_L00_002D24B8(void);
+extern void func_002A677C(int a0);
+extern void func_L01_002BEB90(int a0, int a1);
+extern void func_L01_002B3D28(void);
+extern char D_00189E20[];
+
+void func_L01_002B3458(int a0, int a1, int a2) {
+    char *s0 = D_00189E20;
+
+    func_L00_002AF7D0();
+    s0[0x22B6] = 1;
+    func_L00_002B1F90();
+    *(int *)(s0 + 0x2290) = *(int *)(s0 + 0xC18);
+    func_L00_00322EC8(s0 + 0x18E0);
+    func_L00_00322EC8(s0 + 0x1A30);
+    *(int *)(*(int *)(s0 + 0x2290) + 0x9C) = -1;
+    if (a0 != 4 || *(unsigned char *)(s0 + 0x22B4) != a0)
+        func_L00_002D2E68();
+    func_L00_002A6708();
+    func_L00_002A53B8();
+    {
+        char *s1 = D_00189E20;
+
+        *(unsigned char *)(s1 + 0x22B4) = a0;
+        *(int *)(s1 + 0xC14) = a2;
+        *(int *)(s1 + 0x2290) = a2;
+    }
+    func_L01_002B3D28();
+    {
+        char *s2 = D_00189E20;
+
+        *(float *)(s2 + 0x250) = *(float *)(s2 + 0x258);
+        *(float *)(s2 + 0x254) = *(float *)(s2 + 0x25C);
+        *(unsigned short *)(*(int *)(s2 + 0x2290) + 0x34) |= 6;
+        *(float *)(s2 + 0xC20) = 1.0f;
+        *(float *)(s2 + 0xC24) = 1.0f;
+        func_L00_002D24B8();
+        func_002A677C(*(int *)(s2 + 0x2290));
+        *(unsigned short *)(s2 + 0x24F2) = a1;
+    }
+    func_L01_002BEB90(a1, 2);
+}
 
 
 /* func_L01_002B3788 is defined in L01_002B3788-contact.c. */
@@ -396,7 +443,68 @@ void func_L01_003242C8(char *dst, int x, int idx)
 }
 
 
-INCLUDE_ASM("asm/levels", func_L01_00324410);
+extern int func_00115AC0(char *dst, char *src, int len);
+
+/* Expands a template: copies src into the scratchpad, then writes it to out, replacing %d (next number) and %<n>d (n-th number) with the numbers listed in nums (every second int, up to ten, stopped by -1). */
+void func_L01_00324410(char *out, char *src, int *nums)
+{
+    int tab[10];
+    unsigned char buf[32];
+    int i;
+    int *p;
+    int *q;
+    unsigned char *s;
+    char *w;
+    int n;
+    int cnt;
+    int v;
+
+    p = nums;
+    i = 0;
+    func_00115AC0((char *)0x70000000, src, 0xFF);
+
+    q = tab;
+    for (;;) {
+        p += 2;
+        v = p[-2];
+        if (v == -1)
+            break;
+        *q++ = v;
+        i++;
+        if (i >= 10)
+            break;
+    }
+
+    s = (unsigned char *)0x70000000;
+    w = out;
+    cnt = 0;
+    while (*s != 0) {
+        if (*s == '%') {
+            if (s[1] == 'd') {
+                v = cnt++;
+                s += 2;
+            } else {
+                v = s[1] - '0';
+                s += 3;
+            }
+            func_L01_003242C8((char *)buf, tab[v], 0);
+            n = 0;
+            if (*buf != 0) {
+                while (buf[n] != 0 && n < 32) {
+                    *w = buf[n];
+                    n++;
+                    w++;
+                }
+            }
+            *w = 0;
+        } else {
+            *w = *s;
+            s++;
+            w++;
+        }
+    }
+    *w = 0;
+}
 
 INCLUDE_ASM("asm/levels", func_L01_00324550);
 
@@ -431,7 +539,49 @@ int func_L01_003246F8(int key) {
 /* RAC1 counterpart: src/overlays/shared/span_particle.c, spawn_span_particle. */
 INCLUDE_ASM("asm/levels", func_L01_00326DD8);
 
-INCLUDE_ASM("asm/levels", func_L01_00331CA0);
+typedef int Quad331CA0 __attribute__((mode(TI)));
+typedef struct { unsigned char b0, b1, b2, b3; int color; unsigned char seed, alpha; unsigned short size; float life; union { Quad331CA0 q; float f[4]; } position; float payload[8]; } Particle331CA0;
+extern Particle331CA0 *func_002B9030(int kind);
+extern float func_002A7878(float low, float high);
+extern int func_00283CF0(float value);
+extern unsigned char *D_L01_001FF164;
+
+/* Spawns the burst particle of the given kind at position, carrying the velocity and the size scale in its payload. */
+void func_L01_00331CA0(Quad331CA0 *position, int kind, Quad331CA0 *velocity, float scale)
+{
+    Quad331CA0 saved = *velocity;
+    Quad331CA0 *vp = &saved;
+    Particle331CA0 *p = func_002B9030(0x49);
+
+    if (p) {
+        float life = 0.0f;
+        int tint = 0;
+
+        switch (kind) {
+        case 0:
+            func_002A7878(0.25f, 0.25f);
+            life = 0.12f;
+            tint = 0x20;
+            break;
+        case 1:
+            func_002A7878(1.0f, 1.0f);
+            life = 0.5f;
+            tint = 0xD;
+            break;
+        }
+        p->size = 0x37;
+        p->color = (tint << 24) | 0xFFFFFF;
+        p->alpha = func_00283CF0(4.0f) + 0x20;
+        p->b1 = 0;
+        p->b3 = 0x48;
+        p->b2 = D_L01_001FF164[kind];
+        p->life = life * 210000.0f;
+        p->seed = func_002A7878(0.0f, 360.0f);
+        p->position.q = *position;
+        *(Quad331CA0 *)p->payload = *vp;
+        p->payload[3] = scale;
+    }
+}
 
 /* func_L01_00331E08 is in L01_00331E08.c. */
 

@@ -329,13 +329,9 @@ INCLUDE_ASM("asm/levels", func_L00_003200F8);
    out of $gp there), so its body lives in L00_00316F60-g8.c. */
 
 
-INCLUDE_ASM("asm/levels", func_L00_00320B70);
-
 /* Defined in L00_00320B70.c. */
 
 /* func_L00_00321878 is defined in L00_00321878-g8.c. */
-
-INCLUDE_ASM("asm/levels", func_L00_00322428);
 
 
 /* builds two 64-byte blocks from a 3-float vector and from a vector inside the caller object, combines them, then scales one block again from the same source vector */
@@ -399,6 +395,8 @@ void func_L00_00322AC0(List_F66766f2b *obj, int a1, int a2, float v)
     obj->count = obj->count + 1;
 }
 
+INCLUDE_ASM("asm/levels", func_L00_00322428);
+
 INCLUDE_ASM("asm/levels", func_L00_00322BE0);
 
 /* When active field 0x14C is nonzero, iterate the slots beginning at 0x120 using count 0x148, call the bound helper for each non-null slot, clear each processed slot, and reset the active field. Original game role is unknown. */
@@ -416,8 +414,6 @@ void func_L00_00322EC8(Rac2Native_5b4b17178a13f443_SmallSlotReset128Owner *owner
     }
 }
 
-
-INCLUDE_ASM("asm/levels", func_L00_00323338);
 
 INCLUDE_ASM("asm/levels", func_L00_00323448);
 
@@ -512,8 +508,6 @@ void func_L00_00325600(void *a0, void *a1, void *a2) {
     func_002B0408(a0, buf, a2);
 }
 
-
-INCLUDE_ASM("asm/levels", func_L00_00325AE8);
 
 INCLUDE_ASM("asm/levels", func_L00_00325CC0);
 

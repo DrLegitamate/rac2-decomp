@@ -42,13 +42,11 @@ void func_L00_003F94F8(char *self)
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L00_003F9570);
 
 INCLUDE_ASM("asm/levels", func_L00_003F9A30);
 
 INCLUDE_ASM("asm/levels", func_L00_003FA858);
 
-INCLUDE_ASM("asm/levels", func_L00_003FBF78);
 
 void func_L00_003FC100(void)
 {
@@ -105,7 +103,6 @@ void func_L00_003FC820(float *pos)
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L00_003FCA40);
 
 
 

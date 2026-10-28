@@ -118,7 +118,6 @@ void func_L05_00417448(char *object)
 
 INCLUDE_ASM("asm/levels", func_L05_00417D48);
 
-INCLUDE_ASM("asm/levels", func_L05_00418288);
 
 /* func_L05_00418440 is matched in L05_00418440.c (built with -mno-split-addresses). */
 
@@ -252,7 +251,6 @@ void func_L05_0041C410(char *object)
 }
 
 
-INCLUDE_ASM("asm/levels", func_L05_0041C708);
 
 
 
@@ -572,14 +570,12 @@ void func_L05_00426D98(char *object)
 }
 
 
-INCLUDE_ASM("asm/levels", func_L05_00427090);
 
 INCLUDE_ASM("asm/levels", func_L05_00427238);
 
 INCLUDE_ASM("asm/levels", func_L05_004276E8);
 
 
-INCLUDE_ASM("asm/levels", func_L05_00427988);
 
 /* func_L05_00427B20 is defined in L05_00427B20.c. */
 
