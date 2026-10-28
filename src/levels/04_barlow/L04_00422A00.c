@@ -37,8 +37,88 @@ extern int D_001A79F0 __attribute__((sda));
 extern int D_L04_001B24DC __attribute__((sda));
 extern u8 D_L04_001BF880[];
 
+typedef struct { u8 pad_0[0x20]; u8 flags; } FlareMoby;
+typedef struct {
+    FlareMoby *moby; s32 state; f32 intensity; s32 pad_c;
+    s16 alpha[16]; s16 tex[16]; s32 color[16]; f32 dist[16]; f32 scale[16];
+} LensFlare;
+typedef struct {
+    int width, height, half_width, half_height;
+    int left, top, right, bottom;
+} ScreenExtent;
+extern LensFlare D_L04_001B9980;
+extern u8 D_L04_001B9680[];
+extern int D_L04_001B0D08;
+extern ScreenExtent D_001A7340 __attribute__((sda));
+extern f32 func_00282E48(void *, void *);
+extern f32 func_00283CE0(int);
+extern void func_00279BD8(f32 *, void *);
+extern long long func_0027C878(int);
+extern f32 func_00282C48(f32);
+extern int func_00283CF0(f32);
+extern void func_002FC560(int, long long);
+extern void func_0027E018(int, int, int, int, int, int, int, int, long long, long long);
+
 /* Defined in L04_00422D40-qcopy.c. */
-INCLUDE_ASM("asm/levels", func_L04_00422DA8);
+/* Projects the flare object to the screen and draws its 14 sprites along the line
+   through the screen centre, faded by distance and by how far off-centre it is
+   (RAC1 draw_lens_flare). The base size is read through a pointer: retail
+   rematerializes its address inside the loop. */
+void func_L04_00422DA8(u8 *object) {
+    u8 *vars = *(u8 **)(object + 0x68);
+    f32 scr[4], ctr[4], d[4], off[4], at[4];
+    f32 dist, fade, fx, fy, half;
+    int i, size, rgba, x, y;
+    long long tex;
+    int *base_size;
+
+    if (D_L04_001B9980.state != 1 || (D_L04_001B9980.moby->flags & 0x80)) {
+        D_L04_001B9980.state = 0;
+        return;
+    }
+    if (D_L04_001B9980.intensity <= 0.0f)
+        return;
+    dist = func_00282E48(D_L04_001B9680, vars + 0x30);
+    ctr[0] = func_00283CE0(D_001A7340.half_width);
+    ctr[1] = func_00283CE0(D_001A7340.half_height);
+    base_size = &D_L04_001B0D08;
+    func_00279BD8(scr, vars + 0x30);
+    scr[0] = (scr[0] - func_00283CE0(D_001A7340.left)) * 0.0625f;
+    scr[1] = (scr[1] - func_00283CE0(D_001A7340.top)) * 0.0625f;
+    d[0] = ctr[0] - scr[0];
+    d[1] = ctr[1] - scr[1];
+    for (i = 0; i < 14; i++) {
+        tex = func_0027C878(D_L04_001B9980.tex[i] + 0x49);
+        off[0] = d[0] * D_L04_001B9980.dist[i];
+        off[1] = d[1] * D_L04_001B9980.dist[i];
+        at[0] = ctr[0] + off[0];
+        at[1] = ctr[1] + off[1];
+        fade = dist - 5.0f;
+        if (fade > 1.0f)
+            fade = 1.0f;
+        else if (fade < 0.0f)
+            fade = 0.0f;
+        fx = func_00282C48(d[0]) / ctr[0] * -5.0f + 5.5f;
+        if (fx > 1.0f)
+            fx = 1.0f;
+        else if (fx < 0.0f)
+            fx = 0.0f;
+        fy = func_00282C48(d[1]) / ctr[1] * -5.0f + 5.5f;
+        if (fy > 1.0f)
+            fy = 1.0f;
+        else if (fy < 0.0f)
+            fy = 0.0f;
+        fade *= fx * fy * D_L04_001B9980.intensity;
+        rgba = (func_00283CF0(fade * D_L04_001B9980.alpha[i]) << 24) | (D_L04_001B9980.color[i] & 0xFFFFFF);
+        size = func_00283CF0(*base_size * D_L04_001B9980.scale[i]);
+        func_002FC560(0x42, 0x8000000048LL);
+        half = size >> 1;
+        x = func_00283CF0(at[0] - half);
+        y = func_00283CF0(at[1] - half);
+        func_0027E018(x, y, size, size, 0, 0, 0x40, 0x40, rgba, tex);
+    }
+    D_L04_001B9980.intensity = 0.0f;
+}
 INCLUDE_ASM("asm/levels", func_L04_00423258);
 /* Counts the object's state up, easing its timer down while it is over the
    limit, and hands the level's recorder the object's channel when it runs out. */
@@ -194,6 +274,8 @@ void func_L04_00441178(u8 *a0) {
 }
 /* func_L04_0044AAC8 is defined in L04_00422A00-g8.c (it reads small data through $gp). */
 INCLUDE_ASM("asm/levels", func_L04_0044BC90);
+
+/* Defined in L04_0044BC90-g8.c. */
 INCLUDE_ASM("asm/levels", func_L04_0044C598);
 INCLUDE_ASM("asm/levels", func_L04_0044D0C0);
 INCLUDE_ASM("asm/levels", func_L04_0044D428);
@@ -242,7 +324,7 @@ void func_L04_0044D6A0(u8 *a0) {
     }
     func_348708(a0, s1 + 0x260, 1, 1, 2.5f);
 }
-INCLUDE_ASM("asm/levels", func_L04_0044D860);
+/* Defined in L04_0044D860-g8.c. */
 
 /* subtracts the sub-structure's field from the owner's timer and reports it */
 int func_L04_0044DAC8(char *a0) {
@@ -276,7 +358,7 @@ void func_L04_00450268(char *a0) {
         *(void **)(s0 + 0x290) = 0;
     }
 }
-INCLUDE_ASM("asm/levels", func_L04_004502D0);
+/* Defined in L04_004502D0-g8.c. */
 extern float func_00282DF0(void *);
 extern void func_00282CF0(void *, void *, void *);
 extern void func_L02_0032E998(void *, void *, void *, void *, int, void *, void *, f32, f32);

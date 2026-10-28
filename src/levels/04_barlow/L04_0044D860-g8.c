@@ -1,9 +1,3 @@
-/* USA v1.01/v2.00: 0/1 places, 612/612 bytes with -O2 -G8
- * -ffunction-sections -g -frac2-hazard-labels. PAL has no catalogue entry.
- * Remaining difference: v1/v0 allocation in the final target/state tests.
- * Local expression/scoping and return shapes tried; earlier division padding
- * and minimum-clamp scheduling resolved. Reopen with allocation/lifetime evidence.
- */
 typedef unsigned char u8;
 typedef signed char s8;
 typedef float f32;
@@ -14,9 +8,8 @@ extern u8 *D_L04_001AF90C;
 extern f32 D_L04_001B188C __attribute__((sda));
 extern f32 D_L04_001B1890 __attribute__((sda));
 extern f32 D_L04_001B1894 __attribute__((sda));
-extern f32 D_L04_001B1898 __attribute__((sda));
-extern int D_L04_001B189C __attribute__((sda));
-extern f32 D_L04_001B18A0 __attribute__((sda));
+extern int D_L04_001B1898 __attribute__((sda));
+extern f32 D_L04_001B189C __attribute__((sda));
 extern void func_002A7470(void *, int, int, int);
 extern float func_00283248(float, float);
 extern float func_00283BE0(float, float);
@@ -33,6 +26,7 @@ int func_L04_0044D860(u8 *object) {
     u8 *data = *(u8 **)(object + 0x68);
     float heading, length, step, ratio, angle, minimum, scale, decay;
     u8 *target;
+    int result;
     if (object[0x43] != D_L04_001B1883)
         func_002A7470(object, D_L04_001B1883, 0, 10);
     if (D_L04_001AF90C) {
@@ -58,8 +52,8 @@ int func_L04_0044D860(u8 *object) {
             delta[2] = 0.0f;
             func_00282CC0(object + 0x10, object + 0x10, delta);
         }
-        decay = func_00283CE0(D_L04_001B189C);
-        minimum = D_L04_001B18A0;
+        decay = func_00283CE0(D_L04_001B1898);
+        minimum = D_L04_001B189C;
         *(float *)(object + 0x2C) -= *(float *)(data + 0x230) / decay;
         if (*(float *)(object + 0x2C) < minimum)
             *(float *)(object + 0x2C) = minimum;
@@ -70,9 +64,14 @@ int func_L04_0044D860(u8 *object) {
         {
             u8 *hero = D_L04_001AF90C;
             *(float *)(data + 0x220) = scale;
-            if (hero && hero[0x20] != 0x5A && (s8)hero[0x20] >= 0)
-                return 0;
+            if (!hero || hero[0x20] == 0x5A || (s8)hero[0x20] < 0)
+                result = 1;
+            else
+                result = 0;
+            goto done;
         }
     }
-    return 1;
+    result = 1;
+done:
+    return result;
 }

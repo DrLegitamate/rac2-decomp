@@ -1431,3 +1431,6 @@ src/levels/03_endako/L03_0041F410-g8.c	-O2 -G8 -ffunction-sections -g
 src/levels/03_endako/L03_0041F178-g8.c	-O2 -G128 -ffunction-sections -Wa,-G128
 src/levels/04_barlow/L04_003E7E68-g32.c	-O2 -G32 -Wa,-G32 -ffunction-sections
 src/levels/04_barlow/L04_003ED3D8.c	-O2 -G0 -ffunction-sections -g -frac2-keep-block-order
+src/levels/04_barlow/L04_0044D860-g8.c	-O2 -G8 -ffunction-sections -g -frac2-hazard-labels
+src/levels/05_feltzin_system/L05_00415FD0-qcopy.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-zero-ti-por
+src/levels/05_feltzin_system/L05_004161B0.c	-O2 -G0 -ffunction-sections -fno-gcse
