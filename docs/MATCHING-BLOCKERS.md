@@ -1897,6 +1897,11 @@ products using `vmulax`/`vmadd*`, and writes the result using `sqc2`. The
 qualified compiler has no C route for its COP2/VU0 body; keep the marker
 pending maintainer review.
 
+`func_00283388` is a 48-byte VU0 helper at all 28 placements. It builds four
+vectors with `vmulx`, `vmr32`, `vmove` and `vaddw`, then stores them using
+`sqc2`. As with the other decoded COP2 bodies, it has no C route under the
+qualified compiler; retain the marker pending maintainer review.
+
 `func_00283360` is a 40-byte example: its body is identical in the boot and all
 27 levels, and it uses `vmulx.xyzw`, `vmr32.xyzw`, `vaddw.x/y` and `sqc2`.
 There are 151 direct calls to its placements across the 28 programs, confirming
