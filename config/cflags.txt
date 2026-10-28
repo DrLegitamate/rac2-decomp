@@ -1334,3 +1334,7 @@ src/levels/01_oozla/L01_003D26C0-g8.c	-O2 -G8 -ffunction-sections
 src/levels/shared/L22_003F52D8-g8.c	-O2 -G8 -ffunction-sections -g -frac2-zero-ti-por
 
 src/levels/18_damosel/L18_003FB620-particles.c	-O2 -G32 -Wa,-G32 -ffunction-sections
+src/game/00271B90.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -g
+src/game/00270598.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -g
+src/game/002712D8.c	-O2 -G0 -ffunction-sections -g
+src/game/0027F128-font-g8.c	-O2 -G8 -ffunction-sections -Wa,-G32

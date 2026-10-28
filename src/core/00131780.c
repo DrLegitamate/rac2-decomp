@@ -202,7 +202,6 @@ INCLUDE_ASM("asm/core", func_001326D8);
 
 INCLUDE_ASM("asm/core", func_00132318);
 
-INCLUDE_ASM("asm/core", func_00132498);
 
 INCLUDE_ASM("asm/core", func_001325E0);
 
@@ -279,8 +278,6 @@ INCLUDE_ASM("asm/core", func_00132C48);
 
 /* func_00132DF0 is defined in 00132DF0-g8.c. */
 
-
-INCLUDE_ASM("asm/core", func_00133108);
 
 /* rac1-decomp src/core/989snd.c: func_0012EC30 */
 /* snd_UnkFunction_0012eaf0 */

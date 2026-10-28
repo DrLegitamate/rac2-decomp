@@ -754,7 +754,39 @@ func_00123D30 (void *p, struct frame_state_internal *state,
 }
 
 
-INCLUDE_ASM("asm/core", func_001240C8);
+extern fde *func_00123B40(void *);
+extern void *func_00123C28(fde *, struct cie_info *);
+extern void *func_00115484(void *, int, unsigned int);
+
+/* Reconstruct the DWARF frame state for the instruction at pc. */
+frame_state *func_001240C8(void *pc, frame_state *state) {
+    fde *f;
+    struct cie_info info;
+    struct frame_state_internal state_in;
+    void *insn, *end, *pc_tmp;
+    unsigned int i;
+    f = func_00123B40(pc);
+    if (f == 0) return 0;
+    insn = func_00123C28(f, &info);
+    if (insn == 0) return 0;
+    func_00115484(&state_in, 0, sizeof(state_in));
+    state_in.s.retaddr_column = info.ra_regno;
+    state_in.s.eh_ptr = info.eh_ptr;
+    end = (void *)get_cie(f) + get_cie(f)->length + 4;
+    while (insn < end)
+        insn = func_00123D30(insn, &state_in, &info, 0);
+    insn = f + 1;
+    if (info.augmentation[0] == 'z') {
+        insn = func_00123530(insn, &i);
+        insn += i;
+    }
+    end = (void *)f + f->length + 4;
+    pc_tmp = f->pc_begin;
+    while (insn < end && pc_tmp <= pc)
+        insn = func_00123D30(insn, &state_in, &info, &pc_tmp);
+    *state = state_in.s;
+    return state;
+}
 
 ASM_FUNC("asm/core", func_00124414);
 
