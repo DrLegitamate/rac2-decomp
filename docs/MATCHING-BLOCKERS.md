@@ -1932,6 +1932,12 @@ placements. It uses `vdiv` and Q, converts the quotient through `vftoi0` /
 body likewise has no C route under the qualified compiler; keep the marker
 pending maintainer review.
 
+`func_002837D0` is a 64-byte vector transform at all 28 placements. It loads
+two vectors, forms componentwise and cross-product terms with
+`vopmula`/`vopmsub`, accumulates a dot-product component, and stores the
+result with `sqc2`. Its COP2/VU0 body has no C route under the qualified
+compiler; retain the marker pending maintainer review.
+
 `func_00283360` is a 40-byte example: its body is identical in the boot and all
 27 levels, and it uses `vmulx.xyzw`, `vmr32.xyzw`, `vaddw.x/y` and `sqc2`.
 There are 151 direct calls to its placements across the 28 programs, confirming
