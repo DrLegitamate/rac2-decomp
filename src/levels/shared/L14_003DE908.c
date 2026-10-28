@@ -38,4 +38,3 @@ s32 func_L14_00423CD0(char *self, char *point, s32 route, s16 *index, s32 revers
 }
 
 
-INCLUDE_ASM("asm/levels", func_L14_004272D8);
