@@ -1527,6 +1527,14 @@ FPU rounding mode, so the retained cast is not established as behaviorally
 equivalent. Reopen with a qualified standard-C/compiler mechanism that keeps
 the conversion in the FPU and preserves rounding-mode semantics.
 
+**29 October 2026 current-master probe — `func_00283CC8`:** At 28 USA v1.01
+placements the retail body is 24 bytes. The cast candidate is 32/24 and 0/28; a
+write-then-read source form (`*out = (float)(int)value; return value - *out;`)
+also remains 32/24 and 0/28. The compiler still sinks the store into the return
+delay slot, retaining the float-to-int GPR transfers and `$f1` allocation. A
+`__builtin_rintf` probe is 76/24 and 0/28 due to helper calls and spills. No
+compliant C form has resolved the conversion allocation; retain the marker.
+
 - **A float-bit return may need the full R5900-width value.** In `func_002829D8`, retail moves
   the float bits to a GPR, shifts them into the high word, and compares the signed 64-bit result
   with 1 before subtracting 2. The -G8 C form using an unsigned 64-bit shift is 76/64 bytes;
