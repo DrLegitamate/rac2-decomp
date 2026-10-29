@@ -1561,6 +1561,7 @@ src/levels/shared/L02_00410E58.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2
 src/levels/shared/L00_00409558-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
 src/game/0027EE58.c	-O2 -G0 -ffunction-sections -g
 src/levels/shared/L01_00397110-swing.c	-O2 -G0 -mno-split-addresses -ffunction-sections
+src/levels/shared/L16_00395ED0-blend-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -mno-split-addresses
 src/levels/shared/L02_003CEFD8.c	-O2 -G0 -ffunction-sections -frac2-zero-ti-por
 
 src/levels/shared/L00_003B3158-shard.c	-O2 -G0 -ffunction-sections -frac2-zero-ti-por -fno-gcse
@@ -1568,6 +1569,7 @@ src/core/00118548.c	-O2 -G2 -ffunction-sections -mastra-quad-saves
 src/levels/shared/L02_003C4280.c	-O2 -G0 -ffunction-sections -frac2-hazard-labels
 src/levels/shared/L02_00333218.c	-O2 -G0 -ffunction-sections -fno-thread-jumps
 
+src/levels/shared/L13_0040A2C8.c	-O2 -G0 -ffunction-sections -fno-thread-jumps
 src/levels/shared/L00_003C8608-g64.c	-O2 -G64 -Wa,-G64 -ffunction-sections
 src/levels/shared/L00_003C6A88-g8.c	-O2 -G8 -ffunction-sections -g -frac2-qcopy -frac2-qcopy-barrier -frac2-hazard-labels
 src/levels/shared/L00_003C79F8-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
@@ -1601,6 +1603,7 @@ src/levels/shared/L00_003A8238-impact.c	-O2 -G0 -ffunction-sections -frac2-qcopy
 src/levels/shared/L00_003E2180-g8.c	-O2 -G8 -ffunction-sections -g
 
 src/game/002EE3B0-g8.c	-O2 -G8 -ffunction-sections -frac2-hazard-labels
+src/levels/shared/L13_0041BAE0-ring.c	-O2 -G32 -Wa,-G32 -ffunction-sections
 src/levels/shared/L00_003F5390-g8.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por
 src/levels/shared/L00_00384070-g8.c	-O2 -G32 -Wa,-G32 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
 
@@ -1611,6 +1614,7 @@ src/levels/shared/L00_003B4018-g8.c	-O2 -G8 -ffunction-sections -g -fno-gcse
 src/levels/shared/L00_003B6858-g8.c	-O2 -G32 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-zero-ti-barrier
 src/levels/shared/L00_003F8E08-e920-g8.c	-O2 -G8 -ffunction-sections -g
 src/levels/shared/L00_002ECFE8.c	-O2 -G0 -ffunction-sections -g
+src/levels/shared/L13_0040DC20-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
 
 src/game/0031F210-basis-g8.c	-O2 -G8 -ffunction-sections -fno-sched-spec
 src/game/002DF1B8-packet.c	-O2 -G0 -ffunction-sections -fno-strength-reduce
@@ -1711,8 +1715,10 @@ src/game/002CF7F0-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections 
 src/game/002D1970-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections -fno-builtin
 src/levels/shared/L04_00416390-g8.c	-O2 -G8 -ffunction-sections -g
 src/game/002D5E98-audio.c	-O2 -G0 -ffunction-sections -mno-split-addresses
+src/levels/shared/L18_0035D238.c	-O2 -G0 -ffunction-sections -g -frac2-hazard-labels
 src/levels/shared/L00_003B3158-rings.c	-O2 -G64 -ffunction-sections -Wa,-G64 -frac2-qcopy -frac2-qcopy-barrier -g
 src/levels/shared/L00_003B3158-pair.c	-O2 -G16 -Wa,-G16 -ffunction-sections
+src/levels/shared/L16_003C32F8-render-g64.c	-O2 -G64 -Wa,-G64 -ffunction-sections -frac2-zero-ti-por -g
 src/game/0030F7B0-g16.c	-O2 -G16 -ffunction-sections -Wa,-G16
 
 src/game/002CFDA8-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections -fno-builtin
@@ -1730,6 +1736,7 @@ src/game/002BC508-g8.c	-O2 -G8 -ffunction-sections -g
 
 src/game/00274128-projection.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -g
 src/game/002D3390-002D36A0-g8.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por -frac2-qcopy
+src/levels/shared/L12_003E3A88-g8.c	-O2 -G8 -ffunction-sections -g
 
 src/levels/shared/L00_002A9760-g8.c	-O2 -G8 -ffunction-sections -g
 # Preserve the line-label FPU padding before the visibility-test division.
@@ -1745,6 +1752,7 @@ src/game/0030F7B0-crate-g8.c	-O2 -G8 -ffunction-sections -ffast-math
 src/levels/shared/L00_003A5FC0-contact.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
 src/levels/shared/L00_002B5B60-motion.c	-O2 -G0 -ffunction-sections -g
 
+src/levels/shared/L16_002B5EE0-motion.c	-O2 -G0 -ffunction-sections -g
 src/levels/shared/L00_003D37E8-ribbon-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-hazard-labels
 
 src/game/002CE5D0-g8.c	-O2 -G8 -ffunction-sections -g
@@ -1766,6 +1774,7 @@ src/levels/shared/L00_003D1258-g8.c	-O2 -G8 -ffunction-sections -frac2-keep-bloc
 src/levels/shared/L04_003C8380-stream.c	-O2 -G0 -ffunction-sections -g
 
 
+src/levels/shared/L16_0040BED0.c	-O2 -G16 -Wa,-G16 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
 src/levels/shared/L00_003C6298-pool-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
 src/levels/shared/L00_002D3798-aim-g8.c	-O2 -G8 -ffunction-sections -g
 

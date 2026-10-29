@@ -1,9 +1,8 @@
-/* Near miss, worker w3 batch 3: 532/532 B, frame 0xE0 equal, 0/2 with ONE swap. Profile `-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier` (no -mno-split-addresses); the vectors are `float X[] __attribute__((sda))` (macro loads), D_34B0[0] is read through the SDATA alias (gp). Left: `addiu $a1,$s0,0x50` and `mov.s $f12,$f20` swapped before the func_002AA548 call. A prototype that lists the float before the second pointer matches but misdescribes the matched func_002AA548, so it is not used. */
 #include "common.h"
 typedef int Vector128 __attribute__((mode(TI)));
-typedef union { Vector128 bits; float f[4]; } Vector;
-typedef struct { Vector128 rotation[3], source[3], quaternion, angles; Vector position; } BlendWorkspace;
-extern float func_002AA548(float *,float *,float,float,float,float);
+typedef struct { Vector128 rotation[3], source[3], quaternion, angles; float position[4] __attribute__((aligned(16))); } BlendWorkspace;
+/* Integer and FP arguments retain their order within the EE ABI register banks. */
+extern float func_002AA548(float *,float,float *,float,float,float);
 extern void func_002833F0(void *,void *);
 extern float func_00283248(float,float);
 extern float func_00282E20(void *);
@@ -17,10 +16,10 @@ extern void func_00283958(void *,void *);
 extern void func_002AB6D8(float *,float *);
 extern void func_00335370(void *);
 extern void func_003353C8(void *);
-extern float D_L16_001B3490[] __attribute__((sda));
-extern float D_L16_001B34A0[] __attribute__((sda));
-extern float D_L16_001B34B0[] __attribute__((sda));
-extern float D_L16_001B34C0[] __attribute__((sda));
+extern float D_L16_001B3490[4] MACRO_ADDR;
+extern float D_L16_001B34A0[4] MACRO_ADDR;
+extern float D_L16_001B34B0[4] MACRO_ADDR;
+extern float D_L16_001B34C0[4] MACRO_ADDR;
 void func_L16_00395ED0(char *object)
 {
     BlendWorkspace local;
@@ -28,7 +27,7 @@ void func_L16_00395ED0(char *object)
     float startAngle,endAngle,startLength,endLength,startHeight,endHeight,angle,length;
     float *position;
     if (*(int *)(state+4)==-1) return;
-    if (*(float *)(state+0x4c)<1.0f) func_002AA548((float *)(state+0x4c),(float *)(state+0x50),1.0f,0.0001850000117f,0.0001850000117f,0.01110000070f);
+    if (*(float *)(state+0x4c)<1.0f) func_002AA548((float *)(state+0x4c),1.0f,(float *)(state+0x50),0.0001850000117f,0.0001850000117f,0.01110000070f);
     func_002833F0(local.source,state+0x20);
     if (*(float *)(state+0x4c)<1.0f) {
         startAngle=func_00283248(D_L16_001B34B0[0],D_L16_001B34B0[1]);
@@ -38,12 +37,12 @@ void func_L16_00395ED0(char *object)
         startHeight=D_L16_001B34B0[2]; endHeight=D_L16_001B34C0[2];
         angle=func_002AA150(startAngle,endAngle,*(float *)(state+0x4c));
         length=(endLength-startLength)*(*(float *)(state+0x4c))+startLength;
-        local.position.f[0]=func_00283180(angle)*length;
-        local.position.f[1]=func_00283198(angle)*length;
-        local.position.f[2]=0.0f;
-        local.position.f[2]=(endHeight-startHeight)*(*(float *)(state+0x4c))+startHeight;
-    } else { qcopy(&local.position,D_L16_001B34C0); }
-    position=local.position.f;
+        local.position[0]=func_00283180(angle)*length;
+        local.position[1]=func_00283198(angle)*length;
+        local.position[2]=0.0f;
+        local.position[2]=(endHeight-startHeight)*(*(float *)(state+0x4c))+startHeight;
+    } else { qcopy(local.position,D_L16_001B34C0); }
+    position=local.position;
     func_00283098(position,position,local.source);
     func_00282CC0(position,position,state+0x10);
     func_00283810(&local.quaternion,D_L16_001B3490,D_L16_001B34A0,*(float *)(state+0x4c));

@@ -1,5 +1,17 @@
 #include "common.h"
 
+typedef struct {
+    char pad0[0xC4];
+    char *path;
+    short cur;
+    short goal;
+} Walk_409840;
+
+/* The state getter has identical copies whose placement differs between levels. */
+extern Walk_409840 *ref_L13_00409840_00(char *);
+extern int func_002B6228(void *, void *, int, int);
+extern float func_00282E80(void *, void *);
+
 /* Retail reloads the mutable movement flags at +0x88 for each update. */
 typedef struct L13C3Flags { char pad[0x88]; volatile int flags; } L13C3Flags;
 #define I(p,o) (*(int *)((p)+(o)))
@@ -158,7 +170,6 @@ int func_L13_00409008(char *obj) {
     }
     return 0;
 }
-
 void func_L13_004094D0(char *a0, char *a1, char *a2)
 {
     float out[12];
@@ -195,9 +206,39 @@ extern int func_L13_004095F8(char *, char *);
 
 extern float func_002F8938(char *, char *);
 
-extern int D_001A79F0;
+extern int D_001A79F0 __attribute__((section(".sdata")));
 
-INCLUDE_ASM("asm/levels", func_L13_00409840);
+int func_L13_00409840(char *obj, char *path)
+{
+    Walk_409840 *w = ref_L13_00409840_00(obj);
+
+    if (w == 0)
+        return 0;
+    if (path != w->path)
+        func_002B6228(obj, path, -1, 0);
+    if (D_001A79F0 == 0x45) {
+        func_L13_004095F8(obj, path + (w->cur * 16 + 0x10));
+        if (func_00282E80(obj + 0x10, path + (w->cur * 16 + 0x10)) <= 0.5f) {
+            if (w->goal == w->cur)
+                return 1;
+            if (w->goal < w->cur)
+                w->cur = w->cur - 1;
+            else
+                w->cur = w->cur + 1;
+        }
+    } else {
+        func_L13_004095F8(obj, path + (w->goal * 16 + 0x10));
+        if (func_00282E80(obj + 0x10, path + (w->goal * 16 + 0x10)) <= 0.5f) {
+            if (w->goal == w->cur)
+                return 1;
+            if (w->goal < w->cur)
+                w->cur = w->cur - 1;
+            else
+                w->cur = w->cur + 1;
+        }
+    }
+    return 0;
+}
 
 
 void func_L13_00409AB8(char *a0, char *a1)
@@ -305,11 +346,44 @@ void func_L13_00409C40(char *object, char *data, void *target, Vector128 *input,
 }
 
 extern int func_L13_0040A2C8(char *, char *);
-INCLUDE_ASM("asm/levels", func_L13_00409EE8);
+extern void func_002AFE58(char *, char *, char *, float, char *);
+extern void func_002AFD88(char *, char *, float, float, float);
+void func_L13_00409EE8(char *obj, char *data, char *target, char *unused, char *transform)
+{
+    Vector128 old;
+    int any, hit, i;
+    float height, speed;
+    func_00282CC0(obj + 0x10, obj + 0x10, data + 0xA0);
+    qcopy(&old, obj + 0x10);
+    *(int *)(data + 0x84) = 0;
+    qzero(data + 0x60);
+    any = 0; hit = 0;
+    for (i = 0; i < 8; i++) {
+        hit |= func_L13_0040A2C8(obj, data);
+        any |= hit;
+        if (!hit) break;
+    }
+    if (any) {
+        func_00282CF0(data + 0xA0, obj + 0x10, target);
+        speed = func_002AFF08(obj, data + 0xA0, transform);
+        if (*(float *)(data + 0xB0) < speed)
+            func_002AFE58(obj, data + 0xA0, data + 0xA0, *(float *)(data + 0xB0), transform);
+        else *(float *)(data + 0xB0) = speed;
+        height = func_002B0360(obj + 0x10);
+        if (height <= *(float *)(data + 0x90)) {
+            func_002AFD88(obj, obj + 0x10, 0.0f, 0.0f, *(float *)(data + 0x90) - height);
+            func_002AFEB8(obj, data + 0xA0, data + 0xA0, 0.0f, transform);
+        }
+        if (*(float *)(data + 0xB0) < *(float *)(data + 0x28) * 0.5f)
+            (*(int *)(data + 0x80))++;
+        else *(int *)(data + 0x80) = 0;
+    } else *(int *)(data + 0x80) = 0;
+    func_00282CF0(data + 0x70, obj + 0x10, &old);
+}
 
 /* func_L13_0040A0A0 is defined in L13_0040A0A0.c. */
 
-INCLUDE_ASM("asm/levels", func_L13_0040A2C8);
+
 
 extern float func_0032E870(char *, void *, char *);
 
@@ -564,7 +638,7 @@ void func_L13_0040CA70(u8 *a0)
 
 /* func_L13_0040D930 is in L13_0040D930-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L13_0040DC20);
+/* func_L13_0040DC20 is defined in L13_0040DC20-g8.c. */
 
 
 INCLUDE_ASM("asm/levels", func_L13_0040DFC0);

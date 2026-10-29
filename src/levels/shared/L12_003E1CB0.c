@@ -150,7 +150,7 @@ void func_L12_003E2418(s32 a0) {
 
 INCLUDE_ASM("asm/levels", func_L12_003E2460);
 
-INCLUDE_ASM("asm/levels", func_L12_003E3A88);
+/* func_L12_003E3A88 is defined in L12_003E3A88-g8.c. */
 
 void func_L12_00400900(int index, struct L12Settings *settings, int enable) {
     u8 *obj = (u8 *)(D_L12_001B2E9C + (index << 8));
@@ -214,11 +214,11 @@ INCLUDE_ASM("asm/levels", func_L12_00408050);
 
 
 
-INCLUDE_ASM("asm/levels", func_L12_00419E40);
+/* func_L12_00419E40 is defined in L12_00419E40.c. */
 
-INCLUDE_ASM("asm/levels", func_L12_0041A2B8);
+/* func_L12_0041A2B8 is defined in L12_0041A2B8-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L12_0041A460);
+/* func_L12_0041A460 is defined in L12_0041A460.c. */
 
 void func_L12_0041A530(s32 a0) {
     func_L12_00322AF8(a0, *(u32 *)(a0 + 0x68) + 0x50);
@@ -253,7 +253,7 @@ INCLUDE_ASM("asm/levels", func_L12_00424078);
 
 INCLUDE_ASM("asm/levels", func_L12_00426C08);
 
-INCLUDE_ASM("asm/levels", func_L12_004277F0);
+/* func_L12_004277F0 is defined in L12_004277F0-g8.c. */
 
 
 void func_L12_00427CB0(s32 a0) {
