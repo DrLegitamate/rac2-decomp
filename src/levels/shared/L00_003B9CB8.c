@@ -17,7 +17,7 @@ typedef struct { float x, y, z; int unused; float position[4]; } EffectLightReco
 extern EffectLightRecord D_L00_001C6F40[];
 extern float func_00282DB0(void *, void *);
 extern void func_00283028(void *, void *, void *);
-extern void func_L00_003BD510(void *, void *, int, int);
+extern void func_L00_003BD510(float *, float *, int, int);
 extern void func_002E5CF8(int, int, void *);
 extern void func_L00_003BC998(char *, char *);
 
@@ -128,7 +128,7 @@ void func_L00_003BAAD0(void)
     func_003182C0();
 }
 
-INCLUDE_ASM("asm/levels", func_L00_003BAC30);
+/* Implemented in L00_003B9CB8-state-g8.c. */
 
 /* Integrates motion, reflects a collision, updates the light and emits trail slots. */
 char *func_L00_003BB1F8(char *self)
@@ -385,7 +385,71 @@ extern char D_0023F060[];
 
 INCLUDE_ASM("asm/levels", func_L00_003BCF88);
 
-INCLUDE_ASM("asm/levels", func_L00_003BD510);
+extern float func_002A7878(float, float);
+extern float func_002A78D8(float, float);
+extern int func_002A77E0(int);
+extern int func_001163B0(void);
+extern void func_00283098(void *, void *, void *);
+extern void func_00282F20(void *, void *, float);
+extern int func_00283CF0(float);
+extern char *func_002C2210(void *, int, float, float, unsigned int, int, int, void *, int, float);
+
+/* Emits count pairs of sparks at position, moving along direction turned by a random rotation;
+   position is jittered a little before each pair. Both arms of the random-bit test are the same
+   code: retail keeps the test, so it stays. */
+void func_L00_003BD510(float *position, float *direction, int count, int color)
+{
+    float velocity[4];
+    float previous[4];
+    float angles[4];
+    char matrix[48];
+    float *saved;
+    float scale;
+    int spin;
+    char *particle;
+    int i;
+
+    for (i = 0; i < count; i++) {
+        scale = func_002A7878(1.75f, 2.0f);
+        spin = func_002A77E0(2);
+        if (!spin)
+            spin--;
+        angles[3] = 0;
+        angles[1] = func_002A7878(-1.57079637f, 1.57079637f);
+        angles[0] = func_002A7878(-1.57079637f, 1.57079637f);
+        angles[2] = func_002A7878(-1.57079637f, 1.57079637f);
+        func_002833F0(matrix, angles);
+        func_00283098(velocity, direction, matrix);
+
+        saved = previous;
+        func_00282F20(velocity, velocity, 0.05f);
+        velocity[2] += 0.05f;
+        qcopy(saved, position);
+        position[0] += func_002A78D8(0.0f, 0.15f);
+        position[1] += func_002A78D8(0.0f, 0.15f);
+        position[2] += func_002A78D8(0.0f, 0.15f);
+
+        if (func_001163B0() & 1) {
+            particle = func_002C2210(position, 60, scale * 0.1f, scale, color | 0x4F000000, 0,
+                                     spin, velocity, 1, 0.002f);
+            if (particle)
+                particle[9] = func_00283CF0(4.0f) + 112;
+            particle = func_002C2210(position, 60, scale * 0.07f, scale * 0.7f, 0x7FFFFFFF, 1,
+                                     -spin, velocity, 1, 0.002f);
+            if (particle)
+                particle[9] = func_00283CF0(4.0f) + 112;
+        } else {
+            particle = func_002C2210(position, 60, scale * 0.1f, scale, color | 0x4F000000, 0,
+                                     spin, velocity, 1, 0.002f);
+            if (particle)
+                particle[9] = func_00283CF0(4.0f) + 112;
+            particle = func_002C2210(position, 60, scale * 0.07f, scale * 0.7f, 0x7FFFFFFF, 1,
+                                     -spin, velocity, 1, 0.002f);
+            if (particle)
+                particle[9] = func_00283CF0(4.0f) + 112;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/levels", func_L00_003BD7E0);
 
@@ -664,11 +728,10 @@ void func_L00_003C3920(char *unused, char *arg)
     } while (i >= 0);
 }
 
-INCLUDE_ASM("asm/levels", func_L00_003C3A70);
-
 INCLUDE_ASM("asm/levels", func_L00_003C3D90);
 
 INCLUDE_ASM("asm/levels", func_L00_003C48D0);
+
 
 INCLUDE_ASM("asm/levels", func_L00_003C4F78);
 

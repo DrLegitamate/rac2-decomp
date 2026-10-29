@@ -1,5 +1,3 @@
-/* func_L00_003B3158 - 748 bytes, 27 places. Opus near miss (M18): plain C, por = qzero under -frac2-zero-ti-por (own -G0 unit with that flag). Size and shape match retail; the one difference is the fade block: retail reloads st->life there (both incoming likely-branches carry lwc1 f0,0x14 in their slots), this cc1 PREs the compare load into it (mov.s in the bc1f slot plus an inserted load on the stuck path). Five tail spellings tried. 9 diff lines. */
-   unit takes -frac2-zero-ti-por. */
 #include "common.h"
 
 typedef int TI128 __attribute__((mode(TI)));
@@ -64,6 +62,9 @@ void func_L00_003B3158(char *obj)
         func_0029F338(obj);
         return;
     }
-    st->life = st->life - st->fade;
+    {
+        float fade = st->fade;
+        st->life -= fade;
+    }
     func_002A9288(obj, 0.2f);
 }

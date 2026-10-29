@@ -1,6 +1,47 @@
 #include "include_asm.h"
 #include "common.h"
 
+/* The moby fields func_L00_003B8E58 reads. */
+typedef struct {
+    u8 pad00[0x10];
+    float position[4];          /* 0x10 */
+    u8 state;                   /* 0x20: 0xFE (free) and 0xFD are not live */
+    u8 pad21[0x68 - 0x21];
+    void *vars;                 /* 0x68 */
+    u8 pad6C[0xAA - 0x6C];
+    short oClass;               /* 0xAA */
+} Moby;
+
+/* The instance data of a class 0xEE1 moby, as far as func_L00_003B8E58 reads it. */
+typedef struct {
+    u8 pad000[0x20];
+    float f20;                  /* 0x20: positive for a target */
+    u8 pad024[0x3B1 - 0x24];
+    u8 flags3B1;                /* 0x3B1: bit 0x80 for a target */
+    u8 pad3B2[0x3E4 - 0x3B2];
+    float maxDistance;          /* 0x3E4: 0 for no limit */
+} TargetVars;
+
+/* The hero fields func_L00_003B8E58 reads. */
+typedef struct {
+    u8 pad0000[0x340];
+    int f340;                   /* 0x340 */
+    u8 pad0344[0x34E - 0x344];
+    short f34E;                 /* 0x34E */
+    u8 pad0350[0x1230 - 0x350];
+    u32 buttonMask;             /* 0x1230: tested against controller 1's held buttons */
+    u8 pad1234[0x1450 - 0x1234];
+    Moby *target;               /* 0x1450: the current target */
+} Hero;
+
+extern Hero D_00189E20;
+extern u32 D_00138320[];        /* controller 1's held buttons (D_00138180 + 0x1A0) */
+extern float *func_002AB1F0(Moby *moby);
+extern int func_002AF580(void *origin, void *direction, int *count, Moby **candidates, int capacity,
+                         int, int, void *config,
+                         float angle0, float angle1, float range, float angle2, float angle3);
+extern float func_00282E80(void *from, void *to);
+
 typedef struct OBJ {
     char pad0[32];
     unsigned char f20;
@@ -56,7 +97,6 @@ extern void func_31A658();
 extern void func_310440();
 
 
-INCLUDE_ASM("asm/levels", func_L00_003B3158);
 
 INCLUDE_ASM("asm/levels", func_L00_003B3450);
 
@@ -66,9 +106,8 @@ INCLUDE_ASM("asm/levels", func_L00_003B39D0);
 
 
 
-INCLUDE_ASM("asm/levels", func_L00_003B4018);
 
-INCLUDE_ASM("asm/levels", func_L00_003B4198);
+/* func_L00_003B4198 is defined in L00_003B3158-rings.c. */
 
 INCLUDE_ASM("asm/levels", func_L00_003B4560);
 
@@ -82,7 +121,6 @@ INCLUDE_ASM("asm/levels", func_L00_003B5BF8);
 
 INCLUDE_ASM("asm/levels", func_L00_003B63D8);
 
-INCLUDE_ASM("asm/levels", func_L00_003B6858);
 
 INCLUDE_ASM("asm/levels", func_L00_003B69D8);
 
@@ -114,7 +152,7 @@ void func_L00_003B6A90(NODE *a0)
 }
 
 
-INCLUDE_ASM("asm/levels", func_L00_003B6B70);
+/* func_L00_003B6B70 is defined in L00_003B3158-pair.c. */
 
 
 
@@ -161,7 +199,7 @@ void func_L00_003B75C8(void *object)
 }
 
 
-INCLUDE_ASM("asm/levels", func_L00_003B79A0);
+/* func_L00_003B79A0 is defined in L00_003B3158-collect-g8.c. */
 
 void func_L00_003B8158(NODE *a0)
 {
@@ -180,11 +218,67 @@ void func_L00_003B8158(NODE *a0)
 
 
 
-INCLUDE_ASM("asm/levels", func_L00_003B8420);
 
 INCLUDE_ASM("asm/levels", func_L00_003B84F0);
 
-INCLUDE_ASM("asm/levels", func_L00_003B8E58);
+/* Picks a target: the hero's current one while it is live; else, of the class 0xEE1 mobies
+   func_002AF580 finds, the preferred one (while controller 1 holds a button of the hero's
+   buttonMask) or the first one in range. */
+Moby *func_L00_003B8E58(void *origin, void *direction, Moby *preferred,
+                        float angle0, float angle1, float range, float angle2, float angle3)
+{
+    Moby *candidates[20];
+    int count;
+    Moby *current;
+    float *info;
+    Moby *candidate;
+    TargetVars *vars;
+    int i;
+    Moby *fallback;
+    TargetVars *fallbackVars;
+    int j;
 
+    current = D_00189E20.target;
+    if (current && current->state != 0xFE && current->state != 0xFD) {
+        info = func_002AB1F0(current);
+        if (info && *info > 0.0f)
+            return D_00189E20.target;
+    }
+
+    func_002AF580(origin, direction, &count, candidates, 20, 0, 0, 0,
+                  angle0, angle1, range, angle2, angle3);
+
+    /* The preferred moby first. */
+    if (D_00189E20.f340 && !D_00189E20.f34E && (D_00138320[0] & D_00189E20.buttonMask)
+        && preferred && preferred->state != 0xFE && preferred->state != 0xFD) {
+        for (i = 0; i < count; ++i) {
+            candidate = candidates[i];
+            if (candidate && candidate->state != 0xFE && candidate->state != 0xFD
+                && candidate == preferred && candidate->oClass == 0xEE1) {
+                vars = candidate->vars;
+                if ((vars->flags3B1 & 0x80) && vars->f20 > 0.0f) {
+                    if (vars->maxDistance == 0.0f
+                        || func_00282E80(origin, candidate->position) < vars->maxDistance)
+                        return candidate;
+                }
+            }
+        }
+    }
+
+    /* Then the first target in range. */
+    for (j = 0; j < count; ++j) {
+        fallback = candidates[j];
+        if (fallback && fallback->state != 0xFE && fallback->state != 0xFD
+            && fallback->oClass == 0xEE1) {
+            fallbackVars = fallback->vars;
+            if ((fallbackVars->flags3B1 & 0x80) && fallbackVars->f20 > 0.0f) {
+                if (fallbackVars->maxDistance == 0.0f
+                    || func_00282E80(origin, fallback->position) < fallbackVars->maxDistance)
+                    return fallback;
+            }
+        }
+    }
+    return 0;
+}
 
 INCLUDE_ASM("asm/levels", func_L00_003B9310);
