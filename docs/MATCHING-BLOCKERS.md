@@ -71,6 +71,11 @@ The same address-alias attempt on `func_00132028` remains 484/488 bytes: metadat
 does not force a separately materialized indexed address. Its retained C records
 that negative result.
 
+**29 October 2026 near miss:** `func_002CF2B8` was checked in an isolated current-master `-O2 -G8 -ffunction-sections` unit. The corrected 32-bit style-argument candidate is 132/136 bytes and 0/28 USA v1.01 placements. A separate scaled-float local and isolated `-fno-schedule-insns`, `-fno-schedule-insns2`, `-fno-gcse` and `-ffast-math` probes remain four bytes short. `-fno-schedule-insns2` reorders the per-program float load and call setup but leaves the constants assigned to opposite FPRs from retail. Retain as a near miss pending a new allocator or scheduling hypothesis.
+
+**29 October 2026 related near miss:** `func_002CDA20` uses the same helper-call and float-constant pattern. Its corrected 32-bit ABI candidate is 136/140 bytes and 0/28 under isolated `-fno-schedule-insns2`; the later scheduling pass does not recover the four missing bytes.
+
+
 ## Topic index
 
 The 52 original section numbers are preserved for existing references. Anyone may improve
