@@ -855,7 +855,20 @@ void func_L14_003E4BA0(unsigned char *self)
 
 /* func_L14_003E5030 lives in the -g8 sibling file (it reaches a global through $gp). */
 
-INCLUDE_ASM("asm/levels", func_L14_003E50B8);
+void func_L14_003E50B8(char *object)
+{
+    s16 *ring = *(s16 **)(object + 0x68);
+    while (ring[10] < ring[ring[11]]) {
+        ring[11] = (ring[11] + 1) % 8;
+    }
+    if (((u16)ring[11] & 1) == 0) {
+        if (*(u8 *)(object + 0x20) != 1)
+            func_321F58(object, 1, -1);
+    } else {
+        if (*(u8 *)(object + 0x20) != 2)
+            func_321F58(object, 2, -1);
+    }
+}
 
 void func_L14_003E5190(char *arg0) {
     char *v0 = *(char **)(arg0 + 0x68);

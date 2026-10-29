@@ -1,14 +1,6 @@
-/* Retained manual C reconstruction; not linked and not credited as matching.
- * Checked source: src/levels/12_todano/L12_0041AEF0-g8.c
- * Profile: -O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
- * Retail US extent: 952 bytes.
- * us: 0/1 (exit 1, 960 compiled bytes); us2: 0/1 (exit 1, 960 compiled bytes); pal: 0/1 (exit 1, 960 compiled bytes).
- * Residual: 960/952 bytes. Candidate frame 0x2E0 versus retail 0x2F0, with different GPR/FPR allocation. Three real 0x90-byte packets, full 4x4 matrices, UVs and twelve rotations are retained. UV outer extent remains incomplete.
- * Reopen only with: A measured source/lifetime model for packet bases and UV traversal that restores the frame and saved FPRs; confirm true UV storage before any SDA size change.
- * No complete linked build was run for this candidate.
- */
-#include "include_asm.h"
-typedef unsigned long u64;
+/* Three animated ring packets, rendered in twelve rotated copies. */
+#include "common.h"
+
 typedef unsigned int u128 __attribute__((mode(TI)));
 typedef union { u128 quad; float value[4]; } RingVector;
 typedef struct { RingVector vertex[4]; unsigned int color[4]; float uv[4][2]; u64 tag[4]; } RingPacket;
@@ -20,13 +12,15 @@ extern void func_00280B90(RingPacket *, RingMatrix *, int);
 extern int func_00283CF0(float);
 extern u64 func_0027C878(int);
 extern float func_00283B98(float, float), func_00283180(float), func_00283198(float);
-extern u64 func_00283D38(unsigned int, unsigned int, float);
-extern float D_001B1C80 __attribute__((sda));
-extern unsigned int D_001B1C90 __attribute__((sda)), D_001B1C8C __attribute__((sda));
-extern int D_001B1CB8 __attribute__((sda));
-extern int D_001B1CBC __attribute__((sda)), D_001B1CC0 __attribute__((sda));
-extern float D_001B1CC4 __attribute__((sda));
-extern float D_001B1CD0[][2] __attribute__((sda));
+extern int func_00283D38(unsigned int, unsigned int, float);
+extern float D_L12_001B1C80 __attribute__((sda));
+extern unsigned int D_L12_001B1C90 __attribute__((sda)), D_L12_001B1C8C __attribute__((sda));
+extern int D_L12_001B1CB8 __attribute__((sda));
+extern int D_L12_001B1CBC __attribute__((sda)), D_L12_001B1CC0 __attribute__((sda));
+extern float D_L12_001B1CC4 __attribute__((sda));
+extern float D_L12_001B1CD0[][2] SDATA(D_L12_001B1CD0);
+/* Retail walks X through $gp and Y through an absolute cursor. */
+extern float D_L12_001B1CD4[] NOT_SDA;
 void func_L12_0041AEF0(unsigned char *self)
 {
     RingPacket packets[3];
@@ -35,24 +29,24 @@ void func_L12_0041AEF0(unsigned char *self)
     unsigned char *data = *(unsigned char **)(self + 0x68);
     float alpha, fraction, radius, angle, nextAngle, z;
     int i, j, n;
-    unsigned int color;
+    int color;
     angles.quad = 0;
     angles.value[2] = 0.52359885f;
     func_00283658(&matrix, self + 0xc0);
-    matrix.column[3] = *(RingVector *)(self + 0x10);
+    qcopy(&matrix.column[3], self + 0x10);
     matrix.column[3].value[3] = 1.0f;
     func_00283410(&rotation, &angles);
     fraction = *(float *)(data + 0x70) - (float)func_00283CF0(*(float *)(data + 0x70));
-    alpha = (D_001B1C80 - *(float *)(data + 0x6c)) * 0.5f;
+    alpha = (D_L12_001B1C80 - *(float *)(data + 0x6c)) * 0.5f;
     if (alpha > 1.0f) alpha = 1.0f;
     else if (alpha < 0.0f) alpha = 0.0f;
     for (i = 0; i < 3; i++) {
-        packets[i].tag[0] = 5;
-        packets[i].tag[1] = func_0027C878(D_001B1CB8);
+        packets[i].tag[1] = func_0027C878(D_L12_001B1CB8);
         packets[i].tag[2] = 0xff9000000260UL;
-        packets[i].tag[3] = ((u64)D_001B1CBC << 2) | ((u64)D_001B1CC0 << 6) | 0x8000000000UL;
-        angle = (float)i * 0.17453295f;
+        packets[i].tag[0] = 5;
+        packets[i].tag[3] = ((u64)D_L12_001B1CBC << 2) | ((u64)D_L12_001B1CC0 << 6) | 0x8000000000UL;
         radius = *(float *)(data + 0x6c) - (float)i * 0.05f;
+        angle = (float)i * 0.17453295f;
         nextAngle = func_00283B98(angle, 0.52359885f);
         first.value[0] = func_00283180(angle) * radius;
         first.value[1] = func_00283198(angle) * radius;
@@ -60,23 +54,22 @@ void func_L12_0041AEF0(unsigned char *self)
         second.value[0] = func_00283180(nextAngle) * radius;
         second.value[1] = func_00283198(nextAngle) * radius;
         second.value[2] = 0.0f; second.value[3] = 1.0f;
-        z = fraction * D_001B1CC4;
-        packets[i].vertex[0] = first;
+        z = fraction * D_L12_001B1CC4;
+        qcopy(&packets[i].vertex[0], &first);
         packets[i].vertex[0].value[2] = z;
-        packets[i].vertex[1] = first;
+        qcopy(&packets[i].vertex[1], &first);
         packets[i].vertex[1].value[2] = -z;
-        packets[i].vertex[2] = second;
+        qcopy(&packets[i].vertex[2], &second);
         packets[i].vertex[2].value[2] = z;
-        packets[i].vertex[3] = second;
+        qcopy(&packets[i].vertex[3], &second);
         packets[i].vertex[3].value[2] = -z;
-        color = func_00283D38(D_001B1C90, D_001B1C8C, (1.0f - fraction) * alpha);
+        color = func_00283D38(D_L12_001B1C90, D_L12_001B1C8C, (1.0f - fraction) * alpha);
         for (j = 0; j < 4; j++) {
             packets[i].color[j] = color;
-            packets[i].uv[j][0] = D_001B1CD0[j][0];
-            packets[i].uv[j][1] = D_001B1CD0[j][1];
+            packets[i].uv[j][0] = D_L12_001B1CD0[j][0];
+            packets[i].uv[j][1] = D_L12_001B1CD4[j * 2];
         }
-        if (fraction >= 0.666f) fraction += -0.666f;
-        else fraction += 0.333f;
+        fraction = fraction >= 0.666f ? fraction + -0.666f : fraction + 0.333f;
     }
     for (n = 11; n >= 0; n--) {
         func_00283738(&matrix, &matrix, &rotation);

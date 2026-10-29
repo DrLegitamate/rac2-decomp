@@ -72,7 +72,7 @@ INCLUDE_ASM("asm/levels", func_L12_00398E50);
 
 /* func_L12_003A0F00 is defined in L12_00398E50-mirror.c. */
 
-INCLUDE_ASM("asm/levels", func_L12_003A6F48);
+/* func_L12_003A6F48 is defined in L12_00398E50-color-g8.c. */
 
 /* Scales the tracked object's field by the level's own rate, for every match. */
 void func_L12_003A6E18(u8 *object) {
@@ -115,7 +115,7 @@ INCLUDE_ASM("asm/levels", func_L12_003DF9A0);
 /* func_L12_003E04B8 is defined in L12_003E04B8-g8.c. */
 
 
-INCLUDE_ASM("asm/levels", func_L12_003E0858);
+/* func_L12_003E0858 is defined in L12_00398E50-launch-qcopy.c. */
 
 
 INCLUDE_ASM("asm/levels", func_L12_003E0BF0);
@@ -191,7 +191,7 @@ u8 *func_L12_003E1B28(s32 index, u8 *obj)
     return found;
 }
 
-INCLUDE_ASM("asm/levels", func_L12_003EB470);
+/* func_L12_003EB470 is defined in L12_00398E50-g8.c. */
 
 /* func_L12_00402B48 is defined in L12_00402B48-g16.c. */
 
@@ -202,7 +202,7 @@ INCLUDE_ASM("asm/levels", func_L12_00402DF8);
 
 /* func_L12_00412548 is defined in L12_00398E50-collision.c. */
 
-INCLUDE_ASM("asm/levels", func_L12_00412898);
+/* func_L12_00412898 is defined in L12_00412898-g8.c. */
 
 
 INCLUDE_ASM("asm/levels", func_L12_00412E50);

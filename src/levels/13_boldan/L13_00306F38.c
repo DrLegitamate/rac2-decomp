@@ -137,7 +137,7 @@ void func_L13_003E12F8(u8 *a0) {
 
 INCLUDE_ASM("asm/levels", func_L13_003E8850);
 
-INCLUDE_ASM("asm/levels", func_L13_003EFD58);
+/* func_L13_003EFD58 is in L13_003EFD58.c. */
 
 /* func_L13_003FE420 is in the -gate sibling. */
 
@@ -269,7 +269,7 @@ void func_L13_003FE970(u8 *a0) {
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L13_004067F8);
+/* func_L13_004067F8 is in L13_004067F8-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L13_0041A550);
 
@@ -401,7 +401,7 @@ done:
     return;
 }
 
-INCLUDE_ASM("asm/levels", func_L13_004230B0);
+/* func_L13_004230B0 is in L13_004230B0.c. */
 
 extern s32 func_002ACBC8(u8 *, s32);
 extern u8 D_001395B8[];
