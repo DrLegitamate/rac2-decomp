@@ -46,13 +46,13 @@ INCLUDE_ASM("asm/levels", func_L16_003AA3F0);
    `bnez`, and the pointer and the base land in $s0/$s2 instead of $s2/$s1.
    Deposited in nonmatching/levels/func_L16_003D6D00.c. */
 
-INCLUDE_ASM("asm/levels", func_L16_003E6E08);
+/* func_L16_003E6E08 is in L16_003E6E08-g8.c (vector-copy profile). */
 
 /* func_L16_003E70E0 is defined in L16_002C6378-g8.c (it reads $gp data). */
 
-INCLUDE_ASM("asm/levels", func_L16_003E7248);
+/* func_L16_003E7248 is defined in L16_003E7248-g8.c (it reads $gp data). */
 
-INCLUDE_ASM("asm/levels", func_L16_003F4FA8);
+/* func_L16_003F4FA8 is defined in L16_003F4FA8.c (vector-copy profile). */
 
 extern void func_002A7750(char *, s32, s32);
 

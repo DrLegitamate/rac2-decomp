@@ -1,23 +1,15 @@
-/* Retained complete C reconstruction; not linked or counted.
- * Profile: -O2 -G8 -ffunction-sections
- * 400/396 bytes; 0/1 placements in us and us2; pal has no catalogue entry.
- * Residual: The full 64-byte matrix copy loop still has an extra alignment nop; initial argument scheduling differs.
- * Reopen: A measured real matrix-copy loop lifetime/layout idiom that removes the residue without padding or source barriers.
- * Trial-only markers and profiles are restored after checking.
- */
-
 #include "common.h"
 typedef int TI128 __attribute__((mode(TI)));
 typedef struct { TI128 row[4]; } SnivelakMatrix;
 extern void func_002A7470(void *, s32, s32, s32);
 extern void *func_0029EFD0(s32);
 extern float func_L07_003F90E8(s32, s32, float, float);
-extern void func_L00_00310748(void *, s32, void *, float, float);
+extern void func_L00_00310748(void *, s32, float, float, void *);
 extern void func_002B37E8(void *, void *);
 extern void func_002AAC80(void *, float, float, float, float);
 extern u8 *func_0032C700(void *, s32, s32, s32, s32, s32, s32, s32, float, float,
                           s32, s32, s32, void *);
-extern u8 D_L16_001A8F20[] __attribute__((nosda));
+extern u8 D_L16_001A8F20[] __attribute__((sda));
 extern float D_L16_001B1648 __attribute__((sda));
 extern float D_L16_001B1658 __attribute__((sda));
 extern float D_L16_001B1668 __attribute__((sda));
@@ -34,7 +26,7 @@ u8 *func_L16_0040DAE0(u8 *owner, SnivelakMatrix *matrix)
     obj = func_0029EFD0(0xF4E);
     if (obj) {
         scale = func_L07_003F90E8(0, 15, 0.125f, 0.3f);
-        func_L00_00310748(obj, 0, D_L16_001A8F20, scale, 0.0f);
+        func_L00_00310748(obj, 0, scale, 0.0f, D_L16_001A8F20);
         state = *(u8 **)(obj + 0x68);
         *(s32 *)(state + 0x68) = -1;
         func_002B37E8(obj, owner);
@@ -44,7 +36,7 @@ u8 *func_L16_0040DAE0(u8 *owner, SnivelakMatrix *matrix)
         dst = (TI128 *)state;
         src = matrix->row;
         n = 3;
-        do { qcopy(dst, src); dst++; src++; } while (--n >= 0);
+        do { qcopy(dst, src); src++; dst++; } while (--n >= 0);
         func_002AAC80(state + 0x50, 1.0f, 1.0f,
                       D_L16_001B1648 * 0.00027777778f,
                       D_L16_001B1658 * 0.016666668f);

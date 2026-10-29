@@ -1,35 +1,10 @@
-/*
- * Retained handwritten near miss; historical evidence only.
- * No linked-image equality or complete retail semantics is established.
- * Compiler: game EE-GCC 2.9-ee-991111b (project profile).
- * Profile: -O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-zero-ti-por.
- * Reported final C / retail: 1356 / 1356 bytes; size equality is not a match.
- * us: 0/1 placements.
- * us2: 0/1 placements.
- * pal: absent from catalogue (not a match).
- * Residual: 1356 bytes, only two argument-register moves at +0x8c/+0x90 reversed under best profile.
- * Reopening condition: Qualified scheduling/type mechanism; 10 trials exhausted.
- * Where listed, tools/check.py measurements predate retention; no compilation was rerun for this copy.
- */
+#include "include_asm.h"
 
-/* Manual reconstruction, 1356-byte retail state machine.
-   Best measured profile: -O2 -G0 -ffunction-sections -frac2-qcopy
-   -frac2-qcopy-barrier -frac2-zero-ti-por. US and US2: 0/1 placement,
-   equal size; only the a0/a1 moves at +0x8c/+0x90 are reversed.
-   PAL has no catalogue entry; it is not a match. Default profile is 1344
-   bytes. Disabling sched1 fixes the moves but differs at six instructions
-   in the closing local-vector setup. Removing the qcopy barrier worsens
-   that setup; adding zero-ti-barrier leaves it unchanged. Disabling sched2
-   changes prologue and switch registers. Three equivalent child-assignment
-   forms tie. Reopen with a qualified scheduling/type mechanism rather than
-   artificial dependencies. The flags result of 002B37E8 and floating result
-   of 002AA548 were examined in private retail; both results are ignored here.
-*/
 typedef unsigned char u8;
 typedef int s32;
 typedef int Quadword __attribute__((mode(TI)));
 extern char *func_0029EFD0(short);
-extern unsigned long long func_002B37E8(char *, char *);
+extern void func_002B37E8(char *, char *);
 extern float func_00283BE0(float, float);
 extern void func_002A7750(char *, s32, s32);
 extern int func_002B38B8(u8 *);

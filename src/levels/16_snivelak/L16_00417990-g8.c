@@ -1,18 +1,3 @@
-/* Retained C reconstruction; not linked or counted.
- * Profile: -O2 -G8 -ffunction-sections -frac2-zero-ti-por.
- * Compiled 1068 bytes; retail 1056 bytes.
- * us: 0/1 placements match (exit 1).
- * us2: 0/1 placements match (exit 1).
- * pal: canonical name absent; no match credit.
- * Remaining: The 0xA0 frame and initial por/SQ stores agree. Effects/settings address
- * calculation and FP argument allocation still differ. The shared qzero experiment leaves the
- * size at 1068 and does not reproduce the measured materialized zero; the ordinary TImode clear
- * with the qualified zero-ti-por profile is retained. State transitions take a full-width
- * integer, and the child constructor retains its actual pointer return.
- * Reopen: A verified effect parameter/storage witness explaining the mixed GP/absolute settings
- * and live FP arguments.
- */
-
 #include "common.h"
 typedef int Vector128 __attribute__((mode(TI)));
 extern void func_00282D30(void *,void *,float);
@@ -20,14 +5,17 @@ extern char *func_L00_0033E220(void *,void *,unsigned int,int,int,int,int,int,fl
 extern void *func_002A9640(void *,unsigned int,int);
 extern void func_002A7750(unsigned char *,int,int);
 extern void func_L00_0032A258(void *,void *,void *,void *,int,int,int,int,int,int,int);
-extern void func_L00_002EC248(void *,void *,void *,int,int,float,float,float,float,float);
+/* Mixed arguments preserve the EE ABI order within each register bank. */
+extern void func_L00_002EC248(void *,void *,float,void *,float,int,int,float,float,float);
 extern void func_L00_00324F18(char *,char *,float,float,float);
-extern void func_002ABBB8(void *,void *,void *,int,int,int,int,int,int,int,int,int,float,float,float,float,float,float,float);
+extern void func_002ABBB8(void *,void *,void *,float,float,int,int,int,float,int,float,float,float,float,int,int,int,int,int);
 extern void func_002B9180(void *);
 extern char *func_L00_00326620(char *,int,int);
 extern int func_00282948(int *);
 extern int func_002A7820(int,int);
-extern char D_L16_001B1BF0[],D_L16_001B1BE8[],D_L16_001B1BE0[];
+extern char D_L16_001B1BF0[] SDATA(D_L16_001B1BF0);
+extern char D_L16_001B1BE8[] SDATA(D_L16_001B1BE8);
+extern char D_L16_001B1BE0[] SDATA(D_L16_001B1BE0);
 extern int D_L16_001B1C10 __attribute__((sda));
 void func_L16_00417990(char *object)
 {
@@ -51,10 +39,10 @@ void func_L16_00417990(char *object)
         break;
     case 2:
         func_L00_0032A258(object,D_L16_001B1BF0,D_L16_001B1BE8,D_L16_001B1BE0,0xffff,0,D_L16_001B1C10,0,0xffff,0xff,0);
-        func_L00_002EC248(object,position,velocity,40,1,0.2f,0.1166666746f,1.0f,5.0f,1.0f);
+        func_L00_002EC248(object,position,0.2f,velocity,0.1166666746f,40,1,1.0f,5.0f,1.0f);
         *(Vector128 *)zero=0;
         func_L00_00324F18(object,(char *)position,13.0f,0.0f,14.0f);
-        func_002ABBB8(object,zero,position,10,3,5,-1,0,0,-1,0,0x810001,0.0f,0.0f,0.0f,1.0f,9.0f,0.75f,0.0f);
+        func_002ABBB8(object,zero,position,0.0f,0.0f,10,3,5,0.0f,-1,1.0f,9.0f,0.75f,0.0f,0,0,-1,0,0x810001);
         if(state[1]!=0) func_002B9180((void *)state[1]);
         func_L00_00326620(object,0x10f2,0);
         *(int *)(object+0x98)=0;
@@ -66,13 +54,13 @@ void func_L16_00417990(char *object)
     case 3:
         if(state[2]>80) {
             func_00282D30(velocity,velocity,0.5f);
-            func_L00_002EC248(object,position,velocity,4,1,0.0f,0.05000000447f,1.0f,5.0f,1.0f);
+            func_L00_002EC248(object,position,0.0f,velocity,0.05000000447f,4,1,1.0f,5.0f,1.0f);
         }
         if(func_00282948(state+2)!=0) {
             func_00282D30(velocity,velocity,0.3333333433f);
             ((float *)velocity)[2]*=0.3333333433f;
-            func_L00_002EC248(object,position,velocity,func_002A7820(3,6),1,0.0f,0.05000000447f,0.5f,15.0f,1.0f);
-            func_L00_002EC248(object,position,velocity,func_002A7820(3,6),0,0.0f,0.05000000447f,0.5f,15.0f,1.0f);
+            func_L00_002EC248(object,position,0.0f,velocity,0.05000000447f,func_002A7820(3,6),1,0.5f,15.0f,1.0f);
+            func_L00_002EC248(object,position,0.0f,velocity,0.05000000447f,func_002A7820(3,6),0,0.5f,15.0f,1.0f);
             state[2]=func_002A7820(30,80);
         }
         break;

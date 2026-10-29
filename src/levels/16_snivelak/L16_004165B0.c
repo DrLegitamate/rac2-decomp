@@ -52,7 +52,7 @@ f32 func_L16_00416EB8(char *arg0) {
 
 INCLUDE_ASM("asm/levels", func_L16_00416FB0);
 
-INCLUDE_ASM("asm/levels", func_L16_00417210);
+/* func_L16_00417210 is defined in L16_00417210-g8.c. */
 
 /* the model index the object's data block points at */
 s32 func_L16_00417788(char *arg0) {
@@ -62,17 +62,17 @@ s32 func_L16_00417788(char *arg0) {
 
 INCLUDE_ASM("asm/levels", func_L16_00417798);
 
-INCLUDE_ASM("asm/levels", func_L16_00417990);
+/* func_L16_00417990 is defined in L16_00417990-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L16_00417DB0);
+/* func_L16_00417DB0 is defined in L16_00417DB0.c. */
 
 
 
-INCLUDE_ASM("asm/levels", func_L16_004189A0);
+/* func_L16_004189A0 is defined in L16_004189A0.c. */
 
 INCLUDE_ASM("asm/levels", func_L16_00418E38);
 
-INCLUDE_ASM("asm/levels", func_L16_00419140);
+/* func_L16_00419140 is defined in L16_00419140-g8.c. */
 
 
 extern char D_00189E20[];
@@ -149,7 +149,7 @@ INCLUDE_ASM("asm/levels", func_L16_0041CF80);
 
 /* func_L16_0041ECF8 lives in L16_004165B0-g8.c (it takes the address of a $gp global). */
 
-INCLUDE_ASM("asm/levels", func_L16_0041EE90);
+/* func_L16_0041EE90 is defined in L16_0041EE90-g8.c. */
 
 extern void func_002E74B8(char *, char *, char *);
 extern s32 func_00313EE0(s32, s32);

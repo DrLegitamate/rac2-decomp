@@ -1,23 +1,9 @@
-/* Retained C reconstruction; not linked or counted.
- * Profile: -O2 -G0 -ffunction-sections.
- * Compiled 916 bytes; retail 904 bytes.
- * us: 0/1 placements match (exit 1).
- * us2: 0/1 placements match (exit 1).
- * pal: canonical name absent; no match credit.
- * Remaining: The frame remains 0x80 against retail 0x70; one extra saved GPR, path-table
- * addressing and switch/vector lifetimes differ. Shared qcopy preserves the complete
- * position/angle snapshots but does not close the body. State changes retain their full-width
- * integer argument.
- * Reopen: A verified path-record/source lifetime witness reducing saved path pointers while
- * preserving every vector and field access.
- */
-
 #include "common.h"
 typedef int Vector128 __attribute__((mode(TI)));
 typedef struct { Vector128 position,angles,delta; } MovingPathWorkspace;
 extern char *D_L16_001FE7C0[];
 extern char D_L16_002A4570[];
-extern float D_00189EA0[4];
+extern float D_00189E20[];
 extern void func_0026FEB8(const char *,...);
 extern void func_002A7750(unsigned char *,int,int);
 extern void func_00282CF0(void *,void *,void *);
@@ -32,29 +18,31 @@ void func_L16_004189A0(char *object)
     MovingPathWorkspace local;
     char *state=*(char **)(object+0x68);
     char *path,*point;
-    int index,move;
+    int index;
     qcopy(&local.position,(object+0x10));
     qcopy(&local.angles,(object+0xf0));
     switch(*(unsigned char *)(object+0x20)) {
-    case 0:
+    case 0: {
+        char *initialPath;
         index=*(int *)(state+0x60);
-        path=D_L16_001FE7C0[index];
-        qcopy((object+0x10),(path+0x10));
+        initialPath=D_L16_001FE7C0[index];
+        qcopy((object+0x10),(initialPath+0x10));
         *(int *)(state+0x6c)=0;
         *(float *)(state+0x68)*=0.016666668f;
         if(index==-1) func_0026FEB8(D_L16_002A4570,*(short *)(object+0xaa),*(short *)(object+0xb2));
         func_002A7750((unsigned char *)object,1,-1);
         break;
+    }
     case 1:
         if(*(unsigned char *)(object+0xbc)!=0) func_002A7750((unsigned char *)object,2,-1);
         break;
     case 2:
         path=D_L16_001FE7C0[*(int *)(state+0x60)];
-        point=path+*(int *)(state+0x6c)*0x10+0x20;
+        point=path+0x20+*(int *)(state+0x6c)*0x10;
         func_00282CF0(&local.delta,point,object+0x10);
         func_00282F20(&local.delta,&local.delta,*(float *)(state+0x68));
         func_00282CC0(object+0x10,object+0x10,&local.delta);
-        if(func_00282E48(object+0x10,path+*(int *)(state+0x6c)*0x10+0x20)<=*(float *)(state+0x68)*0.88f) (*(int *)(state+0x6c))++;
+        if(func_00282E48(object+0x10,path+0x20+*(int *)(state+0x6c)*0x10)<=*(float *)(state+0x68)*0.88f) (*(int *)(state+0x6c))++;
         if(*(int *)(state+0x6c)>=*(int *)path-1) func_002A7750((unsigned char *)object,3,-1);
         break;
     case 3:
@@ -62,15 +50,16 @@ void func_L16_004189A0(char *object)
         break;
     case 4:
         path=D_L16_001FE7C0[*(int *)(state+0x60)];
-        move=1;
-        if(D_00189EA0[2]<*(float *)(object+0x18)) {
-            if(func_00282E80(object+0x10,D_00189EA0)<3.0f && func_00282C48(*(float *)(object+0x18)-D_00189EA0[2])<2.5f) move=0;
+
+        if(D_00189E20[34]<*(float *)(object+0x18)) {
+            if(func_00282E80(object+0x10,D_00189E20+32)<3.0f && func_00282C48(*(float *)(object+0x18)-D_00189E20[34])<2.5f) goto skipMovement;
         }
-        if(move) {
+        {
             func_00282CF0(&local.delta,path+*(int *)(state+0x6c)*0x10,object+0x10);
             func_00282F20(&local.delta,&local.delta,*(float *)(state+0x68));
             func_00282CC0(object+0x10,object+0x10,&local.delta);
         }
+        skipMovement:
         if(func_00282E48(object+0x10,path+*(int *)(state+0x6c)*0x10)<=*(float *)(state+0x68)*0.88f) (*(int *)(state+0x6c))--;
         if(*(int *)(state+0x6c)<=0) {
             object[0xbc]=0;

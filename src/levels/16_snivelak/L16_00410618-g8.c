@@ -1,25 +1,7 @@
-/*
- * Retained handwritten near miss; historical evidence only.
- * No linked-image equality or complete retail semantics is established.
- * Compiler: game EE-GCC 2.9-ee-991111b (project profile).
- * Profile: -O2 -G8 -ffunction-sections.
- * Reported final C / retail: 1344 / 1388 bytes; size equality is not a match.
- * us: 0/1 placements; 1344/1388 bytes.
- * us2: 0/1 placements; 1344/1388 bytes.
- * pal: absent from catalogue (not a match).
- * Residual: Initialization and damage-phase scheduling differ. Float damage return retained; B3BA8 incoming t0 is killed at callee +4, confirming four GPR inputs.
- * Reopening condition: Reopen only after independent source, data-layout, ABI or compiler evidence specifically explains the residual above; then test that single hypothesis. Do not repeat tied source forms or flag sweeps.
- * Where listed, tools/check.py measurements predate retention; no compilation was rerun for this copy.
- */
-
-/* Manual reconstruction, 2026-10-23: NOT MATCHED. US 1344/1388 bytes,
- * 0/1 placements; profile: -O2 -ffunction-sections implicit G8.
- * Initialization and damage-phase scheduling differ. Float damage return retained; B3BA8 incoming t0 is killed at callee +4, confirming four GPR inputs.
- * Historical screening notes below are preserved; the current measured
- * residual replaces any earlier claim that lq/sq/por cannot be emitted. */
+/* Uses -g to preserve the measured line-label padding before four divisions. */
 #include "common.h"
-extern u8 D_0013963B;
-extern u8 *D_L16_001B2B1C;
+extern u8 D_001395B8[];
+extern u8 *D_L16_001B2B1C[] __attribute__((sda));
 extern u8 *D_L16_001B16C0 __attribute__((sda));
 extern int D_L16_001B16C4 __attribute__((sda));
 extern u8 D_00188660[];
@@ -49,12 +31,13 @@ void func_L16_00410618(u8 *moby)
     u8 *state = *(u8 **)(moby + 0x68);
     u8 *child, *attacker, *damage;
     u8 **arms;
+    u8 *speech;
     int i, threshold, sound;
-    float quantum, amount;
+    float quantum, amount, divisor;
     if (!moby[0x20]) {
-        if (D_0013963B == 2) {
+        if (D_001395B8[0x83] == 2) {
             func_L16_00411F80(moby, 0);
-            func_0029F338(D_L16_001B2B1C + *(int *)(state + 0x174) * 256);
+            func_0029F338(D_L16_001B2B1C[0] + *(int *)(state + 0x174) * 256);
             func_0029F338(moby);
             return;
         }
@@ -62,8 +45,11 @@ void func_L16_00410618(u8 *moby)
             *(short *)(state + 0x24) = 600;
             *(float *)(state + 0x20) = 600.0f;
         }
+        speech = state + 0x310;
         state[0x2e] = 1;
-        quantum = (float)*(short *)(state + 0x24) / func_00283CE0(D_L16_001B16C4);
+        divisor = func_00283CE0(D_L16_001B16C4);
+        quantum = (float)*(short *)(state + 0x24);
+        quantum /= divisor;
         threshold = func_00283CF0((*(float *)(state + 0x20) - 1.0f) / quantum);
         *(float *)(state + 0x248) = (float)threshold * quantum;
         arms = (u8 **)(state + 0x238);
@@ -75,22 +61,26 @@ void func_L16_00410618(u8 *moby)
                 *arms = child;
             }
         }
-        D_L16_001B16C0 = 0;
-        child = D_L16_001B2B1C + *(int *)(state + 0x174) * 256;
-        *(float *)(state + 0x264) = *(float *)(moby + 0x18);
-        *(u8 **)(state + 0x1f0) = child;
+        {
+            int bodyIndex = *(int *)(state + 0x174);
+            u8 *pool = D_L16_001B2B1C[0];
+            float initialHeight = *(float *)(moby + 0x18);
+            D_L16_001B16C0 = 0;
+            *(float *)(state + 0x264) = initialHeight;
+            *(u8 **)(state + 0x1f0) = pool + bodyIndex * 256;
+        }
         *(unsigned short *)(moby + 0x34) |= 0x4000;
         *(unsigned short *)(*(u8 **)(state + 0x1f0) + 0x34) |= 0x4000;
         *(unsigned short *)(moby + 0x32) = 500;
         *(unsigned short *)(*(u8 **)(state + 0x1f0) + 0x32) = 500;
         *(unsigned short *)(moby + 0x34) |= 0x400;
-        func_00282A60(state + 0x310, 0, 48);
+        func_00282A60(speech, 0, 48);
         *(int *)(state + 0x350) = 0;
         *(int *)(state + 0x354) = -1;
         func_L16_00410C80(moby);
         func_002A7750(moby, 1, 0);
         func_L16_004116C8(moby, 0, 0, 0.0f);
-        if (D_0013963B == 1) {
+        if (D_001395B8[0x83] == 1) {
             func_L16_004117A8(moby);
             func_L16_00411F80(moby, 1);
         } else func_L16_00411F80(moby, 0);
@@ -104,26 +94,37 @@ void func_L16_00410618(u8 *moby)
         *(float *)(damage + 0x2c) *= func_L07_003F90E8(0, 20, 0.5f, 1.5f);
         if (moby[0x95] == 3) *(float *)(damage + 0x2c) *= 0.333f;
         attacker = *(u8 **)(damage + 0x20);
-        if (!attacker || *(short *)(attacker + 0xaa) == 0xea7) func_002AB800((int)moby, (char *)(state + 0x50));
-        else {
+        if (attacker && *(short *)(attacker + 0xaa) != 0xea7) {
             *(float *)(damage + 0x2c) *= 0.2f;
             if (*(short *)(attacker + 0xaa) == 0x5c9) *(float *)(damage + 0x2c) *= 0.05f;
         }
+        else func_002AB800((int)moby, (char *)(state + 0x50));
         amount = func_002A96A0(moby, damage);
         func_002AA2E8((float *)(state + 0x20), 0.0f, amount);
         if (D_L16_001B16C0 && moby[0x95] != 3 && *(float *)(state + 0x20) < *(float *)(state + 0x248)) {
-            quantum = (float)*(short *)(state + 0x24) / func_00283CE0(D_L16_001B16C4);
+            divisor = func_00283CE0(D_L16_001B16C4);
+            quantum = (float)*(short *)(state + 0x24);
+            quantum /= divisor;
             threshold = func_00283CF0((*(float *)(state + 0x20) - 1.0f) / quantum);
             (*(int *)(state + 0x260))++;
             *(float *)(state + 0x248) = (float)threshold * quantum;
             func_002A7750(moby, 9, 3);
             sound = *(int *)(state + 0x368);
-            if (sound != -1 && *(u8 **)(D_00188660 + (sound * 112 + 0x88)) == *(u8 **)(state + 0x1f0) && D_00188660[sound * 112 + 0x74]) func_002E59F8(sound);
-            *(int *)(state + 0x368) = -1;
-            *(u8 **)(state + 0x24c) = D_L16_001B16C0;
+            if (sound != -1) {
+                u8 *soundRecord = D_00188660 + sound * 112;
+                if (*(u8 **)(soundRecord + 0x88) == *(u8 **)(state + 0x1f0) && soundRecord[0x74]) func_002E59F8(sound);
+            }
+            {
+                u8 *target = D_L16_001B16C0;
+                *(int *)(state + 0x368) = -1;
+                *(u8 **)(state + 0x24c) = target;
+            }
         } else if (*(float *)(state + 0x20) == 0.0f || state[0x2e] == 2) {
             sound = *(int *)(state + 0x368);
-            if (sound != -1 && *(u8 **)(D_00188660 + (sound * 112 + 0x88)) == *(u8 **)(state + 0x1f0) && D_00188660[sound * 112 + 0x74]) func_002E59F8(sound);
+            if (sound != -1) {
+                u8 *soundRecord = D_00188660 + sound * 112;
+                if (*(u8 **)(soundRecord + 0x88) == *(u8 **)(state + 0x1f0) && soundRecord[0x74]) func_002E59F8(sound);
+            }
             *(int *)(state + 0x368) = -1;
             func_002A7750(moby, 17, 5);
         }
