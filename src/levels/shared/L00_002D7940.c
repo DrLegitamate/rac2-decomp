@@ -128,10 +128,10 @@ void func_L00_002DA0B8(float *out, float *p, void *q)
     func_00282CC0_42(out, out, q);
 }
 
-INCLUDE_ASM("asm/levels", func_L00_002DA1E0);
+/* func_L00_002DA1E0 is in L00_002D7940-motion.c. */
 
 
-INCLUDE_ASM("asm/levels", func_L00_002DB350);
+/* func_L00_002DB350 is in L00_002D7940-grid.c. */
 
 INCLUDE_ASM("asm/levels", func_L00_002DB4B8);
 

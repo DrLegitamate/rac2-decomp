@@ -1,6 +1,12 @@
 #include "include_asm.h"
 #include "common.h"
 
+extern void *func_00115484(void *, int, unsigned int);
+extern float D_00189EA0[4];
+extern float func_L02_002F21C0(void *, void *);
+extern int func_L02_004127F8(unsigned char *);
+extern int func_L18_003FB500(unsigned char *, int);
+
 /* Frozen Batch A A18-void-store-16; acknowledged claim 4cf4f8b91176606a7af1fd853f7ccd89fa63964199d0883686e46fb6a47255a8. */
 typedef unsigned char BatchA_A18_u8;
 
@@ -57,7 +63,7 @@ void func_L18_00303A58(void *a0, void *a1) {
     func_0027F1D8(a0, a1, D_L18_00296510);
 }
 
-INCLUDE_ASM("asm/levels", func_L18_003044B8);
+/* func_L18_003044B8 is defined in L18_003044B8.c. */
 
 INCLUDE_ASM("asm/levels", func_L18_00307C60);
 
@@ -92,7 +98,7 @@ BatchA_A18_s32 func_L18_0033B628(BatchA_A18_s32 a0, BatchA_A18_s32 a1, BatchA_A1
     return a2;
 }
 
-INCLUDE_ASM("asm/levels", func_L18_0035D238);
+/* func_L18_0035D238 is defined in L18_0035D238.c. */
 
 extern float func_L18_0035D5F8(void *a0, void *a1, void *a2, char *a3, float f12);
 extern BatchA_A18_s32 D_001FE480[];
@@ -142,7 +148,6 @@ f32 func_L18_0035D5F8(void *out, void *origin, void *direction, char *path, floa
 /* func_L18_003F50D8 is matched in L18_003F50D8.c (built with -mno-split-addresses). */
 
 
-INCLUDE_ASM("asm/levels", func_L18_003F53D8);
 
 INCLUDE_ASM("asm/levels", func_L18_003F5650);
 
@@ -552,7 +557,105 @@ void func_L18_003FA908(BatchA_A18_u8 *s) {
         (unsigned short)(*(unsigned short *)((char *)p + 0xA8) + 1);
 }
 
-INCLUDE_ASM("asm/levels", func_L18_003FA920);
+/* Each scan reads the current slot id again when advancing its group iterator. */
+static __inline__ int L18_SelectionGroupId(char *p, int i, int base) {
+    int off = i << 2;
+    int *groups = (int *)(p + base);
+    return *(int *)((char *)groups + off);
+}
+
+/* Selects the source, secondary member and target from the owner's three group
+   lists. The first target scan prefers entries passing the flag and distance tests. */
+int func_L18_003FA920(char *owner, int slot) {
+    char *secondary[2];
+    char *state = *(char **)(owner + 0x68);
+    char *source = 0;
+    char *selected = 0;
+    char *entity;
+    int i;
+
+    func_00115484(secondary, 0, 8);
+    {
+        unsigned short *entry;
+        for (entry = D_L18_001FB320[L18_SelectionGroupId(state, slot, 0)];
+             (L18_SelectionGroupId(state, slot, 0) & 0xff) != 0xff &&
+             L18_SelectionGroupId(state, slot, 0) <= D_L18_001B2838[0] && entry != 0 &&
+             ((short)entry[-1] >= 0 ||
+              entry == D_L18_001FB320[L18_SelectionGroupId(state, slot, 0)]); entry++) {
+            entity = D_L18_001B281C[0] + (*entry & 0x7fff) * 0x100;
+            if (entity == 0) break;
+            if (entity != 0 && *(unsigned char *)(entity + 0x20) != 0xfe &&
+                *(unsigned char *)(entity + 0x20) != 0xfd &&
+                (*(unsigned short *)(entity + 0x34) & 1) != 0) {
+                source = entity;
+                break;
+            }
+        }
+    }
+    if (source == 0) return 0;
+    for (i = 0; i < 1; i++) {
+        {
+            unsigned short *entry;
+            for (entry = D_L18_001FB320[L18_SelectionGroupId(state, slot, 0x20)];
+                 (L18_SelectionGroupId(state, slot, 0x20) & 0xff) != 0xff &&
+                 L18_SelectionGroupId(state, slot, 0x20) <= D_L18_001B2838[0] && entry != 0 &&
+                 ((short)entry[-1] >= 0 ||
+                  entry == D_L18_001FB320[L18_SelectionGroupId(state, slot, 0x20)]); entry++) {
+                entity = D_L18_001B281C[0] + (*entry & 0x7fff) * 0x100;
+                if (entity == 0) break;
+                if (entity != secondary[0] && entity != 0 &&
+                    *(unsigned char *)(entity + 0x20) != 0xfe &&
+                    *(unsigned char *)(entity + 0x20) != 0xfd &&
+                    (*(unsigned short *)(entity + 0x34) & 1) != 0) {
+                    secondary[i] = entity;
+                    break;
+                }
+            }
+        }
+    }
+    if (secondary[0] == 0) return 0;
+    {
+        unsigned short *entry;
+        for (entity = 0, entry = D_L18_001FB320[L18_SelectionGroupId(state, slot, 0x10)];
+             (L18_SelectionGroupId(state, slot, 0x10) & 0xff) != 0xff &&
+             L18_SelectionGroupId(state, slot, 0x10) <= D_L18_001B2838[0] && entry != 0 &&
+             ((short)entry[-1] >= 0 ||
+              entry == D_L18_001FB320[L18_SelectionGroupId(state, slot, 0x10)]); entry++) {
+            entity = D_L18_001B281C[0] + (*entry & 0x7fff) * 0x100;
+            if (entity == 0) break;
+            if (*(unsigned char *)(entity + 0x31) != 0 &&
+                func_L02_002F21C0(D_00189EA0, entity + 0x10) > 16.0f &&
+                func_L02_004127F8((unsigned char *)entity) == 0) {
+                selected = entity;
+                break;
+            }
+        }
+    }
+    if (selected == 0) {
+        {
+            unsigned short *entry;
+            for (entity = 0, entry = D_L18_001FB320[L18_SelectionGroupId(state, slot, 0x10)];
+                 (L18_SelectionGroupId(state, slot, 0x10) & 0xff) != 0xff &&
+                 L18_SelectionGroupId(state, slot, 0x10) <= D_L18_001B2838[0] && entry != 0 &&
+                 ((short)entry[-1] >= 0 ||
+                  entry == D_L18_001FB320[L18_SelectionGroupId(state, slot, 0x10)]); entry++) {
+                entity = D_L18_001B281C[0] + (*entry & 0x7fff) * 0x100;
+                if (entity == 0) break;
+                if (func_L02_004127F8((unsigned char *)entity) == 0) {
+                    selected = entity;
+                    break;
+                }
+            }
+        }
+        if (selected == 0) goto fail;
+    }
+    func_L18_003F8D28(source, entity, (void *)L18_SelectionGroupId(state, slot, 0x10));
+    func_L18_003F7818((unsigned char *)secondary[0], (unsigned char *)source, 0);
+    func_L18_003FB500((unsigned char *)selected, 1);
+    return 1;
+fail:
+    return 0;
+}
 
 INCLUDE_ASM("asm/levels", func_L18_003FAE50);
 

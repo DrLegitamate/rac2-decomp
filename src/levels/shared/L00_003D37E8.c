@@ -1,4 +1,53 @@
 #include "include_asm.h"
+#include "common.h"
+extern int ref_L00_003DD2B8_00(void *);
+extern int ref_L00_003DD2B8_01(float);
+extern void ref_L00_003DD2B8_02(void *, void *, void *);
+extern void ref_L00_003DD2B8_03(void *, void *, void *);
+extern void ref_L00_003DD2B8_04(void *, float, float, void *, int);
+extern void ref_L00_003DD2B8_05(void *, void *, void *, float, float, int, int, int, float, float, float, float, int, float, int, int, int, int, int);
+extern char ref_L00_003DD2B8_06[] __attribute__((sda));
+extern void ref_L00_003DD2B8_07(void *);
+extern void ref_L00_003DD2B8_08(void *, void *);
+extern void ref_L00_003DD2B8_09(void *, void *, void *);
+extern void ref_L00_003DD2B8_10(void *, void *, void *);
+extern int ref_L00_003DD2B8_11(void *, float, int, void *);
+extern void ref_L00_003DD2B8_12(void *, void *, float);
+extern char ref_L00_003DD2B8_13[];
+extern float ref_L00_003DD2B8_14(void *);
+extern float ref_L00_003DD2B8_15(void *, void *);
+extern void ref_L00_003DD2B8_16(void *, void *, void *);
+extern void ref_L00_003DD2B8_17(void *, void *, void *);
+extern void ref_L00_003DD2B8_18(void *, void *, float);
+extern void ref_L00_003DD2B8_19(void *, void *);
+extern void ref_L00_003DD2B8_20(void *, void *);
+
+extern void ref_L00_003DC3E0_00(int, int, char *);
+extern void ref_L00_003DC3E0_01(float *, char *, float);
+extern void ref_L00_003DC3E0_02(float *, char *, char *);
+extern void ref_L00_003DC3E0_03(float *, char *, float *);
+extern void ref_L00_003DC3E0_04(float *, char *, float);
+extern struct C3PairGlobal { int x[2]; } ref_L00_003DC3E0_05;
+extern void ref_L00_003DC3E0_06(float *, float *, char *, float);
+extern int ref_L00_003DC3E0_07(void);
+extern unsigned char *ref_L00_003DC3E0_08(float *, float *, int, int, float);
+extern float ref_L00_003DC3E0_09(float, float);
+extern float ref_L00_003DC3E0_10(int);
+extern int ref_L00_003DC3E0_11(int, int);
+extern unsigned char *ref_L00_003DC3E0_12(char *, float *, float, int, int);
+
+extern void ref_L00_003E2E80_00(void *, int, int, int);
+extern void ref_L00_003E2E80_01(void *, void *, void *);
+extern void ref_L00_003E2E80_02(void *, void *, void *);
+extern void ref_L00_003E2E80_03(void *, void *, float);
+extern void ref_L00_003E2E80_04(void *, void *, void *);
+extern void ref_L00_003E2E80_05(void *, void *, float);
+extern float ref_L00_003E2E80_06(int);
+extern int ref_L00_003E2E80_07(float);
+extern void ref_L00_003E2E80_08(void *, int, int);
+extern float D_L00_001B8DC0[];
+
+
 
 extern void func_L00_003D6FB8_1(char *p);
 extern long long func_002E67A0_2(int id);
@@ -60,7 +109,7 @@ typedef struct {
 
 extern L00AimVector D_L00_001B8C80;
 
-INCLUDE_ASM("asm/levels", func_L00_003D37E8);
+/* func_L00_003D37E8 lives in L00_003D37E8-ribbon-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L00_003D3DE0);
 
@@ -73,7 +122,6 @@ INCLUDE_ASM("asm/levels", func_L00_003D40D8);
 
 
 
-INCLUDE_ASM("asm/levels", func_L00_003D4A20);
 
 
 /* shared native body of family a04928c6 */
@@ -203,7 +251,42 @@ INCLUDE_ASM("asm/levels", func_L00_003DBF50);
 
 
 
-INCLUDE_ASM("asm/levels", func_L00_003DC3E0);
+void func_L00_003DC3E0(char *object, int unused, char *pos, char *direction)
+{
+    float a[4], b[4], c[4], d[4];
+    struct C3PairGlobal colors;
+    float e[4];
+    char *state = *(char **)(object + 0x68);
+    float angle, scale;
+    int i;
+    ref_L00_003DC3E0_00(0, 0, object);
+    ref_L00_003DC3E0_01(a, direction, 2.0f);
+    ref_L00_003DC3E0_02(a, a, pos);
+    ref_L00_003DC3E0_03(d, pos, a);
+    ref_L00_003DC3E0_01(b, direction, 0.15f);
+    ref_L00_003DC3E0_02(b, pos, b);
+    ref_L00_003DC3E0_01(d, d, 1.0f);
+    ref_L00_003DC3E0_04(c, direction, 0.0009765625f);
+    ref_L00_003DC3E0_01(c, c, 1.0f);
+    colors = ref_L00_003DC3E0_05;
+    angle = func_0031A888_1();
+    i = 23;
+    do {
+        ref_L00_003DC3E0_06(e, d, direction, angle);
+        --i;
+        ref_L00_003DC3E0_08(b, e, colors.x[ref_L00_003DC3E0_07() % 2], 20, 1.0f / 24.0f);
+        angle = ref_L00_003DC3E0_09(angle, 0.2731819748878479f);
+    } while (i >= 0);
+    for (i = 0; i < 24; i++) {
+        scale = ref_L00_003DC3E0_10(i) * 0.06521739065647125f;
+        {
+            int *color = &colors.x[ref_L00_003DC3E0_07() % 2];
+            int n = ref_L00_003DC3E0_11(30, 50);
+            ref_L00_003DC3E0_12(pos, c, scale, *color, n);
+        }
+    }
+    qcopy(state, c);
+}
 
 typedef int Quad640 __attribute__((mode(TI)));
 
@@ -367,7 +450,100 @@ void func_L00_003DCAC8(char *pos, int a1, int a2, float f12, float f13, char *a3
 
 INCLUDE_ASM("asm/levels", func_L00_003DCC48);
 
-INCLUDE_ASM("asm/levels", func_L00_003DD2B8);
+/* The moving part of a bouncing object: phase, flags and a pointer to its motion state. */
+typedef struct {
+    char pad00[0x10];
+    float position[4];
+    unsigned char phase;
+    char pad21[2];
+    unsigned char fade;
+    char pad24[0x10];
+    unsigned short flags;
+    char pad36[0x32];
+    struct BounceState *state;
+    char pad6C[0x54];
+    float orientation[4];
+} BounceObject;
+
+/* Motion state of a BounceObject: velocity, spin, pivot and the bounce timer. */
+typedef struct BounceState {
+    float velocity[4];
+    float spin[4];
+    float pivot[3];
+    float radius;
+    int timer;
+    int flags;
+    float gravity;
+} BounceState;
+
+/* Per-frame update of a bouncing object: runs its timed phases, then moves and bounces it. */
+void func_L00_003DD2B8(BounceObject *object)
+{
+    float point[4];
+    float rotation[12];
+    float after[4], delta[4], probe[4];
+    float matrix[16], normalStep[4], axis[4];
+    BounceState *state = object->state;
+    float radius, length, projection;
+    switch (object->phase) {
+    case 0:
+        ref_L00_003DD2B8_07(object);
+        return;
+    case 1:
+        if (ref_L00_003DD2B8_00(&state->timer)) {
+            object->phase = 3;
+            state->timer = ref_L00_003DD2B8_01(10.0f);
+            object->flags |= 0x2000;
+            return;
+        }
+        break;
+    case 2:
+        ref_L00_003DD2B8_02(point, state->pivot, object->orientation);
+        ref_L00_003DD2B8_03(point, point, object->position);
+        if (state->flags & 2) {
+            ref_L00_003DD2B8_04(object, 0.3f, 10.0f, point, -1);
+        } else {
+            ref_L00_003DD2B8_05(object, ref_L00_003DD2B8_06, point, 0.0f, 0.0f,
+                5, 3, 5, 1.0f, 0.5f, 9.0f, 0.3330000042915344f, -1, 0.0f, 0, 0, -1, 0, 0x810001);
+        }
+        ref_L00_003DD2B8_07(object);
+        return;
+    case 3:
+        if (ref_L00_003DD2B8_00(&state->timer)) {
+            ref_L00_003DD2B8_07(object);
+            return;
+        }
+        object->fade = ref_L00_003DD2B8_01((float)state->timer * 12.8f);
+        break;
+    }
+    ref_L00_003DD2B8_08(rotation, state->spin);
+    ref_L00_003DD2B8_02(point, state->pivot, object->orientation);
+    ref_L00_003DD2B8_09(object->orientation, rotation, object->orientation);
+    ref_L00_003DD2B8_02(after, state->pivot, object->orientation);
+    ref_L00_003DD2B8_10(delta, after, point);
+    ref_L00_003DD2B8_10(object->position, object->position, delta);
+    ref_L00_003DD2B8_03(object->position, object->position, state->velocity);
+    radius = state->radius;
+    state->velocity[2] -= state->gravity;
+    ref_L00_003DD2B8_02(probe, state->pivot, object->orientation);
+    ref_L00_003DD2B8_03(probe, probe, object->position);
+    if (ref_L00_003DD2B8_11(probe, radius, 0, object)) {
+        ref_L00_003DD2B8_12(ref_L00_003DD2B8_13, ref_L00_003DD2B8_13, 1.0f);
+        length = ref_L00_003DD2B8_14(state->velocity);
+        projection = ref_L00_003DD2B8_15(state->velocity, ref_L00_003DD2B8_13);
+        if (projection < 0.0f) {
+            ref_L00_003DD2B8_16(state->velocity, state->velocity, ref_L00_003DD2B8_13);
+            ref_L00_003DD2B8_12(normalStep, ref_L00_003DD2B8_13, projection * 0.5f);
+            ref_L00_003DD2B8_03(state->velocity, state->velocity, normalStep);
+            ref_L00_003DD2B8_12(state->velocity, state->velocity, length);
+            ref_L00_003DD2B8_17(axis, ref_L00_003DD2B8_13, state->velocity);
+            ref_L00_003DD2B8_12(axis, axis, 1.0f);
+            ref_L00_003DD2B8_18(axis, axis, ref_L00_003DD2B8_14(state->spin));
+            ref_L00_003DD2B8_19(axis, matrix);
+            ref_L00_003DD2B8_20(matrix, state->spin);
+        }
+    }
+}
 
 void func_L00_003DD680(char *p)
 {
@@ -386,7 +562,7 @@ INCLUDE_ASM("asm/levels", func_L00_003DDEC8);
 
 /* func_L00_003DE490 is defined in L00_003DE490-basis-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_003DE950);
+/* func_L00_003DE950 lives in L00_003DE950-g8.c. */
 
 
 INCLUDE_ASM("asm/levels", func_L00_003DF710);
@@ -595,9 +771,104 @@ void func_L00_003E0F58(char *pos, int a1, int a2, char *a3, int t0,
     func_802EAC30_1(pkt, m, 0);
 }
 
-INCLUDE_ASM("asm/levels", func_L00_003E2180);
 
 INCLUDE_ASM("asm/levels", func_L00_003E2510);
 
 
-INCLUDE_ASM("asm/levels", func_L00_003E2E80);
+/* A trail quad packet: four vertices, their colors and UVs, then the GS words. */
+typedef struct {
+    float vertex[4][4];
+    unsigned int color[4];
+    float uv[8];
+    long long primitive;
+    long long texture;
+    long long mode;
+    long long flags;
+} __attribute__((aligned(16))) TrailPacket;
+
+/* Draws a two-layer trail along a chain of points, fading its alpha toward the end. */
+void func_L00_003E2E80(float *points, int tex1, int tex2, int count,
+                       unsigned int color1, unsigned int color2,
+                       float unused, float scale, float scroll)
+{
+    TrailPacket core;
+    TrailPacket outer;
+    float cross[4], offset[4], ray[4], tangent[4];
+    TrailPacket *outerPtr;
+    int alpha1 = color1 >> 24, alpha2 = color2 >> 24;
+    float *next = points + 4;
+    int i;
+    float zero;
+
+    ref_L00_003E2E80_00(&core, tex1, 1, 128);
+    outerPtr = &outer; /* a real pointer local, as in retail's stack layout */
+    *(int *)&core.uv[0] = 0;
+    zero = core.uv[0];
+    core.color[3] = color1;
+    core.color[2] = color1;
+    core.color[1] = color1;
+    core.color[0] = color1;
+    *(int *)&core.uv[1] = 0;
+    core.uv[3] = 1;
+    *(int *)&core.uv[5] = 0;
+    core.uv[7] = 1;
+    core.uv[2] = scroll;
+    core.uv[0] = scroll;
+    core.uv[6] = scroll + 1;
+    core.uv[4] = scroll + 1;
+
+    ref_L00_003E2E80_00(&outer, tex2, 1, 128);
+    outer.color[3] = color2;
+    outer.color[2] = color2;
+    outer.color[1] = color2;
+    outer.color[0] = color2;
+    outer.uv[1] = zero;
+    outer.uv[3] = 1;
+    outer.uv[7] = 1;
+    outer.uv[5] = zero;
+    outer.uv[2] = scroll;
+    outer.uv[6] = scroll + 1;
+    outer.uv[0] = scroll;
+    outer.uv[4] = scroll + 1;
+
+    ref_L00_003E2E80_01(ray, points, D_L00_001B8DC0);
+    ref_L00_003E2E80_01(tangent, next, points);
+    ref_L00_003E2E80_02(cross, tangent, ray);
+    ref_L00_003E2E80_03(offset, cross, points[3]);
+    ref_L00_003E2E80_04(&core.vertex[0], points, offset);
+    ref_L00_003E2E80_01(&core.vertex[1], points, offset);
+    ref_L00_003E2E80_05(offset, offset, scale);
+    ref_L00_003E2E80_04(outerPtr->vertex[0], points, offset);
+    ref_L00_003E2E80_01(&outer.vertex[1], points, offset);
+
+    for (i = 1; i < count; i++) {
+        float *point = points + i * 4;
+
+        ref_L00_003E2E80_01(ray, point, D_L00_001B8DC0);
+        ref_L00_003E2E80_01(tangent, point, points + (i - 1) * 4);
+        ref_L00_003E2E80_02(cross, tangent, ray);
+        ref_L00_003E2E80_03(offset, cross, point[3]);
+        ref_L00_003E2E80_04(&core.vertex[2], point, offset);
+        ref_L00_003E2E80_01(&core.vertex[3], point, offset);
+        ref_L00_003E2E80_05(offset, offset, scale);
+        ref_L00_003E2E80_04(&outer.vertex[2], point, offset);
+        ref_L00_003E2E80_01(&outer.vertex[3], point, offset);
+
+        core.color[2] = core.color[3] = (color1 & 0xFFFFFF) |
+            (ref_L00_003E2E80_07(ref_L00_003E2E80_06(alpha1) * (1 - ref_L00_003E2E80_06(i) / ref_L00_003E2E80_06(count))) << 24);
+        outer.color[2] = outer.color[3] = (color2 & 0xFFFFFF) |
+            (ref_L00_003E2E80_07(ref_L00_003E2E80_06(alpha2) * (1 - ref_L00_003E2E80_06(i) / ref_L00_003E2E80_06(count))) << 24);
+
+        ref_L00_003E2E80_08(&core, 0, 0);
+        ref_L00_003E2E80_08(&outer, 0, 0);
+
+        qcopy(&core.vertex[0], &core.vertex[2]);
+        qcopy(&core.vertex[1], &core.vertex[3]);
+        qcopy(&outer.vertex[0], &outer.vertex[2]);
+        qcopy(&outer.vertex[1], &outer.vertex[3]);
+        core.color[0] = core.color[2];
+        core.color[1] = core.color[3];
+        outer.color[0] = outer.color[2];
+        outer.color[1] = outer.color[3];
+    }
+}

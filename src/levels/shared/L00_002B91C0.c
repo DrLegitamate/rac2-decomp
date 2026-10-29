@@ -313,15 +313,140 @@ void func_L00_002B9C58(int a0, int a1, int a2)
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L00_002B9CA8);
+/* The eight 8-byte entries func_L00_002B9C58 claims at resident +0x23EC. */
+typedef struct {
+    short pending;
+    short id;
+    short timer;
+    short arg;
+} DelayedSlot_9CA8;
 
-INCLUDE_ASM("asm/levels", func_L00_002B9D60);
+extern struct {
+    u8 pad0[0x149D];
+    u8 b149D;
+    u8 pad149e[0x23EC - 0x149E];
+    DelayedSlot_9CA8 slots[8];
+} D_00189E20_9CA8;
 
-INCLUDE_ASM("asm/levels", func_L00_002B9F00);
+extern int func_00282978(void *);
+extern void func_L00_002A61C8(int, int, int, int);
 
-INCLUDE_ASM("asm/levels", func_L00_002BA138);
+/* Ticks the timer of each of the eight entries; one whose timer reports 2 is cleared and
+   fires: id 0x16 calls func_L00_002A61C8 with the resident byte at +0x149D, any other id
+   goes to func_L00_002B9B88 with the entry's argument. */
+void func_L00_002B9CA8(void)
+{
+    int i;
+    short id;
 
-INCLUDE_ASM("asm/levels", func_L00_002BA220);
+    for (i = 0; i < 8; i++) {
+        if (FastDecTimer(&D_00189E20_9CA8.slots[i].timer) == 2) {
+            id = D_00189E20_9CA8.slots[i].id;
+            D_00189E20_9CA8.slots[i].pending = 0;
+            if (id == 0x16)
+                func_L00_002A61C8(D_00189E20_9CA8.b149D, 1, 1, 0x32);
+            else
+                func_L00_002B9B88(id, D_00189E20_9CA8.slots[i].arg);
+        }
+    }
+}
+
+extern char D_00189EA0[];
+
+extern int D_L00_001B9080;
+
+extern void func_00283410_1(void *a, void *b);
+
+extern void func_002833F0_1(void *a, void *b);
+
+extern void func_L00_002B2BD0(void);
+
+extern void func_L00_00322EC8(void *p);
+
+extern void func_L00_002AF7D0(void);
+
+extern void func_L00_002A53B8(void);
+
+extern void func_L00_002C42E0(int a0, int a1);
+
+extern void func_L00_002D23C0(int a0, int a1);
+
+extern void func_L00_002B4900(void);
+
+extern float func_00282E48_1(void *a, void *b);
+
+extern void func_L00_003DF6B0(int a0, int a1);
+
+extern void func_L00_004028C0(void *a, int b);
+
+extern void func_L00_002D9D98(void);
+
+extern void func_L00_00311DC0(void *p);
+
+/* The resident block, as far as func_L00_002B9D60 touches it. */
+typedef struct {
+    u8 pad000[0x34E];
+    short h34E;
+    u8 pad350[0x3A0 - 0x350];
+    int i3A0;
+    int flags3A4;
+    u8 pad3a8[0x2290 - 0x3A8];
+    char *object;
+    u8 pad2294[0x229C - 0x2294];
+    int i229C;
+    u8 pad22a0[0x24EF - 0x22A0];
+    u8 b24EF;
+} ResidentState_9D60;
+
+/* Reset the hero position and direction, the resident movement state and the related level objects. */
+void func_L00_002B9D60(void *position, void *direction, int sound, int refresh)
+{
+    ResidentState_9D60 *res;
+    char *hero = D_00189EA0;
+
+    qcopy(hero, position);
+    res = (ResidentState_9D60 *)(hero - 0x80);
+    qcopy(res->object + 0x10, position);
+    qcopy(hero + 0x10, direction);
+
+    func_00283410_1(res, hero + 0x10);
+    func_002833F0_1(res->object + 0xC0, hero + 0x10);
+    func_L00_002B2BD0();
+    func_L00_00322EC8(hero + 0x1860);
+    func_L00_00322EC8(hero + 0x19B0);
+
+    res->flags3A4 &= ~1;
+    res->flags3A4 &= ~2;
+    res->h34E = 1;
+    res->i3A0 = 0;
+    res->b24EF = 0;
+
+    func_L00_002AF7D0();
+    func_L00_002A53B8();
+
+    if (sound != -1)
+        func_L00_002C42E0(sound, 2);
+
+    func_L00_002D23C0(*(u8 *)(res->object + 0x43), *(u8 *)(res->object + 0x41));
+
+    if (res->i229C == 0x11)
+        D_L00_001B9080 = 1;
+    else
+        D_L00_001B9080 = 0;
+
+    func_L00_002B4900();
+
+    if (func_00282E48_1(D_00189EA0, D_00189EA0 + 0x250) < 1.0f)
+        qcopy(D_00189EA0, D_00189EA0 + 0x250);
+
+    func_L00_003DF6B0(0, 0);
+    func_L00_004028C0(0, 0);
+
+    if (refresh != 0)
+        func_L00_002D9D98();
+
+    func_L00_00311DC0(*(void **)(D_00189EA0 + 0x2210));
+}
 
 /* queries a resident table with a stack request and blends a vector back into the resident record */
 int func_L00_002BA410(void)
@@ -346,4 +471,121 @@ int func_L00_002BA410(void)
     return 0;
 }
 
-INCLUDE_ASM("asm/levels", func_L00_002BA508);
+/* The resident fields func_L00_002BA508 reads and writes. */
+typedef struct {
+    u8 pad0[0x184];
+    float f184;
+    u8 pad188[0x1B8 - 0x188];
+    int i1B8;
+    u8 pad1bc[0x278 - 0x1BC];
+    float f278;
+    u8 pad27c[0x280 - 0x27C];
+    float f280;
+    u8 b284;
+    u8 pad285[0xC04 - 0x285];
+    float fC04;
+    float fC08;
+    u8 padc0c[0x1220 - 0xC0C];
+    char *p1220;
+    u8 pad1224[0x123A - 0x1224];
+    u8 b123A;
+    u8 pad123b[0x1500 - 0x123B];
+    int i1500;
+    u8 pad1504[0x1A30 - 0x1504];
+    u8 area1A30[0x2290 - 0x1A30];
+    char *p2290;
+    int i2294;
+} ResidentState_A508;
+
+extern ResidentState_A508 D_00189E20_A508;
+
+/* The level vector at +0x150 of the block func_L00_002BA410 queries. */
+extern struct {
+    u8 pad0[0x150];
+    float x, y, z;
+} D_L00_001B8C80_A508;
+
+extern float func_00283B98(float a, float b);
+extern int func_L00_002B3248(void *obj);
+extern void func_00282C88(void *m);
+extern void func_L00_002D3798(void *dst, void *src, float f);
+extern void func_002AF000(void *m, float a, float b, float c);
+extern void func_002833F0(void *dst, void *v);
+extern void func_00283738(void *dst, void *a, void *b);
+extern void func_00283658(void *dst, void *src);
+extern void func_002AB6D8(void *src, void *dst);
+extern void func_L00_00322A98(void *obj, void *area);
+extern void func_L00_00322AC0(void *area, int a, int b, float f);
+extern void func_002A7470(void *obj, int a, int b, int c);
+
+/* Once per hero state, set up the object at resident +0x1220 (the special case uses a stored angle
+   and the level vector at +0x150 of the block func_L00_002BA410 queries, otherwise the unit scale
+   and the parent transform) and pass the composed transform to the object at +0xF0.
+   Does nothing once the byte at +0x123A is set. */
+void func_L00_002BA508(void)
+{
+    float scratch[4];
+    u8 transform[48], level_transform[48], composed[64];
+    char *object, *record, *matrix;
+    int special;
+
+    if (D_00189E20_A508.b123A)
+        return;
+
+    special = 0;
+    if (D_00189E20_A508.i1500)
+        special = 1;
+    if (D_00189E20_A508.i2294 == 1 || D_00189E20_A508.i2294 == 29) {
+        special = 0;
+        if (D_00189E20_A508.i1B8 > 20)
+            special = 1;
+    }
+
+    if (special && !func_L00_002BA410()) {
+        D_00189E20_A508.fC04 = D_L00_001B8C80_A508.z;
+        D_00189E20_A508.fC08 = func_00283B98(-D_L00_001B8C80_A508.y, 0.12217305600643158f);
+    }
+
+    object = D_00189E20_A508.p1220;
+    if (!func_L00_002B3248(object))
+        return;
+    D_00189E20_A508.b123A = 1;
+    if (special)
+        func_L00_002B9B88(17, 0);
+
+    *(u8 *)(object + 0x20) = 10;
+    record = *(char **)(object + 0x68);
+    if (D_00189E20_A508.f278 < 1.2f && D_00189E20_A508.f280 > 0.6632251739501953f
+        && !D_00189E20_A508.b284)
+        *(short *)(record + 0x76) = 1;
+
+    matrix = record + 0x40;
+    func_00282C88(matrix);
+    if (!special)
+        func_L00_002D3798(matrix, matrix, 1.0f);
+    else
+        func_002AF000(matrix, 1.0f, D_00189E20_A508.fC04, D_00189E20_A508.fC08);
+
+    func_00282C88(scratch);
+    func_002833F0(transform, scratch);
+    if (special) {
+        scratch[0] = D_L00_001B8C80_A508.x;
+        scratch[1] = D_L00_001B8C80_A508.y;
+        scratch[2] = D_L00_001B8C80_A508.z;
+        func_002833F0(level_transform, scratch);
+        func_00283738(transform, level_transform, transform);
+    } else {
+        func_00283738(transform, D_00189E20_A508.p2290 + 0xC0, transform);
+    }
+    func_00283658(composed, transform);
+    func_002AB6D8(composed, object + 0xF0);
+
+    *(int *)(record + 0x64) = 0;
+    *(float *)(record + 0x60) = 0.38333335518836975f;
+    if (D_00189E20_A508.f184 < 0.3333333432674408f) {
+        func_L00_00322A98(object, D_00189E20_A508.area1A30);
+        func_L00_00322AC0(D_00189E20_A508.area1A30, 48, 3, 0.0f);
+        func_L00_00322AC0(D_00189E20_A508.area1A30, 23, 5, 0.0f);
+    }
+    func_002A7470(object, 6, 0, 5);
+}

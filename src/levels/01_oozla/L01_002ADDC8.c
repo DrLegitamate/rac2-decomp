@@ -2,11 +2,11 @@
 
 /* func_L01_002ADDC8 is defined in L01_002ADDC8-flags.c. */
 
-INCLUDE_ASM("asm/levels", func_L01_002B5218);
+/* func_L01_002B5218 is defined in L01_002ADDC8-ground-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L01_002B6390);
+/* func_L01_002B6390 is defined in L01_002ADDC8-motion.c. */
 
-INCLUDE_ASM("asm/levels", func_L01_002B7360);
+/* func_L01_002B7360 is defined in L01_002ADDC8-drive.c. */
 
 /* func_L01_002BA1C0 (Oozla): the hero state handler, a switch on the state at 0x2294.
    One function: one prologue, one return.  It is func_L07_002B8618 (Siberius) with the states

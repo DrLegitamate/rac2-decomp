@@ -1,6 +1,26 @@
 #include "include_asm.h"
 #include "common.h"
 
+typedef int TI16 __attribute__((mode(TI)));
+
+extern int func_419CA0(int);
+
+extern char D_00189EA0[];
+
+extern const int D_L23_001B1684 __attribute__((sda));
+
+extern int *D_L23_001B36A8 __attribute__((sda));
+
+extern int *D_L23_001FF300[];
+
+extern void func_00282CF0(void *, void *, void *);
+
+extern void func_00282F20(void *, void *, float);
+
+extern float func_00282E48(void *, void *);
+
+extern void func_L23_003C0F48(char *arg0, int arg1);
+
 extern void func_3242D0(int, int, int);
 
 extern void func_L23_003C1988(char *arg0);
@@ -202,7 +222,41 @@ INCLUDE_ASM("asm/levels", func_L23_003C02C8);
 
 INCLUDE_ASM("asm/levels", func_L23_003C0A60);
 
-INCLUDE_ASM("asm/levels", func_L23_003C0C78);
+/* picks the nearest entry of the objects the index table names, and stores its index */
+void func_L23_003C0C78(char *arg0, int arg1) {
+    struct {
+        TI16 a;
+        float b[4];
+    } loc;
+    char *src = arg0 + 0x10;
+    char *state;
+    float best;
+    int i;
+
+    state = *(char **)(arg0 + 0x68);
+    qcopy(&loc.a, src);
+    func_00282CF0(loc.b, src, D_00189EA0);
+    best = 30000.0f;
+    func_00282F20(loc.b, loc.b, 4.0f);
+    func_00282CC0((char *)&loc.a, (char *)&loc.a, (char *)loc.b);
+    for (i = 0; i < D_L23_001B1684; i++) {
+        int *obj;
+        int k;
+
+        if (arg1 != 0 && func_419CA0(i) == 0)
+            continue;
+        obj = D_L23_001FF300[D_L23_001B36A8[i]];
+        for (k = 0; k < *obj; k++) {
+            float d = func_00282E48((char *)obj + 0x10 + k * 0x10, &loc.a);
+
+            if (d < best) {
+                best = d;
+                func_L23_003C0F48(arg0, i);
+                *(short *)(state + 0x2B6) = k;
+            }
+        }
+    }
+}
 
 extern int func_419CA0(int);
 

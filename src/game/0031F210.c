@@ -30,11 +30,11 @@ extern float func_00282DF0(float *buf);
 
 extern void func_002A91F0(void *, float *);
 
-INCLUDE_ASM("asm/game", func_0031F210);
+/* func_0031F210 is in 0031F210-ribbon.c. */
 
 INCLUDE_ASM("asm/game", func_0031F6E8);
 
-INCLUDE_ASM("asm/game", func_0031FC28);
+/* func_0031FC28 is in 0031F210-pickup-g8.c. */
 
 INCLUDE_ASM("asm/game", func_003202E8);
 
@@ -211,7 +211,7 @@ void func_003250F8(char *object)
     func_00325320(object);
 }
 
-INCLUDE_ASM("asm/game", func_00325158);
+/* func_00325158 is in 0031F210-turn-g8.c. */
 
 /* func_00325320 is in the -G8 sibling. */
 
@@ -396,4 +396,4 @@ void func_00326CB8(char *obj)
 
 
 
-INCLUDE_ASM("asm/game", func_00326EC0);
+/* func_00326EC0 is in 0031F210-basis-g8.c. */

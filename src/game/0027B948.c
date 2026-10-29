@@ -1,5 +1,16 @@
 #include "include_asm.h"
 
+/* Rotated sprite construction follows RAC1 draw.c (GPL-3.0). */
+typedef struct { float x, y, z, w; } QuadPoint;
+typedef struct { unsigned int tag, addr, vif0, vif1; } QuadDmaTag;
+union QuadCursor { QuadDmaTag *tag; int *words; unsigned char *bytes; int addr; };
+extern union QuadCursor D_001B22A8 __attribute__((sda));
+extern void func_00282D30(void *, void *, float);
+extern void func_00282CC0(void *, void *, void *);
+extern void func_00282CF0(void *, void *, void *);
+extern float func_00283198(float);
+extern int func_00283CF0(float);
+
 /* Write the measured GS privileged 64-bit register configuration in order. */
 typedef unsigned long long GsRegisterValue;
 
@@ -96,6 +107,8 @@ INCLUDE_ASM("asm/game", func_0027BA68);
 
 INCLUDE_ASM("asm/game", func_0027BD70);
 
+/* Defined in 0027BD70-g8.c. */
+
 
 void func_0027C480(void) {
     extern void func_00284F40(int);
@@ -136,7 +149,7 @@ INCLUDE_ASM("asm/game", func_0027C540);
 
 
 
-INCLUDE_ASM("asm/game", func_0027C878);
+/* Defined in 0027C878-g8.c. */
 
 extern int D_001B1608[] __attribute__((sda));
 extern fn_t D_001B9E40[];
@@ -228,9 +241,9 @@ void func_0027D0E8(void) {
     }
 }
 
-INCLUDE_ASM("asm/game", func_0027D160);
+/* Defined in 0027D160-g8.c. */
 
-INCLUDE_ASM("asm/game", func_0027D330);
+/* Defined in 0027D330-g8.c. */
 
 extern int D_L00_001BCAF4;
 
@@ -273,7 +286,7 @@ void func_0027D4B8(void)
 
 INCLUDE_ASM("asm/game", func_0027D5C0);
 
-INCLUDE_ASM("asm/game", func_0027D900);
+/* Defined in 0027D900-g8.c. */
 
 /* Defined in 0027DB68-g8.c. */
 
@@ -282,6 +295,8 @@ INCLUDE_ASM("asm/game", func_0027D900);
 
 /* func_0027DE50 lives in 0027DE50-sdata.c. */
 
+/* Defined in 0027DE50-g8.c. */
+
 
 INCLUDE_ASM("asm/game", func_0027E018);
 
@@ -289,7 +304,106 @@ INCLUDE_ASM("asm/game", func_0027E018);
 INCLUDE_ASM("asm/game", func_0027E1A0);
 
 
-INCLUDE_ASM("asm/game", func_0027E4A8);
+/* Adapted from OpenRAC/rac1-decomp src/game/draw.c's append_rotated_sprite_quad,
+ * itself adapted from Lombyte src/rendering/append_rotated_sprite_quad.c
+ * (GPL-3.0). RAC2 ends the packet with a zero word. */
+void func_0027E4A8(float center_x, float center_y, float quad_width, float quad_height,
+                   float angle, int texture_width, int texture_height,
+                   long texture_tex0, long z_and_fog, int color,
+                   unsigned char flip_u, unsigned char flip_v,
+                   float pivot_u, float pivot_v)
+{
+    QuadPoint vertical_edge;
+    QuadPoint horizontal_edge;
+    QuadPoint center;
+    QuadPoint temporary;
+    QuadPoint top_left;
+    QuadPoint top_right;
+    QuadPoint bottom_left;
+    QuadPoint bottom_right;
+    QuadDmaTag *tag;
+    unsigned long *packet_words;
+    int texture_left;
+    int texture_right;
+    int texture_top;
+    int texture_bottom;
+    float inverse_pivot_u;
+    float inverse_pivot_v;
+
+    if (flip_u != 0) {
+        texture_left = ((unsigned int)texture_width << 4);
+        texture_right = 0x10;
+    } else {
+        texture_right = ((unsigned int)texture_width << 4);
+        texture_left = 0x10;
+    }
+    if (flip_v != 0) {
+        texture_top = ((unsigned int)texture_height << 20);
+        texture_bottom = 0x100000;
+    } else {
+        texture_bottom = ((unsigned int)texture_height << 20);
+        texture_top = 0x100000;
+    }
+    center.x = center_x;
+    center.y = center_y;
+    inverse_pivot_v = 1.0f - pivot_v;
+    vertical_edge.x = quad_height * func_00283198(angle);
+    vertical_edge.y = quad_height * func_00283180(angle);
+    horizontal_edge.x = quad_width * func_00283180(angle);
+    horizontal_edge.y = -quad_width * func_00283198(angle);
+    inverse_pivot_u = 1.0f - pivot_u;
+    func_00282D30(&temporary, &vertical_edge, inverse_pivot_v);
+    func_00282CC0(&top_left, &center, &temporary);
+    func_00282D30(&temporary, &horizontal_edge, inverse_pivot_u);
+    func_00282CF0(&top_left, &top_left, &temporary);
+    func_00282D30(&temporary, &vertical_edge, inverse_pivot_v);
+    func_00282CC0(&top_right, &center, &temporary);
+    func_00282D30(&temporary, &horizontal_edge, pivot_u);
+    func_00282CC0(&top_right, &top_right, &temporary);
+    func_00282D30(&temporary, &vertical_edge, pivot_v);
+    func_00282CF0(&bottom_left, &center, &temporary);
+    func_00282D30(&temporary, &horizontal_edge, inverse_pivot_u);
+    func_00282CF0(&bottom_left, &bottom_left, &temporary);
+    func_00282D30(&temporary, &vertical_edge, pivot_v);
+    func_00282CF0(&bottom_right, &center, &temporary);
+    func_00282D30(&temporary, &horizontal_edge, pivot_u);
+    func_00282CC0(&bottom_right, &bottom_right, &temporary);
+    D_001B22A8.tag->tag = 0x10000007;
+    D_001B22A8.tag->addr = 0;
+    D_001B22A8.tag->vif0 = 0;
+    D_001B22A8.tag->vif1 = 0x50000007;
+    tag = D_001B22A8.tag;
+    packet_words = (unsigned long *)(tag + 1);
+    D_001B22A8.tag = tag + 1;
+    packet_words[0] = 0xB400000000008001;
+    packet_words[1] = 0x53535353106;
+    packet_words[2] = texture_tex0;
+    packet_words[3] = 0x154;
+    packet_words[4] = color;
+    packet_words[5] = texture_left | texture_top;
+    packet_words[6] =
+        (func_00283CF0(top_left.x * 16.0f) + Ff67aa9df_D_001A7350 - 8) |
+        ((unsigned long)(func_00283CF0(top_left.y * 16.0f) + Ff67aa9df_D_001A7354 - 8) << 16) |
+        ((unsigned long)z_and_fog << 32);
+    packet_words[7] = texture_right | texture_top;
+    packet_words[8] =
+        (func_00283CF0(top_right.x * 16.0f) + Ff67aa9df_D_001A7350 - 8) |
+        ((unsigned long)(func_00283CF0(top_right.y * 16.0f) + Ff67aa9df_D_001A7354 - 8) << 16) |
+        ((unsigned long)z_and_fog << 32);
+    packet_words[9] = texture_left | texture_bottom;
+    packet_words[10] =
+        (func_00283CF0(bottom_left.x * 16.0f) + Ff67aa9df_D_001A7350 - 8) |
+        ((unsigned long)(func_00283CF0(bottom_left.y * 16.0f) + Ff67aa9df_D_001A7354 - 8) << 16) |
+        ((unsigned long)z_and_fog << 32);
+    packet_words[11] = texture_right | texture_bottom;
+    packet_words[12] =
+        (func_00283CF0(bottom_right.x * 16.0f) + Ff67aa9df_D_001A7350 - 8) |
+        ((unsigned long)(func_00283CF0(bottom_right.y * 16.0f) + Ff67aa9df_D_001A7354 - 8) << 16) |
+        ((unsigned long)z_and_fog << 32);
+    packet_words[13] = 0;
+    D_001B22A8.tag = (QuadDmaTag *)((unsigned char *)D_001B22A8.tag + 0x70);
+}
+
 
 /* Defined in 0027E920.c. */
 
@@ -347,4 +461,4 @@ void func_0027ECC8(int x, int y, int z, int w, int v)
 }
 
 
-INCLUDE_ASM("asm/game", func_0027EE58);
+/* Defined in 0027EE58.c. */

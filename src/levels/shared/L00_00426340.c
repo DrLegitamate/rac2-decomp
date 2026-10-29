@@ -1,5 +1,20 @@
 #include "common.h"
 
+extern void func_00283410(char *, char *);
+extern int func_00282948(char *);
+extern float func_00283CE0(int);
+extern void func_L00_0031AC60(char *, char *, char *, float);
+extern void func_L00_0031AD40(char *, char *, char *, float);
+extern void func_00272550(char *, char *, char *);
+extern float func_00283BE0(float, float);
+extern float func_002A7C00(float, float, float);
+extern float func_L00_0031ABE0(float, float, float);
+extern float func_002A7AA8(float, float, float, float, float);
+extern float func_002702C8(char *, float, float, float, float, float);
+extern float func_002703B0(char *, float, float, float, float, float);
+extern float D_L00_001B8DD8;
+
+
 /* Measured child block reached at owner->sub + 0x40. */
 typedef struct { char pad[0x4C]; float height; } Part_28CE0;
 
@@ -116,8 +131,6 @@ void func_L00_00426340(int object)
     func_L00_00425CD0(object);
     func_L00_00425560(object);
 }
-
-
 void func_L00_00426478(void)
 {
 }
@@ -305,7 +318,92 @@ void func_L00_00427620(unsigned char *a0) {
     *(unsigned short *)(a0 + 0x7E) = 0;
 }
 
-INCLUDE_ASM("asm/levels", func_L00_004276E8);
+/* Blends the saved camera position and orientation, then rebuilds its matrix. */
+void func_L00_004276E8(char *object)
+{
+    char matrix[64];
+    char *saved = *(char **)(object + 0x70);
+    char *rotation = saved + 0x30;
+    char *target = saved + 0x80;
+    char *transition = saved + 0xE0;
+    float x, y, delta, blend;
+
+    if (*(unsigned char *)(object + 0x88) == 1) {
+        goto snap;
+    } else if (*(unsigned char *)(object + 0x88) == 2) {
+        float fraction;
+
+        func_00282948(transition);
+        fraction = (float)(*(int *)(transition + 4) - *(int *)(saved + 0xE0)) /
+                   func_00283CE0(*(int *)(transition + 4));
+        func_L00_0031AC60(object + 0x30, object + 0x30, target, fraction);
+        func_L00_0031AD40(object + 0x40, object + 0x40, saved + 0x90, fraction);
+        goto finish;
+    } else if (*(unsigned char *)(object + 0x88) == 3) {
+        float fraction;
+
+        if (func_00282948(transition)) {
+        snap:
+            qcopy(object + 0x30, target);
+            qcopy(object + 0x40, saved + 0x90);
+            goto finish;
+        }
+        fraction = (float)(*(int *)(transition + 4) - *(int *)(saved + 0xE0)) /
+                   func_00283CE0(*(int *)(transition + 4));
+        func_00272550(saved + 0xE8, target, D_00189EA0);
+        x = func_00283BE0(*(float *)(transition + 8), *(float *)(transition + 0x1C));
+        y = func_00283BE0(*(float *)(target + 0x18), D_L00_001B8DD8);
+        if ((x > 0.3490659f && y < -0.3490659f) ||
+            (x < -0.3490659f && y > 0.3490659f)) {
+            float zero = 0.0f;
+
+            delta = *(float *)(transition + 8) - *(float *)(transition + 0x1C);
+            if (delta < zero && y > zero)
+                delta = -delta;
+            else if (delta > zero && y < zero)
+                delta = -delta;
+            *(float *)(transition + 0x1C) += func_002A7C00(0.0f, delta, fraction);
+        } else {
+            *(float *)(transition + 0x1C) = func_L00_0031ABE0(
+                *(float *)(transition + 0x1C), *(float *)(transition + 8), fraction);
+        }
+        blend = func_002A7AA8(*(float *)(transition + 0x44), 0.0f, 1.0f,
+                             *(float *)(transition + 0x48), fraction);
+        *(float *)(transition + 0x24) +=
+            (*(float *)(transition + 0x10) - *(float *)(transition + 0x24)) * blend;
+        *(float *)(transition + 0x20) = func_L00_0031ABE0(
+            *(float *)(transition + 0x20), *(float *)(transition + 0xC), fraction);
+        func_L00_0031AC60(transition + 0x30, transition + 0x30, D_00189EA0, fraction);
+        func_L00_002DA0B8(object + 0x30, transition + 0x1C, transition + 0x30);
+        func_L00_0031AD40(object + 0x40, object + 0x40, target + 0x10, fraction);
+        goto finish;
+    }
+    if (*(short *)(saved + 0x1C) == 1) {
+        *(float *)(object + 0x30) = func_002702C8(saved,
+            *(float *)(object + 0x30), *(float *)target,
+            *(float *)(saved + 0x10), *(float *)(saved + 0x14), *(float *)(saved + 0x18));
+        *(float *)(object + 0x34) = func_002702C8(saved + 4,
+            *(float *)(object + 0x34), *(float *)(target + 4),
+            *(float *)(saved + 0x10), *(float *)(saved + 0x14), *(float *)(saved + 0x18));
+        *(float *)(object + 0x38) = func_002702C8(saved + 8,
+            *(float *)(object + 0x38), *(float *)(target + 8),
+            *(float *)(saved + 0x10), *(float *)(saved + 0x14), *(float *)(saved + 0x18));
+    }
+    if (*(short *)(rotation + 0x2C) == 1) {
+        *(float *)(object + 0x40) = func_002703B0(rotation,
+            *(float *)(object + 0x40), *(float *)(target + 0x10),
+            *(float *)(rotation + 0x20), *(float *)(rotation + 0x24), *(float *)(rotation + 0x28));
+        *(float *)(object + 0x44) = func_002703B0(saved + 0x34,
+            *(float *)(object + 0x44), *(float *)(target + 0x14),
+            *(float *)(rotation + 0x20), *(float *)(rotation + 0x24), *(float *)(rotation + 0x28));
+        *(float *)(object + 0x48) = func_002703B0(saved + 0x38,
+            *(float *)(object + 0x48), *(float *)(target + 0x18),
+            *(float *)(rotation + 0x20), *(float *)(rotation + 0x24), *(float *)(rotation + 0x28));
+    }
+finish:
+    func_00283410(matrix, object + 0x40);
+    func_00283678(object, matrix);
+}
 
 unsigned int func_L00_00427AD8(void)
 {
@@ -387,10 +485,10 @@ void func_L00_00427C78(char *self)
     *(short *)(self + 126) = 0;
 }
 
-INCLUDE_ASM("asm/levels", func_L00_00427D50);
+/* func_L00_00427D50 is defined in L00_00427D50-g8.c. */
 
 
-INCLUDE_ASM("asm/levels", func_L00_004282F0);
+/* func_L00_004282F0 is defined in L00_004282F0-spawn.c. */
 
 /* Reads two floats from a data block, differences them against two globals, calls a two-float helper with the difference pair, refines the returned float through a second helper, then selects one of two small state codes and clears a flag byte according to two float thresholds. */
 void func_L00_004283C8(char *o)
@@ -542,7 +640,7 @@ void func_L00_00429CE0(void)
 
 /* func_L00_00429CE8 is defined in L00_00429CE8.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_00429F68);
+/* func_L00_00429F68 is defined in L00_00429F68.c. */
 
 extern int D_L00_001A8F00 __attribute__((sda));
 
@@ -587,7 +685,7 @@ void func_L00_0042A500(int i)
 
 /* func_L00_0042A698 is defined in L00_00426340-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_0042A908);
+/* func_L00_0042A908 is defined in L00_0042A908-g8.c. */
 
 int func_L00_0042AB40(void) {
     return -1;
@@ -597,7 +695,7 @@ void func_L00_0042AB48(void)
 {
 }
 
-INCLUDE_ASM("asm/levels", func_L00_0042AC18);
+/* func_L00_0042AC18 is defined in L00_0042AC18.c. */
 
 /* func_L00_0042AD98 is defined in L00_0042AD98.c. */
 

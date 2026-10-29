@@ -43,9 +43,11 @@ void func_L00_003F94F8(char *self)
 }
 
 
-INCLUDE_ASM("asm/levels", func_L00_003F9A30);
+
 
 INCLUDE_ASM("asm/levels", func_L00_003FA858);
+
+
 
 
 void func_L00_003FC100(void)
@@ -269,11 +271,11 @@ void func_L00_003FE490(Rac2Native_9cdc323a4d0c2fbd_AnalysisOwner *owner)
 
 
 
-INCLUDE_ASM("asm/levels", func_L00_003FE920);
+
 
 INCLUDE_ASM("asm/levels", func_L00_003FEAC8);
 
-INCLUDE_ASM("asm/levels", func_L00_003FEBA0);
+
 
 
 INCLUDE_ASM("asm/levels", func_L00_003FEEA0);

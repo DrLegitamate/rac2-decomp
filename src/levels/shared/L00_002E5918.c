@@ -206,7 +206,7 @@ void func_L00_002EA600(void) {
 
 
 
-INCLUDE_ASM("asm/levels", func_L00_002EBE88);
+/* func_L00_002EBE88 is in L00_002E5918-beams.c. */
 
 
 INCLUDE_ASM("asm/levels", func_L00_002EC248);
@@ -215,7 +215,7 @@ INCLUDE_ASM("asm/levels", func_L00_002EC608);
 
 INCLUDE_ASM("asm/levels", func_L00_002EC970);
 
-INCLUDE_ASM("asm/levels", func_L00_002ECFE8);
+/* func_L00_002ECFE8 is in L00_002ECFE8.c. */
 
 
 void func_L00_002ED420(void)

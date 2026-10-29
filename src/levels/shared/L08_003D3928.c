@@ -35,7 +35,65 @@ extern s32 D_001A79F0 __attribute__((sda));
 /* shared callee, named by its catalogue row (08:003289D0, 19:00319288) */
 extern void func_L00_00326048(void *, s32, s32, s32, float);
 
-INCLUDE_ASM("asm/levels", func_L08_003D3928);
+extern char D_00189EA0[];
+extern float func_00282E80(char *, void *);
+
+/* Two 0x30-byte target records: [0] the tracked owner, [1] the nearest one seen. */
+typedef struct {
+    TI128 pos;      /* 0x00 */
+    void *owner;    /* 0x10 */
+    float dist;     /* 0x14 */
+    s32 unk18;      /* 0x18 */
+    s32 unk1C;      /* 0x1C */
+    s32 valid;      /* 0x20 */
+    s32 pad[3];
+} L08Target;
+
+extern L08Target D_L08_001B3490[] __attribute__((sda));
+
+/* One entity of the group: the kind word is at 0xAA. */
+typedef struct L08Thing {
+    u8 pad[0xAA];
+    s16 kind;
+} L08Thing;
+
+/* The group: the count is at 0x44, the list of entities at 0x18C. */
+typedef struct L08Group {
+    u8 pad0[0x44];
+    s16 count;
+    u8 pad1[0x18C - 0x46];
+    L08Thing *items[1];     /* bounded by count */
+} L08Group;
+
+extern L08Group D_L08_001BD800;
+extern s32 D_L08_001A8F00[] __attribute__((sda));
+extern u8 D_001A7A40[] __attribute__((sda));
+extern u8 D_L08_001B22E0[] __attribute__((sda));
+extern f32 D_L08_001B2300[] __attribute__((sda));
+
+extern void func_0029F978(u8 *, u32, u8 *);
+
+/* Measures the resident actor position against POS: a nearer POS replaces record [1]
+   (owner, distance, position), and record [0] is refreshed when OWNER is its owner.
+   The records are reached as `sda` offsets, so every access is one assembler macro. */
+void func_L08_003D3928(void *owner, void *pos)
+{
+    float d = func_00282E80(D_00189EA0, pos);
+
+    if (d < D_L08_001B3490[1].dist) {
+        D_L08_001B3490[1].unk1C = 0;
+        D_L08_001B3490[1].owner = owner;
+        D_L08_001B3490[1].unk18 = 0;
+        D_L08_001B3490[1].dist = d;
+        qcopy(&D_L08_001B3490[1].pos, pos);
+        D_L08_001B3490[1].valid = 1;
+    }
+    if (D_L08_001B3490[0].owner == owner) {
+        D_L08_001B3490[0].dist = d;
+        qcopy(&D_L08_001B3490[0].pos, pos);
+        D_L08_001B3490[0].valid = 1;
+    }
+}
 
 INCLUDE_ASM("asm/levels", func_L08_003D39F0);
 
@@ -155,13 +213,13 @@ void func_L08_0041E630(float *a0, float *a1, float *a2, float *a3, float *p4)
 
 INCLUDE_ASM("asm/levels", func_L08_0041E790);
 
-INCLUDE_ASM("asm/levels", func_L08_0041EA88);
+/* func_L08_0041EA88 is defined in L08_0041EA88-match.c. */
 
 INCLUDE_ASM("asm/levels", func_L08_004207D0);
 
-INCLUDE_ASM("asm/levels", func_L08_0042E678);
+/* func_L08_0042E678 is defined in L08_0042E678-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L08_0042EF00);
+/* func_L08_0042EF00 is defined in L08_0042EF00-g8.c. */
 
 /* func_L08_00435600 is defined in L08_00435600-helpers.c. */
 
@@ -174,6 +232,29 @@ void func_L08_004356A0(u8 *a0, void *a1)
 /* func_L08_004356B8 is defined in L08_004356B8-g8.c. */
 
 
-INCLUDE_ASM("asm/levels", func_L08_00435990);
+/* For every listed entity of A0's kind, while the mode word is 2 and the resident
+   flag is set, hands it to func_0029F978 with the level block at 0x001B22E0 unless its
+   byte 1 is set, and sets the vector at 0x001B2300 to 2.3. */
+void func_L08_00435990(L08Thing *a0)
+{
+    L08Thing *e;
+    s32 i;
+
+    if (D_L08_001A8F00[0] != 2)
+        return;
+    if (D_001A7A40[0] == 0)
+        return;
+    for (i = 0; i < D_L08_001BD800.count; i++) {
+        e = D_L08_001BD800.items[i];
+        if (e->kind != a0->kind)
+            continue;
+        if (D_L08_001B22E0[1] != 0)
+            continue;
+        func_0029F978((u8 *)e, 0, D_L08_001B22E0);
+        D_L08_001B2300[0] = 2.3f;
+        D_L08_001B2300[1] = 2.3f;
+        D_L08_001B2300[2] = 2.3f;
+    }
+}
 
 INCLUDE_ASM("asm/levels", func_L08_00435A78);

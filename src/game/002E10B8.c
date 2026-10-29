@@ -276,7 +276,7 @@ void func_002E4708(void *self, void *other)
     func_00283CF0(w * 57.2957763671875f);
 }
 
-INCLUDE_ASM("asm/game", func_002E48E8);
+/* func_002E48E8 is defined in 002E10B8-sound.c. */
 
 extern int D_001507E4;
 extern int D_001A79F0 __attribute__((sda));
@@ -344,7 +344,7 @@ s32 func_002E5A50(s32 id)
     return (id != limit) ? id : 52;
 }
 
-INCLUDE_ASM("asm/game", func_002E5AD0);
+/* func_002E5AD0 is defined in 002E5AD0.c. */
 
 int func_002E5CF8(int index, int a1, char *a2)
 {
@@ -511,12 +511,12 @@ void func_002E6120(void)
     } while (count >= 0);
 }
 
-INCLUDE_ASM("asm/game", func_002E6178);
+/* func_002E6178 is in 002E6178.c. */
 
 INCLUDE_ASM("asm/game", func_002E64A0);
 
 
-INCLUDE_ASM("asm/game", func_002E6A60);
+/* func_002E6A60 is in 002E6A60.c. */
 
 INCLUDE_ASM("asm/game", func_002E6B78);
 

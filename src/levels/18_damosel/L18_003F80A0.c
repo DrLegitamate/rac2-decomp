@@ -22,7 +22,7 @@ extern u8 *func_L18_00437AA0(void *, void *, void *, int, float, float);
 
 INCLUDE_ASM("asm/levels", func_L18_003F80A0);
 
-INCLUDE_ASM("asm/levels", func_L18_003F8A98);
+/* func_L18_003F8A98 is in L18_003F8A98.c. */
 
 extern void func_0033A0B0(u8 *arg0, u8 *arg1);
 extern void func_0033DD38(u8 *arg0, u8 *arg1, s32 arg2, float arg3, float arg4);
@@ -67,7 +67,7 @@ void func_L18_003F9018(u8 *a0) {
 
 INCLUDE_ASM("asm/levels", func_L18_003F90A0);
 
-INCLUDE_ASM("asm/levels", func_L18_003FB308);
+/* func_L18_003FB308 is in L18_003FB308-g8.c. */
 
 /* func_L18_003FB620 is in L18_003FB620-particles.c (-G32 settings record). */
 
@@ -234,7 +234,7 @@ void func_L18_0042F768(u8 *a0) {
 
 /* func_L18_0042F7B8 is in L18_0042F7B8-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L18_0042FBC8);
+/* func_L18_0042FBC8 is in L18_0042FBC8-g8.c. */
 
 extern void func_L18_004302B0(u8 *a0);
 extern void func_L18_004308F0(u8 *a0);
@@ -255,12 +255,12 @@ void func_L18_00430248(u8 *a0) {
     func_L18_00432310(a0);
 }
 
-INCLUDE_ASM("asm/levels", func_L18_004302B0);
+/* func_L18_004302B0 is in L18_004302B0.c. */
 
 /* func_L18_004308F0 is matched in L18_004308F0.c (built with -frac2-hazard-labels). */
 
 
-INCLUDE_ASM("asm/levels", func_L18_00432070);
+/* func_L18_00432070 is in L18_00432070.c. */
 
 /* func_L18_00432310 is in L18_00432310.c. */
 
@@ -289,7 +289,26 @@ float func_L18_004325D8(u8 *a0) {
 extern float func_00308FB0(float arg0, float arg1);
 extern float func_003099E8(float arg0, float arg1);
 
-INCLUDE_ASM("asm/levels", func_L18_00432630);
+/* Like func_L18_00432718, the flag at +0x7FC selects an arm, but here both arms
+   compile to the same code: cross-jumping after scheduling merges them, and only
+   the flag's lh (unused in retail) and the separately scheduled blocks remain. */
+float func_L18_00432630(u8 *a0, float *a1)
+{
+    u8 *v1 = *(u8 **)(a0 + 0x68);
+    u8 *s0;
+    float f;
+
+    if (*(s16 *)(v1 + 0x7FC) != 0) {
+        s0 = *(u8 **)(v1 + 0x7C0);
+        f = func_00308FB0(a1[0] - *(float *)(s0 + 0x10), a1[1] - *(float *)(s0 + 0x14));
+        f = func_003099E8(*(float *)(s0 + 0xF8), f);
+        return f - 1.5707964897155762f;
+    }
+    s0 = *(u8 **)(v1 + 0x7C0);
+    f = func_00308FB0(a1[0] - *(float *)(s0 + 0x10), a1[1] - *(float *)(s0 + 0x14));
+    f = func_003099E8(*(float *)(s0 + 0xF8), f);
+    return f - 1.5707964897155762f;
+}
 
 extern s32 func_002761F8(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4);
 

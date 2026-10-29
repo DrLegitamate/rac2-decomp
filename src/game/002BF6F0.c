@@ -1,5 +1,6 @@
 #include "include_asm.h"
 #include "common.h"
+extern float func_002A78D8(float, float);
 /* Copy the xyz components and clear the fourth word. Adapted from RAC1. */
 static __inline__ void particle_copy_xyz(float *dst, float *src)
 {
@@ -45,6 +46,15 @@ extern char D_00189F00[];
 extern char *func_002C5B70(void *, void *, int, int);
 typedef unsigned int U128 __attribute__((mode(TI)));
 typedef union { U128 q; f32 f[4]; } SplitVector;
+typedef struct {
+    unsigned char b0, b1, b2, b3;
+    int x4;
+    unsigned char b8, b9;
+    short hA;
+    int xC;
+    SplitVector v10, v20, v30;
+} Particle6DD8;
+
 typedef struct SplitMotion {
     f32 x, y, z, w;
     f32 t;
@@ -1182,7 +1192,21 @@ tail:
 /* func_002C38E0 is in the -G8 sibling. */
 
 /* Advances a spark, stops it on collision, and decays its RGBA channels. */
-INCLUDE_ASM("asm/game", func_002C3B08);
+void func_002C3B08(char *p) {
+ float v[4];char *q;
+ if(!p)return;
+ q=p+32;*(float *)(p+12)+=-100.0f;
+ func_00282CC0((char *)v,p+16,q);
+ if(*(float *)q!=0 || *(float *)(q+4)!=0 || *(float *)(q+8)!=0){
+ if(func_002761F8(p+16,v,2,p,0)){*(U128 *)(p+16)=*(U128 *)D_001BAFA0;func_00282C88(q);*(float *)(p+12)+=*(float *)(p+12);}
+ else {*(U128 *)(p+16)=*(U128 *)v;if(*(float *)(q+12)!=0)*(float *)(q+8)+=*(float *)(q+12);else *(float *)(q+8)+=-0.0063f;}}
+ if(*(float *)(q+28)<=0 || func_00282978((short *)(p+10)) || *(float *)(p+12)<0 || v[0]<0.01f || v[1]<0.01f || v[2]<0.01f){func_002B9180(p);return;}
+ *(float *)(q+16)+=-0.01f;if(*(float *)(q+16)<0)*(float *)(q+16)=0;
+ *(float *)(q+20)+=-0.03001f;if(*(float *)(q+20)<0)*(float *)(q+20)=0;
+ *(float *)(q+24)+=-0.05f;if(*(float *)(q+24)<0)*(float *)(q+24)=0;
+ if(*(float *)(q+28)<0)*(float *)(q+28)=0;
+ *(int *)(p+4)=func_002AAE98(*(float *)(q+16),*(float *)(q+20),*(float *)(q+24),*(float *)(q+28));p[8]--;
+}
 
 /* func_002C3D80 uses the quadword-copy profile in 002C3D80-qcopy.c. */
 
@@ -1758,10 +1782,38 @@ void func_002C6A08(Emitter2C6A08 *emitter)
 
 INCLUDE_ASM("asm/game", func_002C6B68);
 
-INCLUDE_ASM("asm/game", func_002C6DD8);
+char *func_002C6DD8(void *a0, void *a1, int a2, float f1)
+{
+    V4_Fc3cb9262 vec;
+    Particle6DD8 *s0;
+    int v;
+    SplitVector *pos;
+
+    s0 = func_002B9030(0x5A);
+    if (s0 != 0) {
+        s0->x4 = 0x7FFFFFFF;
+        s0->xC = 0x7FFFFFFF;
+        v = func_00283CF0_6(2.0f);
+        s0->b9 = (char)(v + 0x20);
+        s0->b3 = 0x48;
+        s0->b1 = 3;
+        s0->b2 = *D_001F26A8;
+        pos = &s0->v30;
+        qcopy_nc(pos, a1);
+        pos->f[3] = f1;
+        qcopy_nc(&s0->v10, a0);
+        func_00282F20(&vec, pos, 0.9f);
+        func_00282CF0(&s0->v20, a0, &vec);
+        s0->hA = a2;
+        s0->v10.f[3] = 0.05f;
+        s0->b8 = (char)(*(unsigned char *)&s0->hA - 0xF);
+        s0->v20.f[3] = 2.0f;
+    }
+    return (char *)s0;
+}
 
 
-INCLUDE_ASM("asm/game", func_002C7050);
+/* func_002C7050 is defined in 002BF6F0-trail-g8.c. */
 
 extern int func_00282948(short *);
 /* Delay movement and the size/alpha tween until the secondary timer fires. */

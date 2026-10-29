@@ -36,7 +36,6 @@ ASM_FUNC("asm/core", func_00115AC0);
 
 INCLUDE_ASM("asm/core", func_00115E28);
 
-INCLUDE_ASM("asm/core", func_00115FC0);
 
 extern int D_001341E0;
 

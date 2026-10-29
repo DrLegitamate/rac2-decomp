@@ -24,6 +24,25 @@ typedef struct L04_003E5318_BUF {
 
 /* func_L04_003E5298 is defined in L02_003CE9A8-g8.c. */
 
+typedef unsigned int TI2338 __attribute__((mode(TI)));
+typedef struct {
+    char pad[0x280];
+    TI2338 position;
+    char pad290[0x60];
+    int slots[4];
+    char pad300[6];
+    unsigned char current;
+} Private2338;
+typedef struct {
+    char pad[0x30];
+    TI2338 position;
+    char pad40[0x40];
+} Record2338;
+extern void func_00115484(void *, int, int);
+extern void func_00282A28(void);
+extern int func_002A7820(int, int);
+extern char *D_L04_001B25CC __attribute__((sda));
+
 void func_L04_003E5318(char *a0)
 {
     char *s0 = a0;
@@ -137,8 +156,38 @@ void func_L04_003E22B0(char *a0, int a1, int a2, int a3, int a4)
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L04_003E2338);
+void func_L04_003E2338(char *a0)
+{
+    Private2338 *s4 = *(Private2338 **)(a0 + 0x68);
+    int values[3];
+    int cur;
+    int count = 0;
+    int *p = s4->slots;
+    int neg = -1;
 
+    func_00115484(values, 0, 12);
+    cur = 0;
+    for (;;) {
+        if (cur != s4->current) {
+            if (*(int *)p != neg) {
+                count++;
+                if (count < 4)
+                    values[count - 1] = cur;
+                else
+                    func_00282A28();
+            }
+        }
+        cur++;
+        if (cur >= 4)
+            break;
+        p++;
+    }
+    if (count != 0) {
+        int idx = func_002A7820(0, count - 1);
+        s4->current = (unsigned char)values[idx];
+        s4->position = ((Record2338 *)D_L04_001B25CC)[s4->slots[s4->current]].position;
+    }
+}
 
 INCLUDE_ASM("asm/levels", func_L04_003E4C00);
 
@@ -146,7 +195,7 @@ INCLUDE_ASM("asm/levels", func_L04_003E5B10);
 
 /* func_L04_003E7E68 is defined in L04_003E7E68-g32.c. */
 
-INCLUDE_ASM("asm/levels", func_L04_003E8010);
+/* func_L04_003E8010 is defined in L04_003E8010.c. */
 
 INCLUDE_ASM("asm/levels", func_L04_003EB8D8);
 
@@ -154,7 +203,7 @@ INCLUDE_ASM("asm/levels", func_L04_003EC140);
 
 /* func_L04_003ED3D8 is defined in L04_003ED3D8.c. */
 
-INCLUDE_ASM("asm/levels", func_L04_003ED740);
+/* func_L04_003ED740 is defined in L04_003ED740.c. */
 
 
 

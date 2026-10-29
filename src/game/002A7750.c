@@ -360,10 +360,48 @@ void func_002A8598(int i, int v) {
 }
 
 
+extern unsigned char *D_001B1D40 MACRO_ADDR;
+extern unsigned short *D_001B1D38 MACRO_ADDR;
+extern short D_001B1D3C MACRO_ADDR;
+extern int D_001B1B78 MACRO_ADDR;
+extern int func_002A86E8(int *out, unsigned char *m, int includeInactive, int onlyInactive);
+
 /* rac1-decomp src/overlays/shared/moby_ground_collision.c: get_first_moby_in_group */
 // Starts the group cursor at the first moby of a group; when the state filter
 // rejects it, advances to the next accepted moby.
-INCLUDE_ASM("asm/game", func_002A8600);
+int func_002A8600(int *out, int group, int includeInactive, int onlyInactive) {
+    unsigned short *entry;
+    unsigned char *m;
+    int index;
+    int inactive;
+
+    if (group < 0 || D_001B1B78 < group) {
+        *out = 0;
+        return -1;
+    }
+    *out = 0;
+    D_001B1D40 = 0;
+    entry = D_001EE5A0[group];
+    D_001B1D38 = entry;
+    if (entry == 0) {
+        return -1;
+    }
+    index = *entry & 0x7FFF;
+    D_001B1D3C = index;
+    m = (unsigned char *)D_001B1B5C + (index << 8);
+    D_001B1D40 = m;
+    *out = (int)m;
+    inactive = (signed char)D_001B1D40[0x20] < 0;
+    if (!includeInactive) {
+        if (!onlyInactive && !inactive) goto found;
+    } else if (!onlyInactive || inactive) {
+        goto found;
+    }
+    return func_002A86E8(out, D_001B1D40, includeInactive, onlyInactive);
+found:
+    return 0;
+}
+
 
 
 
@@ -499,7 +537,7 @@ void func_002A8E20(u8 *m, L_A8E20Req *r)
     D_001BAF80[5] = (idx + 1) & 0x3F;
 }
 
-INCLUDE_ASM("asm/game", func_002A8F70);
+/* func_002A8F70 is in 002A7750-records.c. */
 
 
 

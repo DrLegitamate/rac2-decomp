@@ -269,7 +269,33 @@ extern char D_0014B540[];
    Marks n in the shared flag table (bit n & 0x1F of the word at n >> 2, below 0xB1) and
    passes the entry's second file (sector relative to the base, size), the entry itself,
    D_001A7BB4 or 0 when D_001BAD40[0] is set, and whether n is 0xBF. */
-INCLUDE_ASM("asm/game", func_002F5D40);
+extern int D_00139768[];
+extern int func_002EF010(int);
+extern void func_00288B38(void *);
+
+void func_002F5D40(int n)
+{
+    int index;
+    int flag;
+
+    if (n < 0) {
+        D_001B220C = 0;
+        return;
+    }
+    index = func_002EF010(n);
+    flag = 0;
+    if (n == 0xBF)
+        flag = 1;
+    if ((unsigned)n < 0xB1) {
+        int mask = 1 << (n & 31);
+        D_00139768[(unsigned)n >> 2] |= mask;
+    }
+    func_00288B38(D_001BAD40);
+    func_002F5E20(TOC_002F5D40->files[index * 2 + 1].sector + TOC_002F5D40->base,
+                  TOC_002F5D40->files[index * 2 + 1].size,
+                  (int)&TOC_002F5D40->files[index * 2],
+                  D_001BAD40[0] ? 0 : D_001A7BB4[0], flag);
+}
 #undef TOC_002F5D40
 
 

@@ -8,7 +8,7 @@ typedef signed short s16;
 
 typedef signed int s32;
 
-INCLUDE_ASM("asm/levels", func_L18_00427BE0);
+/* func_L18_00427BE0 lives in L18_00427BE0-update-g8.c. */
 
 
 /* Reports zero after handing the level's measured list to the shared test. */
@@ -24,7 +24,7 @@ s32 func_L18_00428100(char *a0) {
         func_3DB8F8(a0, ref_L18_002571A0_00);
     return 0;
 }
-INCLUDE_ASM("asm/levels", func_L18_00428138);
+/* func_L18_00428138 lives in L18_00428138-g8.c. */
 
 
 /* Maps the class identifier this level tags an object with to its small integer. The unit is
@@ -80,7 +80,7 @@ INCLUDE_ASM("asm/levels", func_L18_0042B008);
 /* func_L18_0043E9B0 lives in the sibling small-data unit (L18_00427BE0-g8.c): its
    controls are read through $gp in ordinary flow. */
 
-INCLUDE_ASM("asm/levels", func_L18_0043EA90);
+/* func_L18_0043EA90 lives in L18_00427BE0-g8.c. */
 
 /* func_L18_0043EDE8 lives in the sibling small-data unit (L18_00427BE0-g8.c): its spin limits are read through $gp. */
 

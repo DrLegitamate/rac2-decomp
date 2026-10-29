@@ -14,6 +14,7 @@ typedef struct {
 extern float D_L09_001B1200[4][4] __attribute__((sda)); /* quad corners */
 extern char D_L09_001B9A00[];                            /* camera position */
 
+extern u64 func_0027C878(int);
 extern void func_0029FCC0(void *, int, void *);
 extern float func_00283180(float), func_00283198(float);
 extern float func_00283248(float, float), func_00282E20(void *), func_00283B98(float, float);
@@ -113,4 +114,66 @@ void func_L09_003FD460(char *moby) {
     *(float *)(d + 0x380) = func_00283B98(*(float *)(d + 0x380), -0.06981318f);
 }
 
-/* Camera-facing glow, corresponding to RAC1's draw_blarg_heavy_interceptor_camera_facing_glow. */
+/* Per-moby state of the beam emitter, reached through the moby's +0x68 pointer. */
+typedef struct {
+    char pad000[0x340];
+    float glow_dir[4];
+    char pad350[0x20];
+    float glow_pos[4];
+    float spin_angle;
+    char pad384[0x422 - 0x384];
+    short damaged;
+} DobboBeamState;
+
+/* Draws the camera-facing glow quad at the beam's tip, tinted red while the emitter is damaged
+   (the RAC1 counterpart is draw_blarg_heavy_interceptor_camera_facing_glow). */
+void func_L09_003FCF68(char *moby)
+{
+    float mat[3][4];
+    float pos[4];
+    float offset[4];
+    DobboBeamQuad quad;
+    float to_camera[4];
+    float rot[4];
+    DobboBeamState *state = *(DobboBeamState **)(moby + 0x68);
+    int i;
+
+    qcopy(pos, state->glow_pos);
+    pos[3] = 1.0f;
+    func_00282D30(offset, state->glow_dir, 0.5f);
+    func_00282CC0(pos, pos, offset);
+    quad.b = func_0027C878(11);
+    quad.c = 0x0000FF9000000260ULL;
+    quad.d = 0x8000000048ULL;
+    quad.a = 0;
+    func_002FC560(0x47, 0x51001);
+    func_00282CF0(to_camera, D_L09_001B9A00, pos);
+    rot[2] = func_00283248(to_camera[0], to_camera[1]);
+    rot[1] = -func_00283248(func_00282E20(to_camera), to_camera[2]);
+    rot[0] = 0.0f;
+    func_002833F0(mat, rot);
+    quad.uv[0] = 1.0f;
+    quad.uv[1] = 1.0f;
+    quad.uv[2] = 0.0f;
+    quad.uv[3] = 1.0f;
+    quad.uv[5] = 0.0f;
+    quad.uv[6] = 0.0f;
+    quad.uv[7] = 0.0f;
+    quad.uv[4] = 1.0f;
+    if (state->damaged != 0) {
+        quad.col[3] = 0x7F40407F;
+        quad.col[2] = 0x7F40407F;
+        quad.col[1] = 0x7F40407F;
+        quad.col[0] = 0x7F40407F;
+    } else {
+        quad.col[3] = 0x7F7F7F7F;
+        quad.col[2] = 0x7F7F7F7F;
+        quad.col[1] = 0x7F7F7F7F;
+        quad.col[0] = 0x7F7F7F7F;
+    }
+    for (i = 0; i < 4; i++) {
+        func_00282D30(quad.m[i], D_L09_001B1200[i], 0.75f);
+        func_002830C0(quad.m[i], quad.m[i], mat);
+    }
+    func_00280B90(&quad, 0, 0);
+}

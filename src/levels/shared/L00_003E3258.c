@@ -256,7 +256,7 @@ int func_L00_003E39B8(char *object)
     return 1;
 }
 
-INCLUDE_ASM("asm/levels", func_L00_003E4508);
+/* func_L00_003E4508 is defined in L00_003E4508-g8.c. */
 
 void func_L00_003E4948(void)
 {
@@ -392,7 +392,7 @@ void func_L00_003E6710(char *object)
     } while (i >= 0);
 }
 
-INCLUDE_ASM("asm/levels", func_L00_003E6778);
+/* func_L00_003E6778 is defined in L00_003E6778.c. */
 
 
 extern char *D_L00_001B2BB8 __attribute__((sda));

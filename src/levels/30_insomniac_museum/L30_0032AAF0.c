@@ -133,15 +133,15 @@ void func_L30_00382F10(void) {
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L30_00382FB8);
+/* func_L30_00382FB8 is defined in L30_00382FB8-g8.c. */
 
 /* func_L30_003830D8 needs the -g8 sibling: it reaches its globals through $gp.
    Its C is in nonmatching/levels/ for now. */
 
 
-INCLUDE_ASM("asm/levels", func_L30_003831E8);
+/* func_L30_003831E8 is defined in L30_003831E8-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L30_00383398);
+/* func_L30_00383398 is in L30_00383398-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L30_00383928);
 
@@ -430,7 +430,6 @@ finish:
 
 INCLUDE_ASM("asm/levels", func_L30_003941D8);
 
-INCLUDE_ASM("asm/levels", func_L30_003B3C18);
 
 void func_L30_003B3E60(float *a0, float *a1, float *a2, float *a3) {
     *a0 = -D_00189E20.f1FB0;
@@ -475,18 +474,18 @@ void func_L30_003BE678(char *a0) {
 
 INCLUDE_ASM("asm/levels", func_L30_003D9CA8);
 
-INCLUDE_ASM("asm/levels", func_L30_003D9E60);
+/* func_L30_003D9E60 is defined in L30_003D9E60-g8.c. */
 
 /* func_L30_003DA040 is matched in its own unit, src/levels/shared/L30_003DA040-qcopy.c (-frac2-qcopy -frac2-qcopy-barrier). */
 
-INCLUDE_ASM("asm/levels", func_L30_003E1BA0);
+/* func_L30_003E1BA0 is defined in L30_003E1BA0-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L30_003E1E78);
+/* func_L30_003E1E78 uses small data in L30_003E1E78-g8.c. */
 
 /* func_L30_00404608 needs the -g8 sibling too; its C is in nonmatching/levels/. */
 
 
-INCLUDE_ASM("asm/levels", func_L30_0040AE38);
+/* func_L30_0040AE38 is defined in L30_0040AE38-g8.c. */
 
 extern int D_001A79F0 MACRO_ADDR;
 

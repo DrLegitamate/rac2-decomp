@@ -157,3 +157,32 @@ void func_L12_004281D8(u8 *a0) {
         }
     }
 }
+
+extern int func_002A7820(int, int);
+extern float func_002A7940(void);
+extern void ref_L12_00429D60_00(void *, int, float, int, float, float, int, int, void *);
+extern float D_L12_001B2328 __attribute__((sda));
+extern float D_L12_001B232C __attribute__((sda));
+extern int D_L12_001B2320 __attribute__((sda));
+extern int D_L12_001B2324 __attribute__((sda));
+extern int D_L12_001B22E4 __attribute__((sda));
+extern int D_L12_001B22E8 __attribute__((sda));
+
+void func_L12_00429D60(char *object) {
+    int value;
+    int value2;
+    float scale;
+    float scale2;
+    float random;
+    scale = D_L12_001B2328;
+    scale *= *(float *)(object + 0x2C);
+    value = func_002A7820(95, 111);
+    random = func_002A7940();
+    ref_L12_00429D60_00(object + 0x10, D_L12_001B22E4, scale, value, random, 1.0f, D_L12_001B2320, 2, object);
+    scale2 = D_L12_001B2328;
+    scale2 *= *(float *)(object + 0x2C);
+    scale2 *= D_L12_001B232C;
+    value2 = func_002A7820(111, 127);
+    random = func_002A7940();
+    ref_L12_00429D60_00(object + 0x10, D_L12_001B22E8, scale2, value2, random, 1.0f, D_L12_001B2324, 2, object);
+}

@@ -21,7 +21,7 @@ int func_00133490(int value)
 
 INCLUDE_ASM("asm/core", func_001334B8);
 
-INCLUDE_ASM("asm/core", func_00133580);
+/* func_00133580 is matched in src/core/00133580-g8.c. */
 
 
 /* func_001336C0 is matched in its own unit, src/core/001336C0.c (-O2 -G8 -ffunction-sections). */

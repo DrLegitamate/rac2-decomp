@@ -1,4 +1,24 @@
 #include "include_asm.h"
+extern void func_00282A60(unsigned int *, unsigned int, int);
+extern char *ref_0029EFD0_00[] __attribute__((sda));
+extern char *ref_0029EFD0_01[] __attribute__((sda));
+extern unsigned int ref_0029EFD0_02[] __attribute__((sda));
+extern char *ref_0029EFD0_03[] __attribute__((sda));
+extern int ref_0029EFD0_04[] __attribute__((sda));
+extern char ref_0029EFD0_05[];
+extern void func_0029F0C8(char *, int);
+extern void func_0026FEB8(const char *, ...);
+
+/* The pool uses 256-byte slots; only fields needed by allocation are named. */
+typedef struct MobyPoolSlot {
+    unsigned char pad00[0x20];
+    unsigned char state;
+    unsigned char pad21[0x47];
+    void *vars;
+    unsigned char pad6C[0x34];
+    unsigned int spawn_frame;
+    unsigned char padA4[0x5C];
+} MobyPoolSlot;
 
 /* Measured partial layouts; original type and game roles are unknown. */
 typedef unsigned int Rac2Native_abf21065e887d7a9_FallbackU32;
@@ -106,7 +126,24 @@ int func_0029DE38(void)
 
 
 
-INCLUDE_ASM("asm/game", func_0029EFD0);
+char *func_0029EFD0(int arg)
+{
+    MobyPoolSlot *p;
+    for (p = (MobyPoolSlot *)ref_0029EFD0_01[0];
+         p < (MobyPoolSlot *)ref_0029EFD0_00[0]; p++) {
+        if (p->state >= 254 && ref_0029EFD0_02[0] >= p->spawn_frame) {
+            if (p->state == 255) p[1].state = 255;
+            func_0029F0C8((char *)p, arg);
+            p->vars = ref_0029EFD0_03[0] +
+                (p - (MobyPoolSlot *)ref_0029EFD0_01[0]) * 128;
+            func_00282A60(p->vars, 0, 128);
+            if (ref_0029EFD0_04[0]) --ref_0029EFD0_04[0];
+            return (char *)p;
+        }
+    }
+    func_0026FEB8(ref_0029EFD0_05, ref_0029EFD0_02[0], arg);
+    return 0;
+}
 
 /* func_0029F0C8 is defined in 0029F0C8.c. */
 
@@ -365,7 +402,7 @@ void func_0029FD48(char *p1, int n, char *p3, char *p4)
 }
 
 
-INCLUDE_ASM("asm/game", func_0029FDF0);
+/* func_0029FDF0 is in 0029DE38-textures-g8.c. */
 
 /* shared native body of family b52b2850e37f2b40 */
 void func_0029FEE0(void)
@@ -429,7 +466,7 @@ void func_0029FFB8(void)
     D_001B1B90[2] = -0.99f;
 }
 
-INCLUDE_ASM("asm/game", func_002A0048);
+/* func_002A0048 is in 0029DE38-dma.c. */
 
 extern void func_0011AEA0(int);
 extern char D_00238F00[];
@@ -463,7 +500,7 @@ void func_002A0220(void)
 }
 
 
-INCLUDE_ASM("asm/game", func_002A0250);
+/* func_002A0250 is in 0029DE38-textures-g8.c. */
 
 /* func_002A0300 is in 0029DE38-g8.c. */
 

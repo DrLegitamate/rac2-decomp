@@ -220,7 +220,7 @@ void func_00328918(char *owner)
     } while (--remaining >= 0);
 }
 
-INCLUDE_ASM("asm/game", func_00328A20);
+/* func_00328A20 is in 00328A20.c. */
 
 INCLUDE_ASM("asm/game", func_00328B68);
 
@@ -411,7 +411,7 @@ void func_00329630(char *self)
     func_00280B90(pkt, m, 0);
 }
 
-INCLUDE_ASM("asm/game", func_00329768);
+/* func_00329768 uses small data in 00329768-g8.c. */
 
 
 

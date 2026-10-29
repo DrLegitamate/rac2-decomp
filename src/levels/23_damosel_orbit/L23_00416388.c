@@ -28,7 +28,7 @@ void func_L23_004180F0(char *arg0) {
         *(s32 *)(state + 0x5AC) = *(s32 *)(state + 0x5AC) + 1;
 }
 
-INCLUDE_ASM("asm/levels", func_L23_00418160);
+/* func_L23_00418160 is matched in L23_00418160-g8.c. */
 
 /* func_L23_004183F0 is matched in L23_004183F0-g8.c (built with -frac2-qcopy -frac2-qcopy-barrier). */
 
@@ -99,7 +99,7 @@ void func_L23_00419088(char *arg0, s16 arg1) {
     *(s16 *)(p + 0x394) = arg1;
 }
 
-INCLUDE_ASM("asm/levels", func_L23_004190C8);
+/* func_L23_004190C8 is defined in L23_004190C8-g8.c. */
 
 /* func_L23_004196B8 is matched in L23_004196B8.c (built with -frac2-qcopy -frac2-qcopy-barrier). */
 
@@ -131,9 +131,9 @@ s32 func_L23_00419CE0(u64 arg0) {
     return 0;
 }
 
-INCLUDE_ASM("asm/levels", func_L23_00419D60);
+/* func_L23_00419D60 is defined in L23_00419D60-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L23_0041A038);
+/* func_L23_0041A038 is matched in L23_0041A038-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L23_0041A3B8);
 
@@ -207,8 +207,10 @@ void func_L23_0041B668(char *arg0, float *arg1) {
 /* func_L23_0041B6D8 is matched in L23_0041B6D8-g8.c (built with -frac2-qcopy -frac2-qcopy-barrier). */
 
 
-INCLUDE_ASM("asm/levels", func_L23_0041B9F0);
+/* func_L23_0041B9F0 is defined in L23_0041B9F0-g8.c. */
 
+
+/* func_L23_0041C0E8 is defined in L23_00416388-g8.c (it reads $gp data). */
 
 /* func_L23_0041C578 is defined in L23_00416388-g8.c (it reads $gp data). */
 

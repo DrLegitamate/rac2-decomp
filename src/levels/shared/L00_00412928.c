@@ -132,9 +132,75 @@ typedef struct {
 
 extern EffectRecord D_L00_0025A920[24];
 
+extern char D_00189E20[];
+extern char D_00188660[];
+typedef union { unsigned char b[0x2600]; int i[0x980]; float f[0x980]; char *ptr[0x980]; } EffectHero;
+typedef struct { char bytes[0x70]; } EffectReleaseSlot;
+extern int func_00282978(void *);
+extern void func_0029F338(char *);
+extern float *func_002AB1F0(char *);
+extern void func_L00_00413358(char *);
+/* Preserve the object argument passed to the empty callback in retail. */
+extern void func_L00_00414018_1(char *);
+extern void func_002E59F8(int);
+extern Vector128 D_L00_001BF220;
+extern void func_L00_004173B0(char *);
+extern float func_002A7940(void);
+extern void func_002AF000(void *, float, float, float);
+extern int func_002761F8(void *, void *, int, void *, int);
+extern void func_L00_00417A40(char *, void *, int);
+extern void func_L00_00417218(char *);
+extern void func_L00_00417700(char *);
+extern void func_L00_00417D70(char *);
+extern void ref_L00_004170A8_00(void (*)(char *), char *);
+
 INCLUDE_ASM("asm/levels", func_L00_00412928);
 
-INCLUDE_ASM("asm/levels", func_L00_00413128);
+void func_L00_00413128(char *object)
+{
+    char *state = *(char **)(object + 0x68);
+    char local[32];
+    char *child;
+    int code, index;
+    float *value;
+    if (func_00282978(state + 0x1E) != 0) {
+        func_0029F338(object);
+        return;
+    }
+    func_00282D30(local, ((EffectHero *)D_00189E20)->ptr[2212] + 0xE0, 0.75f);
+    func_00282CC0(object + 0x10, &((EffectHero *)D_00189E20)->f[32], local);
+    if (*(char **)(state + 0x20) != 0) {
+        code = *(unsigned char *)(*(char **)(state + 0x20) + 0x20);
+        if (code == 254)
+            *(char **)(state + 0x20) = 0;
+        else if (code == 253)
+            *(char **)(state + 0x20) = 0;
+        child = *(char **)(state + 0x20);
+        if (child != 0) {
+            qcopy(state + 0x30, child + 0x10);
+            value = func_002AB1F0(child);
+            if (value != 0) {
+                func_00282D30(local + 16, *(char **)(state + 0x20) + 0xE0, value[4]);
+                func_00282CC0(state + 0x30, state + 0x30, local + 16);
+            }
+        }
+    }
+    if (*(unsigned char *)(object + 0x20) == 1) {
+        func_L00_00414018_1(object);
+        func_L00_00413358(object);
+    } else {
+        index = *(int *)(state + 0x18);
+        if (index >= 0) {
+            if (index != -1) {
+                EffectReleaseSlot *entry = &((EffectReleaseSlot *)D_00188660)[index];
+                if (*(char **)((char *)entry + 0x88) == object &&
+                    *(unsigned char *)((char *)entry + 0x74) != 0)
+                    func_002E59F8(index);
+            }
+            *(int *)(state + 0x18) = -1;
+        }
+    }
+}
 
 /* Clear both entry tables and reset the record state. */
 void func_L00_00413298(char *object)
@@ -744,7 +810,7 @@ void func_L00_00419B58(char *object)
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L00_00419C98);
+/* func_L00_00419C98 is defined in L00_00419C98-g8.c. */
 
 /* func_L00_0041A490 is defined in L00_0041A490-dbg.c. */
 

@@ -65,7 +65,7 @@ INCLUDE_ASM("asm/levels", func_L05_00420A88);
 
 
 
-INCLUDE_ASM("asm/levels", func_L05_00420FB0);
+/* func_L05_00420FB0 lives in L05_00420FB0-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L05_00421100);
 
@@ -87,7 +87,7 @@ void func_L05_004224C8(u8 *arg0) {
     func_00379C68(arg0, 0xFFFF);
 }
 
-INCLUDE_ASM("asm/levels", func_L05_00422540);
+/* func_L05_00422540 lives in L05_00422540-qcopy.c. */
 
 /* shared native body of family 5a97ab89858c */
 void func_L05_00433400(char *p)

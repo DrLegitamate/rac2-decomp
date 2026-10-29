@@ -35,6 +35,8 @@ void func_003512B8(u8 *a0) {
     func_0011AC40(*(s32 *)(a0 + 0x40));
 }
 
+INCLUDE_ASM("asm/game", func_00351578);
+
 typedef struct { unsigned long long first, second; int offset, count; } Transfer_3518F0;
 
 extern int func_00351310(void *, Transfer_3518F0 *);
@@ -112,8 +114,6 @@ int func_00351468(void *owner, Transfer_3518F0 *message, int unused)
     func_0011AC40(*(int *)(self + 0x40));
     return result;
 }
-
-INCLUDE_ASM("asm/game", func_00351578);
 
 /* func_00351720 is matched in 00351720.c. */
 

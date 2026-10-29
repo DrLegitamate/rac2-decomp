@@ -7,6 +7,14 @@ typedef struct {
     float normal[4];
 } CollisionResult;
 
+extern CollisionResult D_L08_001BFF40;
+extern int func_00277258(void *, int, void *, float);
+extern void func_00283028(void *, void *, void *);
+extern void func_00282D30(void *, void *, float);
+extern void func_0029F338(void *);
+extern int func_002761F8(void *, void *, int, void *, int);
+
+
 
 typedef struct { u8 pad_0[0x20]; u8 flags; } FlareMoby;
 typedef struct {
@@ -156,7 +164,7 @@ extern f32 func_L08_00422850(Quad *, f32, f32, f32, f32);
 extern void func_L08_00422900(Ent *);
 extern void func_L08_00422AD8(Ent *);
 
-INCLUDE_ASM("asm/levels", func_L08_003D8348);
+/* func_L08_003D8348 is defined in L08_003D8348-init.c. */
 
 /* the entry's sound handle and both of the moby's own handles are released */
 void func_L08_003D8A28(Ent *a0)
@@ -177,7 +185,7 @@ void func_L08_003D8A28(Ent *a0)
     a0->fBC = v0;
 }
 
-INCLUDE_ASM("asm/levels", func_L08_003D8AB0);
+/* func_L08_003D8AB0 uses -fno-gcse in L08_003D8AB0.c. */
 
 INCLUDE_ASM("asm/levels", func_L08_003D8CA8);
 
@@ -415,7 +423,50 @@ INCLUDE_ASM("asm/levels", func_L08_0040E9B8);
 
 /* func_L08_0040F9D0 is matched in its own unit, src/levels/shared/L08_0040F9D0-qcopy.c (-frac2-qcopy -frac2-qcopy-barrier). */
 
-INCLUDE_ASM("asm/levels", func_L08_0040FAE8);
+void func_L08_0040FAE8(char *object)
+{
+    float position[4];
+    char *state = *(char **)(object + 0x68);
+    char *mount;
+    int hit;
+
+    func_00282CC0(position, object + 0x10, state);
+    hit = func_002761F8(object + 0x10, position, 0, *(void **)(state + 0x18), 0);
+    if (!hit) {
+        position[2] += 0.3f;
+        hit = func_00277258(position, 0, *(void **)(state + 0x18), 0.3f);
+        position[2] -= 0.3f;
+    } else {
+        qcopy(D_L08_001BFF40.adjusted, D_L08_001BFF40.hit);
+        D_L08_001BFF40.adjusted[2] += 0.3f;
+    }
+    if (hit) {
+        qcopy(object + 0x10, D_L08_001BFF40.adjusted);
+        *(float *)(object + 0x18) -= 0.3f;
+        func_00283028(state, state, D_L08_001BFF40.normal);
+        func_00282D30(state, state, 0.75f);
+        if (func_00282DF0(state) < 0.01f) {
+            func_0029F338(object);
+            return;
+        }
+    } else {
+        qcopy_nc(object + 0x10, position);
+    }
+    *(float *)(state + 8) -= *(float *)(state + 0x10);
+    *(float *)(object + 0xF4) = func_00283B98(*(float *)(object + 0xF4), *(float *)(state + 0x14));
+    mount = *(char **)(state + 0x1C);
+    if (!mount || *(short *)(mount + 0xAA) != 0x326 ||
+        (unsigned char)mount[0x20] == 0xFE || (unsigned char)mount[0x20] == 0xFD ||
+        *(float *)(object + 0x10) < 2 || *(float *)(object + 0x10) > 1021 ||
+        *(float *)(object + 0x14) < 2 || *(float *)(object + 0x14) > 1021 ||
+        *(float *)(object + 0x18) < 2 || *(float *)(object + 0x18) > 1021) {
+        func_0029F338(object);
+        return;
+    }
+    qcopy_nc(mount + 0x10, object + 0x10);
+    qcopy_nc(mount + 0xF0, object + 0xF0);
+}
+
 
 INCLUDE_ASM("asm/levels", func_L08_0041D808);
 
@@ -559,7 +610,7 @@ void func_L08_00422EE0(Ent *a0)
 
 /* func_L08_00423010 is in its own unit. */
 
-INCLUDE_ASM("asm/levels", func_L08_004233E0);
+/* func_L08_004233E0 is defined in L08_004233E0-init.c. */
 
 /* func_L08_004237F0 is matched in its own unit, src/levels/08_tabora/L08_004237F0.c (default flags). */
 

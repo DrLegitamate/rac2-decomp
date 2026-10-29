@@ -5,7 +5,6 @@ extern int func_00115544(const char *, const char *);
 void *func_00120390(const char *first, const char *second, void *value) {
     return func_00115544(first, second) ? 0 : value;
 }
-
 void func_001203C0(void) {
 }
 
@@ -54,8 +53,6 @@ char *func_00120498(void) {
 char *func_00120500(void) {
     return D_00135D38() + 4;
 }
-
-INCLUDE_ASM("asm/core", func_00120528);
 
 int func_00120800(short *record) {
     return record[3];

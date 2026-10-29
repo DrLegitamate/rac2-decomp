@@ -1,5 +1,13 @@
 #include "include_asm.h"
 
+extern int D_001A8C88[] __attribute__((sda));
+extern int D_001A8C8C[] __attribute__((sda));
+
+extern int *D_001AA4F0 __attribute__((section(".sdata")));
+extern int *D_001AA4F0_1 __attribute__((sda));
+extern unsigned char D_001A7AFD __attribute__((section(".sdata")));
+extern int func_00295870(int);
+
 extern char D_0014B540_1[];
 
 extern short D_00152CE4[];
@@ -188,7 +196,55 @@ int func_00295828(int id) {
 
 INCLUDE_ASM("asm/game", func_00295870);
 
-INCLUDE_ASM("asm/game", func_002958B8);
+/* looks the level up in the map's table and then walks the levels next to it */
+int func_002958B8(void)
+{
+    int flag = D_001A7AFD ? 0x100 : 0;
+    unsigned int id = D_001C4FA0[0x230 / 4] + flag;
+    int level;
+    int *p;
+    int index;
+    unsigned int delta;
+    int notfound;
+    int limit;
+    int one;
+    int offset;
+    int entry;
+
+    if ((int)func_00295828(id) == -1) {
+        if (func_00295870(id) != 0)
+            return id;
+    }
+    level = D_001C4FA0[0x230 / 4];
+    index = 0;
+    if (level < 0x1C) {
+        p = D_001AA4F0;
+        while (*p != level) {
+            p++;
+            index++;
+        }
+    }
+    delta = 1;
+    notfound = -1;
+    one = 1;
+    limit = 4;
+    do {
+        offset = index + delta;
+        if (offset < 0) goto update;
+        if (offset >= 0x1C) goto update;
+        {
+            entry = D_001AA4F0_1[offset];
+            if (entry != 0) {
+                id = entry + flag;
+                if (func_00295828(id) == notfound && func_00295870(id) != 0)
+                    return id;
+            }
+        }
+update:
+        delta = ((int)delta > 0) ? -(int)delta : (one - delta);
+    } while (delta != limit);
+    return -1;
+}
 
 /* shared native body of family 490e2c59eb9d7105 */
 int func_00295A10(int param_1)
@@ -310,7 +366,7 @@ int func_00295C70(void)
 
 INCLUDE_ASM("asm/game", func_00295F60);
 
-INCLUDE_ASM("asm/game", func_00297218);
+/* func_00297218 is defined in its sibling unit. */
 
 extern void func_00297550(u8 *, s32, u8 *, short *);
 
@@ -389,6 +445,10 @@ INCLUDE_ASM("asm/game", func_00297670);
 
 
 /* func_002977A8 is defined in 002977A8.c. */
+
+
+
+/* func_002977A8 is defined in its sibling unit. */
 
 void func_002979D8(char *dst, unsigned char *src)
 {
@@ -553,10 +613,50 @@ void func_00298278(void) {
     D_001393E0.field10 = 0;
 }
 
-/* func_00298298: the attempt is in nonmatching/game/func_00298298.c.  It
-   reproduces the control flow but the register allocation and two dead
-   constants still differ. */
-INCLUDE_ASM("asm/game", func_00298298);
+/* Resolve pending state requests after clearing the two transient flag bits. */
+void func_00298298(void)
+{
+    int flags = D_001A7424[0];
+    int cleared = flags & ~4;
+    int mask = cleared & ~2;
+    int v0, v1;
+    SharedState *state = &D_001393E0;
+
+    D_001A7424[0] = mask;
+    if (state->field17c == 0) {
+        D_001A7420[0] = 3;
+        return;
+    }
+    if ((flags & 0x80) || *(int *)((char *)state + 0x16C) != 0) {
+        int v = mask & ~0x80;
+        D_001A7420[0] = 21;
+        D_001A7424[0] = v | 0x40;
+        return;
+    }
+    if (flags & 0x100) {
+        int w = (mask ^ 0x100) | 0x40;
+        D_001A7420[0] = 20;
+        D_001A7424[0] = w;
+        return;
+    }
+    if (state->field10 != 0) {
+        state->field17c = 0;
+        if (D_001A8C88[0] != 0 || D_001A8C8C[0] != 0) {
+            D_001A7420[0] = 3;
+            return;
+        }
+        v0 = mask | 1;
+        v1 = 2;
+    } else if (flags & 0x200) {
+        v0 = mask ^ 0x200;
+        v1 = 25;
+    } else {
+        return;
+    }
+    D_001A7424[0] = v0;
+    D_001A7420[0] = v1;
+}
+
 
 extern unsigned int D_001A7424[] __attribute__((sda));
 extern int D_001A7420[] __attribute__((sda));

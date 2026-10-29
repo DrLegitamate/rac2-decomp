@@ -39,7 +39,7 @@ extern void func_00281DE8(void *, int, int, int);
 extern void func_L01_0031A278(void *, void *, float, float, float);
 extern void func_00280B90(void *, int, int);
 
-INCLUDE_ASM("asm/levels", func_L06_0035EA68);
+/* func_L06_0035EA68 is defined in L06_0035EA68-fall.c. */
 
 void func_L06_0036F728(s32 a0, s32 a1) {
     s32 v1 = func_L01_003246F8(a0);
@@ -69,7 +69,45 @@ s32 func_L06_00382850(char *a0, char *a1, float f12) {
 }
 
 
-INCLUDE_ASM("asm/levels", func_L06_0039A2F0);
+extern void ref_L06_0039A2F0_00(void *, s32, s32);
+
+void func_L06_0039A2F0(s32 a0, s32 a1, s32 a2, s32 a3, s32 *list)
+{
+    char *shot;
+    s32 count;
+    s32 score;
+    s32 tag = a3;
+    s16 d;
+    s16 fc = *(s16 *)(a2 + 0xB2);
+    s16 fa = *(s16 *)(a2 + 0xAA);
+
+    if (a3 == 1)
+        d = (s16)(a0 - a2);
+    else
+        d = (s16)(a0 - *(u16 *)(a2 + 0x68));
+
+    for (score = 0; score < list[0]; score++) {
+        char *entry = (char *)list + 4 + score * 16;
+        if (*(s32 *)entry != d) continue;
+        if (*(u16 *)(entry + 8) != a1) continue;
+        if (fc != *(s16 *)(entry + 0xC)) continue;
+        if (fa != *(s16 *)(entry + 0xE)) continue;
+        tag = *(s16 *)(entry + 0xA);
+        if (tag != 0) {
+            ref_L06_0039A2F0_00(entry + 4, a0, a1);
+            return;
+        }
+    }
+    count = list[0];
+    shot = (char *)list + 4 + count * 16;
+    list[0] = count + 1;
+    *(s32 *)shot = d;
+    ref_L06_0039A2F0_00(shot + 4, a0, a1);
+    *(u16 *)(shot + 8) = a1;
+    *(s16 *)(shot + 0xA) = tag;
+    *(s16 *)(shot + 0xC) = fc;
+    *(s16 *)(shot + 0xE) = fa;
+}
 
 void func_L06_003E0D88(u8 *moby)
 {
@@ -130,7 +168,7 @@ s32 func_L06_003E3CC8(u8 *a0) {
     return (u32)(a0[0x20] - 2) < 5;
 }
 
-INCLUDE_ASM("asm/levels", func_L06_003E3CF0);
+
 
 
 INCLUDE_ASM("asm/levels", func_L06_003E3F28);
@@ -181,20 +219,20 @@ INCLUDE_ASM("asm/levels", func_L06_003E57E8);
 
 INCLUDE_ASM("asm/levels", func_L06_003E5D30);
 
-INCLUDE_ASM("asm/levels", func_L06_004009B8);
+/* func_L06_004009B8 is defined in L06_004009B8-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L06_00402570);
 
 INCLUDE_ASM("asm/levels", func_L06_00403130);
 
-INCLUDE_ASM("asm/levels", func_L06_00403710);
+/* func_L06_00403710 is defined in L06_00403710-g8.c. */
 
 /* func_L06_00403DA8 is defined in L06_00403DA8.c. */
 
 
 INCLUDE_ASM("asm/levels", func_L06_00444D00);
 
-INCLUDE_ASM("asm/levels", func_L06_004638F0);
+/* func_L06_004638F0 is defined in L06_004638F0.c. */
 
 
 void func_L06_00463FC0(char *moby)
@@ -238,10 +276,10 @@ void func_L06_00475C10(float a0) {
         *(float *)(*(s32 *)(v1 + 0x70) + 0x24C) = a0;
 }
 
-INCLUDE_ASM("asm/levels", func_L06_0047A268);
+
 
 INCLUDE_ASM("asm/levels", func_L06_0047A408);
 
-INCLUDE_ASM("asm/levels", func_L06_0047AC68);
+/* func_L06_0047AC68 is defined in L06_0047AC68-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L06_0047C1D0);

@@ -1,5 +1,16 @@
 #include "include_asm.h"
 
+extern int *D_001A7288 __attribute__((section(".sdata")));
+extern char D_01FF7FF0[];
+extern int func_002B7C10(int, int, int);
+
+extern int D_001B1DA4 __attribute__((sda));
+extern char D_001F2740[];
+extern int D_001F2540[];
+extern int func_00282A18(int);
+extern void func_00282AB0(void *, void *, int);
+
+
 
 extern void func_00294130(int *, int);
 
@@ -8,6 +19,105 @@ extern void func_00292B88(void *, void *, int, int, int, int, int);
 extern void func_00291788(int);
 
 extern void func_00291640(int);
+
+typedef struct { long w[12]; } GsLoadImage __attribute__((aligned(16)));
+extern void func_002FC3C0(unsigned long);
+extern short func_002B7CE0(int);
+extern int func_002B7C80(void *, int, int);
+extern int func_00126288(GsLoadImage *, short, short, short, short, short, short, short);
+extern void func_0011AEA0(int);
+extern int func_001265B0(GsLoadImage *, void *);
+extern int func_001244B8(int, unsigned short);
+/* The disc table of contents: sectors are relative to base. */
+typedef struct { int sector, size, sector2, size2; } DiscPack;
+typedef struct { int sector, size; } DiscFile;
+typedef struct { int id, sector, size, sector2, size2; } DiscSlot;
+typedef struct {
+    char pad0[0x32C];
+    int level_base;           /* 0x32C */
+    char pad330[0x348 - 0x330];
+    DiscFile level;           /* 0x348 */
+    char pad350[0x4B40 - 0x350];
+    DiscSlot slots[48];       /* 0x4B40 */
+    int pad_4F00;
+    int base;                 /* 0x4F04: of the packs */
+    DiscPack packs[9];        /* 0x4F08 */
+    char pad_4F98[0x529C - 0x4F98];
+    int archive_base;         /* 0x529C */
+    int pad2[2];
+    DiscFile archive0;        /* 0x52A8 */
+    int pad3[2];
+    DiscFile archive1;        /* 0x52B8 */
+} DiscToc;
+extern DiscToc D_0014B540;
+extern long D_001A72A0[] __attribute__((sda));
+
+extern void func_00133230(void);
+extern int func_00132028(void);
+extern int func_00133580(int);
+extern int func_00133640(void);
+extern int func_00125588(void);
+extern void func_002E4A68(void);
+extern void func_002B6788(void);
+extern void func_002B6828(int);
+/* The callee at 0x00132828 (the catalogue names it func_00132818). */
+extern int func_00132828(void);
+/* As in RAC1: the disc wait-frame count, a flag set once the load has
+   been stepped back, and a mode word that is 1 until then. */
+extern int D_001A7430 __attribute__((sda));
+extern int D_001A7434 __attribute__((sda));
+extern int D_001A7900 __attribute__((sda));
+/* The level archive load: stage, busy flag and the two archive buffers
+   (archive0 is the level data D_001A7288 points at). */
+typedef struct { int stage, busy, archive0, archive1; } ArchiveLoad;
+extern ArchiveLoad D_001A7280 __attribute__((sda));
+extern int D_001BAF2C;
+extern short D_00152C2C[];
+/* The two sound bank statuses: -1 while a load is pending. */
+extern unsigned int D_00189E00, D_00189E04;
+
+/* The class cache header: VRAM offsets of the slot's image (in words) and
+   CLUT, the one material map entry and the slot. */
+typedef struct {
+    int image_offset;           /* 0x00 */
+    short pad04[3];
+    unsigned short clut_offset; /* 0x0A */
+    short pad0C[2];
+    short map;                  /* 0x10 */
+    short slot;                 /* 0x12 */
+} ClassCache;
+extern ClassCache D_00152CD0;
+/* A loaded class: the count of its 32-byte entries at 0x0D and the table of
+   them at 0x28. */
+typedef struct {
+    char pad00[0x1C];
+    int f1C;
+} ClassEntry;
+typedef struct {
+    char pad00[0x0D];
+    unsigned char entry_count; /* 0x0D */
+    char pad0E[0x28 - 0x0E];
+    ClassEntry *entries;       /* 0x28 */
+} ClassData;
+/* The decode buffer; a texture part starts with a type word, has its width
+   at 0x18 and its CLUT and pixels at 0x30 and 0x430. */
+typedef struct { int type; } DecodeHeader;
+extern DecodeHeader D_00178510;
+extern int D_00178528;
+extern char D_00178540[];
+extern char D_00178940[];
+extern char D_001A9340[];
+extern int D_001A72F4 __attribute__((sda));
+extern int D_001A7304 __attribute__((sda));
+extern int D_001B1B40 __attribute__((sda));
+extern int D_001D0E00[];
+extern ClassData *D_001CDB80[];
+extern unsigned char D_001CE4E0[];
+extern int func_0029D4D0(void *, void *);
+extern void func_00293890(void *, void *, void *, int);
+extern int func_001337F0(void);
+extern int func_00133820(void);
+extern void func_0026FEB8(const char *, ...);
 
 /* Frozen Batch A A02-list-add-88; acknowledged claim 38ceeb041b6ba12996de10c402ca54295587db96246845b83b2ec894986b096f. */
 typedef unsigned char BatchA_A02_u8;
@@ -85,23 +195,84 @@ void func_00291788(int index)
     }
 }
 
-INCLUDE_ASM("asm/game", func_00291850);
+/* func_00291850 is in 00291850.c. */
 
 
 /* Texture ranges: the particle renderer (func_002B9420) hands this table to
    the toSPR DMA channel; C only ever writes it. */
 typedef struct { int a, b; } TextureRange;
+extern volatile TextureRange D_001F1F40[];
 
-INCLUDE_ASM("asm/game", func_00291CA8);
+/* Rebases the offset table of a loaded pack onto the copy of its data in
+   D_001F2740, then fills the texture range table from count four-word list
+   entries. */
+void func_00291CA8(int *hdr, int base, int *list, int count)
+{
+    int n = hdr[0];
+    int data_off = hdr[2];
+    int data_size = hdr[3];
+    int *entry = hdr + 4;
+    int i;
+
+    for (i = 0; i < n; i++, entry++) {
+        if (*entry == 0)
+            D_001F2540[i] = (int)D_001F2740;
+        else
+            D_001F2540[i] = *entry - (data_off - (int)D_001F2740);
+    }
+    func_00282AB0(D_001F2740, (char *)hdr + data_off, data_size);
+    for (D_001B1DA4 = 0; D_001B1DA4 < count; D_001B1DA4++) {
+        int src_page = base + *list++;
+        int src_offset = *list++;
+        int dst_page = base + *list++;
+        int dst_size = *list++;
+
+        D_001F1F40[D_001B1DA4].a = (src_page << 4) + src_offset;
+        D_001F1F40[D_001B1DA4].b = (dst_page << 4) + func_00282A18(dst_size);
+    }
+}
+
 
 /* func_00291DE0 is matched in its own unit, 00291DE0.c. */
 
 INCLUDE_ASM("asm/game", func_00291EC0);
 
+/* Boot data words reached at their fixed addresses, which gives the retail
+   code's absolute (lui) addressing. */
+#define LOAD_BUFFER (*(int **)0x001A7294)
+#define LOAD_COUNT (*(int *)0x001A7298)
+#define CLUT_VRAM (*(int *)0x001A72E8)
+#define IMAGE_VRAM (*(int *)0x001A72F8)
+#define PACK_FLAG_5 (*(unsigned char *)0x001A7A4A)
+#define PACK_FLAG_6 (*(unsigned char *)0x001A7A49)
+#define PACK_FLAG_7 (*(unsigned char *)0x001A7A4B)
+#define PACK_FLAG_8 (*(unsigned char *)0x001A7A42)
+
+/* A texture record of the pack: width and height, a 16x16 CLUT and the 8-bit
+   image after it. */
+typedef struct {
+    int pad00[2];
+    int width;       /* 0x08 */
+    int height;      /* 0x0C */
+    int pad10[4];
+    char clut[0x400]; /* 0x20 */
+    char pixels[1];   /* 0x420 */
+} TextureRecord;
+
+/* Loads the texture pack of a program (the caller passes the level number;
+   four boot flags replace it with packs 5 to 8) from the disc table: the
+   pack's second part into the load buffer, whose first word is a count and
+   whose next words are offsets of texture records. Each record's 16x16 CLUT
+   (at +0x20) and 8-bit image (at +0x420, width and height at +8 and +0xC)
+   are uploaded to VRAM, the CLUT from the address in CLUT_VRAM and the
+   image from the one in IMAGE_VRAM, and the record's TEX0 word is stored in
+   D_001A72A0. The pack's first part then replaces the buffer's contents.
+   The buffer, the count, the VRAM cursors and the flags are words addressed
+   absolutely. */
 INCLUDE_ASM("asm/game", func_00292078);
 
 
-extern void func_00292078(void *);
+extern void func_00292078(int);
 extern void func_00292328(void *);
 extern u8 *D_L03_001DAB80[];
 extern void func_002934B8(u8 *, u8 *);
@@ -186,7 +357,7 @@ void func_00292EB0(long *out, int arg1, int arg2, int arg3, int arg4, int arg5) 
     }
 }
 
-INCLUDE_ASM("asm/game", func_00293000);
+/* func_00293000 is in 00293000-g8.c. */
 
 void func_00293260(int *a0, int a1){
   BatchA_A02_Blk *r;
@@ -199,6 +370,7 @@ void func_00293260(int *a0, int a1){
 
 
 INCLUDE_ASM("asm/game", func_002933D0);
+
 
 
 void func_002934B8(u8 *a0, u8 *a1) {
@@ -215,10 +387,96 @@ INCLUDE_ASM("asm/game", func_002934F8);
 /* func_00293890 is in 00291758-g8.c. */
 
 
-INCLUDE_ASM("asm/game", func_002939D0);
+/* RAC1 loaders.c: load_level_chunk_from_disc. Reads the level's data from the
+   disc table into the top of memory, below D_01FF7FF0; the ceiling is a linker
+   address, so alignment is applied after subtracting the read size. */
+int func_002939D0(void)
+{
+    DiscToc *toc = &D_0014B540;
+    int sectors = toc->level.size;
+    int bytes = ((sectors << 11) + 0x1057) & 0xFFFFF000;
+    int addr = ((int)D_01FF7FF0 - bytes) & -16;
+
+    D_001A7288 = (int *)addr;
+    *(unsigned int *)addr = 0x60;
+    func_002B7C10((int)D_001A7288 + *D_001A7288, toc->level.sector + toc->level_base, toc->level.size);
+    return 1;
+}
 
 
-INCLUDE_ASM("asm/game", func_00293A60);
+/* RAC1 loaders.c: service_level_archive_load. One step of the level archive
+   load: while the disc is busy, counts frames and after 720 at full speed
+   drops to the slower mode and steps back a stage; a read error does the
+   same once. Then by stage: reads the two archives of the disc table below
+   the top of memory (the second one highest), waits for the reads, starts
+   the sound bank loads and waits for each bank's status. Returns 1 when the
+   load is done. */
+int func_00293A60(void)
+{
+    func_00133230();
+    func_00132028();
+    if (func_00133580(1)) {
+        ++D_001A7430;
+        if (D_001A7900 == 1 && D_001A7430 > 720) {
+            D_001A7434 = 1;
+            D_001A7900 = 0;
+            if (D_001A7280.stage < 3)
+                D_001A7280.stage--;
+            func_00133640();
+        }
+        return 0;
+    }
+    if (func_00125588() && !D_001A7434) {
+        D_001A7434 = 1;
+        D_001A7900 = 0;
+        if (D_001A7280.stage < 3)
+            D_001A7280.stage--;
+    }
+    switch (D_001A7280.stage) {
+    case 0: {
+        DiscToc *toc = &D_0014B540;
+        unsigned int bytes;
+
+        bytes = ((toc->archive1.size << 11) + 4095) & 0xFFFFF000;
+        D_001A7280.archive1 = D_001BAF2C - bytes;
+        bytes = ((toc->archive0.size << 11) + 4095) & 0xFFFFF000;
+        D_001A7280.archive0 = D_001A7280.archive1 - bytes;
+        D_00152C2C[0] = 0;
+        func_002B7C10(D_001A7280.archive0, toc->archive0.sector + toc->archive_base, toc->archive0.size);
+        D_001A7280.stage++;
+        break;
+    }
+    case 1:
+        func_002B7C10(D_001A7280.archive1, D_0014B540.archive1.sector + D_0014B540.archive_base,
+                      D_0014B540.archive1.size);
+        D_001A7280.stage++;
+        break;
+    case 2:
+        if (D_001A7280.busy)
+            return 0;
+        func_002E4A68();
+        func_002B6788();
+        D_001A7280.stage++;
+        break;
+    case 3:
+        func_00132028();
+        if (D_00189E00 != -1)
+            D_001A7280.stage++;
+        break;
+    case 4:
+        func_002B6828(0);
+        D_001A7280.stage++;
+        break;
+    case 5:
+        func_00132028();
+        if (D_00189E04 != -1) {
+            func_00132828();
+            return 1;
+        }
+        break;
+    }
+    return 0;
+}
 
 
 int func_00293CA8(int index)
@@ -325,6 +583,75 @@ after2:
     return value != 3;
 }
 
-INCLUDE_ASM("asm/game", func_002946C0);
+/* Loads one cached moby class: an optional texture part (data[2], when
+   data[3] is set), decompressed into the decode buffer and, when it is a
+   16x16-CLUT 8-bit image, uploaded to VRAM; then the class itself (data[0]),
+   decompressed into the same buffer and prepared by func_00293890 with the
+   slot's one-entry material map and with D_001B1B40 set to the slot for the
+   call. The offsets in data are relative to slot index's disc sector. Each
+   of the loaded class's 32-byte entries (count at +13, table at +0x28) then
+   gets 4 at +0x1C, and func_0026FEB8 prints the values of func_001337F0 and
+   func_00133820. The image transfer and the material map share one buffer. */
+void func_002946C0(int id, int index, int *data)
+{
+    union { GsLoadImage image; unsigned char map[16]; } work;
+    int saved, i;
+    ClassData *loaded;
+
+    if (data[3]) {
+        char *src = (char *)data + data[2] - (D_0014B540.slots[index].sector << 11);
+
+        func_0011AEA0(0);
+        func_0029D4D0(src, &D_00178510);
+        func_0011AEA0(0);
+        if (D_00178510.type == 1) {
+            int tbw, width, offset;
+            char *pixels;
+
+            func_00126288(&work.image, (D_001A72F4 >> 8) + D_00152CD0.clut_offset, 1, 0, 0, 0, 16, 16);
+            func_0011AEA0(0);
+            func_001265B0(&work.image, D_00178540);
+            func_001244B8(0, 0);
+            offset = D_00152CD0.image_offset << 2;
+            width = D_00178528;
+            tbw = width >> 6;
+            pixels = D_00178940;
+            if (tbw < 1)
+                tbw = 1;
+            func_00126288(&work.image, (D_001A7304 + offset) >> 8, tbw, 0x1B, 0, 0, width, width);
+            func_0011AEA0(0);
+            func_001265B0(&work.image, pixels);
+            func_001244B8(0, 0);
+        }
+    }
+    {
+        char *src = (char *)data + data[0] - (D_0014B540.slots[index].sector << 11);
+
+        func_0011AEA0(0);
+        func_0029D4D0(src, &D_00178510);
+        func_0011AEA0(0);
+    }
+    {
+        ClassCache *cache = &D_00152CD0;
+        DecodeHeader *decoded = &D_00178510;
+
+        saved = D_001B1B40;
+        work.map[0] = cache->map;
+        D_001B1B40 = cache->slot;
+        func_00293890(decoded, (char *)cache - (cache->map << 4), work.map, id);
+        D_001D0E00[cache->slot] = 0xFFF00000;
+        loaded = D_001CDB80[D_001CE4E0[id]];
+        D_001B1B40 = saved;
+    }
+    for (i = 0; i < loaded->entry_count; i++)
+        loaded->entries[i].f1C = 4;
+    {
+        char *format = D_001A9340;
+        int first = func_001337F0();
+        int second = func_00133820();
+
+        func_0026FEB8(format, first, second);
+    }
+}
 
 INCLUDE_ASM("asm/game", func_00294988);

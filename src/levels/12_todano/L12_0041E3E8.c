@@ -1,11 +1,10 @@
 #include "common.h"
 
-INCLUDE_ASM("asm/levels", func_L12_0041E3E8);
+/* func_L12_0041E3E8 is defined in L12_0041E3E8-update-g8.c. */
 
 s32 func_L12_0041E8E8(u8 *a0) {
     return *(u8 *)(a0 + 0x20) == 3;
 }
-
 extern int D_001A79F0 __attribute__((sda));
 extern char D_0019B4A8[];
 extern char D_00189EA0[];
@@ -41,7 +40,7 @@ void func_L12_0041E8F8(u8 *a0) {
     func_002E5CF8(1, 0, self);
 }
 
-INCLUDE_ASM("asm/levels", func_L12_0041EA18);
+/* func_L12_0041EA18 is defined in L12_0041EA18-g8.c. */
 
 /* func_L12_0041EDB8 is defined in L12_0041E3E8-split-g8.c (this unit keeps split addresses). */
 

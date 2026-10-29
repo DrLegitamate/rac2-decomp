@@ -192,6 +192,8 @@ The same address-alias attempt on `func_00132028` remains 484/488 bytes: metadat
 does not force a separately materialized indexed address. Its retained C records
 that negative result.
 
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_002798A0` is C in `src/game/00274128.c` (`-O2 -G0 -ffunction-sections`), placed at 28 US, 28 PAL, 28 US2 places; `func_00298298` is C in `src/game/00294BC8.c` (`-O2 -G0 -ffunction-sections`), placed at 28 US, 28 PAL, 28 US2 places; `func_002A0250` is C in `src/game/0029DE38-textures-g8.c` (`-O2 -G8 -ffunction-sections`), placed at 28 US, 28 PAL, 28 US2 places; `func_002A8600` is C in `src/game/002A7750.c` (`-O2 -G0 -ffunction-sections`), placed at 28 US, 28 PAL, 28 US2 places; `func_002DE618` is C in `src/game/002DDEC8.c` (`-O2 -G0 -ffunction-sections`), placed at 28 US, 28 PAL, 28 US2 places; `func_002F5D40` is C in `src/game/002F5220.c` (`-O2 -G8 -ffunction-sections`), placed at 28 US, 28 PAL, 28 US2 places; `func_00304128` is C in `src/game/00304128.c` (`-O2 -G0 -ffunction-sections -mno-split-addresses`), placed at 28 US, 28 US2 places (PAL catalogue has no function of this name). The measurements above are kept as history.
+
 ## Topic index
 
 The 52 original section numbers are preserved for existing references. Anyone may improve
@@ -521,6 +523,8 @@ through +0xFC. Neither equal size nor a neutral allocator-dump build is a match.
 
 <a id="blocker-02"></a>
 
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_L16_0040D258` is C in `src/levels/16_snivelak/L16_0040D258.c` (`-O2 -G0 -ffunction-sections -fno-sched-interblock`), placed at 1 US, 1 US2 places (PAL catalogue has no function of this name). The measurements above are kept as history.
+
 ## 2. LICM: the retail re-materialises a base inside a loop
 
 **Signature:** retail emits `lui $r,%hi(D)` + `lw`/`addiu` *inside* the loop body; cc1 hoists the address into a callee-saved register, so the loop loses an instruction, the 8-byte alignment `nop` before the label disappears, and the frame grows by two saves.
@@ -731,6 +735,8 @@ pools, `.sdata` and unsupported assembly data directives remain rejected.
 
 <a id="blocker-07"></a>
 
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_L19_00423CC0` is C in `src/levels/19_grelbin/L19_00423CC0.c` (`-O2 -G0 -ffunction-sections`), placed at 1 US, 1 PAL, 1 US2 places. The measurements above are kept as history.
+
 ## 7. Annulled integer branch delay slots
 
 Historical mismatches involved bnel/beql with a taken-path slot where retail used a normal branch and fall-through work, often one word different. The wave 9 correction counted 342 then-matched functions containing a likely branch: the compiler does emit them from ordinary C. That count is historical, not today's corpus size.
@@ -765,6 +771,8 @@ in its delay slot, but expands to 136/112 bytes and remains 0/1 because it
 duplicates the count and character checks. No strict linked match is claimed.
 
 <a id="blocker-08"></a>
+
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_00118460` is C in `src/core/00118460.c` (`-O2 -G2 -ffunction-sections`), placed at 1 US, 1 PAL, 1 US2 places; `func_002958B8` is C in `src/game/00294BC8.c` (`-O2 -G0 -ffunction-sections`), placed at 28 US, 28 PAL, 28 US2 places. The measurements above are kept as history.
 
 ## 8. Single-register `%hi`/`%lo` addresses
 
@@ -1407,6 +1415,10 @@ forms are exhausted; the retained file records the other measured store orders.
 
 <a id="blocker-20"></a>
 
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_L00_003A8238` is C in `src/levels/shared/L00_003A8238-impact.c` (`-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier`), placed at 27 US, 27 US2 places (PAL catalogue has no function of this name). The measurements above are kept as history.
+
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_0027A9F0` is C in `src/game/00274128.c` (`-O2 -G0 -ffunction-sections`), placed at 28 US, 28 PAL, 28 US2 places; `func_002B68C8` is C in `src/game/002B68C8.c` (`-O2 -G0 -ffunction-sections -fno-schedule-insns`), placed at 1 US, 28 PAL, 1 US2 places. The measurements above are kept as history.
+
 ## 20. Two exits where cc1 keeps one
 
 Historical symptoms included merged versus duplicated epilogues, reversed branch polarity, out-of-line versus inlined returns, or an early return folded to a constant. Examples were func_L08_00318F90(68 versus 76 bytes), func_L08_003289D0, func_L23_0041E220, func_L19_0041C328 and func_L14_00427210.
@@ -1598,6 +1610,10 @@ Both alternatives also match 0/28. On 29 October 2026, temporarily integrating t
 
 <a id="blocker-23"></a>
 
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_L02_00421860` is C in `src/levels/shared/L02_00421860-g8.c` (`-O2 -G8 -ffunction-sections`), placed at 2 US, 2 US2 places (PAL catalogue has no function of this name); `func_L22_003C9D48` is C in `src/levels/shared/L22_003C9D48-g8.c` (`-O2 -G8 -ffunction-sections -mno-split-addresses`), placed at 2 US, 2 PAL, 2 US2 places. The measurements above are kept as history.
+
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_002A8F70` is C in `src/game/002A7750-records.c` (`-O2 -G0 -ffunction-sections`), placed at 28 US, 28 PAL, 28 US2 places. The measurements above are kept as history.
+
 ## 23. Keeping a branch in step with master (tooling, not a wall)
 
 Contributor PRs leave the generated README progress table and progress/report.json alone. A maintainer regenerates them on master after the strict build. The old advice to regenerate them on every contributor branch is superseded by AGENTS.md. Resolve source/nonmatching conflicts against current master while preserving concurrent work.
@@ -1695,6 +1711,8 @@ loop spellings.
 **Consequence:** retain unresolved attempts and their bounded stopping reasons. Do not label the whole category unexpressible or add volatile/artificial uses solely to preserve an operation.
 
 <a id="blocker-27"></a>
+
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_L18_00432630` is C in `src/levels/18_damosel/L18_003F80A0.c` (`-O2 -G0 -ffunction-sections`), placed at 1 US, 1 PAL, 1 US2 places. The measurements above are kept as history.
 
 ## 27. The missing `andi reg,0xFF`
 
@@ -1993,6 +2011,8 @@ particular label spelling does not unblock the loop layout.
 
 <a id="blocker-41"></a>
 
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_0028E640` is C in `src/game/0028E640-g8.c` (`-O2 -G8 -ffunction-sections`), placed at 28 US, 28 PAL, 28 US2 places. The measurements above are kept as history.
+
 ## 41. The productive route
 
 Historically 16 of wave 8's 24 matches came from matched siblings/fingerprints. Four workers over 104 already-attempted functions found no match in that survey.
@@ -2046,6 +2066,8 @@ scheduling/source evidence, rather than changing its signature to steer moves.
 
 <a id="blocker-43"></a>
 
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_00290B48` is C in `src/game/00290A40.c` (`-O2 -G0 -ffunction-sections`), placed at 28 US, 28 PAL, 28 US2 places. The measurements above are kept as history.
+
 ## 43. Block ordering: distinguish source structure from unavailable flags
 
 Historically seven loop forms in two five-member families retained a different block order from retail, changing branch polarity and delay slots. The proposed freorder-blocks/fno-reorder-blocks remedy was a hypothesis, not an available flag or a measured fix.
@@ -2062,6 +2084,8 @@ load that retail performs afterward. Retain the marker; reopen with independent
 block-order or live-range evidence, not another equivalent loop spelling.
 
 <a id="blocker-44"></a>
+
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_00335960` is C in `src/game/0032EB28-track.c` (`-O2 -G0 -ffunction-sections -g -frac2-gcse-unsplit-edges`), placed at 28 US, 28 PAL, 28 US2 places. The measurements above are kept as history.
 
 ## 44. Relocated instructions are validated in a separate pass
 
@@ -2132,6 +2156,8 @@ additional matching/assembly credit is implied by this observation.
 
 <a id="blocker-48"></a>
 
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_00291850` is C in `src/game/00291850.c` (`-O2 -G0 -ffunction-sections -frac2-keep-block-order`), placed at 28 US, 28 PAL, 28 US2 places. The measurements above are kept as history.
+
 ## 48. The wave 12 census: historical sample, not today's inventory
 
 The sample covered twelve game/shared files, 470 unfinished functions and 9,638 placements, with nine workers. Its 4,932 filler placements preceded the corrections above and are not current remaining work.
@@ -2174,6 +2200,8 @@ the callee saves from `$f12` and uses in its radius test.
 
 
 <a id="blocker-50"></a>
+
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_L00_002DB350` is C in `src/levels/shared/L00_002D7940-grid.c` (`-O2 -G0 -ffunction-sections`), placed at 27 US, 27 PAL, 27 US2 places. The measurements above are kept as history.
 
 ## 50. Five specifically audited residual extents — resolved by PR #253
 
@@ -2703,6 +2731,9 @@ next source hypotheses are retained in `nonmatching/`. Equal-size candidates
 `func_L00_0033AA40` (384 bytes) still differ at +0x40, +0x4 and +0x24 respectively.
 The collision-grid function consumes both the incoming position pointer and f12
 margin. No progress report was regenerated.
+
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_L00_002DB350` is C in `src/levels/shared/L00_002D7940-grid.c` (`-O2 -G0 -ffunction-sections`), placed at 27 US, 27 PAL, 27 US2 places; `func_L00_0033AA40` is C in `src/levels/shared/L00_0033AA40.c` (`-O2 -G0 -ffunction-sections`), placed at 27 US, 27 PAL, 27 US2 places; `func_L00_003B6858` is C in `src/levels/shared/L00_003B6858-g8.c` (`-O2 -G32 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-zero-ti-barrier`), placed at 27 US, 27 US2 places (PAL catalogue has no function of this name). The measurements above are kept as history.
+
 ### Shared object-vector and effect helpers
 
 The retained C for `func_L00_00387BB0` and `func_L00_0038A650` reaches the
@@ -2738,6 +2769,9 @@ instead gives 1084 bytes. Eight bounded source/profile trials were retained
 privately; reopen on independent evidence for the original counter-array
 lifetimes, rather than repeating the declaration permutations. No assembly
 classification or matching credit is claimed.
+
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_L00_002D6BA8` is C in `src/levels/shared/L00_002D67A8-envelope.c` (`-O2 -G0 -ffunction-sections`), placed at 27 US, 27 PAL, 27 US2 places. The measurements above are kept as history.
+
 ### Packet-rendering and effect-state constraints
 
 The retained `func_L00_003EFA98`/`func_L00_003EFD00` quad renderers reach
@@ -2830,6 +2864,8 @@ Every checked placement follows a preceding `jr $ra` and its delay slot. A scan 
 **29 October 2026 USA v1.01 all-placement audit:** `func_0033B538` is a four-byte boot row containing only `daddu $v0,$a0,$zero`. In the boot and all 27 level placements, it follows the preceding function’s completed `jr $ra` and stack-adjust delay slot, then a nop; the next catalogue entry starts with a new frame prologue. Across all 28 loaded programs, scans found no direct branch/jump target at the row, no aligned loaded-word pointer to it, and no adjacent `lui` plus `addiu`/`ori` construction of its address. This strengthens the catalogue-residue hypothesis but does not rule out computed indirect entry. Keep its marker and catalogue row unchanged pending maintainer review; do not add it to residue handling before that review.
 
 **29 October 2026 USA v1.01 screening:** `func_003495B8` and `func_0034CE88` have boundary patterns audited across all 28 placements and no direct branch/jump, aligned pointer or adjacent high/low address-pair references; see the placement-specific entries above. These support catalogue-residue hypotheses but cannot rule out computed indirect entry or establish other-release behavior. Keep both markers and rows unchanged pending maintainer review. Do not add either to residue handling without that review.
+
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_00288208` is C in `src/game/002880E0.c` (`-O2 -G0 -ffunction-sections`), placed at 28 US, 28 PAL, 28 US2 places; `func_L00_0042AC18` is C in `src/levels/shared/L00_0042AC18.c` (`-O2 -G0 -ffunction-sections`), placed at 4 US, 4 US2 places (PAL catalogue has no function of this name). The measurements above are kept as history.
 
 ### game/00308600 follow-up — PR #287 merged; original near miss retained
 
@@ -2996,6 +3032,8 @@ but `tests/check_repository.py` reports that the PAL and v2.00 catalogues still 
 rows, so the repair needs `tools/carry.py` with those releases' dumps. The L20 row is also
 described as a catalogue defect in `nonmatching/README.md`.
 
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_002BC508` is C in `src/game/002BC508-g8.c` (`-O2 -G8 -ffunction-sections -g`), placed at 28 US, 28 US2 places (PAL catalogue has no function of this name); `func_002BEBC0` is C in `src/game/002BEBC0-hazard-labels.c` (`-O2 -G0 -ffunction-sections -frac2-hazard-labels`), placed at 28 US, 28 US2 places (PAL catalogue has no function of this name); `func_002C3B08` is C in `src/game/002BF6F0.c` (`-O2 -G0 -ffunction-sections -g`), placed at 28 US, 28 US2 places (PAL catalogue has no function of this name); `func_L00_003B3158` is C in `src/levels/shared/L00_003B3158-shard.c` (`-O2 -G0 -ffunction-sections -frac2-zero-ti-por -fno-gcse`), placed at 27 US, 27 US2 places (PAL catalogue has no function of this name); `func_L02_003D26B0` is C in `src/levels/02_maktar_nebula/L02_003D26B0-aim-g8.c` (`-O2 -G8 -ffunction-sections -frac2-keep-block-order`), placed at 1 US, 1 US2 places (PAL catalogue has no function of this name); `func_L02_003F1BA8` is C in `src/levels/02_maktar_nebula/L02_003DB310-aim-g8.c` (`-O2 -G8 -ffunction-sections -frac2-keep-block-order`), placed at 1 US, 1 US2 places (PAL catalogue has no function of this name); `func_L02_0040BBD8` is C in `src/levels/02_maktar_nebula/L02_0040A4A8-aim-g8.c` (`-O2 -G8 -ffunction-sections -frac2-keep-block-order`), placed at 1 US, 1 US2 places (PAL catalogue has no function of this name); `func_L05_00441F30` is C in `src/levels/shared/L05_00441F30-g8.c` (`-O2 -G8 -ffunction-sections`), placed at 4 US, 4 US2 places (PAL catalogue has no function of this name); `func_L07_00378898` is C in `src/levels/07_siberius/L07_002BE770-rotation-g8.c` (`-O2 -G8 -ffunction-sections`), placed at 1 US, 1 US2 places (PAL catalogue has no function of this name); `func_L07_00416510` is C in `src/levels/shared/L07_00416510-g8.c` (`-O2 -G8 -ffunction-sections`), placed at 4 US, 4 US2 places (PAL catalogue has no function of this name); `func_L11_00449C70` is C in `src/levels/11_joba/L11_004465F8-aim-g8.c` (`-O2 -G8 -ffunction-sections -frac2-zero-ti-por -frac2-keep-block-order`), placed at 1 US, 1 US2 places (PAL catalogue has no function of this name); `func_L11_0044C850` is C in `src/levels/11_joba/L11_004465F8-aim-0044C850-g8.c` (`-O2 -G8 -ffunction-sections -frac2-zero-ti-por -frac2-keep-block-order`), placed at 1 US, 1 US2 places (PAL catalogue has no function of this name); `func_L11_004530E0` is C in `src/levels/11_joba/L11_004465F8-aim-004530E0-g8.c` (`-O2 -G8 -ffunction-sections -frac2-zero-ti-por -frac2-keep-block-order`), placed at 1 US, 1 US2 places (PAL catalogue has no function of this name); `func_L11_004566C0` is C in `src/levels/11_joba/L11_00453358-aim-g8.c` (`-O2 -G8 -ffunction-sections -frac2-zero-ti-por -frac2-keep-block-order`), placed at 1 US, 1 US2 places (PAL catalogue has no function of this name); `func_L12_00429D60` is C in `src/levels/shared/L12_003E1CB0-g8.c` (`-O2 -G8 -ffunction-sections`), placed at 3 US, 3 PAL, 3 US2 places; `func_L18_0042FBC8` is C in `src/levels/18_damosel/L18_0042FBC8-g8.c` (`-O2 -G16 -Wa,-G16 -ffunction-sections -g`), placed at 1 US, 1 US2 places (PAL catalogue has no function of this name); `func_L18_00447128` is C in `src/levels/18_damosel/L18_00447128-g8.c` (`-O2 -G8 -ffunction-sections`), placed at 1 US, 1 US2 places (PAL catalogue has no function of this name); `func_L19_003D2E38` is C in `src/levels/19_grelbin/L19_002CAAB0-g8.c` (`-O2 -G8 -ffunction-sections`), placed at 1 US, 1 US2 places (PAL catalogue has no function of this name); `func_L23_0041B9F0` is C in `src/levels/23_damosel_orbit/L23_0041B9F0-g8.c` (`-O2 -G8 -ffunction-sections -frac2-gcse-unsplit-edges`), placed at 1 US, 1 US2 places (PAL catalogue has no function of this name); `func_L30_003E1BA0` is C in `src/levels/30_insomniac_museum/L30_003E1BA0-g8.c` (`-O2 -G8 -ffunction-sections -Wa,-G32`), placed at 1 US, 1 US2 places (PAL catalogue has no function of this name). The measurements above are kept as history.
+
 ## Shared hero table and object helpers
 
 The retained `func_L00_002D1DA0` attempt now passes its input to the canonical
@@ -3041,6 +3079,8 @@ Duplicate numbered data externs used during clock/range experiments were removed
 the retained drafts preserve each actual containing object under one canonical
 identity and report the resulting nonmatching measurements.
 
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_L00_002AE388` is C in `src/levels/shared/L00_002AE388-range.c` (`-O2 -G0 -ffunction-sections -ffast-math -g -frac2-hazard-labels`), placed at 27 US, 27 PAL, 27 US2 places; `func_L00_002CAB08` is C in `src/levels/shared/L00_002CAB08.c` (`-O2 -G0 -ffunction-sections`), placed at 27 US, 27 US2 places (PAL catalogue has no function of this name). The measurements above are kept as history.
+
 ### Level-shared bodies that read $gp (wave 10, 25 October 2026)
 
 Three retained near misses from this wave (`func_L09_003FE0C0`, `func_L10_00423788`,
@@ -3069,6 +3109,8 @@ Three retained near misses from this wave (`func_L09_003FE0C0`, `func_L10_004237
   `D_L18_00189E20+0x2294 == 0x6F`) inside each case of its kind switch after checking
   them before the switch. The duplication is in retail, so the retained C has to spell
   it twice; merging it changes the branch layout.
+
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_L04_003C6FE8` is C in `src/levels/shared/L04_003C6FE8-timer.c` (`-O2 -G0 -ffunction-sections -g`), placed at 3 US, 3 US2 places (PAL catalogue has no function of this name); `func_L10_00423788` is C in `src/levels/10_hrugis_cloud/L10_003170D0-collision.c` (`-O2 -G0 -ffunction-sections`), placed at 1 US, 1 US2 places (PAL catalogue has no function of this name); `func_L11_003F2A30` is C in `src/levels/11_joba/L11_003F2A30-g8.c` (`-O2 -G8 -ffunction-sections`), placed at 1 US, 1 US2 places (PAL catalogue has no function of this name); `func_L12_003E1EE8` is C in `src/levels/shared/L12_003E1EE8-g8.c` (`-O2 -G8 -ffunction-sections`), placed at 2 US, 2 US2 places (PAL catalogue has no function of this name); `func_L18_00428138` is C in `src/levels/shared/L18_00428138-g8.c` (`-O2 -G8 -ffunction-sections`), placed at 3 US, 3 US2 places (PAL catalogue has no function of this name). The measurements above are kept as history.
 
 ### Particle and effect pointer lifetimes (28 October 2026)
 
@@ -3113,6 +3155,8 @@ argument-evaluation schedule, rather than repeating the tied spellings. Only US
 local checks were run for these near misses; other releases and strict linked
 qualification remain unverified.
 
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_002C3B08` is C in `src/game/002BF6F0.c` (`-O2 -G0 -ffunction-sections -g`), placed at 28 US, 28 US2 places (PAL catalogue has no function of this name); `func_00316400` is C in `src/game/0030F7B0.c` (`-O2 -G0 -ffunction-sections`), placed at 28 US, 28 US2 places (PAL catalogue has no function of this name); `func_L18_0043EA90` is C in `src/levels/shared/L18_00427BE0-g8.c` (`-O2 -G8 -ffunction-sections`), placed at 2 US, 2 PAL, 2 US2 places. The measurements above are kept as history.
+
 ### Effect helpers reopened with current source methods
 
 The reconnaissance stubs for `func_L11_00456EA0`, `func_L11_00458C38`,
@@ -3151,6 +3195,8 @@ discard, the truthful all-four-FP-first argument view, an explicit SDATA alias a
 `-fno-force-mem` tie; `-fno-schedule-insns` worsens the result. Its marker is
 restored. Reopen with evidence for the post-call halfword value lifetime; a false
 helper return type is not an acceptable match.
+
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_L11_00456938` is C in `src/levels/11_joba/L11_00453358-retreat-g8.c` (`-O2 -G8 -ffunction-sections -frac2-zero-ti-por -g`), placed at 1 US, 1 PAL, 1 US2 places; `func_L18_00428138` is C in `src/levels/shared/L18_00428138-g8.c` (`-O2 -G8 -ffunction-sections`), placed at 3 US, 3 US2 places (PAL catalogue has no function of this name). The measurements above are kept as history.
 
 ### Scalar-SDA table walks and packet construction
 
@@ -3247,6 +3293,8 @@ These deposits need measured pointer-lifetime or scheduling evidence before
 another retry. Their prior diagnostic-only refusals remain historical notes,
 not proof that current helpers or address aliases cannot express the bodies.
 
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_L20_00445890` is C in `src/levels/20_yeedil/L20_00445890-g8.c` (`-O2 -G8 -ffunction-sections`), placed at 1 US places (PAL and US2 catalogues have no function of this name). The measurements above are kept as history.
+
 ### Prison oscillator: the ignored message result still affects allocation
 
 `func_L14_00426F28` has a retained game `-O2 -G8` draft at 744/744 bytes.
@@ -3279,3 +3327,7 @@ compiler rejects `-mno-branch-likely`; no compiler change was made.
 **29 October 2026 current-master recheck:** `func_00133580` was compiled in a temporary dedicated `-G8` unit with its fallback accurately declared as `func_00124B88(int)` and called with `arg0`. Under `-O2 -G8 -ffunction-sections` it remains 180/188 bytes, 0/1; `-fno-gcse` produces byte-identical output and this compiler rejects `-fno-cse`. The helper prototype correction preserves semantics but does not change code generation. Retail's `$s0`/`$s1`/`$s2` allocation and repeated `D_001A7100` address materialization remain unresolved. No temporary source or flag changes remain.
 
 **29 October 2026 follow-up:** a volatile-qualified `D_001A7100` hypothesis, based on its load-in-progress polling role, was measured in the same isolated `-O2 -G8 -ffunction-sections` unit. It remains 180/188 bytes and 0/1, with flag-address materialization before both calls but incorrect saved-register allocation and control flow. The asynchronous-write contract is unverified; do not retain the volatile declaration unless independent evidence establishes it.
+
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_L07_003F7968` is C in `src/levels/07_siberius/L07_003F7968-g32.c` (`-O2 -G32 -Wa,-G32 -ffunction-sections`), placed at 1 US, 1 PAL, 1 US2 places. The measurements above are kept as history.
+
+**Update, 29 October 2026 (pending review):** matched by the tiered-wave series; `func_00133580` is C in `src/core/00133580-g8.c` (`-O2 -G8 -ffunction-sections -mno-split-addresses -fno-gcse`), placed at 1 US, 1 PAL, 1 US2 places; `func_00290B48` is C in `src/game/00290A40.c` (`-O2 -G0 -ffunction-sections`), placed at 28 US, 28 PAL, 28 US2 places; `func_00291640` is C in `src/game/00290A40.c` (`-O2 -G0 -ffunction-sections`), placed at 28 US, 28 PAL, 28 US2 places; `func_00291CA8` is C in `src/game/00291758.c` (`-O2 -G0 -ffunction-sections`), placed at 28 US, 28 PAL, 28 US2 places; `func_0029EFD0` is C in `src/game/0029DE38.c` (`-O2 -G0 -ffunction-sections`), placed at 28 US, 28 PAL, 28 US2 places; `func_0029FDF0` is C in `src/game/0029DE38-textures-g8.c` (`-O2 -G8 -ffunction-sections`), placed at 28 US, 28 PAL, 28 US2 places; `func_002B6480` is C in `src/game/002B6120.c` (`-O2 -G0 -ffunction-sections`), placed at 28 US places (PAL and US2 catalogues have no function of this name); `func_002CA790` is C in `src/game/002CA790.c` (`-O2 -G0 -ffunction-sections`), placed at 28 US places (PAL and US2 catalogues have no function of this name); `func_002CB510` is C in `src/game/002CB510.c` (`-O2 -G0 -ffunction-sections`), placed at 28 US, 28 PAL, 28 US2 places; `func_002FE8D8` is C in `src/game/002FC8D0.c` (`-O2 -G0 -ffunction-sections`), placed at 28 US, 28 PAL, 28 US2 places; `func_003427C0` is C in `src/game/003427B0-fade.c` (`-O2 -G0 -ffunction-sections -frac2-hazard-labels`), placed at 28 US, 28 PAL, 28 US2 places; `func_003462A8` is C in `src/game/00345358-descriptor-g8.c` (`-O2 -G8 -ffunction-sections`), placed at 28 US places (PAL and US2 catalogues have no function of this name); `func_0034AC10` is C in `src/game/00345358.c` (`-O2 -G0 -ffunction-sections`), placed at 28 US, 28 PAL, 28 US2 places. The measurements above are kept as history.

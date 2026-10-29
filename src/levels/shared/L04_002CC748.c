@@ -292,9 +292,9 @@ int func_L04_002D91B8(int update) {
 }
 
 
-INCLUDE_ASM("asm/levels", func_L04_002DB970);
+/* func_L04_002DB970 is defined in L04_002CC748-collision-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L04_002DBE70);
+/* func_L04_002DBE70 is defined in L04_002CC748-movement.c. */
 
 /* Per-state airborne steering; shares the hop-velocity state cases with
    rac1-decomp's hero_update_hop_velocity. */
@@ -621,7 +621,7 @@ void func_L04_0033CB88(char *p)
 
 INCLUDE_ASM("asm/levels", func_L04_0033CC00);
 
-INCLUDE_ASM("asm/levels", func_L04_0033D0C0);
+/* func_L04_0033D0C0 is defined in L04_0033D0C0.c. */
 
 extern s32 func_002A8600(u32 *out, s32 kind, s32 arg2, s32 arg3);
 extern s32 func_002A86E8(u32 *out, u32 value, s32 arg2, s32 arg3);
@@ -646,7 +646,7 @@ void func_L04_00343498(u32 value, float f) {
     func_00283DB8(buf, f);
 }
 
-INCLUDE_ASM("asm/levels", func_L04_00344568);
+/* func_L04_00344568 is in L04_002CC748-axis.c. */
 
 extern void func_00283658(void *dst, void *src);
 extern f32 func_00282DB0(void *a, void *b);
@@ -717,9 +717,89 @@ void func_L04_00347AB8(void *a0, void *a1, void *a2, void *a3, f32 f1, f32 f2, f
     *(f32 *)((u8 *)a1 + 8) = v;
 }
 
-INCLUDE_ASM("asm/levels", func_L04_003524D0);
+typedef struct {
+    u8 pad00[0x18E];
+    s16 head;
+    s32 count;
+    u8 pad194[0x13C];
+    f32 history[30];
+} PadHistory;
 
-INCLUDE_ASM("asm/levels", func_L04_00358868);
+extern PadHistory D_00138180;
+
+/* Returns the float steps entries back from the head of a 30-entry history ring (steps capped
+   at the ring's count); RAC1's read_pad_float_history. */
+float func_L04_003524D0(int steps)
+{
+    if (D_00138180.count < steps)
+        steps = D_00138180.count;
+    return D_00138180.history[(D_00138180.head - steps + 30) % 30];
+}
+
+extern s32 func_001163B0(void);
+extern void func_0029FCC0(void *moby, s32 joint, void *out);
+/* the level's pointer to the byte the record carries in its second flag byte */
+extern u8 *ref_L04_00358868_00[];
+
+/* the block at +0x20 of the record of kind 0x1A: what func_002BE7E8 reads to keep
+   the effect on its target or on one of the target's joints */
+typedef struct {
+    void *target;
+    u16 timer;
+    s16 joint;
+    u32 duration;
+    s32 alpha;
+} L04Follow;
+
+typedef struct {
+    u8  field00;
+    u8  field01;
+    u8  field02;
+    u8  field03;
+    s32 color;
+    u8  seed;
+    u8  field09;
+    u16 field0A;
+    f32 field0C;
+    s32 position[4];
+    L04Follow follow;
+} L04Effect1A;
+
+/* Builds the record of kind 0x1A that follows TARGET for DURATION frames, with COLOR
+   and its alpha byte: it starts at the target, or at its joint JOINT moved 0.4 toward
+   D_L04_001B9680 when JOINT is not -1. */
+L04Effect1A *func_L04_00358868(void *target, s32 color, u32 duration, u32 joint, f32 value)
+{
+    L04Effect1A *p = func_002B9030(0x1A);
+
+    if (p != 0) {
+        L04Follow *f = &p->follow;
+
+        f->target = target;
+        f->alpha = color >> 24;
+        f->joint = joint;
+        f->duration = duration;
+        f->timer = duration;
+        if ((s16)joint == -1) {
+            qcopy(p->position, (u8 *)target + 0x10);
+        } else {
+            f32 pos[4], dir[4];
+
+            func_0029FCC0(f->target, (s16)joint, pos);
+            func_00282CF0(dir, (f32 *)D_L04_001B9680, pos);
+            func_00282F20(dir, dir, 0.4f);
+            func_00282CC0(p->position, pos, dir);
+        }
+        p->seed = func_001163B0();
+        p->color = color;
+        p->field09 = func_00283CF0(4.0f) + 0x70;
+        p->field03 = 0x48;
+        p->field0C = value;
+        p->field01 = 0;
+        p->field02 = *ref_L04_00358868_00[0];
+    }
+    return p;
+}
 
 
 extern s32 func_00283CF0(f32);
@@ -821,11 +901,11 @@ void func_L04_00362A50(char *self) {
 
 /* func_L04_00363CA0 is matched in L04_00363CA0.c (built with -frac2-qcopy). */
 
-INCLUDE_ASM("asm/levels", func_L04_00365300);
+/* func_L04_00365300 is defined in L04_00365300.c. */
 
 INCLUDE_ASM("asm/levels", func_L04_00378838);
 
-INCLUDE_ASM("asm/levels", func_L04_003A0FC8);
+/* func_L04_003A0FC8 is in L04_003A0FC8-g8.c. */
 
 
 extern void func_00115484(void *dst, s32 value, s32 size);
@@ -1090,6 +1170,7 @@ void func_L04_003A1240(unsigned char *cells, int count)
     }
 }
 
+
 INCLUDE_ASM("asm/levels", func_L04_003A14B8);
 
 /* returns the packed header's signed rounded sixteen-byte block count in word units */
@@ -1101,7 +1182,7 @@ s32 func_L04_003A1540(const PackedHeaderCountView *header) {
 
 /* func_L04_003A15C0 is in L04_002CC748-water-header.c. */
 
-INCLUDE_ASM("asm/levels", func_L04_003A1868);
+/* func_L04_003A1868 is in L04_002CC748-lighting-g8.c. */
 
 void func_L04_003A1A48(u8 *dst, u16 *src, s32 count) {
     if (count <= 0)
@@ -1404,7 +1485,6 @@ void func_L04_003C49C0(void *a0, u32 a1) {
     D_L04_0023D158[a1] = 1;
 }
 
-INCLUDE_ASM("asm/levels", func_L04_003C6FE8);
 
 extern u32 D_L04_001B2E84 __attribute__((sda));
 

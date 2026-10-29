@@ -221,7 +221,7 @@ int func_L00_002C8C00(void)
     return 0;
 }
 
-INCLUDE_ASM("asm/levels", func_L00_002C8CB0);
+/* func_L00_002C8CB0 is built in its dedicated unit. */
 
 /* func_L00_002C8E10 is built in its dedicated G8 unit. */
 
@@ -346,4 +346,4 @@ INCLUDE_ASM("asm/levels", func_L00_002CA4E0);
 
 /* func_L00_002CA898 is built in its dedicated block-order-profile unit. */
 
-INCLUDE_ASM("asm/levels", func_L00_002CAB08);
+/* func_L00_002CAB08 is built in its dedicated unit. */

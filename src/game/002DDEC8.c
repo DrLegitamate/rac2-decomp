@@ -99,7 +99,29 @@ extern ChunkSlot D_001B1F50_slots[] __asm__("D_001B1F50") __attribute__((sda));
 /* Releases the chunk whose key matches. Bit 1 means taken; bit 2 on top of it
    means the chunk also holds the latch at byte 0xDB of D_001F2840, which is
    handed back through func_002B7AD0 first. Always returns 0. */
-INCLUDE_ASM("asm/game", func_002DE618);
+int func_002DE618(int key)
+{
+    int i;
+    unsigned char *state;
+
+    for (i = 0; i < 5; i++) {
+        if (D_001B1F50_slots[i].key == key) {
+            if ((D_001B1F50_slots[i].flags & 2) != 0) {
+                if ((D_001B1F50_slots[i].flags & 4) != 0) {
+                    state = (unsigned char *)D_001F2840;
+                    D_001B1F50_slots[i].flags ^= 4;
+                    if (state[0xDB] != 0) {
+                        func_002B7AD0();
+                        state[0xDB] = 0;
+                    }
+                }
+                D_001B1F50_slots[i].flags &= ~2;
+                return 0;
+            }
+        }
+    }
+    return 0;
+}
 
 extern int D_001B1F50[] __attribute__((sda));
 extern int D_001B1F54[] __attribute__((sda));

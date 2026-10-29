@@ -45,17 +45,17 @@ extern s32 func_33C800(char *a0, s32 a1, s32 a2, s32 a3, float f12, float f13);
 
 INCLUDE_ASM("asm/levels", func_L11_004465F8);
 
-INCLUDE_ASM("asm/levels", func_L11_00446C78);
+/* func_L11_00446C78 is defined in L11_00446C78-g16.c. */
 
-INCLUDE_ASM("asm/levels", func_L11_00446EB8);
+/* func_L11_00446EB8 is defined in L11_004465F8-loop-g8.c. */
 
 
-INCLUDE_ASM("asm/levels", func_L11_004471A8);
+/* func_L11_004471A8 is defined in L11_004465F8-g8.c. */
 
 
 INCLUDE_ASM("asm/levels", func_L11_004475A0);
 
-INCLUDE_ASM("asm/levels", func_L11_004484A8);
+/* func_L11_004484A8 is defined in L11_004465F8-g8.c. */
 
 void func_L11_00448848(char *a0)
 {
@@ -398,7 +398,7 @@ void func_L11_00449970(char *a0, int a1, int a2)
 
 /* func_L11_00449AD8 is defined in L11_00449AD8-helpers.c. */
 
-INCLUDE_ASM("asm/levels", func_L11_00449C70);
+/* func_L11_00449C70 is defined in L11_004465F8-aim-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L11_0044AFC8);
 
@@ -555,7 +555,7 @@ void func_L11_0044C818(char *a0)
     func_32C9E0(a0, 6, 4);
 }
 
-INCLUDE_ASM("asm/levels", func_L11_0044C850);
+/* func_L11_0044C850 is defined in L11_004465F8-aim-0044C850-g8.c. */
 
 char *func_L11_00450328(char *a0, TI128 *a1, TI128 *a2, float f12)
 {
@@ -696,4 +696,4 @@ void func_L11_004530C0(char *a0)
     func_32C9E0(a0, 6, 3);
 }
 
-INCLUDE_ASM("asm/levels", func_L11_004530E0);
+/* func_L11_004530E0 is defined in L11_004465F8-aim-004530E0-g8.c. */

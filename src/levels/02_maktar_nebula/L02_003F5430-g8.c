@@ -111,7 +111,7 @@ extern void func_002A7750(char *, int, int);
 extern char *D_L02_001B1190[] __attribute__((sda));
 
 /* Whether the pair of table entries the object names still agree with its own four words. */
-INCLUDE_ASM("asm/levels", func_L02_003FCBF0);
+/* func_L02_003FCBF0 is defined in L02_003FCBF0-g8.c. */
 
 typedef unsigned char u8;
 typedef unsigned short u16;
@@ -617,5 +617,63 @@ void func_L02_00400720(char *a0, s32 a1, float a2, float a3) {
     if (n != 0) {
         func_L02_00400650(a0, list[func_002A77E0(n)]);
         *(s32 *)(state + 0xE4) = D_L02_001B1530 + func_002A77E0(D_L02_001B1530);
+    }
+}
+
+extern void *func_L00_002D70A0(s32);
+extern void func_L00_002D7140(void *);
+extern f32 D_L02_001B1234 __attribute__((sda));
+extern f32 D_L02_001B1238 __attribute__((sda));
+extern f32 D_L02_001B123C __attribute__((sda));
+extern f32 D_L02_001B1240 __attribute__((sda));
+extern f32 D_L02_001B1244 __attribute__((sda));
+extern f32 D_L02_001B1248 __attribute__((sda));
+extern f32 D_L02_001B124C __attribute__((sda));
+extern f32 D_L02_001B1250 __attribute__((sda));
+extern f32 D_L02_001B1254 __attribute__((sda));
+
+typedef struct {
+    f32 x;
+    f32 y;
+    f32 z;
+} L02_003FC9C0_Vec3;
+
+/* In state 8 the actor's 0xC0 object is created through func_L00_002D70A0(5) when missing,
+   otherwise it gets one of three float triples: by the class (+0xAA, 0x9F8 or 0xA44) of the
+   0xD0 object, or the default one when there is none. In any other state the object is
+   released through func_L00_002D7140 and the slot cleared.
+   Each branch writes its own triple; the y and z stores (re-reading 0xC0) come out as one tail
+   through cross-jumping after reload, which is why z keeps its own register ($f2). The stores
+   are struct fields so the sda loads are not ordered behind them. */
+void func_L02_003FC9C0(u8 *a0) {
+    u8 *s0 = *(u8 **)(a0 + 0x68);
+
+    if (*(u8 *)(a0 + 0x20) == 8) {
+        L02_003FC9C0_Vec3 *obj = *(L02_003FC9C0_Vec3 **)(s0 + 0xC0);
+
+        if (obj == 0) {
+            *(L02_003FC9C0_Vec3 **)(s0 + 0xC0) = func_L00_002D70A0(5);
+        } else {
+            u8 *src = *(u8 **)(s0 + 0xD0);
+
+            if (src != 0) {
+                if (*(s16 *)(src + 0xAA) == 0x9F8) {
+                    obj->x = D_L02_001B1240;
+                    (*(L02_003FC9C0_Vec3 **)(s0 + 0xC0))->y = D_L02_001B1244;
+                    (*(L02_003FC9C0_Vec3 **)(s0 + 0xC0))->z = D_L02_001B1248;
+                } else if (*(s16 *)(src + 0xAA) == 0xA44) {
+                    obj->x = D_L02_001B124C;
+                    (*(L02_003FC9C0_Vec3 **)(s0 + 0xC0))->y = D_L02_001B1250;
+                    (*(L02_003FC9C0_Vec3 **)(s0 + 0xC0))->z = D_L02_001B1254;
+                }
+            } else {
+                obj->x = D_L02_001B1234;
+                (*(L02_003FC9C0_Vec3 **)(s0 + 0xC0))->y = D_L02_001B1238;
+                (*(L02_003FC9C0_Vec3 **)(s0 + 0xC0))->z = D_L02_001B123C;
+            }
+        }
+    } else {
+        func_L00_002D7140(*(L02_003FC9C0_Vec3 **)(s0 + 0xC0));
+        *(L02_003FC9C0_Vec3 **)(s0 + 0xC0) = 0;
     }
 }

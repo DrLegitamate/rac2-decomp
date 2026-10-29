@@ -1,7 +1,68 @@
 #include "common.h"
+extern void func_00283098(float *, float *, float *);
+extern void func_338398(char *, char *, float, int, int);
+extern void func_32E480(char *, char *, int, float, float, float, int, int, int);
 /* A path stores its point count in a 16-byte header, followed by vectors. */
-struct RotorPaths { char pad[0x2B0]; int choices[4][4]; };
-struct RotorPath { int count; char pad[12]; float points[0][4]; };
+struct RotorPath {
+    int count;
+    char pad04[12];
+    float points[0][4];
+};
+
+/* The rotor's state (the object's field 0x68): a 13-point chain, the ten records it drives
+   and the path it follows. Only the fields these functions use are named. */
+struct RotorState {
+    /* 0x000 */ char pad00[0x35];
+    /* 0x035 */ u8 f35;
+    /* 0x036 */ char pad36[0x1A];
+    /* 0x050 */ float aim[4];
+    /* 0x060 */ int f60;
+    /* 0x064 */ char pad64[0x9C];
+    /* 0x100 */ float points[13][4];
+    /* 0x1D0 */ float oldPoints[13][4];
+    /* 0x2A0 */ char pad2A0[0x10];
+    /* 0x2B0 */ int choices[4][4];
+    /* 0x2F0 */ char pad2F0[0x30];
+    /* 0x320 */ int pathIndex;
+    /* 0x324 */ struct RotorPath *path;
+    /* 0x328 */ char pad328[8];
+    /* 0x330 */ int records[10];
+    /* 0x358 */ int linked;
+    /* 0x35C */ char pad35C[0xC];
+    /* 0x368 */ int projectileClass;
+    /* 0x36C */ char pad36C[4];
+    /* 0x370 */ s16 pathPoint;
+    /* 0x372 */ char pad372[2];
+    /* 0x374 */ s16 projectileIndex;
+    /* 0x376 */ s16 projectileDelay;
+    /* 0x378 */ s16 ropeCount;
+    /* 0x37A */ u16 toggle;
+    /* 0x37C */ char pad37C[4];
+    /* 0x380 */ u8 disabled[10];
+};
+
+/* A basis vector whose fourth word is cleared as an integer. */
+struct RotorAxis {
+    float x, y, z;
+    int w;
+};
+
+/* A rotor moby, and each 256-byte record of the level's table has the same layout. */
+struct RotorObject {
+    /* 0x00 */ char pad00[0x10];
+    /* 0x10 */ float pos[4];
+    /* 0x20 */ u8 mode;
+    /* 0x21 */ char pad21[0x13];
+    /* 0x34 */ u16 flags;
+    /* 0x36 */ char pad36[0x32];
+    /* 0x68 */ struct RotorState *state;
+    /* 0x6C */ char pad6C[0x4C];
+    /* 0xB8 */ int fB8;
+    /* 0xBC */ char padBC[4];
+    /* 0xC0 */ struct RotorAxis basis[3];
+};
+
+extern struct RotorPath *D_L11_001FF580[];
 extern char D_00188660[];
 extern void func_3739C0(int);
 extern int func_002E5CF8(int, int, char *);
@@ -39,9 +100,9 @@ void func_L11_00434AA8(char *p)
 }
 
 extern char D_L11_001BA8C0[];
-extern void func_00282CF0(float *, const float *, const float *);
-extern void func_00282F20(char *, char *, float);
-extern void func_00282CC0(char *, char *, char *);
+extern void func_00282CF0(void *, const void *, const void *);
+extern void func_00282F20(void *, void *, float);
+extern void func_00282CC0(void *, void *, void *);
 extern float func_002A7878(float, float);
 extern int func_002A77E0(int);
 extern float func_002A78D8(float, float);
@@ -175,7 +236,27 @@ INCLUDE_ASM("asm/levels", func_L11_00435600);
 
 /* func_L11_00436350 is defined in L11_00436350-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L11_00436768);
+void func_L11_00436768(char *obj)
+{
+    float tmp[3];
+    TI128 tmp2[2];
+    char *state;
+    float f0, f1;
+
+    tmp2[1] = 0;
+    state = *(char **)(obj + 0x68);
+    f1 = *(float *)(state + 0x100);
+    f0 = *(float *)(state + 0x104);
+    *(float *)((char *)&tmp2[1] + 8) = f0 + f1;
+    tmp2[0] = tmp2[1];
+    func_00283098((float *)&tmp2[0], (float *)&tmp2[0], (float *)((char *)obj + 0xC0));
+    func_00282CC0((char *)tmp, (char *)obj + 0x10, (char *)&tmp2[0]);
+    if (*(unsigned short *)(obj + 0x96) <= 0xFFFE)
+        *(unsigned short *)(obj + 0x96) = *(unsigned short *)(obj + 0x96) + 1;
+    func_338398(obj, state + 0x290, 2.5f, 1, 1);
+    func_32E480(obj, obj + 0x10, 0x4000000, 1.0f, 1.0f, 1.0f, 0, 1, 0);
+}
+
 
 /* Re-arms the measured stage guard, then clears it. */
 extern int func_002B3BA8_6850(char *, int, float, float, int, int);
@@ -294,7 +375,7 @@ void func_L11_00436A78(char *obj)
 
 INCLUDE_ASM("asm/levels", func_L11_00436D08);
 
-INCLUDE_ASM("asm/levels", func_L11_00436F80);
+/* func_L11_00436F80 is defined in L11_00436F80.c. */
 
 /* func_L11_004375B8 is defined in L11_004375B8.c. */
 
@@ -303,10 +384,10 @@ extern unsigned char D_L11_00438880[];
 extern void func_802F8AD0(void *a0, void *a1);
 extern void func_80338398(void *a0, void *a1, int a2, int a3, float f12);
 extern void func_L11_004395C8(char *p);
-extern void func_L11_00437EA8(char *p);
+extern void func_L11_00437EA8(void *obj);
 extern void func_L11_00437FD0(char *p);
-extern void func_L11_00438460(char *p);
-extern void func_L11_004386B8(char *p);
+extern void func_L11_00438460(void *obj);
+extern void func_L11_004386B8(void *obj);
 
 /* Runs the ten rotors' update, one frame each, and restarts the entry timer. */
 void func_L11_00437CF0(char *p)
@@ -356,21 +437,56 @@ void func_L11_00437E68(char *p, int a1, int a2, int a3)
         func_002A7470((char *)record, a1, a2, a3);
 }
 
-INCLUDE_ASM("asm/levels", func_L11_00437EA8);
+extern void func_00282C88(void *);
+extern void func_00282D30(void *, void *, float);
+
+/* A 16-byte aligned vector, copied as one quadword. */
+typedef union Quad {
+    TI128 q;
+    float f[4];
+} Quad;
+
+/* Advances the thirteen chain points one Verlet step: each moves by its damped displacement
+   from its old position plus a small downward pull, and the old position takes the point's
+   previous value. The damping blends 0.97 to 0.98 with the count at 0x378. */
+void func_L11_00437EA8(void *object)
+{
+    struct RotorObject *obj = object;
+    struct RotorState *state = obj->state;
+    float (*pos)[4];
+    float (*old)[4];
+    Quad saved;
+    Quad delta;
+    Quad gravity;
+    float t;
+    float damping;
+    int i;
+
+    func_00282C88(&gravity);
+    pos = state->points;
+    old = state->oldPoints;
+    gravity.f[2] = -1.0f / 720.0f;
+
+    t = func_00283CE0(state->ropeCount);
+    damping = func_002AA140(0.97f, 0.98f, (t -= 2.0f) / func_00283CE0(8));
+
+    for (i = 12; i >= 0; i--, pos++, old++) {
+        qcopy(&saved, pos);
+        func_00282CF0(delta.f, *pos, *old);
+        func_00282D30(&delta, &delta, damping);
+        func_00282CC0(pos, pos, &delta);
+        func_00282CC0(pos, pos, &gravity);
+        qcopy(old, &saved);
+    }
+}
 
 INCLUDE_ASM("asm/levels", func_L11_00437FD0);
 
 extern void func_002833F0(char *, char *);
 
-extern void func_00282D30(char *, char *, float);
-
-extern void func_00282F20(char *, char *, float);
-
-extern void func_00282CC0(char *, char *, char *);
-
 INCLUDE_ASM("asm/levels", func_L11_00438248);
 
-extern void func_00282DD8(char *a, char *b, char *c);
+extern void func_00282DD8(void *a, void *b, void *c);
 
 extern void func_002AB6D8(char *a, char *b);
 
@@ -396,18 +512,68 @@ void func_L11_00438320(char *obj, char *direction, float a, float b, float c)
     func_002AAA00(obj + 0xF8, state + 0x2A8, 0, out[2], a, b, c);
 }
 
-struct RotorRecordState { char pad[0x330]; int indices[10]; char gap[0x28]; unsigned char flags[10]; };
-#define ROTOR_FIELD(base,T,off) (((struct { u8 pad[off]; T v; } *)(base))->v)
-#define ROTOR_RECORD(o) ((char *)D_L11_001B359C + (*(int *)(*(char **)((o)+0x68)+0x358)<<8))
-#define ROTOR_INDEXED_RECORD(o,i) ((char *)D_L11_001B359C + (((struct RotorRecordState *)*(char **)((o)+0x68))->indices[i]<<8))
-#define ROTOR_INDEXED_ADDRESS(o,i) ((char *)((((struct RotorRecordState *)*(char **)((o)+0x68))->indices[i]<<8) + D_L11_001B359C))
+/* Record `index` of the level's 256-byte record table. */
+#define ROTOR_RECORD(index) ((struct RotorObject *)(D_L11_001B359C + ((index) << 8)))
+/* The record the object's state lists at `i`, and the one it links to. */
+#define LISTED_RECORD(obj, i) ROTOR_RECORD((obj)->state->records[i])
+#define LINKED_RECORD(obj) ROTOR_RECORD((obj)->state->linked)
+/* The same records for stores, with the addition ordered as retail orders it there. */
+#define STORED_RECORD(index) \
+    ((struct RotorObject *)(((index) << 8) + D_L11_001B359C))
+#define LISTED_STORE(obj, i) STORED_RECORD((obj)->state->records[i])
+#define LINKED_STORE(obj) STORED_RECORD((obj)->state->linked)
+
 /* Updates the positions and orthonormal bases of the ten enabled records. */
-INCLUDE_ASM("asm/levels", func_L11_00438460);
+void func_L11_00438460(void *object)
+{
+    struct RotorObject *obj = object;
+    struct RotorState *state = obj->state;
+    int i;
 
+    for (i = 0; i < 10; i++) {
+        if (state->disabled[i])
+            continue;
 
-#define ROTOR_ADDRESS(o) ((char *)((*(int *)(*(char **)((o)+0x68)+0x358)<<8) + D_L11_001B359C))
+        qcopy_nc(LISTED_STORE(obj, i)->pos, state->points[i + 1]);
+        func_00282CF0(&LISTED_RECORD(obj, i)->basis[0], state->points[i], state->points[i + 1]);
+        LISTED_STORE(obj, i)->basis[0].w = 0;
+        func_00282F20(&LISTED_RECORD(obj, i)->basis[0], &LISTED_RECORD(obj, i)->basis[0], 1.0f);
+        func_00282C88(&LISTED_RECORD(obj, i)->basis[2]);
+        LISTED_STORE(obj, i)->basis[2].z = 1.0f;
+        func_00282DD8(&LISTED_RECORD(obj, i)->basis[1], &LISTED_RECORD(obj, i)->basis[0],
+                      &LISTED_RECORD(obj, i)->basis[2]);
+        LISTED_STORE(obj, i)->basis[1].w = 0;
+        func_00282F20(&LISTED_RECORD(obj, i)->basis[1], &LISTED_RECORD(obj, i)->basis[1], 1.0f);
+        func_00282DD8(&LISTED_RECORD(obj, i)->basis[2], &LISTED_RECORD(obj, i)->basis[1],
+                      &LISTED_RECORD(obj, i)->basis[0]);
+        LISTED_STORE(obj, i)->basis[2].w = 0;
+        func_00282F20(&LISTED_RECORD(obj, i)->basis[2], &LISTED_RECORD(obj, i)->basis[2], 1.0f);
+        LISTED_STORE(obj, i)->flags |= 0x100;
+    }
+}
+
 /* Updates the single record selected by the state index at 0x358. */
-INCLUDE_ASM("asm/levels", func_L11_004386B8);
+void func_L11_004386B8(void *object)
+{
+    struct RotorObject *obj = object;
+    struct RotorState *state = obj->state;
+
+    qcopy_nc(LINKED_STORE(obj)->pos, state->points[11]);
+    func_00282CF0(&LINKED_RECORD(obj)->basis[0], state->points[10], state->points[11]);
+    LINKED_STORE(obj)->basis[0].w = 0;
+    func_00282F20(&LINKED_RECORD(obj)->basis[0], &LINKED_RECORD(obj)->basis[0], 1.0f);
+    func_00282C88(&LINKED_RECORD(obj)->basis[2]);
+    LINKED_STORE(obj)->basis[2].z = 1.0f;
+    func_00282DD8(&LINKED_RECORD(obj)->basis[1], &LINKED_RECORD(obj)->basis[0],
+                  &LINKED_RECORD(obj)->basis[2]);
+    LINKED_STORE(obj)->basis[1].w = 0;
+    func_00282F20(&LINKED_RECORD(obj)->basis[1], &LINKED_RECORD(obj)->basis[1], 1.0f);
+    func_00282DD8(&LINKED_RECORD(obj)->basis[2], &LINKED_RECORD(obj)->basis[1],
+                  &LINKED_RECORD(obj)->basis[0]);
+    LINKED_STORE(obj)->basis[2].w = 0;
+    func_00282F20(&LINKED_RECORD(obj)->basis[2], &LINKED_RECORD(obj)->basis[2], 1.0f);
+    LINKED_STORE(obj)->flags |= 0x100;
+}
 
 INCLUDE_ASM("asm/levels", func_L11_00438880);
 
@@ -419,13 +585,100 @@ void func_L11_00438CD8(char *p)
     *(short *)(q + 0x376) = 0;
 }
 
+extern int func_00282978(short *);
+extern void func_0029FCC0(void *, int, void *);
+extern void func_0029FC20(void *, int, void *);
+extern char *func_L07_003F6B88(int);
+extern void func_L11_00458A98(char *, void *, int, int, void *, void *, int, float, float);
 extern void func_002A7A00(float *, float, float);
-/* Emits a projectile from the next enabled record, with a fifteen-frame delay. */
-INCLUDE_ASM("asm/levels", func_L11_00438CE8);
 
+/* Emits a projectile from the next enabled record, with a fifteen-frame delay. */
+void func_L11_00438CE8(struct RotorObject *obj)
+{
+    float pos[4];
+    float matrix[4][4];
+    float offset[4];
+    float velocity[4];
+    float jitter[4];
+    float toTarget[4];
+    struct RotorState *state = obj->state;
+    char *projectile;
+
+    if (state->projectileIndex == -1)
+        return;
+
+    while (state->disabled[state->projectileIndex])
+        ++state->projectileIndex;
+    if (state->projectileIndex >= 10) {
+        state->projectileIndex = -1;
+        return;
+    }
+    if (!func_00282978(&state->projectileDelay))
+        return;
+
+    func_0029FCC0(LISTED_RECORD(obj, state->projectileIndex), 0, pos);
+    func_0029FC20(LISTED_RECORD(obj, state->projectileIndex), 0, matrix);
+    func_00282F20(offset, matrix[2], -0.3f);
+    func_00282CC0(pos, pos, offset);
+
+    func_002A7A00(jitter, 0.0166666675f, 0.0500000045f);
+    jitter[2] = -0.0833333358f;
+    qcopy_nc(velocity, jitter);
+    func_00282CF0(toTarget, state->aim, pos);
+    func_00282F20(toTarget, toTarget, 0.333333343f);
+    func_00282CC0(velocity, velocity, toTarget);
+
+    projectile = func_L07_003F6B88(state->projectileClass);
+    if (projectile)
+        func_L11_00458A98(projectile, LISTED_RECORD(obj, state->projectileIndex), obj->fB8,
+                          state->f60, pos, velocity, 120, 0.00277777785f, state->f35);
+    ++state->projectileIndex;
+    state->projectileDelay = 15;
+}
 
 /* Chooses the state-dependent path, then finds its nearest point. */
-INCLUDE_ASM("asm/levels", func_L11_00438F18);
+void func_L11_00438F18(struct RotorObject *obj)
+{
+    struct RotorState *state = obj->state;
+    struct RotorPath *path;
+    float best;
+    float d;
+    int pick;
+    int i;
+    int toggled;
+
+    toggled = state->toggle ^ 1;
+    state->toggle = toggled;
+    switch (obj->mode) {
+    case 2:
+        state->path = D_L11_001FF580[state->pathIndex];
+        break;
+    case 3:
+        if (toggled != 0)
+            path = D_L11_001FF580[state->choices[0][func_002A77E0(4)]];
+        else
+            path = D_L11_001FF580[state->choices[1][func_002A77E0(4)]];
+        state->path = path;
+        break;
+    case 4:
+        if (toggled != 0)
+            path = D_L11_001FF580[state->choices[2][func_002A77E0(4)]];
+        else
+            path = D_L11_001FF580[state->choices[3][func_002A77E0(4)]];
+        state->path = path;
+        break;
+    }
+    pick = 0;
+    best = func_00282E80(obj->pos, state->path->points[0]);
+    for (i = 0; i < state->path->count - 1; i++) {
+        d = func_00282E80(obj->pos, state->path->points[i]);
+        if (d < best) {
+            best = d;
+            pick = i;
+        }
+    }
+    state->pathPoint = pick;
+}
 
 /* Follows the current path, steers toward its next point and releases the sound at the end. */
 int func_L11_004390D0(char *object)
@@ -490,12 +743,13 @@ int func_L11_004390D0(char *object)
 
 /* func_L11_00439640 is defined in L11_00432628-burst-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L11_00439950);
+/* func_L11_00439950 is defined in L11_00432628-reset-g64.c. */
 
 extern int func_373978(char *obj, int a);
 
 extern void func_3739C0(int a);
 
+extern struct RotorPath *D_L11_001FF580[];
 extern char D_00188660[];
 
 #define REC_L11_359C(o, t) ((*(int *)(*(char **)((o) + 0x68) + 0x358) << 8) + (int)(t))
@@ -539,7 +793,7 @@ int func_L11_00439D60(char *p)
     return 4;
 }
 
-INCLUDE_ASM("asm/levels", func_L11_00439DD0);
+/* func_L11_00439DD0 is defined in L11_00439DD0-g8.c. */
 
 extern int func_00283CF0(float);
 extern void func_L11_0043AB28(char *);
@@ -606,7 +860,7 @@ void func_L11_0043A620(char *p)
     func_32E480(p, p + 0x10, 0x4000000, 1.2f, 1.0f, 1.0f, 0, 1, 0);
 }
 
-INCLUDE_ASM("asm/levels", func_L11_0043A680);
+/* func_L11_0043A680 is defined in L11_0043A680-g8.c. */
 
 /* True when the byte at 0x20 is above the measured small-id range. */
 int func_L11_0043A800(char *p)
@@ -622,7 +876,7 @@ extern void func_002B0A68(char *self, int mask, float *arg2, unsigned char arg3,
 extern int func_002E5CF8(int index, int a1, char *a2);
 extern void func_0029F9F0(char *list, char *node);
 
-/* Spawns the object's random effect while its flag byte is set, then retires the state. */
+/* Spawns the object's jitter effect while its flag byte is set, then retires the state. */
 void func_L11_0043AB28(char *obj)
 {
     char *state;

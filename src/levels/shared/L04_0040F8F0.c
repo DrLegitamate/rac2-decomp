@@ -18,14 +18,80 @@ extern f32 func_0030FE40(f32 x, f32 y);
 extern f32 func_0030F3A0(f32 x);
 extern f32 func_0030F3B8(f32 x);
 
-extern float func_L04_0040F8F0(u8 *, u8 *, int, int, int, int);
+typedef struct {
+    s32 count;
+    s32 pad04[3];
+    f32 points[1][4];
+} L04_Route;
+
+typedef struct {
+    u8 pad00[0x10];
+    f32 pos[4];
+    u8 pad20[0xAA - 0x20];
+    s16 modelId;
+} L04_RouteObject;
+
+typedef struct {
+    u8 pad000[0x1A8];
+    s32 route;
+    s32 links[4];
+} L04_RouteState;
+
+extern L04_Route *D_L04_001FE340[];
+extern void func_00282CF0(void *, void *, void *);
+extern float func_L00_002EE290(void *);
+extern float func_L04_0040F8F0(void *, void *, int, int, int, int);
 
 extern u8 D_L04_00254E10[];
 
 INCLUDE_ASM("asm/levels", func_L04_0040F8F0);
 
 /* Finds the nearest point on the current route or one of its four links. */
-INCLUDE_ASM("asm/levels", func_L04_00410518);
+void func_L04_00410518(L04_RouteObject *object, L04_RouteState *state, int *link, int *point,
+                       float *result, int mode)
+{
+    float delta[4] __attribute__((aligned(16)));
+    L04_Route *route;
+    int oldPoint = *point, oldLink = *link;
+    int i, j;
+    float best = 9999.0f, distance;
+
+    *link = -1;
+    *point = 0;
+    *result = 0;
+
+    route = D_L04_001FE340[state->route];
+    for (i = 0; i < route->count - 1; i++) {
+        func_00282CF0(delta, object->pos, route->points[i]);
+        distance = func_L00_002EE290(delta);
+        if (distance < best) {
+            *point = i;
+            best = distance;
+        }
+    }
+
+    for (i = 0; i < 4; i++) {
+        if (state->links[i] != -1) {
+            route = D_L04_001FE340[state->links[i]];
+            for (j = 0; j < route->count - 1; j++) {
+                func_00282CF0(delta, object->pos, route->points[j]);
+                distance = func_L00_002EE290(delta);
+                if (distance < best) {
+                    *point = j;
+                    best = distance;
+                    *link = i;
+                }
+            }
+        }
+    }
+
+    route = D_L04_001FE340[state->route];
+    i = (int)((float)route->count * 0.5f);
+    if (oldLink == -1 && oldPoint == 0 && *link == oldLink && *point > i)
+        *point = 0;
+
+    *result = func_L04_0040F8F0(object, state, *link, *point, mode, object->modelId == 0xBBC);
+}
 
 INCLUDE_ASM("asm/levels", func_L04_00410788);
 
@@ -52,7 +118,7 @@ INCLUDE_ASM("asm/levels", func_L04_00412130);
 
 INCLUDE_ASM("asm/levels", func_L04_00412308);
 
-INCLUDE_ASM("asm/levels", func_L04_00412C58);
+
 
 float func_00283180(float);
 float func_00283198(float);
@@ -70,8 +136,6 @@ void func_L04_00412E38(void *arg0, void *arg1, float fparg0, float fparg1) {
     *(float *)((unsigned char *)arg0 + 0xF0) = (float) ((*(float *)((unsigned char *)arg0 + 0xF0)) + temp_f20);
     *(float *)((unsigned char *)arg0 + 0xF4) = temp_f1;
 }
-
-INCLUDE_ASM("asm/levels", func_L04_00412EC0);
 
 INCLUDE_ASM("asm/levels", func_L04_004135B8);
 
@@ -142,8 +206,6 @@ void func_L04_00415EE8(u8 *owner, f32 *pos, f32 *to, f32 *from)
 }
 
 INCLUDE_ASM("asm/levels", func_L04_00416018);
-
-INCLUDE_ASM("asm/levels", func_L04_00416390);
 
 INCLUDE_ASM("asm/levels", func_L04_004167B0);
 

@@ -82,5 +82,4 @@ slow:
 }
 
 
-INCLUDE_ASM("asm/levels", func_L19_002B7820);
-
+/* func_L19_002B7820 is defined in L19_002A88C8-ground-g8.c. */

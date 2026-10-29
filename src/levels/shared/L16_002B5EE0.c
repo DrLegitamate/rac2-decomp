@@ -9,12 +9,12 @@ typedef float f32;
 
 typedef int TI128 __attribute__((mode(TI)));
 
-INCLUDE_ASM("asm/levels", func_L16_002B5EE0);
+/* func_L16_002B5EE0 is in L16_002B5EE0-motion.c. */
 
 
 INCLUDE_ASM("asm/levels", func_L16_00395250);
 
-INCLUDE_ASM("asm/levels", func_L16_00395858);
+/* func_L16_00395858 is in L16_00395858-state.c. */
 
 /* func_L16_003959B8 is in L16_003959B8.c. */
 
@@ -33,7 +33,7 @@ extern void func_00283738(char *a, char *b, char *c);
 
 /* func_L16_00395D30 is defined in L16_00395D30-g16.c. */
 
-INCLUDE_ASM("asm/levels", func_L16_00395ED0);
+/* func_L16_00395ED0 is in L16_00395ED0-blend-g8.c. */
 
 /* Read and return the float at linked offset 0x 34 through the pointer stored at owner+0x 68. */
 float func_L16_003960E8(const unsigned char *owner)
@@ -53,7 +53,7 @@ INCLUDE_ASM("asm/levels", func_L16_003A8D58);
 
 INCLUDE_ASM("asm/levels", func_L16_003C2C08);
 
-INCLUDE_ASM("asm/levels", func_L16_003C32F8);
+/* func_L16_003C32F8 is in L16_003C32F8-render-g64.c. */
 
 /* func_L16_003C3870 uses its dedicated compiler profile. */
 
@@ -64,7 +64,7 @@ INCLUDE_ASM("asm/levels", func_L16_004051A8);
 
 
 
-INCLUDE_ASM("asm/levels", func_L16_0040BED0);
+/* func_L16_0040BED0 is in L16_0040BED0.c. */
 
 /* func_L16_0040C5F0 is defined in L16_0040C5F0-g8.c. */
 

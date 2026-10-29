@@ -26,6 +26,79 @@ extern void func_00280B90(void *dst, void *src, int flag);
 
 extern float func_002A7940(void);
 
+/* The parts of a moby that func_L00_004208C8 reads. */
+typedef struct {
+    char pad0[0x18];
+    float height;                 /* 0x18 */
+    char pad1C[0xAA - 0x1C];
+    short type;                   /* 0xAA */
+} GroundMoby;
+
+/* The hero fields func_L00_004208C8 reads; ground is the moby the hero stands on. */
+typedef struct {
+    char pad0[0x33C];
+    GroundMoby *ground;           /* 0x33C */
+    char pad340[8];
+    short flag348;                /* 0x348 */
+    char pad34A[0x2294 - 0x34A];
+    int state;                    /* 0x2294 */
+} HeroMove;
+
+/* The level object at D_L00_001B8E20, as func_L00_004208C8 reads it. */
+typedef struct {
+    char pad0[0x30];
+    TI128 axis;                   /* 0x30 */
+    char pad40[0x40];
+    TI128 v80;                    /* 0x80 */
+    char pad90[0x14];
+    float fA4;                    /* 0xA4 */
+} CamMove;
+
+/* The view part of an object's state (state + 0x60). */
+typedef struct {
+    TI128 v00;                    /* 0x00 */
+    TI128 v10;                    /* 0x10 */
+    char pad20[0x10];
+    TI128 v30;                    /* 0x30 */
+    char pad40[0x20];
+    TI128 v60;                    /* 0x60 */
+    char pad70[0x20];
+    TI128 v90;                    /* 0x90 */
+    char padA0[0x58];
+    GroundMoby *ground;           /* 0xF8 */
+    float groundHeight;           /* 0xFC */
+} MoveView;
+
+/* The object's state (object + 0x70). */
+typedef struct {
+    TI128 v00;                    /* 0x00 */
+    short h10;                    /* 0x10 */
+    char pad12[0x60 - 0x12];
+    MoveView view;                /* 0x60 */
+    char pad160[0x1E0 - 0x160];
+    float f1E0;                   /* 0x1E0 */
+} MoveState;
+
+/* The object whose position and state func_L00_004208C8 moves. */
+typedef struct {
+    char pad0[0x30];
+    TI128 position;               /* 0x30 */
+    char pad40[0x30];
+    MoveState *state;             /* 0x70 */
+} MoveObject;
+
+extern HeroMove D_00189E20;
+
+extern int D_L00_001A8FF0[] __attribute__((sda));
+
+extern CamMove D_L00_001B8E20;
+
+extern int D_L00_001B9084;
+
+extern void func_00282CC0(void *dst, void *a, void *b);
+
+extern float func_00282DB0(void *a, void *b);
+
 #ifndef RAC2_T_OBJ_0014C80
 #define RAC2_T_OBJ_0014C80
 /* the resident object at D_0014C80; only its vector at +0x140 is read here */
@@ -73,9 +146,6 @@ extern int func_002ABB78(char *object);
 extern float *func_002AB1F0(char *object);
 
 extern float func_002702C8_1(int *dst, float a, float b, float c, float d, float e);
-
-INCLUDE_ASM("asm/levels", func_L00_0041ABB8);
-
 
 
 
@@ -173,8 +243,7 @@ void func_L00_0041AFD8(void *unused, float *a, int k, float f)
 
 INCLUDE_ASM("asm/levels", func_L00_0041B1B8);
 
-INCLUDE_ASM("asm/levels", func_L00_0041B840);
-
+/* func_L00_0041B840 is in L00_0041ABB8-ring-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L00_0041BCC8);
 
@@ -298,14 +367,11 @@ void func_L00_0041E4A8(void *arg0)
 }
 
 
-INCLUDE_ASM("asm/levels", func_L00_0041E958);
-
 INCLUDE_ASM("asm/levels", func_L00_0041EB38);
 
 INCLUDE_ASM("asm/levels", func_L00_0041EE58);
 
 
-INCLUDE_ASM("asm/levels", func_L00_0041F820);
 
 INCLUDE_ASM("asm/levels", func_L00_0041FC20);
 
@@ -388,9 +454,71 @@ int func_L00_004204A0(TI128 *src)
     return func_2DB350(&local, 0.0f) != 0;
 }
 
+/* Moves the object, its state's vectors and the view by the input step. While the hero
+   stands on the same moby (hero +0x33C), a rise of that moby's height (+0x18) since the
+   last frame raises the step's height. Then the step's component along the axis at
+   D_L00_001B8E20 + 0x30 goes to the view's vector at +0x10, and in hero states 11 and 12
+   the off-axis part is cancelled again with the vector at +0x80 scaled by +0xA4. */
+void func_L00_004208C8(MoveObject *object, TI128 *input)
+{
+    TI128 delta, projected, correction, remainder;
+    TI128 *step = &delta;
+    CamMove *cam = &D_L00_001B8E20;
+    MoveState *state = object->state;
+    MoveView *view = &state->view;
+    GroundMoby *ground;
+    float height, along;
 
+    delta = *input;
+    ground = D_00189E20.ground;
+    if (ground != 0) {
+        if (D_L00_001A8FF0[0] == 0) {
+            if (D_00189E20.flag348 == 0) {
+                if (ground == view->ground) {
+                    height = ground->height - view->groundHeight;
+                    if (height > 0.0f && ((float *)step)[2] < height)
+                        ((float *)step)[2] = height;
+                    view->groundHeight = D_00189E20.ground->height;
+                } else {
+                    view->ground = ground;
+                    view->groundHeight = D_00189E20.ground->height;
+                }
+            } else
+                view->ground = 0;
+        } else
+            view->ground = 0;
+    } else
+        view->ground = 0;
 
-INCLUDE_ASM("asm/levels", func_L00_004208C8);
+    func_00282CC0(&object->position, step, &object->position);
+    func_00282CC0(&view->v60, step, &view->v60);
+    func_00282CC0(&view->v00, step, &view->v00);
+    func_00282CC0(&view->v90, step, &view->v90);
+    func_00282CC0(&view->v30, step, &view->v30);
+    func_00282CC0(&state->v00, step, &state->v00);
+    along = func_00282DB0(step, &cam->axis);
+    func_00282D30(&projected, &cam->axis, along);
+    func_00282CC0(&view->v10, &view->v10, &projected);
+    if (D_00189E20.flag348 == 0 &&
+        !(D_00189E20.ground != 0 && D_00189E20.ground->type == 0x22D &&
+          D_L00_001B9084 < 31))
+        object->state->f1E0 = ((float *)step)[3];
+    if ((unsigned int)(D_00189E20.state - 11) < 2) {
+        MoveState *next = object->state;
+
+        next->h10 = 0;
+        func_00282D30(&correction, &cam->v80, cam->fA4);
+        along = func_00282DB0(&cam->axis, step);
+        func_00282D30(&remainder, &cam->axis, along);
+        func_00282CF0(&remainder, step, &remainder);
+        func_00282CF0(&correction, &correction, &remainder);
+        func_00282CC0(&object->position, &correction, &object->position);
+        func_00282CC0(&view->v60, &correction, &view->v60);
+        func_00282CC0(&view->v00, &correction, &view->v00);
+        func_00282CC0(&view->v90, &correction, &view->v90);
+        func_00282CC0(&next->v00, &correction, &next->v00);
+    }
+}
 
 INCLUDE_ASM("asm/levels", func_L00_00420C38);
 
@@ -410,4 +538,4 @@ void func_L00_004219D8(char *a0, float *a1, float *a2,
 
 INCLUDE_ASM("asm/levels", func_L00_00421C50);
 
-INCLUDE_ASM("asm/levels", func_L00_00422268);
+/* func_L00_00422268 is in L00_0041ABB8-g8.c. */

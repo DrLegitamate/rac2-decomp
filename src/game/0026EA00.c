@@ -1,5 +1,30 @@
 #include "include_asm.h"
 
+typedef struct { float x, y, z, w; } MarkerVector;
+typedef struct {
+    unsigned char *target;
+    int active;
+    float timer;
+    int reserved;
+    short alpha[16];
+    short texture[16];
+    unsigned int colour[16];
+    float interpolation[16];
+    float scale[16];
+} MarkerStateView;
+extern MarkerStateView D_001B5640;
+extern MarkerVector D_001B5340;
+extern int D_001A7348[] __attribute__((sda));
+extern float func_00282E48(MarkerVector *, MarkerVector *);
+extern float func_00283CE0(int);
+extern void func_00279BD8(MarkerVector *, MarkerVector *);
+extern long func_0027C878(int);
+extern float func_00282C48(float);
+extern int func_00283CF0(float);
+extern void func_0027E018(int x, int y, int width, int height,
+                        int u, int v, int uw, int vh, long colour, long texture);
+
+
 extern void func_00270598(char *);
 extern int func_00270838(char *, char *);
 extern int func_002A6640(void *, float *, int *);
@@ -78,7 +103,7 @@ extern void func_002FC3C0(int);
 extern int func_001244B8(int, int);
 extern int func_001261F0(int);
 
-INCLUDE_ASM("asm/game", func_0026EA00);
+/* func_0026EA00 is in 0026EA00-splash.c. */
 
 extern void func_002FCD18(void);
 extern void func_00284E18(int, int, int);
@@ -109,6 +134,7 @@ void func_0026EAC8(int arg)
     func_001261F0(0);
     func_002FCDA8();
 }
+
 
 extern int func_002A77E0(int);
 
@@ -328,7 +354,7 @@ void func_0026F808(void)
 {
 }
 
-INCLUDE_ASM("asm/game", func_0026F810);
+/* func_0026F810 is in 0026EA00-actuator.c (jump table and float pool). */
 
 
 INCLUDE_ASM("asm/game", func_0026FC78);
@@ -633,17 +659,17 @@ void func_00270B58(float *out, float *p0, float *p1, float *dir0, float *dir1, f
 
 /* func_00270EA8 uses the quadword-copy profile in 0026EA00-qcopy.c. */
 
-INCLUDE_ASM("asm/game", func_00270EE0);
+/* func_00270EE0 is in 00270EE0-qcopy.c. */
 
 /* func_002712D8 is in 002712D8.c. */
 
 /* func_002718B8 uses the quadword-copy profile in 0026EA00-qcopy.c. */
 
-INCLUDE_ASM("asm/game", func_00271958);
+/* func_00271958 is in 00271958-g8.c. */
 
 /* func_00271B90 is in 00271B90.c. */
 
-INCLUDE_ASM("asm/game", func_00271FD8);
+/* func_00271FD8 is in 00271FD8-g8.c. */
 
 
 /* Advances the shared scalar towards the stored target and updates its timer. */
@@ -720,7 +746,60 @@ int func_00272550(float *a0)
 
 INCLUDE_ASM("asm/game", func_002725C8);
 
-INCLUDE_ASM("asm/game", func_002725E0);
+/* Draw sixteen lens-flare elements with distance and screen-edge fades.
+ * Corresponds to RAC1 draw_lens_flare, src/game/effects.c (GPL-3.0). */
+
+void func_002725E0(void)
+{
+    MarkerVector projected;
+    float centre[2], delta[2], scaled[2], point[2];
+    float distance;
+    int i;
+
+    if (D_001B5640.active != 1 || (D_001B5640.target[0x20] & 0x80)) {
+        D_001B5640.active = 0;
+        return;
+    }
+    if (D_001B5640.timer <= 0.0f) return;
+    distance = func_00282E48(&D_001B5340, (MarkerVector *)(D_001B5640.target + 0x10));
+    centre[0] = func_00283CE0(D_001A7348[0]);
+    centre[1] = func_00283CE0(D_001A7348[1]);
+    func_00279BD8(&projected, (MarkerVector *)(D_001B5640.target + 0x10));
+    projected.x = (projected.x - func_00283CE0(D_001A7348[2])) * 0.0625f;
+    projected.y = (projected.y - func_00283CE0(D_001A7348[3])) * 0.0625f;
+    delta[0] = centre[0] - projected.x;
+    delta[1] = centre[1] - projected.y;
+    for (i = 0; i < 16; ++i) {
+        long texture = func_0027C878(D_001B5640.texture[i] + 6);
+        int width = i ? 32 : 64;
+        int size, x, y;
+        float fade = distance - 5.0f;
+        float fade_x, fade_y, radius;
+        unsigned int colour;
+        scaled[0] = delta[0] * D_001B5640.interpolation[i];
+        scaled[1] = delta[1] * D_001B5640.interpolation[i];
+        point[0] = centre[0] + scaled[0];
+        point[1] = centre[1] + scaled[1];
+        if (fade > 1.0f) fade = 1.0f;
+        else if (fade < 0.0f) fade = 0.0f;
+        fade_x = func_00282C48(delta[0]) / centre[0] * -5.0f + 5.5f;
+        if (fade_x > 1.0f) fade_x = 1.0f;
+        else if (fade_x < 0.0f) fade_x = 0.0f;
+        fade_y = func_00282C48(delta[1]) / centre[1] * -5.0f + 5.5f;
+        if (fade_y > 1.0f) fade_y = 1.0f;
+        else if (fade_y < 0.0f) fade_y = 0.0f;
+        fade *= fade_x * fade_y;
+        colour = (func_00283CF0(fade * (float)D_001B5640.alpha[i]) << 24) |
+                 (D_001B5640.colour[i] & 0xFFFFFF);
+        size = func_00283CF0((float)width * D_001B5640.scale[i]);
+        radius = (float)(size >> 1);
+        x = func_00283CF0(point[0] - radius);
+        y = func_00283CF0(point[1] - radius);
+        func_0027E018(x, y, size, size, 0, 0, width, width, (int)colour, texture);
+    }
+    D_001B5640.timer = 0.0f;
+}
+
 
 
 INCLUDE_ASM("asm/game", func_00272CB0);
@@ -800,9 +879,9 @@ void func_002735A0(void *position)
     D_001B1640.f[3] = 255.0f - (region->positive_value_end * blend + region->negative_value_end * inverse_blend) * 255.0f;
 }
 
-INCLUDE_ASM("asm/game", func_00273730);
+/* func_00273730 is in 00273730.c. */
 
-INCLUDE_ASM("asm/game", func_00273978);
+/* func_00273978 is in 00273978.c. */
 
 
 int func_00273D10(char *obj)

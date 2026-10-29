@@ -67,7 +67,7 @@ extern void func_L16_0041ECF8(void *, float);
 
 extern void func_002AD7B8(s32);
 
-extern void func_00282948(void *);
+extern s32 func_00282948(void *);
 
 extern void func_L16_004050D8(u8 *);
 
@@ -124,9 +124,61 @@ s32 func_L16_00404E40(u8 *moby)
 /* func_L16_00405488 is in L16_00405488-g8.c. */
 
 
-INCLUDE_ASM("asm/levels", func_L16_0040C840);
+/* func_L16_0040C840 is in L16_0040C840-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L16_0040CD88);
+extern void func_002B60B0(void *, float, float, float, float);
+extern s32 func_00283CF0(float);
+extern void func_002A93B0(void *);
+extern s32 func_002B0ED8(void *, void *, s32);
+extern void func_L16_0040D188(u8 *);
+extern s32 func_002B3BA8(void *, s32, float, float, s32, s32);
+extern float D_L16_001B9B00[];
+
+/* Object update: on the first frame (+0x20 still zero) sets the state's defaults and
+   rates; then, with +0x31 set and the object within 32 units of D_L16_001B9B00, runs
+   func_002A93B0 and sets +0x6F to 30; marks the group when func_002B0ED8 reports, and
+   runs func_002B3BA8 on the state's two slots, keeping the object's +0x18 across them. */
+void func_L16_0040CD88(u8 *arg)
+{
+    u8 *state;
+
+    state = *(u8 **)(arg + 0x68);
+    if (arg[0x20] == 0) {
+        *(s32 *)(state + 0x54) = 0;
+        *(s32 *)(state + 0x7C) = 0;
+        state[0x150] = 5;
+        *(s32 *)(state + 0x188) = 3;
+        *(float *)(state + 0x17C) = 0.15f;
+        *(float *)(state + 0x50) = 1.868f;
+        *(float *)(state + 0x170) = 0.5f;
+        *(float *)(state + 0x174) = 0.5f;
+        *(float *)(state + 0x58) = 0.5f;
+        *(float *)(state + 0x5C) = 0.5f;
+        *(float *)(state + 0x60) = 3.141593f;
+        *(float *)(state + 0x80) = 0.52359885f;
+        func_002B60B0(arg, 0.0022222223f, 0.06666667f, 0.00043633237f, 0.034906592f);
+        *(s32 *)(state + 0x88) |= 2;
+        if (*(s16 *)(state + 0x24) == 0) {
+            *(s16 *)(state + 0x24) = 1;
+            *(float *)(state + 0x20) = 1.0f;
+        }
+        func_002A7750(arg, 1, 0);
+        if (arg[0x43])
+            func_002A7470(arg, 0, 0, 0);
+        state[0x48] = func_00283CF0(18.0f);
+        state[0x4A] = func_00283CF0(16.0f);
+        *(float *)(state + 0x358) = *(float *)(arg + 0x18);
+    }
+    if (arg[0x31] && func_00282E48(arg + 0x10, D_L16_001B9B00) < 32.0f) {
+        func_002A93B0(arg);
+        arg[0x6F] = 30;
+    }
+    if (func_002B0ED8(arg, state + 0x140, 0))
+        func_L16_0040D188(arg);
+    *(s32 *)(state + 0x240) = func_002B3BA8(arg, *(s32 *)(state + 0x230), *(float *)(state + 0x234), 0.0f, 0, 0);
+    *(s32 *)(state + 0x354) = func_002B3BA8(arg, *(s32 *)(state + 0x350), 0.0f, 0.0f, 0, 0);
+    *(float *)(arg + 0x18) = *(float *)(state + 0x358);
+}
 
 /* func_L16_0040CF98 is defined in L16_00403900-g8.c. */
 
@@ -160,14 +212,12 @@ void func_L16_0040D188(u8 *arg0)
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L16_0040D258);
 
 INCLUDE_ASM("asm/levels", func_L16_0040D4E8);
 
-INCLUDE_ASM("asm/levels", func_L16_0040DAE0);
 
 
-INCLUDE_ASM("asm/levels", func_L16_00410618);
+/* func_L16_00410618 is in L16_00410618-g8.c. */
 
 /* func_L16_00410B88 is defined in L16_00403900-g8.c (this unit has no $gp access for it). */
 
@@ -183,7 +233,7 @@ void func_L16_00410C80(u8 *arg)
     *(s32 *)(s0 + 0x224) = *(s32 *)(s0 + 0x1F8);
 }
 
-INCLUDE_ASM("asm/levels", func_L16_00410CC0);
+/* func_L16_00410CC0 is defined in L16_00410CC0.c. */
 
 INCLUDE_ASM("asm/levels", func_L16_00410E40);
 
@@ -219,7 +269,7 @@ void func_L16_004116C8(u8 *arg0, s32 arg1, s32 duration, float f)
         func_002A7470(*(u8 **)(s2 + 0x1F0), 0, (s32)f, duration);
 }
 
-INCLUDE_ASM("asm/levels", func_L16_004117A8);
+/* func_L16_004117A8 is defined in L16_004117A8.c. */
 
 /* func_L16_00411900 is defined in L16_00411900-g8.c. */
 
@@ -326,7 +376,79 @@ void func_L16_00412E70(char *arg0) {
 
 /* func_L16_004130B0 is in L16_004130B0-qcopy.c. */
 
-INCLUDE_ASM("asm/levels", func_L16_004133B0);
+extern void func_00283958(void *, void *);
+extern void func_00283738(void *, void *, void *);
+extern s32 func_002A9640(void *, s32, s32);
+extern s32 func_00277258(void *, s32, void *, float);
+extern void func_0032DA58(void *, void *, void *, float);
+extern void func_002A8C28(void *, void *, s32, s32, s32, s32, float, float, float);
+extern void func_002AB6D8(void *, void *);
+extern void func_002A7A00(void *, float, float);
+extern float func_002A7878(float, float);
+extern void func_00273730(void *, s32, s32, s32, void *, void *, void *, s32, float, float);
+
+/* State 0: moves by the state's velocity and frees itself when the state's timer (+0x30)
+   runs out, unless +0x31 is set. State 2: moves, lowers the velocity's third component by
+   +0x34, turns its basis by the state's rotation and ages; on a collision record, or past
+   90 frames when func_00277258 reports, it runs its impact effects toward D_L16_001B9B00,
+   spawns six particles and frees itself. */
+void func_L16_004133B0(u8 *arg)
+{
+    float rotation[12];
+    float toward[4];
+    float velocity[4];
+    u8 *state;
+    u8 *basis;
+    u8 *angles;
+    s32 hit;
+    u32 old;
+    u32 age;
+    s32 i;
+    s32 kind;
+    float speed;
+    float life;
+
+    state = *(u8 **)(arg + 0x68);
+    switch (arg[0x20]) {
+    case 0:
+        func_00282CC0(arg + 0x10, arg + 0x10, state);
+        if (func_00282948(state + 0x30) && !arg[0x31])
+            func_0029F338(arg);
+        break;
+    case 2:
+        func_00282CC0(arg + 0x10, arg + 0x10, state);
+        basis = arg + 0xC0;
+        *(float *)(state + 8) -= *(float *)(state + 0x34);
+        func_00283958(state + 0x20, rotation);
+        func_00283738(basis, rotation, basis);
+        hit = 0;
+        if (func_002A9640(arg, 0x10000, 0))
+            hit = 1;
+        age = *(u16 *)(arg + 0x96);
+        old = age++;
+        *(u16 *)(arg + 0x96) = age;
+        if (old > 90 && func_00277258(arg + 0x10, 0, arg, 1.0f))
+            hit = 1;
+        if (hit) {
+            func_00282CF0(toward, D_L16_001B9B00, arg + 0x10);
+            angles = arg + 0xF0;
+            func_00282F20(toward, toward, 1.0f);
+            func_0032DA58(arg, arg + 0x10, toward, 0.0f);
+            func_002A8C28(arg, arg + 0x10, 0x10001, 0, 1, 0, 4.0f, 20.0f, 2.0f);
+            func_002AB6D8(basis, angles);
+            for (i = 0; i < 6; i++) {
+                func_002A7A00(velocity, 0.0f, 0.33333334f);
+                func_00282CC0(velocity, velocity, state);
+                kind = *(s16 *)(arg + 0xAA);
+                speed = func_002A7878(180.0f, 720.0f);
+                life = func_002A7878(5.0f, 15.0f);
+                func_00273730(arg, 2, kind, i, arg + 0x10, arg + 0xF0, velocity, 255, speed, life);
+            }
+            func_0029F338(arg);
+        }
+        break;
+    }
+}
 
 /* Prepares a 16-byte record from the handle and reports one when the queried value
    does not exceed zero. */

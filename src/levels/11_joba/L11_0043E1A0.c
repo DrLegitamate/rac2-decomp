@@ -585,7 +585,7 @@ void func_L11_00441350(u8 *object) {
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L11_00441FB8);
+/* func_L11_00441FB8 lives in L11_00441FB8.c. */
 
 extern s32 func_L11_00441FB8(u8 *, u8 *, s32);
 extern void func_L02_003FC248(u8 *, s32, s32);
@@ -653,7 +653,7 @@ void func_L11_00442170(u8 *object) {
 
 INCLUDE_ASM("asm/levels", func_L11_004423F8);
 
-INCLUDE_ASM("asm/levels", func_L11_004425C8);
+/* func_L11_004425C8 is defined in its dedicated source unit. */
 
 /* func_L11_00442B60 is defined in its dedicated source unit. */
 
@@ -700,7 +700,7 @@ void func_L11_00442C80(u8 *object) {
 /* func_L11_00443380 and func_L11_004433D8 live in the sibling small-data unit
    (L11_0043E1A0-g8.c): they reach the level's globals through $gp. */
 
-INCLUDE_ASM("asm/levels", func_L11_00443498);
+/* func_L11_00443498 is in L11_00443498-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L11_00443940);
 
@@ -810,7 +810,7 @@ fail:
 }
 /* func_L11_00445DF8 is defined in L11_00445DF8-g8.c ($gp accesses). */
 
-INCLUDE_ASM("asm/levels", func_L11_00446020);
+/* func_L11_00446020 lives in L11_00446020-g8.c. */
 
 /* hands the state's 0x1C4 field to the shared helper, after the caller's argument */
 extern int func_L00_003206B8(void *, int);

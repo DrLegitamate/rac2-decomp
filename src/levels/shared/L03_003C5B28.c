@@ -6,6 +6,24 @@ typedef unsigned int u32;
 
 typedef int s32;
 
+typedef short s16;
+typedef unsigned short u16;
+typedef struct {
+    u8 pad[0x20];
+    u8 values[1];
+} L03ChoiceRecord;
+typedef struct {
+    u8 pad[0x48];
+    u32 field48, field4C;
+    s16 previous, current, field54, field56, field58, field5A;
+    s16 last, length, field60, cursor, depth;
+} L03ChoicePath;
+
+extern u32 D_L03_0024A7B0;
+extern void func_L03_003E3308(u8 *);
+extern void func_L03_003E3018(u8 *);
+
+
 /* Three measured byte-state cases and width-specific field views.
    The correspondence name UpdateMoby_2426 does not establish an original
    class, enumeration, allocation or field-name declaration. */
@@ -114,7 +132,6 @@ void func_L03_003CA220(u8 *a0, f32 a1) {
 
 int func_L03_003CA280(unsigned char *p) { return p[0x20] == 1; }
 
-INCLUDE_ASM("asm/levels", func_L03_003CA290);
 
 INCLUDE_ASM("asm/levels", func_L03_003CA4B0);
 
@@ -180,7 +197,7 @@ void func_L03_003CC1D8(u8 *a0) {
 
 /* Defined in L03_003CC478.c. */
 
-INCLUDE_ASM("asm/levels", func_L03_003D04E0);
+/* func_L03_003D04E0 lives in L03_003D04E0-g8.c. */
 
 /* func_L03_003D09D0 is matched in its own unit, src/levels/shared/L03_003D09D0.c (-g). */
 
@@ -215,19 +232,92 @@ void func_L03_003D0FC8(u8 *a0, s32 a1, s32 a2) {
 
 INCLUDE_ASM("asm/levels", func_L03_003D9820);
 
-INCLUDE_ASM("asm/levels", func_L03_003E21B0);
+/* func_L03_003E21B0 lives in L03_003E21B0-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L03_003E26C8);
+/* func_L03_003E26C8 is defined in L03_003E26C8-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L03_003E2968);
+/* func_L03_003E2968 is defined in L03_003E2968-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L03_003E2C08);
+/* func_L03_003E2C08 is defined in L03_003C5B28-g8.c (it reads the step count through $gp). */
 
-INCLUDE_ASM("asm/levels", func_L03_003E2D98);
+s32 func_L03_003E2D98(u8 *a0, u32 a1, s32 a2, u32 *a3, s32 a4) {
+    u8 *rec = *(u8 **)(a0 + 0x68);
+    s32 start;
+    s32 six;
+    s32 i;
+    s32 v;
+    s32 found;
+    u32 offset;
+    start = func_002A77E0(6);
+    six = 6;
+    offset = a1 * 24;
 
-INCLUDE_ASM("asm/levels", func_L03_003E2EC8);
+    for (i = 0; i < six; i++) {
+        s32 index = (i + start) % six;
+        s32 j;
 
-INCLUDE_ASM("asm/levels", func_L03_003E3018);
+        v = *(u32 *)((u8 *)&D_L03_0024A7B0 + (offset + index * 4));
+        if (v == -1)
+            continue;
+        j = 0;
+        found = 0;
+        for (; j < a2 + 2; j++) {
+            if (((L03ChoiceRecord *)rec)->values[j] == v)
+                found = 1;
+        }
+        {
+            s32 k;
+            for (k = 0; k < a4; k++) {
+                if (a3[k] == v)
+                    found = 1;
+            }
+        }
+        if (found == 0)
+            return v;
+    }
+    return -1;
+}
+
+void func_L03_003E2EC8(u8 *a0) {
+    L03ChoicePath *r = *(L03ChoicePath **)(a0 + 0x68);
+    u8 *bytes = (u8 *)r;
+    if (r->current == r->last) {
+        *(u8 *)(bytes + r->previous + 0x10) = 0;
+        bytes[r->length] = 0xFF;
+        r->previous = r->last;
+        if (r->length >= 2)
+            r->last = bytes[r->length - 2];
+        else
+            r->last = 0;
+        *(u8 *)(bytes + r->length + 0x30) = 0xFF;
+        r->length--;
+        if (r->depth != 0)
+            r->depth--;
+        else
+            r->cursor--;
+    } else {
+        *(u8 *)(bytes + r->current + 0x10) = 1;
+        {
+            s16 depth = r->depth;
+            u16 value = *(u16 *)&r->depth;
+            if (depth == 0 && r->current == bytes[r->cursor + 0x21])
+                r->cursor++;
+            else
+                r->depth = value + 1;
+        }
+        r->last = r->previous;
+        r->previous = r->current;
+        r->length++;
+        bytes[r->length] = (u8)r->current;
+    }
+    func_L03_003E3308(a0);
+    r->field48 = 0;
+    r->field4C = 0;
+    r->field56 = 0;
+    func_L03_003E3018(a0);
+}
+
+/* func_L03_003E3018 is defined in L03_003E3018.c. */
 
 extern u32 D_0024A7B0;
 
@@ -269,12 +359,11 @@ void func_L03_003E3308(u8 *a0) {
     *(u8 *)(rec + n + 0x40) = 255;
 }
 
-INCLUDE_ASM("asm/levels", func_L03_003E3430);
+/* func_L03_003E3430 is defined in L03_003E3430.c. */
 
 /* func_L03_003E3678 lives in L03_003E3678-g8.c. */
 
 
-INCLUDE_ASM("asm/levels", func_L03_003E3800);
 
 INCLUDE_ASM("asm/levels", func_L03_003E3A00);
 

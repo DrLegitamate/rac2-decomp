@@ -89,7 +89,6 @@ fail:
     return 0;
 }
 
-INCLUDE_ASM("asm/game", func_0028E640);
 
 extern int *ref_L00_001B2608_00;
 extern int ref_L00_001B1BBC_01;
@@ -128,7 +127,6 @@ void func_0028E868(int a0, int a1, int a2, int a3, int a4, int a5)
     ref_L00_001B2608_00 = (int *)((char *)ref_L00_001B2608_00 + 0x50);
 }
 
-INCLUDE_ASM("asm/game", func_0028EA58);
 
 void func_0028ECD8(int a0, int a1, int a2, int a3, int a4, int a5)
 {

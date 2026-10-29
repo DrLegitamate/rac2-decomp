@@ -34,9 +34,84 @@ INCLUDE_ASM("asm/levels", func_L20_0039D680);
 
 /* func_L20_0039E368 dispatches through the level's own jump table
    jtbl_002B4CA0 and reads D_L20_001AED04 and D_L20_001AED08 through
-   $gp; its near miss is in nonmatching/levels/func_L20_0039E368.c
-   and belongs in this -G8 unit. */
-INCLUDE_ASM("asm/levels", func_L20_0039E368);
+   $gp. The early exit has its own copy of case 5's tail, which
+   cross-jumping merges after scheduling; with one shared label instead,
+   the argument moves of case 5's func_0032DA58 call come out in another
+   order. */
+extern void func_002A7750(char *, int, int);
+extern void func_L20_0039E5F0(char *);
+extern void func_L20_0039E770(char *);
+extern s32 func_002B3868(char *);
+extern void func_002A7470(char *, s32, s32, s32);
+extern void func_0029FCC0(char *, s32, char *);
+extern void func_0029FC20(char *, s32, char *);
+extern void func_00282F20(char *, char *, float);
+extern void func_L09_003AE8C8(char *, char *, char *, s32, s32, float, float, float, float);
+extern void func_00282CF0(char *, void *, char *);
+extern void func_0032DA58(char *, char *, char *, float);
+extern void func_002A6C58(char *, s32, s32);
+extern void func_0029F338(char *);
+
+extern int D_L20_001A8F00;
+extern int D_L20_001BDCF0 __attribute__((nosda));
+extern int D_L20_001B2AC8;
+extern void *D_L20_001B9FC0[];
+extern float D_L20_001AED04 __attribute__((sda));
+extern float D_L20_001AED08 __attribute__((sda));
+
+void func_L20_0039E368(char *arg0)
+{
+    char bufA[0x10];
+    char bufB[0x40];
+    char bufC[0x10];
+    char *state;
+
+    state = *(char **)(arg0 + 0x68);
+    func_L20_0039E5F0(arg0);
+    if (D_L20_001A8F00 == 2 && D_L20_001BDCF0 >= 5) {
+        func_0029F338(arg0);
+        return;
+    }
+    switch (*(u8 *)(arg0 + 0x20)) {
+    case 2:
+        if (func_002B3868(arg0) != 0 && *(u8 *)(arg0 + 0x43) != 0)
+            func_002A7470(arg0, 0, 0, 0xA);
+        if (*(u8 *)(arg0 + 0x31) != 0 && *(u16 *)(arg0 + 0x96) >= 0xB5)
+            func_002A7750(arg0, 3, -1);
+        break;
+    case 3:
+        if (func_002B3868(arg0) != 0 && *(u8 *)(arg0 + 0x43) != 1)
+            func_002A7470(arg0, 1, 0, 0xF);
+        if ((D_L20_001B2AC8 & 0xF) == (((int)arg0 >> 8) & 0xF)) {
+            func_0029FCC0(arg0, 2, bufA);
+            func_0029FC20(arg0, 2, bufB);
+            func_00282F20(bufC, bufB, D_L20_001AED04 * 0.016666668f);
+            func_L09_003AE8C8(bufA, arg0, bufC, 1, 1, (float)*(u8 *)(state + 0x34),
+                              D_L20_001AED08, 1.0f, 1.0f);
+        }
+        if (*(u8 *)(arg0 + 0x31) == 0 || *(u16 *)(arg0 + 0x96) >= 0xB5)
+            func_002A7750(arg0, 2, -1);
+        break;
+    case 4:
+        if (func_002B3868(arg0) != 0 && *(u8 *)(arg0 + 0x43) != 2)
+            func_002A7470(arg0, 2, 0, 0xA);
+        if (*(u8 *)(arg0 + 0x60) & 0x2)
+            func_002A7750(arg0, 2, -1);
+        break;
+    case 5:
+        func_00282CF0(bufA, D_L20_001B9FC0, arg0 + 0x10);
+        func_00282F20(bufA, bufA, 1.0f);
+        func_0032DA58(arg0, arg0 + 0x10, bufA, 0.0f);
+        func_002A6C58(arg0, 0, 3);
+        func_0029F338(arg0);
+        return;
+    default:
+        break;
+    case 1:
+        return;
+    }
+    func_L20_0039E770(arg0);
+}
 
 extern char *D_L20_001FBB20[];
 
@@ -111,19 +186,17 @@ INCLUDE_ASM("asm/levels", func_L20_0039E9F8);
    and belongs in this -G8 unit. */
 INCLUDE_ASM("asm/levels", func_L20_0039ED78);
 
-/* func_L20_003A0320 reads D_L20_001B2F9C and D_L20_001B2ECC through
-   $gp; its near miss is in nonmatching/levels/func_L20_003A0320.c
-   and belongs in this -G8 unit. */
-INCLUDE_ASM("asm/levels", func_L20_003A0320);
+/* func_L20_003A0320 is in L20_003A0320-g8.c, where its independent
+   address materializations use -mno-split-addresses. */
 
 /* func_L20_003BFEB8 reads -0x7600($gp); its near miss is in
    nonmatching/levels/func_L20_003BFEB8.c and belongs in a -G8 unit
    of its own, built with -fno-schedule-insns2. */
 INCLUDE_ASM("asm/levels", func_L20_003BFEB8);
 
-INCLUDE_ASM("asm/levels", func_L20_003C0048);
+/* func_L20_003C0048 is defined in L20_003C0048-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L20_00408D98);
+/* func_L20_00408D98 is defined in L20_00408D98-g8.c (its switch owns .rodata). */
 
 INCLUDE_ASM("asm/levels", func_L20_00438F98);
 

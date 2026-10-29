@@ -41,7 +41,7 @@ Rac2Native_bf55aa2a4d0dd351_SDataCallDispatchFlags func_002B1C20(void *owner, Ra
     return result;
 }
 
-INCLUDE_ASM("asm/game", func_002B1CC8);
+/* func_002B1CC8 is in 002B1C20-steering.c. */
 
 INCLUDE_ASM("asm/game", func_002B2A10);
 

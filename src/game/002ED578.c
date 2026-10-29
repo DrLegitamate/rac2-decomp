@@ -77,4 +77,4 @@ void func_002ED9C0(unsigned char *owner)
 
 INCLUDE_ASM("asm/game", func_002EE000);
 
-INCLUDE_ASM("asm/game", func_002EE3B0);
+/* func_002EE3B0 is in 002EE3B0-g8.c. */

@@ -5,7 +5,7 @@
 
 INCLUDE_ASM("asm/levels", func_L19_00411890);
 
-INCLUDE_ASM("asm/levels", func_L19_00411EF0);
+/* func_L19_00411EF0 is defined in L19_00411EF0-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L19_00412140);
 
@@ -34,7 +34,7 @@ void func_L19_00417A00(char *a0)
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L19_00417A58);
+/* func_L19_00417A58 is defined in L19_00417A58.c. */
 
 
 /* func_L19_00417CA0 is defined in L19_003E9400-effects-g8.c. */
@@ -50,7 +50,7 @@ INCLUDE_ASM("asm/levels", func_L19_0041C328);
 
 /* func_L19_0041E5B0 is defined in L19_003E9400-lift-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L19_0041EE60);
+/* func_L19_0041EE60 is defined in L19_0041EE60.c. */
 
 INCLUDE_ASM("asm/levels", func_L19_004203F0);
 
@@ -113,7 +113,7 @@ void func_L19_00420EF0(char *obj)
 
 /* func_L19_00421E80 is defined in L19_00421E80-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L19_00422238);
+/* func_L19_00422238 is defined in L19_00422238.c. */
 
 extern u16 *D_L19_001FB5A0[];
 extern u8 *D_L19_001B2A1C[] __attribute__((sda));
@@ -204,6 +204,6 @@ INCLUDE_ASM("asm/levels", func_L19_00423548);
 
 /* func_L19_00423A98 is in L19_003E9400-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L19_00423CC0);
+/* func_L19_00423CC0 is defined in L19_00423CC0.c. */
 
 INCLUDE_ASM("asm/levels", func_L19_00423EC0);

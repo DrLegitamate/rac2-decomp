@@ -1,6 +1,11 @@
 #include "include_asm.h"
 #include "common.h"
 
+extern short *D_L06_001FB3A0[];
+extern char *D_L06_001B281C[] __attribute__((sda));
+extern float func_35A780(void);
+extern void func_458138(char *);
+
 extern int func_00282948(char *);
 extern int func_002A77E0(int);
 extern int func_00283CF0(float);
@@ -248,7 +253,7 @@ done:
     return ret;
 }
 
-INCLUDE_ASM("asm/levels", func_L06_0041F558);
+/* func_L06_0041F558 is defined in L06_0041F558.c. */
 
 extern char D_L06_001B9840[];
 extern int func_35A620(int);
@@ -354,13 +359,13 @@ void func_L06_0041FD90(unsigned char *obj)
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L06_00420080);
+/* func_L06_00420080 is defined in L06_00420080.c. */
 
 INCLUDE_ASM("asm/levels", func_L06_00420230);
 
 /* func_L06_00420548 is defined in L06_00420548-g.c. */
 
-INCLUDE_ASM("asm/levels", func_L06_00420740);
+/* func_L06_00420740 is defined in L06_00420740.c. */
 
 INCLUDE_ASM("asm/levels", func_L06_00420AE8);
 
@@ -589,4 +594,68 @@ void func_L06_00457C00(char *object, int mask, void *offset, int color,
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L06_00457ED0);
+void func_L06_00457ED0(unsigned char *obj)
+{
+    char *data;
+    char *hit;
+    short *list, *cursor;
+    char *target;
+    char *state;
+    if (obj[0x20] == 0) {
+        *(unsigned short *)(obj + 0x34) |= 0x800;
+        obj[0x20] = 1;
+    }
+    data = *(char **)(obj + 0x68);
+    hit = (char *)func_35CBA0((char *)obj, 0x10000, 0);
+    if (hit && *(short *)(*(char **)(hit + 0x20) + 0xAA) != 0xFE5) {
+        if (*(int *)data == 255) { func_458138((char *)obj); return; }
+        {
+            list = D_L06_001FB3A0[*(int *)data];
+            if (list == 0) { func_458138((char *)obj); return; }
+            {
+                cursor = list;
+                do {
+                    target = D_L06_001B281C[0] + ((*cursor & 0x7FFF) << 8);
+                    if (*(signed char *)(target + 0x20) >= 0 && *(short *)(target + 0xAA) == 0xBBA) {
+                        state = *(char **)(target + 0x68);
+                        if (*(float *)(state + 0x20) > 0.0f) {
+                            *(float *)(state + 0x5A4) = func_35A780();
+                            qcopy(state + 0x5B0, state + 0x460);
+                            *(short *)(state + 0x24C) = 0x10E;
+                            target[0x20] = 4;
+                            func_35A270(target, 6, 0, 10);
+                            *(int *)(state + 0x5A0) = 0;
+                            *(short *)(state + 0x492) = 0;
+                            target[0x20] = 5;
+                            target[0x95] = 1;
+                        }
+                    }
+                } while (*cursor++ >= 0);
+            }
+        }
+        if (*(int *)(data + 4) == 255) goto destroy;
+        list = D_L06_001FB3A0[*(int *)(data + 4)];
+        if (list == 0) {
+ destroy:
+            func_458138((char *)obj); return;
+        }
+        {
+            cursor = list;
+            do {
+                target = D_L06_001B281C[0] + ((*cursor & 0x7FFF) << 8);
+                if (*(signed char *)(target + 0x20) >= 0 && *(short *)(target + 0xAA) == 0xBBA) {
+                    state = *(char **)(target + 0x68);
+                    *(float *)(state + 0x5A4) = func_35A780();
+                    qcopy(state + 0x5B0, state + 0x460);
+                    *(short *)(state + 0x24C) = 0x10E;
+                    target[0x20] = 4;
+                    func_35A270(target, 6, 0, 10);
+                    target[0x20] = 5;
+                    target[0x95] = 1;
+                }
+            } while (*cursor++ >= 0);
+        }
+        func_458138((char *)obj);
+    }
+    obj[0xA8] = 255;
+}

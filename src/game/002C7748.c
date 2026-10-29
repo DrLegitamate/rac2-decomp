@@ -1,6 +1,7 @@
 #include "include_asm.h"
 #include "common.h"
 
+extern float func_002A7790(float);
 extern float func_00283CE0(int);
 extern int func_00283CF0(float);
 extern int func_00283D38(int, int, float);
@@ -9,6 +10,7 @@ extern int func_00282978(char *);
 extern void func_002B9180(char *);
 extern void func_00282CC0(char *, char *, char *);
 extern void func_00282D30(char *, char *, float);
+extern void func_00282F20(float *, float *, float);
 
 typedef struct { char pad[0x20]; int buffer; char pad24[0xAC]; int saved; } CaptureState;
 extern int D_001B1598 MACRO_ADDR __attribute__((sda));
@@ -259,6 +261,8 @@ extern char D_00138180[];
  * -G0 compiler addresses them absolutely, and $gp-relative only in delay slots. */
 typedef struct { char pad[0x1C4]; int flags; } InputState_2CCF68;
 typedef struct { short x, kind; int a, b; } MenuEntry_2CCF68;
+extern char D_00259148[], D_00259198[], D_002591E8[], D_00259238[], D_00259288[], D_002592D8[];
+extern int func_002D5EC0(char *);
 extern int D_001A8B84 __attribute__((sda));
 extern int D_001B1680 __attribute__((sda));
 typedef struct { unsigned char value; } ResidentFlag_2CCF68;
@@ -343,7 +347,7 @@ void func_002C7AE8(char *a0)
     *(float *)(s1 + 12) = *(float *)(s1 + 12) + *(float *)(s0 + 16);
 }
 
-INCLUDE_ASM("asm/game", func_002C7BB8);
+/* func_002C7BB8 is defined in 002C7BB8.c. */
 
 void func_002C7D58(char *self)
 {
@@ -464,7 +468,56 @@ void func_002C87B0(char *a0)
 
 /* func_002C8A38 is defined in 002C8A38.c. */
 
-INCLUDE_ASM("asm/game", func_002C8CA0);
+/* Like func_002C8A38 with a second vector at +0x30 scaled into the motion. Its
+ * address e is an integer: retail loads that vector's last two words only after
+ * the first vector is stored, the order alias analysis gives an untraced base. */
+void func_002C8CA0(char *p)
+{
+    char *d = p + 32;
+    int e = (int)p + 48;
+    float scaled[4], v[4], w[4], tmp[4];
+    int color, alpha, fading, spin;
+    float size0, size1, speed0, speed1, scale, t, inverse, a, b;
+    v[3] = 0;
+    v[0] = *(float *)(d + 0); v[1] = *(float *)(d + 4); v[2] = *(float *)(d + 8);
+    w[0] = *(float *)(e + 0); w[1] = *(float *)(e + 4); w[2] = *(float *)(e + 8); w[3] = 0;
+    color = *(unsigned char *)(d + 12) & 15;
+    alpha = (*(unsigned char *)(d + 12) >> 4) | 0x70;
+    color |= (color << 16) | (color << 8);
+    spin = *(unsigned char *)(d + 13) >> 4;
+    fading = *(unsigned char *)(d + 13) & 15;
+    size0 = func_00283CE0(*(unsigned char *)(d + 30)) * 1640.625f;
+    size1 = func_00283CE0(*(unsigned char *)(d + 31)) * 1640.625f;
+    speed0 = func_00283CE0(*(unsigned char *)(d + 28)) * (1.0f / 128);
+    speed1 = func_00283CE0(*(unsigned char *)(d + 29)) * (1.0f / 128);
+    scale = func_00283CE0(*(unsigned char *)(d + 15)) * (1.0f / 128);
+    func_00300190(p + 16, p + 16);
+    t = func_00283CE0(*(short *)(p + 10));
+    t /= func_00283CE0(*(unsigned char *)(d + 14)); inverse = 1.0f - t;
+    if (!fading) {
+        *(int *)(p + 4) = func_00283D38(0x103080, color, inverse) | (alpha << 24);
+        *(float *)(p + 12) = size0 + (size1 - size0) * inverse;
+        speed0 += (speed1 - speed0) * inverse;
+        func_00282D30((char *)scaled, (char *)w, scale * func_002A7790(inverse));
+    } else {
+        speed0 = speed1;
+        a = func_00283CE0(alpha); b = func_00283CE0(alpha);
+        b *= func_002A7790(inverse);
+        *(int *)(p + 4) = color | (func_00283CF0(a - b) << 24);
+        func_00282D30((char *)scaled, (char *)w, scale);
+    }
+    func_00282F20(tmp, v, speed0);
+    func_00282CC0(p + 16, p + 16, (char *)tmp);
+    func_00282CC0(p + 16, (char *)scaled, p + 16);
+    *(unsigned char *)(p + 8) += spin;
+    if (func_00282978(p + 10)) {
+        if (!fading) {
+            *(unsigned char *)(d + 14) = 20;
+            *(unsigned char *)(d + 13) |= 1;
+            *(short *)(p + 10) = 20;
+        } else func_002B9180(p);
+    }
+}
 
 void func_002C8F40(int *obj)
 {
@@ -522,7 +575,7 @@ void func_002C9098(char *p)
 
 /* func_002C9218 is defined in 002C9218.c. */
 
-INCLUDE_ASM("asm/game", func_002C94C8);
+/* func_002C94C8 is defined in 002C94C8.c. */
 
 void func_002C9828(char *path, int clamp, float *out, float *angles, int flags, float t)
 {
@@ -711,9 +764,9 @@ void func_002C9E60(int a0)
 
 INCLUDE_ASM("asm/game", func_002CA070);
 
-INCLUDE_ASM("asm/game", func_002CA5D0);
+/* func_002CA5D0 is defined in 002C7748-g8.c. */
 
-INCLUDE_ASM("asm/game", func_002CA790);
+/* func_002CA790 is defined in 002CA790.c. */
 
 INCLUDE_ASM("asm/game", func_002CA8A8);
 
@@ -791,11 +844,9 @@ s32 func_002CB4E8(s32 a0) {
  return result;
 }
 
-/* Near miss: nonmatching/game/func_002CB510.c (312/312 bytes, three
-   register-choice words in the loop setup's two address materialisations). */
-INCLUDE_ASM("asm/game", func_002CB510);
+/* func_002CB510 is defined in 002CB510.c. */
 
-INCLUDE_ASM("asm/game", func_002CB648);
+/* func_002CB648 is defined in 002CB648-g8.c. */
 
 int func_002CB7D0(int mode)
 {
@@ -818,7 +869,7 @@ int func_002CBA58(int mode)
     return result;
 }
 
-INCLUDE_ASM("asm/game", func_002CBAE0);
+/* func_002CBAE0 is defined in 002C7748-g8.c. */
 
 INCLUDE_ASM("asm/game", func_002CBC58);
 
@@ -862,7 +913,48 @@ s32 func_002CC6A0(u8 *p) { *(s32 *)(p + 0x44) = -1; return 0; }
 
 INCLUDE_ASM("asm/game", func_002CC6B0);
 
-INCLUDE_ASM("asm/game", func_002CCF68);
+int func_002CCF68(char *obj)
+{
+    int old;
+    int kind;
+    MenuEntry_2CCF68 *entry;
+
+    if (*(char **)(*(char **)(D_001F2840 + 0x14) + 0xE8) != obj) goto fallback;
+    if ((((InputState_2CCF68 *)D_00138180)->flags & ~0x40) != 0 && obj == D_00259148) return 0;
+    old = D_001B1680;
+    if (D_001A8B84) goto fallback;
+    entry = (MenuEntry_2CCF68 *)(*(int *)(obj + 0x40) * 12 + *(int *)(obj + 0x34));
+    kind = entry->kind;
+    if (kind != 3) goto fallback;
+    if (obj == D_00259148) {
+        D_001A8B84 = 1;
+        D_001B1680 = 1;
+        return 0;
+    }
+    if (((InputState_2CCF68 *)D_00138180)->flags & 0x40) {
+        if (obj == D_00259198) {
+            D_001A8B84 = D_001A7BC9.value != 0;
+            D_001B1680 = 1;
+        } else if (obj == D_002591E8) {
+            D_001A8B84 = D_001A7BCA.value != 0;
+            D_001B1680 = 2;
+        } else if (obj == D_00259238) {
+            D_001A8B84 = D_001A7BCB.value != 0;
+            D_001B1680 = 3;
+        } else if (obj == D_00259288) {
+            D_001A8B84 = D_001A7BCC.value != 0;
+            D_001B1680 = 4;
+        } else if (obj == D_002592D8) {
+            D_001A8B84 = D_001A7BCE.value != 0;
+            D_001B1680 = 6;
+        }
+        if (!D_001A8B84)
+            D_001B1680 = old;
+        return 0;
+    }
+fallback:
+    return func_002D5EC0(obj);
+}
 
 int func_002CD0E8(void)
 {

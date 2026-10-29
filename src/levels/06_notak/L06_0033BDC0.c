@@ -9,7 +9,7 @@ extern char *D_0018C0B0 NOT_SDA;
 extern int D_L06_001AC790 __attribute__((sda));
 extern Collision D_L06_001BFC80;
 extern Material D_L06_0026C7F0[];
-extern void func_00282CC0(char *, char *, char *);
+extern void func_00282CC0(void *, void *, void *);
 extern void func_002AFFD8(void *, void *, int);
 extern void func_00282D30(void *, void *, float);
 extern void func_L00_0038F3D8(void *);
@@ -22,8 +22,87 @@ extern void func_002FEE50(int);
 extern void func_L00_0038DE70(void *, void *, void *);
 extern void func_L00_0038E880(void *, void *, void *);
 
+typedef float Vector[4] __attribute__((aligned(16)));
 
-INCLUDE_ASM("asm/levels", func_L06_0033BDC0);
+typedef struct MobyClass {
+    unsigned char pad00[0xF];
+    unsigned char f0F;
+    int f10;
+    unsigned char pad14[0x10];
+    float scale;
+    unsigned char pad28[0x18];
+    int f40;
+    unsigned short flags;
+} MobyClass;
+
+typedef struct Moby {
+    unsigned char pad00[0x10];
+    float position[3];
+    int f1C;
+    unsigned char mode;
+    unsigned char pad21[3];
+    MobyClass *class;
+    unsigned char pad28[4];
+    float scale;
+    unsigned char f30;
+    unsigned char f31;
+    unsigned short f32;
+    unsigned short flags;
+    unsigned short f36;
+    unsigned char pad38[0x29];
+    unsigned char f61;
+    unsigned char f62;
+    unsigned char pad63[5];
+    void *state;
+    unsigned char pad6C[0x2C];
+    int f98;
+    unsigned char pad9C[0xC];
+    unsigned char fA8;
+    unsigned char padA9[9];
+    short fB2;
+    short health;
+    struct Moby *parent;
+    unsigned char fBC;
+    unsigned char padBD[0x33];
+    Vector rotation;
+} Moby;
+
+typedef struct {
+    unsigned char pad00[0x20];
+    unsigned char tracker[0x3C];
+    int flags;
+    Vector home;
+    unsigned char pad70[0x10];
+    int level;
+    int step;
+    int sound;
+    int zone;
+} PlatformState;
+
+typedef struct {
+    unsigned char pad00[0x74];
+    unsigned char active;
+    unsigned char pad75[0x13];
+    Moby *owner;
+} SoundSlot;
+
+extern char D_00188660[];
+typedef struct { char prefix[0x80]; Vector position; } PlatformPlayer;
+extern PlatformPlayer D_00189E20;
+extern int func_L00_00324120(Moby *);
+extern void func_002A7750(Moby *, int, int);
+extern int func_002E59B0(Moby *, int);
+extern int func_002E5CF8(int, int, Moby *);
+extern void func_002E59F8(int);
+extern int func_002ACBC8(void *, int);
+extern float func_00282E48(void *, void *);
+extern float func_00283180(float);
+extern float func_00283198(float);
+extern void func_00282CF0(void *, void *, void *);
+extern void func_002AD6F0(void *, void *, void *, void *);
+
+
+/* func_L06_0033BDC0 is matched in L06_0033BDC0-scene-g8.c. */
 
 
 /* Implemented in L06_00361728-helpers.c. */
@@ -125,7 +204,112 @@ finish:
 
 INCLUDE_ASM("asm/levels", func_L06_003D64C0);
 
-INCLUDE_ASM("asm/levels", func_L06_003F3448);
+typedef struct {
+    unsigned char pad00[0x68];
+    short f68;
+    unsigned char pad6A[2];
+    int f6C;
+    unsigned char pad70[0x24];
+    int f94;
+} MobyPart;
+
+typedef struct {
+    float value;
+    short limit;
+    unsigned char pad06[0x1A];
+    int f20;
+    int f24;
+} MobyRecord;
+
+typedef struct {
+    unsigned char pad00[0x81];
+    unsigned char count;
+    unsigned char pad82;
+    unsigned char small;
+    int group;
+} SpawnerState;
+
+extern int func_002A8600(Moby **, int, int, int);
+extern MobyPart *func_L00_00345AF0(Moby *);
+extern void func_002AB650(Moby *);
+extern void func_002A0F48(Moby *);
+extern MobyRecord *func_002AB1F0(Moby *);
+extern void func_0026FEB8(const char *, ...);
+extern char D_L06_001AF990[];
+extern int D_L06_001B2348[] __attribute__((sda));
+
+/* Allocate a child and initialize its rendering, health and parent linkage. */
+Moby *func_L06_003F3448(Moby *parent, Quad *position)
+{
+    Quad spawnPoint;
+    Quad *savedPoint = &spawnPoint;
+    SpawnerState *state;
+    Moby *child, *result;
+    MobyPart *part;
+    MobyRecord *record;
+
+    *savedPoint = *position;
+    if (!parent)
+        return 0;
+
+    state = parent->state;
+    result = 0;
+    child = 0;
+    if (func_002A8600(&child, state->group, 1, 1) == 0) {
+        state->count++;
+        {
+            Moby *spawned = child;
+
+            qcopy(spawned->position, savedPoint);
+            spawned->f1C = 0;
+        }
+        child->mode = 0;
+        child->fBC = 0;
+        child->flags = child->class->flags;
+        child->scale = child->class->scale;
+        child->f30 = 0xFF;
+        child->f32 = 0xFF;
+        child->f31 = 1;
+        if (child->class->f40)
+            child->flags |= 0x10;
+        if (child->class->f0F)
+            child->flags |= 0x400;
+        child->f36 = 0x7F80;
+        child->f61 = 0xFF;
+        child->f62 = 0xFF;
+        child->fA8 = 0xFF;
+        if (state->small)
+            child->scale = child->class->scale * 0.1f;
+
+        part = func_L00_00345AF0(child);
+        if (part) {
+            part->f94 = 0;
+            part->f68 = 0;
+            part->f6C = 0;
+        }
+
+        if (parent->health < child->health)
+            child->health = parent->health;
+        parent->health -= child->health;
+        if (parent->health < 0)
+            parent->health = 0;
+        child->parent = parent;
+        child->f98 = child->class->f10;
+        func_002AB650(child);
+        func_002A0F48(child);
+        result = child;
+
+        record = func_002AB1F0(result);
+        if (record) {
+            record->f24 = 0;
+            record->f20 = 0;
+            record->value = (float)record->limit;
+        }
+    } else {
+        func_0026FEB8(D_L06_001AF990, parent->fB2, D_L06_001B2348[0]);
+    }
+    return result;
+}
 
 extern int func_002A9640(char *a0, int a1, int a2);
 
@@ -222,15 +406,124 @@ INCLUDE_ASM("asm/levels", func_L06_003FB050);
 
 /* func_L06_003FDA08 is matched in L06_0033BDC0-g8.c (it takes the $gp addresses of small-data objects). */
 
-INCLUDE_ASM("asm/levels", func_L06_003FDEB8);
+/* func_L06_003FDEB8 is in L06_003FE178-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L06_003FE178);
+/* func_L06_003FE178 is in L06_003FE178-g8.c. */
 
 /* func_L06_00400498 is in L06_00400498-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L06_004012B0);
 
-INCLUDE_ASM("asm/levels", func_L06_00401820);
+/* Move a platform between its two paths according to the player's height. */
+void func_L06_00401820(Moby *moby)
+{
+    Vector oldPosition, oldRotation, movement;
+    PlatformState *state = moby->state;
+    SoundSlot *sound;
+    int handle;
+
+    qcopy(oldPosition, moby->position);
+    qcopy(oldRotation, moby->rotation);
+    switch (moby->mode) {
+    case 0:
+        state->flags |= 1;
+        qcopy(state->home, moby->position);
+        moby->mode = 1;
+        state->sound = -1;
+        state->level = 0;
+        state->step = 0;
+        break;
+    case 1:
+        if (func_L00_00324120(moby)) {
+            if (state->level == 0) {
+                func_002A7750(moby, 3, -1);
+                if (!func_002E59B0(moby, state->sound))
+                    state->sound = func_002E5CF8(0, 4, moby);
+            } else {
+                func_002A7750(moby, 2, -1);
+                if (!func_002E59B0(moby, state->sound))
+                    state->sound = func_002E5CF8(1, 4, moby);
+            }
+        }
+        if (D_00189E20.position[2] < 55.0f && state->level == 0) {
+            if (!func_002E59B0(moby, state->sound))
+                state->sound = func_002E5CF8(0, 4, moby);
+            func_002A7750(moby, 3, -1);
+        } else if (D_00189E20.position[2] > 57.0f && state->level == 1 &&
+                   func_002ACBC8(D_00189E20.position, state->zone)) {
+            if (!func_002E59B0(moby, state->sound))
+                state->sound = func_002E5CF8(1, 4, moby);
+            func_002A7750(moby, 2, -1);
+        }
+        break;
+    case 2:
+        if (func_00282E48(moby->position, state->home) > 0.04f) {
+            movement[0] = func_00283180(moby->rotation[2] + 1.57079649f) * 0.05f;
+            movement[1] = func_00283198(moby->rotation[2] + 1.57079649f) * 0.05f;
+            movement[2] = 0.0f;
+            func_00282CC0(moby->position, moby->position, movement);
+            if (state->step < 104)
+                moby->position[2] += 0.07f;
+            state->step++;
+        } else if (!func_L00_00324120(moby)) {
+            state->level = 0;
+            handle = state->sound;
+            if (handle != -1) {
+                sound = (SoundSlot *)(D_00188660 + handle * 0x70);
+                if (sound->owner == moby && sound->active)
+                    func_002E59F8(handle);
+            }
+            state->sound = -1;
+            func_002A7750(moby, 1, -1);
+            qcopy(moby->position, state->home);
+            state->step = 0;
+        } else {
+            goto stop;
+        }
+        break;
+    case 3:
+        if (moby->position[2] >= 50.75f) {
+            if (moby->position[2] < 53.0f &&
+                func_002ACBC8(D_00189E20.position, state->zone) &&
+                D_00189E20.position[2] < moby->position[2])
+                break;
+            movement[0] = func_00283180(moby->rotation[2] - 1.57079649f) * 0.05f;
+            movement[1] = func_00283198(moby->rotation[2] - 1.57079649f) * 0.05f;
+            movement[2] = 0.0f;
+            func_00282CC0(moby->position, moby->position, movement);
+            if (state->step >= 61)
+                moby->position[2] -= 0.07f;
+            state->step++;
+        } else if (!func_L00_00324120(moby) && moby->position[2] < 50.75f) {
+            state->level = 1;
+            handle = state->sound;
+            if (handle != -1) {
+                sound = (SoundSlot *)(D_00188660 + handle * 0x70);
+                if (sound->owner == moby && sound->active)
+                    func_002E59F8(handle);
+            }
+            state->sound = -1;
+            func_002A7750(moby, 1, -1);
+            state->step = 0;
+        } else {
+            goto stop;
+        }
+        break;
+    }
+    goto done;
+stop:
+    handle = state->sound;
+    if (handle != -1) {
+        sound = (SoundSlot *)(D_00188660 + handle * 0x70);
+        if (sound->owner == moby && sound->active)
+            func_002E59F8(handle);
+    }
+    state->sound = -1;
+done:
+    func_00282CF0(movement, moby->position, oldPosition);
+    func_002AD6F0(state->tracker, movement, oldRotation, moby->rotation);
+}
+
 
 INCLUDE_ASM("asm/levels", func_L06_00402230);
 

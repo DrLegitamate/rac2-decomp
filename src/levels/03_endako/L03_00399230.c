@@ -73,7 +73,7 @@ INCLUDE_ASM("asm/levels", func_L03_003C6208);
 
 INCLUDE_ASM("asm/levels", func_L03_003C6A28);
 
-INCLUDE_ASM("asm/levels", func_L03_003C6E50);
+/* func_L03_003C6E50 is defined in L03_003C6E50-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L03_003C7018);
 
@@ -121,16 +121,16 @@ void func_L03_003C85F8(char *a0, s32 a1)
 
 /* func_L03_003C8660 is matched in its own unit, src/levels/03_endako/L03_003C8660-qcopy.c (-frac2-qcopy). */
 
-INCLUDE_ASM("asm/levels", func_L03_003C8698);
+/* func_L03_003C8698 is defined in L03_003C8698.c. */
 
 /* func_L03_003CA938 lives in the -G8 sibling L03_00399230-g8.c. */
 
 
-INCLUDE_ASM("asm/levels", func_L03_003CAD78);
+/* func_L03_003CAD78 is defined in L03_003CAD78-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L03_003CB398);
 
-INCLUDE_ASM("asm/levels", func_L03_003CBC40);
+/* func_L03_003CBC40 is defined in L03_003CBC40-g8.c. */
 
 /* Picks the actor's next motion slot: case 0 draws a random turn rate, case 1
    re-checks the 0x70-stride table entry before refreshing the aim. */
@@ -163,7 +163,7 @@ void func_L03_003CBD70(char *a0)
 
 /* func_L03_003CBE58 lives in the -G8 sibling L03_00399230-g8.c (it reads $gp-relative floats). */
 
-INCLUDE_ASM("asm/levels", func_L03_003CF0C0);
+/* func_L03_003CF0C0 is defined in L03_003CF0C0-g8.c. */
 
 s32 func_L03_003CF7B8(u8 *a0)
 {
@@ -188,7 +188,7 @@ void func_L03_003CFB30(char *a0)
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L03_003D0300);
+/* func_L03_003D0300 is defined in L03_003D0300-g8.c. */
 
 void func_L03_003D1100(char *a0)
 {
@@ -221,8 +221,8 @@ void func_L03_003D1100(char *a0)
 
 /* func_L03_003D1548 is in L03_003D1548-g8.c. */
 
-
 INCLUDE_ASM("asm/levels", func_L03_003D19C8);
+
 
 void func_L03_003D1FB0(char *a0)
 {
@@ -236,7 +236,7 @@ void func_L03_003D1FB0(char *a0)
     *(u16 *)(*(s32 *)(s0 + 0x2C) + 0x96) = 0;
 }
 
-INCLUDE_ASM("asm/levels", func_L03_003D2018);
+/* func_L03_003D2018 is defined in L03_003D2018.c. */
 
 extern u8 *D_L03_001B2A1C_tbl[] __asm__("D_L03_001B2A1C") __attribute__((sda));
 

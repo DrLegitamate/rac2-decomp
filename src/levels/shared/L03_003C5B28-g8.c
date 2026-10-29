@@ -210,3 +210,55 @@ void func_L03_0042B930(u8 *a0) {
     if (a0[0xBC] == 0)
         func_0029F338(a0);
 }
+
+/* One sixteen-byte entry per path step: the step's type and the two nodes chosen for it. */
+typedef struct {
+    s32 type;
+    s32 first;
+    s32 second;
+    s32 flag;
+} PathEntry;
+
+typedef struct {
+    u8 order[16];
+    u8 visited[16];
+    u8 path[16];
+} PathState;
+
+extern PathEntry D_L03_0029BCD0[];
+
+extern s32 D_L03_001B0B50 __attribute__((sda));
+
+extern s32 func_L03_003E2D98(u8 *, u32, s32, u32 *, s32);
+
+/* Clears the entries of the first D_L03_001B0B50 path steps and refills them by type, with
+   func_L03_003E2D98 (a neighbour of a node that is not on the path): type 1 picks one
+   neighbour of the step's path node, type 2 also a neighbour of that pick, type 3 a second
+   neighbour of the path node other than the first. */
+void func_L03_003E2C08(u8 *p) {
+    PathState *q = *(PathState **)(p + 0x68);
+    s32 i;
+    u32 node, prev, prev2;
+
+    for (i = 0; i < D_L03_001B0B50; i++) {
+        D_L03_0029BCD0[i].first = -1;
+        D_L03_0029BCD0[i].second = -1;
+        D_L03_0029BCD0[i].flag = -1;
+        node = q->path[i];
+        switch (D_L03_0029BCD0[i].type) {
+        case 1:
+            D_L03_0029BCD0[i].first = func_L03_003E2D98(p, node, i, 0, 0);
+            break;
+        case 2:
+            D_L03_0029BCD0[i].first = func_L03_003E2D98(p, node, i, 0, 0);
+            prev = D_L03_0029BCD0[i].first;
+            D_L03_0029BCD0[i].second = func_L03_003E2D98(p, prev, i, &prev, 1);
+            break;
+        case 3:
+            D_L03_0029BCD0[i].first = func_L03_003E2D98(p, node, i, 0, 0);
+            prev2 = D_L03_0029BCD0[i].first;
+            D_L03_0029BCD0[i].second = func_L03_003E2D98(p, node, i, &prev2, 1);
+            break;
+        }
+    }
+}

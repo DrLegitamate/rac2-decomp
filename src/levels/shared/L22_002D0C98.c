@@ -113,4 +113,4 @@ void func_L22_00335078(u8 *a0)
 
 /* func_L22_0039CDC0 is in L22_002D0C98-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L22_0039D198);
+/* func_L22_0039D198 is in L22_0039D198-g8.c. */

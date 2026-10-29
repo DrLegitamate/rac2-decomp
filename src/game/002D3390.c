@@ -153,7 +153,7 @@ int func_002D3538(void)
 
 
 
-INCLUDE_ASM("asm/game", func_002D36A0);
+/* func_002D36A0 is in its -G8 sibling. */
 
 INCLUDE_ASM("asm/game", func_002D3D88);
 

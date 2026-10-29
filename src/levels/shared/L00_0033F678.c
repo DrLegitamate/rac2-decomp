@@ -239,7 +239,7 @@ void func_L00_00340490(char *a0)
 
 
 
-INCLUDE_ASM("asm/levels", func_L00_003411A0);
+
 
 /* divides one helper result by a second, multiplies a third by the quotient, quantises that product to a byte lane and the half quotient through two more helpers, bumps a byte counter, adds a scaled helper result to a float field, forwards two 16-byte sub-objects to three helpers, stores the merged byte lanes over a low halfword and calls a trailing helper when a probe on the parameter returns non-zero */
 void func_L00_00341658(char *p)
@@ -313,7 +313,7 @@ float func_L00_00341A88(void *a0, void *a1, float scale)
 
 
 
-INCLUDE_ASM("asm/levels", func_L00_00341D08);
+/* func_L00_00341D08 is defined in L00_0033F678-projection.c. */
 
 INCLUDE_ASM("asm/levels", func_L00_00341FA8);
 

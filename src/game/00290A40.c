@@ -1,5 +1,22 @@
 #include "include_asm.h"
 
+extern void *func_00115484(void *, int, int);
+extern char D_001BAEC0[];
+extern char D_02000000[];
+extern int D_001B22B0[] __attribute__((sda));
+extern char ref_L00_00290B48_00[];
+extern char ref_L00_00290B48_01[];
+
+typedef struct {
+    unsigned long long words[2];
+} __attribute__((aligned(16))) ParserScratch;
+
+extern unsigned char ref_L00_00291640_01[];
+extern unsigned short *func_002F4FA0(unsigned short *, unsigned short *, int, ParserScratch *);
+extern unsigned short *func_002E31E8(unsigned short *, unsigned short *, int, ParserScratch *);
+extern unsigned short *func_002F0B78(unsigned short *, unsigned short *, int, ParserScratch *);
+
+
 extern int func_002886C8(int a, char *b);
 
 extern void func_002883E8(int a);
@@ -44,7 +61,35 @@ int func_00290AB0(int source, int destination, int length)
     return result;
 }
 
-INCLUDE_ASM("asm/game", func_00290B48);
+void func_00290B48(void)
+{
+    int *state = (int *)D_001BAEC0;
+    unsigned int start, size;
+
+    func_00115484(state, 0, 0x9C);
+    state[0] = 0;
+    state[1] = 0x100000;
+    start = ((unsigned int)ref_L00_00290B48_00 + 0x3FFF) & ~0x3FFF;
+    state[2] = start;
+    state[3] = start;
+    size = D_001B22B0[0];
+    state[4] = state[3] + size;
+    state[5] = state[4] + size;
+    state[6] = state[5] + state[1];
+    state[0x84 / 4] = (unsigned int)ref_L00_00290B48_01 - 0x8000;
+    state[0x80 / 4] = state[0x84 / 4] - 0x40000;
+    state[0x7C / 4] = state[0x80 / 4] - 0x64000;
+    state[0x78 / 4] = state[0x7C / 4] - 0x2C000;
+    state[0x74 / 4] = state[0x78 / 4] - 0x8000;
+    state[0x68 / 4] = state[6];
+    state[0x88 / 4] = (unsigned int)D_02000000 - 0x4000;
+    state[0x70 / 4] = state[0x74 / 4] - 0x14000;
+    state[0x6C / 4] = state[0x70 / 4];
+    state[0x8C / 4] = 0x07000000;
+    state[0x90 / 4] = 0x07100000;
+    state[0x94 / 4] = 0x07180000;
+    state[0x98 / 4] = 0x07200000;
+}
 
 INCLUDE_ASM("asm/game", func_00290C60);
 
@@ -138,6 +183,31 @@ void func_00291450(int index) {
     func_00282A88((void *)(D_001C2C40 + index * 0x30), 0x30);
 }
 
-INCLUDE_ASM("asm/game", func_002914B8);
+/* func_002914B8 is in 00290A40-g16.c. */
 
-INCLUDE_ASM("asm/game", func_00291640);
+void func_00291640(int index)
+{
+    unsigned char *record = ref_L00_00291640_01 + index * 0x30;
+    unsigned short *position = *(unsigned short **)(record + 0xC);
+    unsigned short *end = position + 0x200;
+    LightDef *def = &((LightDef *)D_001C2B40)[index];
+    ParserScratch *scratch = (ParserScratch *)def->position;
+    ParserScratch scratchCopy;
+    qcopy(&scratchCopy, scratch);
+
+    if (position < end) {
+        *(short *)record = 0;
+        position = func_002F4FA0(position, end, index, scratch);
+        *(short *)(record + 2) = (position - *(unsigned short **)(record + 0xC));
+        if (position < end) {
+            *(short *)(record + 4) = (position - *(unsigned short **)(record + 0xC));
+            position = func_002E31E8(position, end, index, scratch);
+            *(short *)(record + 6) = (position - *(unsigned short **)(record + 0xC)) - *(unsigned short *)(record + 4);
+            if (position < end) {
+                *(short *)(record + 8) = (position - *(unsigned short **)(record + 0xC));
+                position = func_002F0B78(position, end, index, scratch);
+                *(short *)(record + 0xA) = (position - *(unsigned short **)(record + 0xC)) - *(unsigned short *)(record + 8);
+            }
+        }
+    }
+}

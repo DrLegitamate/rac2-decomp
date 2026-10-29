@@ -46,6 +46,13 @@ extern void func_002A7750(void *, int, int);
 
 
 extern int func_00283CF0(float);
+extern int func_002B3868(void *);
+extern void func_002E59F8(int);
+extern void func_0029F338(void *);
+extern void func_L00_00426478(void *);
+extern void func_002B0A68(void *, int, void *, float, float, float, float, int);
+extern void func_002A6C58(void *, int, int);
+extern char D_00188660[], D_00189EA0[];
 extern int func_002A77E0(int);
 extern float func_002A78D8(float, float);
 extern int func_001163B0(void);
@@ -81,7 +88,7 @@ void func_L18_00434128(u8 *obj) {
 
 INCLUDE_ASM("asm/levels", func_L18_00433460);
 
-INCLUDE_ASM("asm/levels", func_L18_00433B70);
+/* func_L18_00433B70 lives in L18_00433B70.c. */
 
 INCLUDE_ASM("asm/levels", func_L18_00434510);
 
@@ -186,7 +193,7 @@ void func_L18_004350E0(char *pos, int count) {
 INCLUDE_ASM("asm/levels", func_L18_004354F8);
 
 
-INCLUDE_ASM("asm/levels", func_L18_00435B10);
+/* func_L18_00435B10 is defined in L18_00435B10-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L18_00436B80);
 
@@ -247,7 +254,7 @@ void func_L18_00439FC8(u8 *obj) {
 }
 
 
-INCLUDE_ASM("asm/levels", func_L18_0043C258);
+/* func_L18_0043C258 lives in L18_0043C258-g8.c. */
 
 /* func_L18_0043C778 is defined in L18_0043C778-g64.c. */
 
@@ -357,4 +364,4 @@ intact:
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L18_00447128);
+/* func_L18_00447128 is defined in L18_00447128-g8.c. */

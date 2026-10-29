@@ -6,7 +6,7 @@ INCLUDE_ASM("asm/levels", func_L20_0043ECB0);
 
 /* func_L20_0043F460 is defined in L20_0043ECB0-g8.c (it reaches a global through $gp). */
 
-INCLUDE_ASM("asm/levels", func_L20_0043F570);
+/* func_L20_0043F570 is defined in L20_0043F570-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L20_0043FC70);
 
@@ -27,7 +27,6 @@ void func_L20_00440460(char *arg0) {
     *(unsigned short *)(arg0 + 0x34) = (*(unsigned short *)(arg0 + 0x34) | 0x41) & 0xEFFF;
     func_002A7750(arg0, 6, 3);
 }
-
 extern void func_00282CC0(char *, char *, char *);
 extern void func_00282D30(char *, char *, float);
 extern void func_002A8C28(char *, char *, int, int, float, float, float, int,
@@ -57,15 +56,15 @@ void func_L20_00440570(void) {
 
 INCLUDE_ASM("asm/levels", func_L20_00440598);
 
-INCLUDE_ASM("asm/levels", func_L20_00441CB8);
+/* func_L20_00441CB8 is defined in L20_00441CB8-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L20_004421A8);
+/* func_L20_004421A8 is defined in L20_004421A8-g8.c. */
 
 /* func_L20_004424A0 is defined in L20_004424A0-helpers-g8.c. */
 /* func_L20_004424A0 reads four constants through $gp: its near miss is in
    nonmatching/levels/func_L20_004424A0.c and belongs in the -G8 sibling. */
 
-INCLUDE_ASM("asm/levels", func_L20_00442550);
+/* func_L20_00442550 is defined in L20_00442550-g8.c. */
 
 extern void func_002A8C28(char *, char *, int, int, float, float, float, int,
                           int);
@@ -122,7 +121,7 @@ done:
     *(int *)(state + 0x17F4) = *(unsigned char *)(arg0 + 0x95);
 }
 
-INCLUDE_ASM("asm/levels", func_L20_00442CD8);
+/* func_L20_00442CD8 is defined in L20_00442CD8-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L20_00442E68);
 
@@ -280,7 +279,7 @@ void func_L20_00444AA8(char *arg0, float *arg1) {
     *(float *)(state + 0x2B8) = f;
 }
 
-INCLUDE_ASM("asm/levels", func_L20_00444B48);
+/* func_L20_00444B48 is defined in L20_00444B48-g8.c. */
 
 extern void func_L00_002E6EF8(void (*)(void), int);
 
@@ -289,7 +288,7 @@ void func_L20_00444C68(int arg0) {
     func_L00_002E6EF8(func_L20_00440570, arg0);
 }
 
-INCLUDE_ASM("asm/levels", func_L20_00444CA8);
+/* func_L20_00444CA8 is defined in L20_00444CA8.c. */
 
 INCLUDE_ASM("asm/levels", func_L20_004450D8);
 /* func_L20_004450D8 reads a global through $gp: its near miss is in
@@ -299,7 +298,7 @@ INCLUDE_ASM("asm/levels", func_L20_004451C0);
 
 INCLUDE_ASM("asm/levels", func_L20_00445738);
 
-INCLUDE_ASM("asm/levels", func_L20_00445890);
+/* func_L20_00445890 is defined in L20_00445890-g8.c. */
 
 /* The level's own jump table (the label of the data blob at 0x002B5980). */
 extern void *jtbl_002B5980[];
@@ -439,7 +438,84 @@ void func_L20_00446FA8(char *arg0) {
     func_002AD6F0(state+0x20,&delta,&rot,arg0+0xF0);
 }
 
-INCLUDE_ASM("asm/levels", func_L20_004473B0);
+extern void func_L00_003294F0(char *, int);
+extern void func_L20_00447640(char *);
+
+void func_L20_004473B0(char *arg0) {
+    char *state;
+    TI128 pos, rot, delta;
+    float accel;
+
+    state = *(char **)(arg0 + 0x68);
+    qcopy(&pos, arg0 + 0x10);
+    qcopy(&rot, arg0 + 0xF0);
+    switch (*(unsigned char *)(arg0 + 0x20)) {
+    case 0:
+        qcopy(state + 0x60, arg0 + 0x10);
+        *(int *)(state + 0x5C) |= 1;
+        func_L00_003294F0(arg0, 1);
+        func_002A7750((int)arg0, 4, -1);
+        break;
+    case 1:
+        if (func_002B3868(arg0) != 0) {
+            *(int *)(state + 0x88) = 0;
+            *(int *)(state + 0x84) = *(int *)(state + 0x74);
+        }
+        if (func_00282948(state + 0x84) != 0) {
+            func_002A7750((int)arg0, 2, -1);
+        }
+        {
+            int duration = *(int *)(state + 0x74);
+            float speed = *(float *)(state + 0x70);
+            float start = *(float *)(state + 0x68) + speed;
+            accel = (speed * 4.0f) / (float)(duration * duration);
+            func_002AA548(arg0 + 0x18, state + 0x88, start, accel,
+                          accel, accel * (float)duration);
+        }
+        break;
+    case 2:
+        if (func_002B3868(arg0) != 0) {
+            *(int *)(state + 0x84) = *(int *)(state + 0x78);
+        }
+        if (func_00282948(state + 0x84) != 0) {
+            func_002A7750((int)arg0, 3, -1);
+        }
+        break;
+    case 3:
+        if (func_002B3868(arg0) != 0) {
+            *(int *)(state + 0x88) = 0;
+            *(int *)(state + 0x84) = *(int *)(state + 0x7C);
+        }
+        if (func_00282948(state + 0x84) != 0) {
+            func_002A7750((int)arg0, 4, -1);
+        }
+        {
+            int duration = *(int *)(state + 0x74);
+            float speed = *(float *)(state + 0x70);
+            float start = *(float *)(state + 0x68);
+            accel = (speed * 4.0f) / (float)(duration * duration);
+            func_002AA548(arg0 + 0x18, state + 0x88, start, accel,
+                          accel, accel * (float)duration);
+        }
+        break;
+    case 4:
+        if (func_002B3868(arg0) != 0) {
+            *(int *)(state + 0x84) = *(int *)(state + 0x80);
+        }
+        if (func_00282948(state + 0x84) != 0) {
+            func_002A7750((int)arg0, 1, -1);
+        }
+        break;
+    }
+    if (func_002B38B8(arg0) == 0) {
+        if (0.0f < *(float *)(state + 0x8C)) {
+            func_L20_00447640(arg0);
+            *(float *)(state + 0x8C) = -1000.0f;
+        }
+    }
+    func_00282CF0(&delta, arg0 + 0x10, &pos);
+    func_002AD6F0(state + 0x20, &delta, &rot, arg0 + 0xF0);
+}
 
 INCLUDE_ASM("asm/levels", func_L20_00447640);
 

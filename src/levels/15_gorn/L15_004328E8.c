@@ -16,6 +16,26 @@ extern float func_002831B0(float);
 extern float func_00283180(float);
 extern char D_L15_001B97C0[];
 
+extern void func_L06_00382608(char *, int, int, int, float, int);
+extern int func_002EEB00(char *);
+extern void func_002EE920(char *, char *);
+extern void func_002EE678(char *, int);
+extern void func_L05_0037C160(char *);
+extern void func_L05_0037B538(char *, int, int, int);
+typedef struct GornPathPoint {
+    float position[3];
+    float action;
+} GornPathPoint;
+
+typedef struct GornPath {
+    int count;
+    int pad[3];
+    GornPathPoint points[1];
+} GornPath;
+extern char *D_L15_001FE480[];
+extern void func_L15_00436BA8(char *);
+extern void func_L15_00436C68(void);
+
 /* ---- shared declarations ---- */
 
 extern int func_002ED688(unsigned char *owner);
@@ -53,7 +73,7 @@ void func_L15_004328E8(void *a0) {
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L15_00432A60);
+/* func_L15_00432A60 is in L15_00432A60-ribbon.c. */
 
 extern float func_00283CE0(int);
 extern int func_00283CF0(float);
@@ -412,7 +432,63 @@ void func_L15_00436298(char *a0) {
 
 /* func_L15_004363C8 is in L15_004363C8-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L15_00436990);
+/* Advance through the path points, pausing when an odd encoded action supplies
+   a duration in seconds. The path has a 16-byte header and 16-byte points. */
+void func_L15_00436990(char *object) {
+    char *mover = object;
+    char *state = *(char **)(mover + 0x68);
+
+    switch (*(unsigned char *)(mover + 0x20)) {
+    case 0:
+        *(unsigned char *)(mover + 0x30) = 0xFF;
+        if (func_L00_00367720() == 0) {
+            return;
+        }
+        func_L15_00436BA8(mover);
+        if (*(int *)(state + 0x264) != 0) {
+            func_L05_00379E60(mover, (void *)func_L15_00436C68, 0, 0);
+        }
+        func_L06_00382608(mover, *(int *)(state + 0x268), 0x8000FF00, 0x81, 0.75f, 1);
+        break;
+    case 1: {
+        GornPath *path;
+        char *owner;
+        int index;
+
+        func_L06_00382608(mover, *(int *)(state + 0x268), 0x8000FF00, 0x81, 0.75f, 1);
+        owner = (char *)func_002ED688(mover);
+        path = (GornPath *)D_L15_001FE480[*(int *)(state + 0x268)];
+        if (func_002EEB00(mover) != 0) {
+            index = *(int *)(state + 0x26C);
+            *(int *)(state + 0x26C) = index + 1;
+            if (index + 1 == path->count - 1) {
+                *(unsigned char *)(mover + 0x20) = 3;
+            } else {
+                float action = path->points[index].action;
+
+                if (action != -1.0f) {
+                    if ((func_00283CF0(action) & 1) != 0) {
+                        *(int *)(state + 0x274) = (func_00283CF0(action) >> 1) * 0x3C;
+                        *(unsigned char *)(mover + 0x20) = 2;
+                    }
+                }
+                func_002EE920(mover, (char *)&path->points[*(int *)(state + 0x26C)]);
+                *(int *)(owner + 0x130) = 0x1E8480;
+            }
+        }
+        func_002EE678(mover, 0xC);
+        func_L05_0037C160(mover);
+        func_L05_0037B538(mover, 0, 1, 1);
+        break;
+    }
+    case 2:
+        if (func_00282948((int *)(state + 0x274)) != 0) {
+            *(unsigned char *)(mover + 0x20) = 1;
+        }
+        break;
+    }
+}
+
 
 void func_L15_00436BA8(char *a0) {
     char *s0 = a0;

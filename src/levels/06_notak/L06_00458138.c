@@ -1,4 +1,13 @@
 #include "common.h"
+extern u8 *D_L06_001B281C MACRO_ADDR;
+extern void func_L00_00429020(int);
+extern short D_L06_001B3790[] __attribute__((sda));
+extern short D_L06_001B37A0[] __attribute__((sda));
+extern char D_L06_0025FFC0[];
+extern float func_00283CE0(int);
+extern void func_L06_00459020(char *, int, int, int, float, float, float);
+extern void func_L06_00459620(char *);
+
 
 extern float func_00283B98(float, float);
 typedef struct NotakChild {
@@ -186,11 +195,31 @@ char *func_L06_004583A8(char *a0)
 INCLUDE_ASM("asm/levels", func_L06_004587E8);
 
 
-INCLUDE_ASM("asm/levels", func_L06_00458F30);
+void func_L06_00458F30(char *a0)
+{
+    char *obj = *(char **)(a0 + 0x68);
+    char *p = D_L06_0025FFC0;
+    short *t2 = D_L06_001B37A0;
+    short *t1 = D_L06_001B3790;
+    int i;
+
+    for (i = 5; i >= 0; i--) {
+        if (*t1 != 0) {
+            float f = func_00283CE0(*t2);
+            int r = func_00283CF0(f);
+
+            func_L06_00459020(p + *(int *)(obj + 0x48) * 0x180, r, r, 4, 0.025f, 0.5f, 0.2f);
+        }
+        p += 0x40;
+        t2++;
+        t1++;
+    }
+    func_L06_00459620(a0);
+}
 
 INCLUDE_ASM("asm/levels", func_L06_00459020);
 
-INCLUDE_ASM("asm/levels", func_L06_00459620);
+/* func_L06_00459620 is defined in L06_00458138-render-g8.c. */
 
 /* Emits paired particles with opposite spin and randomized velocities. */
 void func_L06_00459828(float *pos, int count) {
@@ -293,7 +322,20 @@ void func_L06_00459C38(unsigned char *a0)
 
 INCLUDE_ASM("asm/levels", func_L06_00459EC0);
 
-INCLUDE_ASM("asm/levels", func_L06_0045A0D0);
+void func_L06_0045A0D0(char *a0, char *a1, float f, float g, float h)
+{
+    char buf[16];
+    char *q = a1;
+
+    if (*(float *)(*(char **)(a1 + 0x11C)) - 0.3f < *(float *)(a0 + 0x18)) {
+        *(float *)(a1 + 0xC8) -= 0.163333335f;
+    }
+    qcopy(buf, a0 + 0x10);
+    func_002AA548(buf + 8, q + 0xC8, *(float *)(q + 0x128), f, g, h);
+    if (func_L04_0033CB08(a0, q + 0xC0, 0x400, 0x10, 1.0f, 0.0f) != 0) {
+        func_00282D30(q + 0xC0, q + 0xC0, 0.5f);
+    }
+}
 
 int func_L06_0045A1B0(char *a0, char *a1, float p1, float p2, float p3, float p4, float p5,
                       float p6, float p7)
@@ -540,13 +582,58 @@ void func_L06_0045C3E8(char *a0)
     *(unsigned char *)(a0 + 0xA8) = 0xFF;
 }
 
-INCLUDE_ASM("asm/levels", func_L06_004621C8);
+/* func_L06_004621C8 is defined in L06_00458138-effect-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L06_00464900);
+void func_L06_00464900(char *a0)
+{
+    char *o = *(char **)(a0 + 0x68);
+
+    switch (*(unsigned char *)(a0 + 0x20)) {
+    case 0:
+        *(unsigned char *)(a0 + 0x30) = 0xFF;
+        *(unsigned char *)(a0 + 0x20) = 1;
+        break;
+    case 1: {
+        int i = *(int *)(o + 4);
+        char *base = (char *)D_L06_001B281C;
+        char *p = (char *)(base + (i << 8));
+        int t = *(unsigned char *)(p + 0x20);
+        int j;
+        char *q;
+
+        if (t != 2) {
+            break;
+        }
+        j = *(int *)(o + 8);
+        q = (char *)(base + (j << 8));
+        if (q == 0) {
+            break;
+        }
+        if (*(unsigned char *)(q + 0x20) == 0xFE) {
+            break;
+        }
+        if (*(unsigned char *)(q + 0x20) == 0xFD) {
+            break;
+        }
+        func_L00_00429020(*(int *)o);
+        *(unsigned char *)(a0 + 0x20) = t;
+        break;
+    }
+    case 2: {
+        int i = *(int *)(o + 4);
+        char *p = (char *)(D_L06_001B281C + (i << 8));
+
+        if (*(unsigned char *)(p + 0x20) != 2) {
+            *(unsigned char *)(a0 + 0x20) = 1;
+        }
+        break;
+    }
+    }
+}
 
 INCLUDE_ASM("asm/levels", func_L06_004649F0);
 
-INCLUDE_ASM("asm/levels", func_L06_00464F40);
+/* func_L06_00464F40 is defined in L06_00464F40-g8.c. */
 
 
 void func_L06_00478548(float a, float b)

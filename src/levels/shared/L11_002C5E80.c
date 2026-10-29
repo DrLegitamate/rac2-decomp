@@ -60,7 +60,7 @@ extern unsigned char D_L11_00189EA0[];
 
 INCLUDE_ASM("asm/levels", func_L11_002C5E80);
 
-INCLUDE_ASM("asm/levels", func_L11_002CDE10);
+/* func_L11_002CDE10 lives in L11_002CDE10-motion.c. */
 
 void func_L11_003404E0(char *a0)
 {
@@ -124,7 +124,7 @@ void func_L11_00439D78(float a, float b, float c, float d)
     func_00283CF0((c + func_00282C10(c * c + v)) / d);
 }
 
-INCLUDE_ASM("asm/levels", func_L11_0044FFA0);
+/* func_L11_0044FFA0 lives in L11_0044FFA0-g8.c. */
 
 /* Draws the record's two markers, the scaled radius and the two colours, for each of the
    two record kinds the byte at 0x20 selects. */
@@ -177,7 +177,7 @@ void func_L11_004506C0(char *p)
     *(float *)(p + 60) = 1.0f;
 }
 
-INCLUDE_ASM("asm/levels", func_L11_004507B0);
+/* func_L11_004507B0 lives in L11_004507B0-g8.c. */
 
 /* resets a state record: zero words, plus/minus one float flags and two 64-bit fields in the retail store order */
 void func_L11_00458D00(char *p)
@@ -312,7 +312,7 @@ INCLUDE_ASM("asm/levels", func_L11_0046BC08);
 
 /* func_L11_0046BD18 is defined in L11_0046BD18-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L11_0046C1E0);
+/* func_L11_0046C1E0 lives in L11_002C5E80-trail-g8.c. */
 
 /* resets a state record: zero words, plus/minus one float flags and two 64-bit fields in the retail store order */
 void func_L11_00472008(char *p)

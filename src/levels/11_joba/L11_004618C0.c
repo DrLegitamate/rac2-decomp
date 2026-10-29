@@ -1,6 +1,6 @@
 #include "include_asm.h"
 
-INCLUDE_ASM("asm/levels", func_L11_004618C0);
+/* Defined in L11_004618C0-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L11_0046D660);
 

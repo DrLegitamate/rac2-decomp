@@ -176,7 +176,6 @@ void func_L00_002D24D0(int value)
     D_0018AA68 = value;
 }
 
-INCLUDE_ASM("asm/levels", func_L00_002D24E8);
 
 INCLUDE_ASM("asm/levels", func_L00_002D2E68);
 

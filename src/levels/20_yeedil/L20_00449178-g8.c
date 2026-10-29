@@ -118,6 +118,4 @@ INCLUDE_ASM("asm/levels", func_L20_00449FD0);
 
 /* func_L20_0044A8F0 is defined in L20_0044A8F0-g8.c. */
 
-/* func_L20_00449338 is a near miss: nonmatching/levels/func_L20_00449338.c */
-
-INCLUDE_ASM("asm/levels", func_L20_00449338);
+/* func_L20_00449338 is defined in L20_00449338-g8.c. */

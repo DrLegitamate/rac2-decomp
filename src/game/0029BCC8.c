@@ -568,6 +568,8 @@ L11:
 
 
 
+extern unsigned char D_001395C1[];
+
 INCLUDE_ASM("asm/game", func_0029DC90);
 
 extern int D_001397C4[];

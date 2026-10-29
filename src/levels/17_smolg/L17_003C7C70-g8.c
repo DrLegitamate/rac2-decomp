@@ -298,3 +298,197 @@ void func_L17_003E41A8(u8 *obj)
     }
     p->p408 = target;
 }
+
+
+/* The player block at D_00189E20, as far as the two updates below use it. */
+typedef struct {
+    u8 pad000[0x80];
+    f32 pos[4];                 /* 0x80: the point IsPointInCuboid tests */
+    u8 pad090[0x162];
+    u16 status;                 /* 0x1F2 */
+    u8 pad1F4[0x148];
+    u8 *target;                 /* 0x33C: compared with the updating object */
+    u8 pad340[0xE];
+    s16 state;                  /* 0x34E */
+    u8 pad350[0x268];
+    f32 speed;                  /* 0x5B8 */
+    u8 pad5BC[0x1CD8];
+    s32 mode;                   /* 0x2294 */
+} L17Player;
+extern L17Player D_00189E20;
+
+/* The level's save record: one collected flag per object id from 0x464. */
+typedef struct { u8 pad[0x464]; u8 collected[0]; } L17SaveState;
+extern L17SaveState D_L17_0021EBB0;
+
+/* The current level, read with the lw macro: absolute in ordinary flow, $gp in a
+   delay slot. */
+extern s32 D_001A79F0 MACRO_ADDR;
+/* Per-level save nibbles, 0x400 bytes a level, two object ids a byte. */
+extern u8 D_0019B4A8[];
+/* Per-level object flags, 16 bytes a level. */
+extern u8 D_0019B2E8[];
+
+/* Paths: a count, then 16-byte points from 0x10. */
+extern u8 *D_L17_001FE880[];
+
+extern f32 func_00283B98(f32, f32);
+extern f32 func_00283198(f32);
+extern f32 func_002A7940(void);
+extern s32 func_002B3868(void *);
+extern s32 func_002ACBC8(void *, s32);
+extern void func_002B0CE0(s32, s32, s32);
+extern s32 func_002E5CF8(s32, s32, void *);
+extern void func_L00_003294F0(void *, s32);
+extern void func_L00_00429020(s32);
+extern void func_L13_002CEF00(s32, s32);
+
+/* func_L17_0041EAA8's state record. */
+typedef struct {
+    s32 group;                  /* 0x0: handed to func_L00_00429020 once, then -1 */
+    f32 phase;                  /* 0x4: colour pulse angle */
+    s32 cuboid;                 /* 0x8: IsPointInCuboid index, negative for none */
+    s32 linked;                 /* 0xC: 0x100-byte record at D_L17_001B2C1C, -1 for none */
+    f32 speed;                  /* 0x10: given to the player block when nonzero */
+} L17PadVars;
+
+/* Pulses the object's colour. While the player block's target is this object it shows
+   the lit colour and sets the player's status and speed; the first time (group set, id
+   not collected, save nibble still zero) it also hands its group to func_L00_00429020,
+   counts the id in its save nibble and passes the linked record to func_L00_003294F0.
+   With the player inside its cuboid in mode 0x82 it calls func_L13_002CEF00(6, 1). */
+void func_L17_0041EAA8(u8 *obj)
+{
+    L17PadVars *vars = *(L17PadVars **)(obj + 0x68);
+    s32 shade, nibble;
+    u16 id;
+    u8 *counter;
+
+    vars->phase = func_00283B98(vars->phase, 0.10471977f);
+    shade = FloatToInt(func_00283198(vars->phase) * 128.0f);
+    if (shade > 128)
+        shade = 128;
+    else if (shade < 32)
+        shade = 32;
+    switch (obj[0x20]) {
+    case 0:
+        if (func_002B3868(obj))
+            *(u16 *)(obj + 0x34) |= 0x10;
+        func_002A7750(obj, 1, -1);
+        break;
+    case 1:
+        func_002B3868(obj);
+        if (D_00189E20.target == obj) {
+            if (vars->group != -1) {
+                id = *(u16 *)(obj + 0xB2);
+                if (!D_L17_0021EBB0.collected[(s16)id]) {
+                    nibble = D_0019B4A8[((s16)id >> 1) + (D_001A79F0 << 10)];
+                    nibble = ((id & 1) ? nibble >> 4 : nibble) & 7;
+                    if (!nibble) {
+                        u16 slot;
+
+                        func_L00_00429020(vars->group);
+                        slot = *(u16 *)(obj + 0xB2);
+                        if (slot & 1) {
+                            counter = D_0019B4A8 + (((s16)slot >> 1) + (D_001A79F0 << 10));
+                            if (((*counter >> 4) & 7) != 7)
+                                *counter += 16;
+                        } else {
+                            counter = D_0019B4A8 + (((s16)slot >> 1) + (D_001A79F0 << 10));
+                            if ((*counter & 7) != 7)
+                                *counter += 1;
+                        }
+                        if (vars->linked != -1)
+                            func_L00_003294F0(D_L17_001B2C1C + (vars->linked << 8), 1);
+                        vars->group = -1;
+                    }
+                }
+            }
+            func_002B0CE0(12, 0x27F7, 1);
+            *(s32 *)(obj + 0x78) = (0x80 << 24) | (shade << 8);
+            D_00189E20.status = 2;
+            if (vars->speed != 0)
+                D_00189E20.speed = vars->speed;
+        } else
+            *(s32 *)(obj + 0x78) = (0x80 << 24) | shade;
+        break;
+    }
+    if (vars->cuboid >= 0 && IsPointInCuboid(D_00189E20.pos, vars->cuboid)
+        && D_00189E20.mode == 0x82)
+        func_L13_002CEF00(6, 1);
+}
+
+/* func_L17_00420E08's state record. */
+typedef struct {
+    s32 path;                   /* 0x0: index into D_L17_001FE880, -1 for none */
+    f32 marker;                 /* 0x4: point w values equal to it are cleared */
+    s32 trigger;                /* 0x8: nonzero activates the object as well */
+    f32 phase;                  /* 0xC: colour pulse angle */
+} L17SwitchVars;
+
+/* A path seen from its i-th point, i * 16 bytes in: the points follow a 16-byte header. */
+typedef struct { u8 header[0x10]; f32 x, y, z, w; } L17PathPoint;
+
+/* Starts at a random phase and goes straight to the active state when its level flag
+   (D_0019B2E8, bit 0x80) is set; otherwise it pulses its grey until the player block
+   targets it in state 0 or, with the trigger set, the flag becomes set. Activating sets
+   the lit colour, plays sound 0 (from state 1 only) and clears the w of every point of
+   its path that equals the marker. */
+void func_L17_00420E08(u8 *obj)
+{
+    L17SwitchVars *vars = *(L17SwitchVars **)(obj + 0x68);
+    s32 shade;
+
+    switch (obj[0x20]) {
+    case 0: {
+        s32 level;
+
+        vars->phase = func_002A7940();
+        level = D_001A79F0;
+        *(f32 *)(obj + 0x18) -= 0.35f;
+        if (D_0019B2E8[obj[0xB0] + level * 16] & 0x80) {
+            obj[0xBC] = 2;
+            *(u32 *)(obj + 0x78) = 0x80208020;
+            obj[0x20] = 2;
+            if (vars->path != -1) {
+                s32 i;
+
+                for (i = 0; i < *(s32 *)D_L17_001FE880[vars->path]; i++) {
+                    if (((L17PathPoint *)(D_L17_001FE880[vars->path] + (i << 4)))->w == vars->marker)
+                        ((L17PathPoint *)(D_L17_001FE880[vars->path] + (i << 4)))->w = 0;
+                }
+            }
+        } else
+            obj[0x20] = 1;
+        break;
+    }
+    case 1:
+        vars->phase = func_00283B98(vars->phase, 0.10471977f);
+        shade = FloatToInt((func_00283198(vars->phase) * 4.0f - 3.0f) * 128.0f);
+        if (shade > 128)
+            shade = 128;
+        else if (shade < 32)
+            shade = 32;
+        {
+            u32 green = (shade << 8) | (0x80 << 24);
+
+            *(u32 *)(obj + 0x78) = ((shade << 16) | green) | shade;
+        }
+        if ((D_00189E20.target == obj && !D_00189E20.state)
+            || (vars->trigger && (D_0019B2E8[obj[0xB0] + D_001A79F0 * 16] & 0x80))) {
+            obj[0x20] = 2;
+            obj[0xBC] = 1;
+            *(u32 *)(obj + 0x78) = 0x80208020;
+            PlayMobySound(0, 0, obj);
+            if (vars->path != -1) {
+                s32 i;
+
+                for (i = 0; i < *(s32 *)D_L17_001FE880[vars->path]; i++) {
+                    if (((L17PathPoint *)(D_L17_001FE880[vars->path] + (i << 4)))->w == vars->marker)
+                        ((L17PathPoint *)(D_L17_001FE880[vars->path] + (i << 4)))->w = 0;
+                }
+            }
+        }
+        break;
+    }
+}

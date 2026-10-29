@@ -119,11 +119,11 @@ u8 *func_L07_003F65E8(s32 group)
 
 /* func_L07_003F6C40 is defined in L07_003F6C40.c. */
 
-/* func_L07_003F6CF0 is defined in L07_003F4578-g8.c (this unit has no $gp access for it). */
+/* func_L07_003F6CF0 is defined in L07_003F4578-spin-g8.c. */
 
 /* func_L07_003F6DC0 is defined in L07_003F6DC0-copy.c. */
 
-INCLUDE_ASM("asm/levels", func_L07_003F7048);
+/* func_L07_003F7048 is defined in L07_003F7048-g8.c. */
 
 /* An entity node: the flag word at 0x34, the counter at 0x98, two children. */
 typedef struct SibNode SibNode;
@@ -154,14 +154,14 @@ void func_L07_003F78F8(SibNode *a0)
     p->f414->f98 = 0;
 }
 
-INCLUDE_ASM("asm/levels", func_L07_003F7968);
+/* func_L07_003F7968 is defined in L07_003F7968-g32.c. */
 
 u8 *func_L07_003F7BE0(u8 *a0)
 {
     return *(u8 **)(*(u8 **)(a0 + 0x68) + 0x420);
 }
 
-INCLUDE_ASM("asm/levels", func_L07_003F7BF0);
+/* func_L07_003F7BF0 is defined in L07_003F7BF0-g8.c. */
 
 extern void func_002A93B0(u8 *a);
 
@@ -258,8 +258,6 @@ void func_L07_003FF618(u8 *a0)
     func_L01_003C91C8(a0);
 }
 
-INCLUDE_ASM("asm/levels", func_L07_004080E0);
-
 extern void func_310D80(void *a, f32 b, f32 c);
 
 extern f32 func_2E4280(f32 a);
@@ -301,7 +299,7 @@ void func_L07_00408338(u8 *a0)
 
 INCLUDE_ASM("asm/levels", func_L07_0040E198);
 
-INCLUDE_ASM("asm/levels", func_L07_0040E980);
+/* func_L07_0040E980 is defined in L07_0040E980-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L07_0040EC08);
 
@@ -362,7 +360,7 @@ void func_L07_0040F598(u8 *a0)
     }
 }
 
-/* func_L07_0040F6B8 is defined in L07_003F4578-g8.c (this unit has no $gp access for it). */
+/* func_L07_0040F6B8 is defined in L07_003F4578-geometry-g8.c. */
 
 /* func_L07_0040F760 is defined in L07_003F4578-g8.c (this unit has no $gp access for it). */
 
@@ -373,7 +371,7 @@ INCLUDE_ASM("asm/levels", func_L07_0040FA90);
 
 INCLUDE_ASM("asm/levels", func_L07_0040FC88);
 
-INCLUDE_ASM("asm/levels", func_L07_00410588);
+/* func_L07_00410588 is defined in L07_00410588-snapshot.c. */
 
 extern void func_002833F0(u8 *a, u8 *b);
 
@@ -387,7 +385,7 @@ void func_L07_004106B8(u8 *a0)
     func_L00_00323958(a0, s1 + 0x1B0);
 }
 
-INCLUDE_ASM("asm/levels", func_L07_00410700);
+/* func_L07_00410700 is defined in L07_00410700-g8.c. */
 
 /* func_L07_00410930 is defined in L07_003F4578-g8.c (it takes the address of $gp data). */
 

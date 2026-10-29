@@ -106,7 +106,7 @@ void func_L01_003BDF28(char *a0)
 
 INCLUDE_ASM("asm/levels", func_L01_003BB9D0);
 
-INCLUDE_ASM("asm/levels", func_L01_003BBF68);
+/* func_L01_003BBF68 is in L01_003BBF68-g8.c. */
 
 
 INCLUDE_ASM("asm/levels", func_L01_003BC540);
@@ -142,7 +142,7 @@ void func_L01_003BD410(char *object)
 
 
 
-INCLUDE_ASM("asm/levels", func_L01_003BD6B0);
+/* func_L01_003BD6B0 is in L01_003BD6B0-g8.c. */
 
 typedef struct {
     char pad0[0x280];
@@ -241,7 +241,7 @@ void func_L01_003BE488(L01_003BE488_OBJ *a0)
 
 INCLUDE_ASM("asm/levels", func_L01_003BE4D0);
 
-INCLUDE_ASM("asm/levels", func_L01_003BE628);
+/* func_L01_003BE628 is in L01_003BE628.c. */
 
 /* func_L01_003BFDC8 */
 
@@ -262,16 +262,16 @@ void func_L01_003BFDC8(L01_003BFDC8_OBJ *a0, int a1, int a2, int a3)
 
 /* func_L01_003BFE48 is in L01_003BFE48-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L01_003C01C0);
+/* func_L01_003C01C0 is in L01_003C01C0-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L01_003C0408);
 
-INCLUDE_ASM("asm/levels", func_L01_003C08A0);
+/* func_L01_003C08A0 is in L01_003C08A0.c. */
 
 
-INCLUDE_ASM("asm/levels", func_L01_003C2680);
+/* func_L01_003C2680 is in L01_003C2680-g8.c. */
 
 
-INCLUDE_ASM("asm/levels", func_L01_003C97D8);
+/* func_L01_003C97D8 is in L01_003C97D8-draw.c. */
 
 /* func_L01_003C9D00 is in L01_003C9D00.c. */

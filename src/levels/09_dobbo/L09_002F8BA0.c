@@ -1,5 +1,28 @@
 #include "common.h"
 
+extern int D_L09_001B3620[] MACRO_ADDR;
+extern int D_L09_001B3660[] MACRO_ADDR;
+extern int D_L09_001B36A0[] MACRO_ADDR;
+extern int D_L09_001B36E0[] MACRO_ADDR;
+extern int D_L09_001B3720[] MACRO_ADDR;
+extern int D_L09_001B3760[] MACRO_ADDR;
+extern int D_L09_001B37A0[] MACRO_ADDR;
+
+extern void func_002FC560(int, unsigned long long);
+extern void func_L08_00389B68(int, int, unsigned long, int, unsigned long);
+extern void func_00282D48(void *, void *, float);
+extern float func_00282E48(void *, void *);
+extern int func_00283DB8(void *, float);
+extern int func_L02_002F1658(void);
+extern float D_L09_001B37E0[16] MACRO_ADDR;
+extern char D_L09_00256510[][0x60];
+extern int D_L09_001B35E0[16] MACRO_ADDR;
+extern unsigned char *D_L09_00255E90[16][2];
+extern unsigned char *func_0029EFD0(int);
+extern float func_00283CE0(int);
+extern void func_L08_002F2D10(void *, void *);
+
+
 extern void func_L09_003FCA58(void *, int, int);
 extern void func_L09_003FC1E8(int, int, void *, int, int, int, int, int);
 
@@ -78,7 +101,7 @@ extern void func_L09_003FB860(int);
 extern void func_L09_003FB9F8(void *, int);
 extern void func_L09_003FBF98(char *);
 
-INCLUDE_ASM("asm/levels", func_L09_002F8BA0);
+/* func_L09_002F8BA0 is defined in L09_002F8BA0-draw-g8.c. */
 
 typedef struct {
     unsigned char pad00[0x34];
@@ -454,38 +477,188 @@ void func_L09_003F0330(unsigned char *a0) {
 
 INCLUDE_ASM("asm/levels", func_L09_003F04D0);
 
-/* Spawns moby class 0xD09 at the given position: random rotation, class
-   scale, the direction vector and a zeroed vector in its state, the mode, the
-   flag, two floats, the duration (also as a float) and a third float. An
-   unflagged spawn gets byte 0xBC set; the stored value is the (int) test
-   result, so it is not shared with the earlier byte constant 1. */
-INCLUDE_ASM("asm/levels", func_L09_003F6820);
+typedef struct DobboMoby DobboMoby;
+
+/* State block of a beam link (class 0xD09), at its +0x68. */
+typedef struct {
+    float direction[4];
+    float velocity[4];
+    DobboMoby *owner;
+    DobboMoby *partner;
+    float radius;
+    float f2c;
+    int timer;
+    float max_distance;
+    float duration_f;
+    int hit_timer;
+} DobboLinkState;
+
+typedef struct {
+    char pad00[0x24];
+    float scale;
+} DobboMobyClass;
+
+/* Fields shared by the beam link and its owner. */
+struct DobboMoby {
+    char pad00[0x10];
+    float position[4];
+    unsigned char state;
+    char pad21[2];
+    unsigned char alpha;
+    DobboMobyClass *cls;
+    char pad28[4];
+    float scale;
+    unsigned char f30;
+    unsigned char f31;
+    unsigned short f32;
+    unsigned short flags;
+    char pad36[0x43 - 0x36];
+    unsigned char f43;
+    char pad44[4];
+    float f48;
+    char pad4C[0x60 - 0x4C];
+    unsigned char f60;
+    char pad61[0x68 - 0x61];
+    DobboLinkState *data;
+    char pad6C[0xAA - 0x6C];
+    short type;
+    char padAC[0xBC - 0xAC];
+    unsigned char f_bc;
+    char padBD[0xF0 - 0xBD];
+    float rotation[3];
+};
+
+/* Spawns a beam-link moby (class 0xD09) at the given position with a random rotation, the
+   class scale and the given direction, owner, partner link, radius, range and duration. A spawn
+   without a partner also sets byte 0xBC. Returns the moby, or NULL if none was available. */
+DobboMoby *func_L09_003F6820(void *position, void *direction, DobboMoby *owner, DobboMoby *partner,
+                             int duration, float radius, float f2c, float max_distance)
+{
+    DobboMoby *moby = (DobboMoby *)func_0029EFD0(0xD09);
+    DobboLinkState *state;
+
+    if (moby) {
+        moby->f30 = 255;
+        moby->f32 = 255;
+        moby->f31 = 1;
+        state = moby->data;
+        moby->rotation[2] = func_002A7940();
+        moby->rotation[1] = func_002A7940();
+        moby->rotation[0] = func_002A7940();
+        moby->scale = moby->cls->scale;
+        state->owner = owner;
+        moby->flags |= 0x2200;
+        qcopy(moby->position, position);
+        qcopy(state->direction, direction);
+        qzero(state->velocity);
+        state->radius = radius;
+        state->f2c = f2c;
+        state->partner = partner;
+        state->timer = duration;
+        state->duration_f = func_00283CE0(duration);
+        state->max_distance = max_distance;
+        moby->alpha = 0;
+        /* stored as !partner: a plain 1 here is not what retail emits */
+        if (!partner)
+            moby->f_bc = !partner;
+        if (moby->f43)
+            func_002A7470((unsigned char *)moby, 0, 0, 1);
+        moby->f31 = 0;
+        moby->f48 = 0.5f;
+        moby->flags |= 1;
+        func_002A7750_3((unsigned char *)moby, 0, -1);
+    }
+    return moby;
+}
 
 /* func_L09_003F69A0 is defined in L09_002F8BA0-g8.c (it reads a global through $gp). */
 
 /* func_L09_003F6AB8 lives in the -g8.c brother: it loads a global through $gp. */
 
-INCLUDE_ASM("asm/levels", func_L09_003F6B28);
+/* func_L09_003F6B28 is defined in L09_002F8BA0-beam-g8.c. */
 
-/* Two-state step of the record-slot table: state 0 clears all sixteen slots
-   and stamps the record's byte 0x30; state 1 walks them -- a slot whose live
-   object has gone negative is released, a slot in state 4 is handed to
-   func_L09_003FB860, any other live slot hands its object to
-   func_L09_003FB9F8 and moves to state 4. When at least one slot was handed
-   over, the level's teardown runs on the record. */
-INCLUDE_ASM("asm/levels", func_L09_003FB4D0);
+/* Steps the beam-link slot table once per frame. State 0 clears all sixteen slots. State 1 walks
+   them: a slot whose first moby has been destroyed is released, a slot in state 4 is handed to
+   func_L09_003FB860, and any other live slot is handed to func_L09_003FB9F8 and moves to state 4.
+   If any slot was handed over, func_L09_003FBF98 is queued on the moby to draw the links. */
+void func_L09_003FB4D0(DobboMoby *moby)
+{
+    int i, count;
+    int clearIndex;
+
+    switch (moby->state) {
+    case 0:
+        for (clearIndex = 0; clearIndex < 16; clearIndex++) {
+            D_L09_001B35E0[clearIndex] = 0;
+            D_L09_00255E90[clearIndex][0] = 0;
+            D_L09_00255E90[clearIndex][1] = 0;
+        }
+        moby->state = 1;
+        moby->f30 = 255;
+        break;
+    case 1:
+        count = 0;
+        for (i = 0; i < 16; i++) {
+            if (D_L09_001B35E0[i] == 1) {
+                if ((signed char)D_L09_00255E90[i][0][0x20] < 0) {
+                    D_L09_00255E90[i][0] = 0;
+                    D_L09_001B35E0[i] = 0;
+                    D_L09_00255E90[i][1] = 0;
+                }
+            } else if (D_L09_001B35E0[i] == 4) {
+                func_L09_003FB860(i);
+            } else if (D_L09_001B35E0[i]) {
+                count++;
+                func_L09_003FB9F8(D_L09_00255E90[i][0], i);
+                D_L09_001B35E0[i] = 4;
+            }
+        }
+        if (count)
+            func_L08_002F2D10(func_L09_003FBF98, moby);
+        break;
+    }
+}
 
 
 /* Starts a record slot: the first pass returns 1 when the id is already live
    in either half of a slot, the second takes the first free slot, fills its
-   eight parallel tables and returns 1; 0 when every slot is taken. */
-INCLUDE_ASM("asm/levels", func_L09_003FB650);
+   parallel tables and returns 1; 0 when every slot is taken. */
+int func_L09_003FB650(unsigned char *object, unsigned char *partner, int third, int fourth)
+{
+    int i;
+    int j;
+
+    for (i = 0; i < 16; i++) {
+        if (D_L09_00255E90[i][0] == object)
+            return 1;
+        if (D_L09_00255E90[i][1] == object)
+            return 1;
+    }
+    for (j = 0; j < 16; j++) {
+        if (D_L09_00255E90[j][0] == 0) {
+            D_L09_00255E90[j][0] = object;
+            D_L09_00255E90[j][1] = partner;
+            D_L09_001B3620[j] = 0;
+            D_L09_001B3660[j] = 0;
+            D_L09_001B36A0[j] = 0;
+            D_L09_001B36E0[j] = -1;
+            D_L09_001B3720[j] = -1;
+            D_L09_001B3760[j] = third;
+            D_L09_001B37A0[j] = fourth;
+            D_L09_001B37E0[j] = 0;
+            D_L09_001B35E0[j] = 1;
+            return 1;
+        }
+    }
+    return 0;
+}
+
 
 
 /* Releases the first slot holding the id in either half: both halves and the
    slot's live word are cleared, and the two handles at 0x1B36E0 and 0x1B3720
    are given back to the shared release body. 1 when a slot was found. */
-INCLUDE_ASM("asm/levels", func_L09_003FB788);
+
 
 
 /* Same release at its own place in the level, on the id byte of a slot rather
@@ -497,13 +670,55 @@ INCLUDE_ASM("asm/levels", func_L09_003FB908);
 
 INCLUDE_ASM("asm/levels", func_L09_003FB9F8);
 
-INCLUDE_ASM("asm/levels", func_L09_003FBF98);
+typedef struct {
+    int x;
+    int y;
+} DobboLinkScreen;
+
+/* Draws every active beam link whose bounding sphere is visible: a large and a small textured
+   quad per link, with a per-link scroll offset that advances while func_L02_002F1658() is true. */
+void func_L09_003FBF98(char *moby)
+{
+    Vec sphere, midpoint;
+    int i, fade, x, y, big, small;
+    char *small_tex;
+    DobboLinkScreen *screen = *(DobboLinkScreen **)(moby + 0x68);
+
+    func_002FC560(0x47, 0x51001);
+    for (i = 0; i < 16; i++) {
+        if (!D_L09_00255E90[i][0] || !D_L09_00255E90[i][1] || D_L09_001B35E0[i] < 2)
+            continue;
+
+        func_00282CC0((char *)&midpoint, D_L09_00255E90[i][0] + 0x10, D_L09_00255E90[i][1] + 0x10);
+        sphere.q = midpoint.q;
+        func_00282D48(&midpoint, &sphere, 0.5f);
+        sphere.f[3] = func_00282E48(D_L09_00255E90[i][0] + 0x10, D_L09_00255E90[i][1] + 0x10) * 0.5263158f;
+        if (func_00283DB8(&sphere, 64.0f) == -1)
+            continue;
+
+        big = i * 2;
+        small = big + 1;
+        fade = D_L09_00255E90[i][0][0x23];
+        if (func_L02_002F1658()) {
+            D_L09_001B37E0[i] -= 0.2f;
+            if (D_L09_001B37E0[i] <= -8.0f)
+                D_L09_001B37E0[i] += 8.0f;
+        }
+        small_tex = D_L09_00256510[small];
+        func_L09_003FCA58(D_L09_00255E90[i][0], i, fade);
+        y = screen->y + 63;
+        x = screen->x + 63;
+        func_L09_003FC1E8(y, x, D_L09_00256510[big], 128, 64, fade, i, -1);
+        func_L09_003FC1E8(y, x, small_tex, 48, 16, fade, i, func_002A7820(1, 6));
+    }
+    func_L08_00389B68(2, 0x47, 0x5340BUL, 0x42, 0x8000000044UL);
+}
 
 INCLUDE_ASM("asm/levels", func_L09_003FC1E8);
 
-INCLUDE_ASM("asm/levels", func_L09_003FCA58);
+/* func_L09_003FCA58 is defined in L09_003FCA58-g64.c. */
 
-INCLUDE_ASM("asm/levels", func_L09_003FCF68);
+/* func_L09_003FCF68 is defined in L09_002F8BA0-beam-g64.c. */
 
 INCLUDE_ASM("asm/levels", func_L09_003FD128);
 

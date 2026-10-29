@@ -1,8 +1,11 @@
-#include "include_asm.h"
+#include "common.h"
 
-typedef int s32;
-
-typedef unsigned char u8;
+extern char ref_L00_002FE8D8_00[];
+extern int ref_L00_002FE8D8_01 __attribute__((sda));
+extern float ref_L00_002FE8D8_02[];
+extern int ref_L00_002FE8D8_03 __attribute__((sda));
+extern void func_00282F20(float *, float *, float);
+extern void func_00282C98(float *);
 
 /* lot10: privately byte-gated bodies. */
 extern s32 func_00126470(u8 *, s32, s32, s32, s32, s32, s32, s32);
@@ -46,8 +49,6 @@ extern int *D_L02_001B3D08_5 __attribute__((sda));
 
 extern void D_00126288(int *a0, int a1, int a2, int a3, int a4, int a5, int a6, int a7);
 
-typedef unsigned int u32;
-
 extern int D_L03_001B31A0 __attribute__((sda));
 
 extern int D_L03_001B31A4 __attribute__((sda));
@@ -82,7 +83,6 @@ void func_002FC8D0(u8 *a0, s32 a1, s32 a2) {
         func_001244B8(0,0);
     }
 }
-
 /* shared native body of family d50cdefed4015bae (default profile) */
 void func_002FC990(int a0, int a1, int a2)
 {
@@ -261,17 +261,16 @@ void func_002FCF90(int arg0) {
 
 /* func_002FCFC8 is in 002FC8D0-g8.c. */
 
+/* func_002FD1B8 is in 002FC8D0-disturb-g8.c. */
 
-INCLUDE_ASM("asm/game", func_002FD1B8);
-
-INCLUDE_ASM("asm/game", func_002FD828);
+/* func_002FD828 is in its own G8 unit. */
 
 
 INCLUDE_ASM("asm/game", func_002FDBD8);
 
-INCLUDE_ASM("asm/game", func_002FDF40);
+/* func_002FDF40 is in 002FDF40-g8.c. */
 
-INCLUDE_ASM("asm/game", func_002FE5A0);
+/* func_002FE5A0 is in its own G8 unit. */
 
 extern void func_002FE8D8(void *, float *);
 extern void func_00282D30(float *, float *, float);
@@ -285,7 +284,28 @@ void func_002FE880(void *object, float *destination, float scale)
     func_00282CF0(destination, destination, vector);
 }
 
-INCLUDE_ASM("asm/game", func_002FE8D8);
+void func_002FE8D8(void *object, float *destination)
+{
+    char *state = ref_L00_002FE8D8_00;
+    if (*(short *)(state + 0x348)) {
+        if (!ref_L00_002FE8D8_01) {
+            qcopy(destination, *(char **)(state + 0x2290) + 0xE0);
+            return;
+        }
+    }
+    if (ref_L00_002FE8D8_01) {
+        func_00282CF0(destination, ref_L00_002FE8D8_02, object);
+        destination[2] = 0;
+        func_00282F20(destination, destination, 1.0f);
+    } else if (ref_L00_002FE8D8_03) {
+        float sign = 1.0f;
+        if (*(float *)(state + 0xBC) > 0.0f) sign = -1.0f;
+        func_00282CF0(destination, (float *)(state + 0xB0), object);
+        func_00282F20(destination, destination, sign);
+    } else {
+        func_00282C98(destination);
+    }
+}
 
 INCLUDE_ASM("asm/game", func_002FE9D0);
 

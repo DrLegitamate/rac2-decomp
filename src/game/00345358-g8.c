@@ -98,3 +98,18 @@ void func_003463C8(char *o)
     f[22] = 1;
     func_00337210(f);
 }
+
+/* Pad input on the 3 x 2 selection grid: up/down/left/right move the cursor (sound 3) and
+   cross confirms an available entry (sound 4, else 5); the entry under the cursor is kept
+   at +0x494 and, when available, its table value in D_001ADB10. */
+typedef struct { short v[5]; } SelectionEntry;
+typedef struct { char pad[0x48C]; int column, row, selected, state; } SelectionOwner;
+typedef struct { char pad[6]; short material; char tail[0xD8]; } SelectionMaterial;
+
+extern int func_002E5E58(int, int, void *);
+extern unsigned char D_001A7AF8[] __attribute__((section(".sdata")));
+extern unsigned char D_00139568[];
+extern char D_00239BA0[];
+extern int D_001F2880[];
+extern int D_001ADB10 __attribute__((sda));
+extern SelectionEntry D_00259CE0[];

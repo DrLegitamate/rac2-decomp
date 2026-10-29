@@ -26,7 +26,6 @@ INCLUDE_ASM("asm/levels", func_L22_002A8B98);
 /* Picks the shop entry the level's table names for the current progress state. */
 INCLUDE_ASM("asm/levels", func_L22_002A8CE0);
 
-INCLUDE_ASM("asm/levels", func_L22_002AA480);
 
 extern void func_L00_002D36E0(void *, int, float, float, float);
 extern void func_002AA2E8(float *, float, float);

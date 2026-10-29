@@ -1,6 +1,16 @@
 #include "include_asm.h"
 
-INCLUDE_ASM("asm/levels", func_L15_00315428);
+typedef unsigned char u8;
+typedef unsigned short u16;
+typedef unsigned int u32;
+typedef int s32;
+typedef short s16;
+
+extern u32 D_L15_001FB320[];
+extern s32 func_002ED688(void *);
+extern char *D_L15_001B261C_base[] __asm__("D_L15_001B261C") __attribute__((sda));
+
+/* func_L15_00315428 is defined in L15_00315428-effects-g8.c. */
 
 extern void *func_803804E8(int a0);
 
@@ -14,8 +24,36 @@ void func_L15_003804B8(int a0, void *a1)
     }
 }
 
-/* func_L15_00381CF0: attempt kept in drafts (232 bytes, 6 instructions over). */
-INCLUDE_ASM("asm/levels", func_L15_00381CF0);
+/* Counts list entries with an active object, a linked record and positive value. */
+s32 func_L15_00381CF0(char *arg0) {
+    u16 *p;
+    char *base;
+    char *e;
+    char *o;
+    u32 slot;
+    s32 v;
+    s32 count = 0;
+    float f;
+
+    slot = D_L15_001FB320[(u8)arg0[0x21]];
+    if (slot == 0)
+        return 0;
+    p = (u16 *)slot;
+    f = 0.0f;
+    do {
+        base = D_L15_001B261C_base[0];
+        e = (char *)(((*p & 0x7FFF) << 8) + (u32)base);
+        if ((*(u16 *)(e + 0x34) & 0x20) != 0) {
+            o = *(char **)(e + 0x68);
+            v = func_002ED688(e);
+            if (*(s32 *)o != 0 && *(s32 *)(v + 0x110) != 0 &&
+                f < *(float *)(*(s32 *)o))
+                count++;
+        }
+    } while (*(s16 *)p++ >= 0);
+    return count;
+}
+
 
 INCLUDE_ASM("asm/levels", func_L15_003AF878);
 
@@ -35,11 +73,11 @@ INCLUDE_ASM("asm/levels", func_L15_0042EFE0);
 
 INCLUDE_ASM("asm/levels", func_L15_00430168);
 
-INCLUDE_ASM("asm/levels", func_L15_00430590);
+/* func_L15_00430590 is defined in L15_00430590-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L15_004307E0);
 
-INCLUDE_ASM("asm/levels", func_L15_00430B30);
+/* func_L15_00430B30 is defined in L15_00430B30-g8.c. */
 
 
 INCLUDE_ASM("asm/levels", func_L15_00430DF0);

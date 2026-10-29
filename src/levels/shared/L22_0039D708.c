@@ -101,7 +101,7 @@ INCLUDE_ASM("asm/levels", func_L22_003A3B50);
 
 /* func_L22_003A3D50 is defined in L22_003A3D50-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L22_003A4128);
+/* func_L22_003A4128 is defined in L22_003A4128.c. */
 
 /* func_L22_003A42E8 uses the profile in L22_003A42E8-g8.c. */
 

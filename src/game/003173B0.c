@@ -659,7 +659,7 @@ void func_0031DEE8(char *owner)
     }
 }
 
-INCLUDE_ASM("asm/game", func_0031E3A8);
+/* func_0031E3A8 is defined in 0031E3A8-update.c. */
 
 
 /* func_0031E560 is defined in 0031E560-dbg.c (-g). */

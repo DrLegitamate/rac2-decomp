@@ -189,4 +189,4 @@ void func_L00_002D6B70(void) {
     } while (remaining >= 0);
 }
 
-INCLUDE_ASM("asm/levels", func_L00_002D6BA8);
+/* func_L00_002D6BA8 is in L00_002D67A8-envelope.c (jump table). */

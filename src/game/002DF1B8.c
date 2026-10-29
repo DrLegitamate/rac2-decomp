@@ -16,18 +16,18 @@ int func_002DF1D0(void) {
 
 
 
-INCLUDE_ASM("asm/game", func_002DF3F8);
+/* func_002DF3F8 is in 002DF1B8-capture.c. */
 
 INCLUDE_ASM("asm/game", func_002DF630);
 
 
 /* func_002DF7A8 is matched in 002DF1B8-g8.c (-G8 small data). */
 
-INCLUDE_ASM("asm/game", func_002DF838);
+/* func_002DF838 is in 002DF1B8-packet.c. */
 
-INCLUDE_ASM("asm/game", func_002DF9E0);
+/* func_002DF9E0 is in 002DF1B8-clear.c. */
 
-INCLUDE_ASM("asm/game", func_002DFBB0);
+/* func_002DFBB0 is in 002DF1B8-render-g8.c. */
 
 ASM_FUNC("asm/game", func_002DFD88);
 

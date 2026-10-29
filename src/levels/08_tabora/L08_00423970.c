@@ -103,10 +103,7 @@ extern void func_00282CF0(void *, void *, void *);
 extern void func_00282F20(void *, void *, f32);
 extern char D_00189EA0[];
 
-/* Near miss: nonmatching/levels/func_L08_00425628.c - the two 16-byte copies keep
-   their addresses in registers in retail and are folded into the lq/sq displacement
-   here. */
-INCLUDE_ASM("asm/levels", func_L08_00425628);
+/* func_L08_00425628 is isolated in L08_00425628.c. */
 
 extern void func_L08_00425628(char *);
 
@@ -242,13 +239,13 @@ void func_L08_00425F28(char *a0) {
     func_L08_00425448(a0);
 }
 
-INCLUDE_ASM("asm/levels", func_L08_00425FE8);
+/* func_L08_00425FE8 is isolated in L08_00425FE8.c. */
 
 /* Collision sweep and movement update are in L08_00423970-motion.c. */
 
 INCLUDE_ASM("asm/levels", func_L08_00426730);
 
-INCLUDE_ASM("asm/levels", func_L08_00429238);
+/* func_L08_00429238 is isolated in L08_00429238.c. */
 
 
 extern s32 D_L08_001B39A0[];
@@ -257,11 +254,9 @@ extern s32 D_L08_001B39F0[];
 extern s32 D_L08_001B3A30[];
 extern void func_00291450(s32 a0);
 
-/* Near miss: nonmatching/levels/func_L08_004290E8.c - the first test's branch and
-   the callee-saved allocation differ. */
-INCLUDE_ASM("asm/levels", func_L08_004290E8);
+/* func_L08_004290E8 is isolated in L08_004290E8.c. */
 
-INCLUDE_ASM("asm/levels", func_L08_004294A0);
+/* func_L08_004294A0 is isolated in L08_004294A0.c. */
 
 INCLUDE_ASM("asm/levels", func_L08_00429560);
 

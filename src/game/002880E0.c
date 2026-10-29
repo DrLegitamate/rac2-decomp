@@ -29,6 +29,37 @@ extern s32 func_00115484(u8 *, s32, s32);
 
 extern void func_002889B8(unsigned char *);
 
+typedef struct {
+    int word00;
+    unsigned char byte04;
+    unsigned char pad05[7];
+    int word0C;
+    unsigned char pad10[0x70];
+    int word80;
+    unsigned char pad84[4];
+    unsigned short half88;
+    unsigned char pad8A[8];
+    unsigned short half92;
+    unsigned char pad94[0x4C];
+} ClassRecord;
+
+/* a pending table row: five halfwords, the value compared at +6 */
+typedef struct {
+    short id;
+    short pad0;
+    short pad1;
+    short value;
+    short pad2;
+} PendingEntry;
+
+extern ClassRecord D_00239BA0[];
+
+extern int D_001A73B8[] __attribute__((section(".sdata")));
+
+extern PendingEntry D_0025E328[];
+
+extern int func_00288188(int);
+
 /* Find a mapped record by its unsigned halfword class and return its opaque word. */
 
 /* func_002889B8 : clears three fields, initializes a block, then sets two flags */
@@ -46,7 +77,35 @@ int func_002880E0(int x)
 }
 
 
-INCLUDE_ASM("asm/game", func_00288208);
+void func_00288208(int a0)
+{
+    ClassRecord *record;
+    short *p;
+    int i;
+
+    if (func_00288188(a0) == 0)
+        return;
+    if (D_0025E328[0].value != -1) {
+        p = &D_0025E328[0].value;
+        do {
+            if (a0 == *p)
+                return;
+            p += 5;
+        } while (*p != -1);
+    }
+    record = &D_00239BA0[D_00139568[a0]];
+    if (record->word0C != 0)
+        return;
+    if (func_002880E0(a0) != 0)
+        return;
+    for (i = 0; i < 8; i++) {
+        if (D_001A73B8[i] == 0 || D_001A73B8[i] == a0)
+            break;
+    }
+    if (i < 8)
+        D_001A73B8[i] = a0;
+}
+
 
 
 

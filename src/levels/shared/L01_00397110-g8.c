@@ -177,8 +177,6 @@ extern float func_002E35D0(char *);
 
 extern float func_002E35A0(float *);
 
-/* sets up the swing band of the level's moving part */
-INCLUDE_ASM("asm/levels", func_L01_003993C8);
 
 extern char *D_001B326C __attribute__((nosda));
 

@@ -216,3 +216,70 @@ extern void func_00288E18(int,int);
 
 /* Plays subtitle lines, each gated on its record in the subtitle history (the record index is
    the second argument of func_00288E18). */
+
+extern u8 D_00189EA0[];
+extern SubtitleHistory D_0018C958[];
+extern u8 D_001A7AF8[] __attribute__((sda));
+extern u32 D_001A7390;
+extern int D_001A79F0[] __attribute__((sda));
+extern int D_0018C0B4 NOT_SDA;
+extern int func_002ACBC8(void *,int);
+extern void func_00282948(void *);
+
+/* Plays subtitle lines, each gated on its record in the subtitle history (the record index is
+   the second argument of func_00288E18). */
+void func_L12_003EB470(u8 *o) {
+    u8 *d = *(u8 **)(o + 0x68);
+
+    switch (o[0x20]) {
+    case 0:
+        o[0x30] = 255;
+        *(int *)(d + 0x10) = -1;
+        func_002A7750(o, 1, -1);
+        break;
+    case 1:
+        if (func_002ACBC8(D_00189EA0, *(int *)d) && *(int *)(D_00189EA0 + 0x540)
+            && !D_0018C958[121].count)
+            func_00288E18(0xA22, 121);
+        if (func_002ACBC8(D_00189EA0, *(int *)(d + 4)) && !D_001A7AF8[0x33]) {
+            if (D_0018C958[92].count) {
+                u32 now = D_001A7390;
+                u32 old = D_0018C958[92].time;
+
+                if (now - old > 0x438 || old == 0)
+                    func_00288E18(0xA05, 92);
+                else if (old < now)
+                    D_0018C958[92].time = now;
+            } else {
+                if (D_0018C958[92].count < 65535)
+                    D_0018C958[92].count++;
+                if (D_0018C958[92].time < D_001A7390)
+                    D_0018C958[92].time = D_001A7390;
+                D_0018C958[92].levels = (D_0018C958[92].levels | (1u << D_001A79F0[0])) | 0x80000000u;
+            }
+        }
+        if (func_002ACBC8(D_00189EA0, *(int *)(d + 8))) {
+            u8 *p = D_L12_001B2E9C + (*(int *)(d + 0xC) << 8);
+
+            if (p && *(s16 *)(p + 0xAA) == 0xFB8 && p[0x20] != 254 && p[0x20] != 253) {
+                if (*(int *)(d + 0x10) < 0)
+                    *(int *)(d + 0x10) = 0x2A30;
+                else if (!*(int *)(d + 0x10)) {
+                    u32 seen = D_0018C958[93].levels & (1 << D_001A79F0[0]);
+
+                    if (!seen)
+                        func_00288E18(0xA06, 93);
+                }
+            }
+        }
+        if (D_001A7AF8[7] && D_0018C0B4 != 0x6F) {
+            u32 seen = D_0018C958[127].levels & (1 << D_001A79F0[0]);
+
+            if (!seen)
+                func_00288E18(0xA28, 127);
+        }
+        if (*(int *)(d + 0x10) >= 0)
+            func_00282948(d + 0x10);
+        break;
+    }
+}

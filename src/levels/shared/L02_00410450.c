@@ -16,11 +16,11 @@ extern void func_002F20A0(void *, void *, void *);
 extern void func_002F2270(void *, void *, float);
 extern float func_0031E8D0(void);
 
-INCLUDE_ASM("asm/levels", func_L02_00410450);
+/* func_L02_00410450 is defined in L02_00410450-controller-g8.c. */
 
 /* func_L02_00410D00 is defined in L02_00410D00-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L02_00410E58);
+/* func_L02_00410E58 is defined in L02_00410E58.c. */
 
 INCLUDE_ASM("asm/levels", func_L02_00410F68);
 
@@ -57,7 +57,7 @@ int func_L02_00416800(void *arg0) {
     return var_a2;
 }
 
-INCLUDE_ASM("asm/levels", func_L02_00421860);
+/* func_L02_00421860 is defined in L02_00421860-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L02_00421DA0);
 

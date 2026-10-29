@@ -1,5 +1,35 @@
 #include "common.h"
 
+extern void func_00282CF0(void *, void *, void *);
+extern float func_00282DF0(void *);
+extern float func_00282DB0(void *, void *);
+extern void func_00282F20(void *, void *, float);
+extern void func_00282CC0(void *, void *, void *);
+extern int func_00283CF0(float);
+extern unsigned char *D_L01_001FF164;
+extern int func_00115AC0(char *, char *, int);
+extern void func_L00_002AF7D0(void);
+extern void func_L00_002B1F90(void);
+extern void func_L00_002D2E68(void);
+extern void func_L00_002A6708(void);
+extern void func_L00_002A53B8(void);
+extern void func_L00_002D24B8(void);
+extern void func_002A677C(int);
+extern void ref_L01_002B3458_00(void);
+extern void ref_L01_002B3458_01(int, int);
+
+extern void func_00283098(void *, void *, void *);
+extern void func_00283738(void *, void *, void *);
+extern void func_00280B90(void *, void *, int);
+extern void func_00281DE8(void *, int, int, int);
+
+extern char *D_L01_001B255C MACRO_ADDR;
+extern void *func_00325768(int);
+extern int func_002E45B8(float);
+extern float func_00310580(float, float);
+extern void func_002E3738(void *, void *, float);
+extern unsigned char *D_L01_001FF040;
+
 typedef int MotionQuad __attribute__((mode(TI)));
 typedef union { float v[4]; MotionQuad q; } MotionVec;
 
@@ -186,7 +216,166 @@ void func_L01_002A9298(void) {
 
 INCLUDE_ASM("asm/levels", func_L01_002AE128);
 
-INCLUDE_ASM("asm/levels", func_L01_002B0318);
+typedef int HeroQuad __attribute__((mode(TI)));
+extern char D_00189E20[];
+extern unsigned char D_00139568[];
+extern char D_L01_001B7B00[];
+extern int func_L00_002D4040(int);
+extern int func_L00_002ADEA0(int);
+extern void func_L00_00311080(void *, void *, int, int, int, int);
+extern void func_L00_00310D30(void *, void *);
+extern void func_002AA2E8(void *, float, float);
+extern void func_L00_00310C88(void *, void *);
+extern void func_00282C88(void *);
+extern void func_00283098(void *, void *, void *);
+extern float func_00283B98(float, float);
+
+/* A moby's model: the part of it the file uses. */
+typedef struct MobyModel {
+    char pad00[0x10];
+    int f10;
+    char pad14[0x32];
+    short kind;                 /* 0x46 */
+} MobyModel;
+
+/* A moby (0x100 bytes), as far as the file uses it. */
+typedef struct Moby {
+    char pad00[5];
+    unsigned char flags;
+    char pad06[2];
+    float fade;                 /* 0x08: 1.0 fully shown, 0.0 gone */
+    char pad0C[0x17];
+    unsigned char animation;    /* 0x23 */
+    MobyModel *model;           /* 0x24 */
+    int f28;
+    char pad2C[5];
+    unsigned char f31;
+    char pad32[2];
+    unsigned short state;       /* 0x34 */
+    char pad36[2];
+    char *buffer0;              /* 0x38 */
+    char *buffer1;              /* 0x3C */
+    char pad40[0x58];
+    int f98;
+    char pad9C[0x24];
+    HeroQuad matrix[3];         /* 0xC0 */
+    char padF0[0x10];
+} Moby;
+
+/* One entry of the weapon table (0xE0 bytes). */
+typedef struct WeaponInfo {
+    char pad00[0x2C];
+    int animation;              /* 0x2C */
+    int altAnimation;           /* 0x30: used while the hero's state is 12 */
+    char pad34[0xAC];
+} WeaponInfo;
+
+/* The hero block (D_00189E20), the fields func_L01_002B0318 uses. */
+typedef struct HeroState {
+    char pad00[0x90];
+    HeroQuad position;          /* 0x90 */
+    char padA0[0x730 - 0xA0];
+    HeroQuad matrix[3];         /* 0x730 */
+    float f760;
+    char pad764[0xC];
+    union {
+        HeroQuad quad;
+        float v[4];
+    } f770;                     /* 0x770: copy of position, z eased to 0 */
+    char pad780[0xE98 - 0x780];
+    Moby *attached[2];          /* 0xE98 */
+    char padEA0[4];
+    int attachedMode;           /* 0xEA4: 0 shown, 1 fading out, 2 fading out fast */
+    char padEA8[0x2290 - 0xEA8];
+    Moby *moby;                 /* 0x2290 */
+    char pad2294[8];
+    int state;                  /* 0x229C */
+    char pad22A0[0x22B8 - 0x22A0];
+    unsigned char f22B8;
+    char pad22B9;
+    unsigned char f22BA;
+    char pad22BB[8];
+    unsigned char f22C3;
+    char pad22C4[0x24B0 - 0x22C4];
+    int animation;              /* 0x24B0 */
+    int weaponId;               /* 0x24B4 */
+} HeroState;
+
+/* For the hero's two attached mobys: point them at their buffers, start the animation the
+   current item's table entry names, fade them in or out (removing one that has faded out),
+   then copy the hero moby's matrix to hero + 0x730 and ease hero + 0x778 to 0. */
+void func_L01_002B0318(void)
+{
+    HeroState *hero;
+    HeroState *state;
+    HeroQuad *matrix;
+    WeaponInfo *weapon;
+    int weaponId, animation;
+    int i;
+
+    hero = (HeroState *)D_00189E20;
+    if (hero->f22B8 && hero->f22BA && !func_L00_002D4040(-1))
+        func_L00_002AF7D0();
+    for (i = 0; i < 2; i++) {
+        HeroState *player = (HeroState *)D_00189E20;
+        Moby **slot = &player->attached[i];
+
+        if (*slot) {
+            (*slot)->buffer0 = D_L01_001B7B00 + i * 0xC00;
+            (*slot)->buffer1 = D_L01_001B7B00 + 0x600 + i * 0xC00;
+            weaponId = func_L00_002ADEA0(0);
+            if (weaponId == player->weaponId) {
+                weapon = &((WeaponInfo *)D_L01_002637A0)[D_00139568[weaponId]];
+                animation = weapon->animation;
+                if (player->state == 12)
+                    animation = weapon->altAnimation;
+                if (animation != -1 && (*slot)->animation != animation) {
+                    player->animation = animation;
+                    func_L00_00311080(player->moby, *slot, animation, 0, 8, 1);
+                }
+            }
+            {
+                HeroState *owner = (HeroState *)D_00189E20;
+
+                func_L00_00310D30(owner->moby, *slot);
+                if (owner->attachedMode) {
+                    if (owner->attachedMode == 2)
+                        func_002AA2E8(&(*slot)->fade, 0.0f, 0.25f);
+                    else
+                        func_002AA2E8(&(*slot)->fade, 0.0f, 0.07f);
+                    hero = (HeroState *)D_00189E20;
+                    if ((*slot)->fade == 0.0f) {
+                        func_L00_00310C88(hero->moby, slot);
+                        return;
+                    }
+                } else {
+                    func_002AA2E8(&(*slot)->fade, 1.0f, 0.2f);
+                    if (((*slot)->flags & 2) && !owner->f22BA) {
+                        owner->attachedMode = 1;
+                        (*slot)->f28 = 0;
+                        owner->f22B8 = 0;
+                        return;
+                    }
+                }
+            }
+        }
+    }
+    matrix = ((HeroState *)D_00189E20)->matrix;
+    state = (HeroState *)D_00189E20;
+    {
+        Moby *moby = state->moby;
+
+        matrix[0] = moby->matrix[0];
+        matrix[1] = moby->matrix[1];
+        matrix[2] = moby->matrix[2];
+        func_00282C88(&state->f760);
+    }
+    state->f760 = 1.0f;
+    func_00283098(&state->f760, &state->f760, matrix);
+    state->f770.quad = state->position;
+    if (!state->f22C3)
+        state->f770.v[2] = func_00283B98(state->f770.v[2], 0.0f);
+}
 
 extern void func_L00_002AF7D0(void);
 extern void func_L00_002B1F90(void);
@@ -238,6 +427,7 @@ void func_L01_002B3458(int a0, int a1, int a2) {
 }
 
 
+
 /* func_L01_002B3788 is defined in L01_002B3788-contact.c. */
 
 /* func_L01_002B3D28 is defined in L01_002B3D28.c. */
@@ -248,7 +438,7 @@ INCLUDE_ASM("asm/levels", func_L01_002B4DA0);
 
 INCLUDE_ASM("asm/levels", func_L01_002B5EA0);
 
-INCLUDE_ASM("asm/levels", func_L01_002B6948);
+/* func_L01_002B6948 is in L01_002B6948-velocity.c. */
 
 /* func_L01_002BE0E0 is defined in L01_002A7248-timers-g8.c. */
 
@@ -278,14 +468,92 @@ void func_L01_002C98B8(void) {
 }
 
 
-INCLUDE_ASM("asm/levels", func_L01_002E1510);
+void func_L01_002E1510(char *a0, int a1, char *a2, int a3, char *a4) {
+    float buf[12];
+    char *p;
+    char *q;
+    char *r;
+    int n;
+    int i;
+
+    if (a1 > 0) {
+        q = a0 + 0x30;
+        p = a0 + 0x20;
+        n = a1;
+        for (; n != 0; n--) {
+            func_00283098(p, p, a2);
+            p += 0x90;
+            func_00283098(q, q, a2);
+            q += 0x90;
+        }
+    }
+    func_00283738(buf, a2, a2);
+    for (i = 0; i < a3; i++) {
+        int k = (i & 1) ? 2 : 0;
+        if (a1 > 0) {
+            p = a0 + (k * 16 + 16);
+            q = a0 + k * 16;
+            r = a0;
+            n = a1;
+            while (n != 0) {
+                func_00283098(q, q, buf);
+                n--;
+                q += 0x90;
+                func_00283098(p, p, buf);
+                p += 0x90;
+                func_00280B90(r, a4, 1);
+                r += 0x90;
+            }
+        }
+    }
+}
 
 
 /* func_L01_002E1680 is defined in L01_002E1680.c. */
 
-INCLUDE_ASM("asm/levels", func_L01_002E2608);
+/* Draws a textured quad with the given corners and colour; rotate turns the texture
+   coordinates by that many quarter turns. */
+void func_L01_002E2608(MotionVec *corners, int texture, int kind, int color, int rotate)
+{
+    struct {
+        MotionVec pos[4];
+        int color[4];
+        float uv[4][2];
+        char reserved[32];
+    } packet;
+    float rotated[4][2];
+    int i, j, k;
 
-INCLUDE_ASM("asm/levels", func_L01_002EABA8);
+    func_00281DE8(&packet, texture, kind, 128);
+    packet.color[0] = packet.color[1] = packet.color[2] = packet.color[3] = color;
+
+    packet.uv[0][0] = 0.0f;
+    packet.uv[0][1] = 0.0f;
+    packet.uv[1][0] = 0.0f;
+    packet.uv[1][1] = 1.0f;
+    packet.uv[2][0] = 1.0f;
+    packet.uv[2][1] = 0.0f;
+    packet.uv[3][0] = 1.0f;
+    packet.uv[3][1] = 1.0f;
+    if (rotate) {
+        for (j = 0; j < 4; j++) {
+            rotated[j][0] = packet.uv[j][0];
+            rotated[j][1] = packet.uv[j][1];
+        }
+        for (k = 0; k < 4; k++) {
+            packet.uv[k][0] = rotated[(k + rotate) % 4][0];
+            packet.uv[k][1] = rotated[(k + rotate) % 4][1];
+        }
+    }
+
+    for (i = 0; i < 4; i++) {
+        qcopy(&packet.pos[i], &corners[i]);
+        packet.pos[i].v[3] = 1;
+    }
+    func_00280B90(&packet, 0, 0);
+}
+
+/* func_L01_002EABA8 is defined in L01_002A7248-pre.c. */
 
 
 /* Defined in L01_002F14E8-g8.c. */
@@ -506,6 +774,7 @@ void func_L01_00324410(char *out, char *src, int *nums)
     *w = 0;
 }
 
+
 INCLUDE_ASM("asm/levels", func_L01_00324550);
 
 /* func_L01_003245E0 is defined in L01_002A7248-g8.c (this unit has no $gp access for it). */
@@ -536,8 +805,83 @@ int func_L01_003246F8(int key) {
  return -1;
 }
 
+typedef union {
+    ClosestPointQuad q;
+    float v[4];
+} ParticleVec;
+
+typedef struct SpanParticle {
+    unsigned char f0;
+    unsigned char f1;
+    unsigned char texture;      /* 2 */
+    unsigned char f3;
+    int color0;                 /* 4 */
+    char pad8;
+    unsigned char f9;
+    short kind;                 /* 0xA */
+    int color1;                 /* 0xC */
+    ParticleVec start;          /* 0x10: v[3] is the life */
+    ParticleVec end;            /* 0x20: start plus the scaled velocity, v[3] = 1 */
+    ParticleVec velocity;       /* 0x30: v[3] is the caller's scale */
+} SpanParticle;
+
 /* RAC1 counterpart: src/overlays/shared/span_particle.c, spawn_span_particle. */
-INCLUDE_ASM("asm/levels", func_L01_00326DD8);
+/* Spawns a span particle of the given kind (0 to 2) at pos, moving along vec and carrying scale. */
+void func_L01_00326DD8(float *pos, int kind, float *vec, float scale)
+{
+    float velocity[4];
+    float *velocityPtr = velocity;
+    float scaled[4];
+    float end[4];
+    SpanParticle *p;
+    int alpha;
+    float speed;
+    float life;
+    int texture;
+
+    *(ClosestPointQuad *)velocity = *(ClosestPointQuad *)vec;
+    p = func_00325768(0);
+    if (p != 0) {
+        alpha = 0;
+        texture = kind;
+        life = 0.0f;
+        speed = life;
+        switch (texture) {
+        case 0:
+            alpha = 0x14;
+            life = 0.015f;
+            speed = func_00310580(0.01f, 1.0f);
+            break;
+        case 1:
+            alpha = 0xD;
+            life = 0.5f;
+            speed = func_00310580(1.0f, 5.0f);
+            break;
+        case 2:
+            alpha = 0xD;
+            life = 1.0f;
+            texture = 1;
+            speed = func_00310580(20.0f, 30.0f);
+            break;
+        }
+        *(ClosestPointQuad *)scaled = *(ClosestPointQuad *)velocityPtr;
+        func_002E3738(scaled, scaled, speed);
+        p->kind = kind;
+        p->color0 = ((alpha >> 2) << 24) | 0x606060;
+        p->color1 = (alpha << 24) | 0x907070;
+        p->f9 = func_002E45B8(4.0f) + 0x60;
+        p->f3 = 0x44;
+        p->f1 = 3;
+        p->texture = D_L01_001FF040[texture];
+        p->start.q = *(ClosestPointQuad *)pos;
+        func_002E3470(end, pos, scaled);
+        p->end.q = *(ClosestPointQuad *)end;
+        p->start.v[3] = life;
+        p->end.v[3] = 1.0f;
+        p->velocity.q = *(ClosestPointQuad *)velocityPtr;
+        p->velocity.v[3] = scale;
+    }
+}
 
 typedef int Quad331CA0 __attribute__((mode(TI)));
 typedef struct { unsigned char b0, b1, b2, b3; int color; unsigned char seed, alpha; unsigned short size; float life; union { Quad331CA0 q; float f[4]; } position; float payload[8]; } Particle331CA0;
@@ -583,6 +927,7 @@ void func_L01_00331CA0(Quad331CA0 *position, int kind, Quad331CA0 *velocity, flo
     }
 }
 
+
 /* func_L01_00331E08 is in L01_00331E08.c. */
 
 /* Averages each 16-byte record of the table the argument points at against the record
@@ -617,10 +962,67 @@ float func_L01_003377C8(unsigned char *a0) {
     return f20;
 }
 
-INCLUDE_ASM("asm/levels", func_L01_00337888);
+typedef struct PathPoint {
+    float v[4];
+} PathPoint;
 
+/* A closed path: the point count, then the points from offset 0x10. */
+typedef struct Path {
+    int count;
+    int pad04[3];
+    PathPoint points[1];
+} Path;
 
+typedef struct PathFollower {
+    char pad00[0x10];
+    PathPoint position;
+} PathFollower;
 
+/* Moves distance further along the closed path from the given segment, walking forward or
+   back by direction; writes the point reached to out and returns the segment it lies on. */
+int func_L01_00337888(PathFollower *follower, Path *path, PathPoint *out, int segment, int direction, float distance)
+{
+    float toNext[4];
+    float toFollower[4];
+    int next;
+    int last;
+    float length;
+    float step = distance;
+
+    last = path->count - 1;
+    if (segment == last)
+        next = direction > 0 ? 0 : last - 1;
+    else if (segment == 0) {
+        next = last;
+        if (direction > 0)
+            next = 1;
+    } else
+        next = segment + direction;
+    func_00282CF0(toNext, &path->points[next], &path->points[segment]);
+    length = func_00282DF0(toNext);
+    func_00282F20(toNext, toNext, 1.0f);
+    func_00282CF0(toFollower, &follower->position, &path->points[segment]);
+    distance = func_00282DB0(toFollower, toNext);
+    distance += step;
+    if (length < distance) {
+        last = path->count - 1;
+        segment = next;
+        if (segment == last)
+            next = direction > 0 ? 0 : last - 1;
+        else if (segment == 0) {
+            next = last;
+            if (direction > 0)
+                next = 1;
+        } else
+            next = segment + direction;
+        func_00282CF0(toNext, &path->points[next], &path->points[segment]);
+        distance -= length;
+        func_00282F20(toNext, toNext, 1.0f);
+    }
+    func_00282F20(toNext, toNext, distance);
+    func_00282CC0(out, toNext, &path->points[segment]);
+    return segment;
+}
 
 int func_L01_00355BA0(int index, int value) {
     char *p = D_00188660 + index * 0x70;
@@ -643,10 +1045,61 @@ INCLUDE_ASM("asm/levels", func_L01_0038EF40);
 
 /* A model with kind 0x12 is exempt from the trigger's visibility switches. */
 #define SPATIAL_TRIGGER_EXEMPT(p) \
-    ((p) && *(char **)((p) + 0x24) && \
-     *(short *)(*(char **)((p) + 0x24) + 0x46) == 0x12)
+    ((p) && (p)->model && (p)->model->kind == 0x12)
 
-INCLUDE_ASM("asm/levels", func_L01_003907B8);
+typedef struct TriggerSettings {
+    char pad00[0x7C];
+    signed char f7C;
+    signed char f7D;
+    char pad7E;
+    signed char f7F;
+} TriggerSettings;
+
+/* Applies a trigger's settings to the moby at index: each switch is positive to turn its
+   effect on, negative to turn it off; inactive reverses them. */
+void func_L01_003907B8(int index, TriggerSettings *settings, int active)
+{
+    Moby *p = (Moby *)D_L01_001B255C + index;
+
+    if (p) {
+        if (active) {
+            if (settings->f7C > 0)
+                p->state &= ~2;
+            else if (settings->f7C < 0)
+                p->state |= 2;
+            if (settings->f7D > 0 && !SPATIAL_TRIGGER_EXEMPT(p)) {
+                p->f31 = 1;
+                p->state &= ~1;
+            } else if (settings->f7D < 0 && !SPATIAL_TRIGGER_EXEMPT(p)) {
+                p->f31 = 0;
+                p->state |= 1;
+            }
+            if (settings->f7F > 0 && p->model) {
+                p->f98 = p->model->f10;
+            } else if (settings->f7F < 0 && p->model) {
+                p->f98 = 0;
+            }
+        } else {
+            if (settings->f7C > 0 && !SPATIAL_TRIGGER_EXEMPT(p)) {
+                p->state |= 2;
+            } else if (settings->f7C < 0 && !SPATIAL_TRIGGER_EXEMPT(p)) {
+                p->state &= ~2;
+            }
+            if (settings->f7D > 0 && !SPATIAL_TRIGGER_EXEMPT(p)) {
+                p->f31 = 0;
+                p->state |= 1;
+            } else if (settings->f7D < 0 && !SPATIAL_TRIGGER_EXEMPT(p)) {
+                p->f31 = 1;
+                p->state &= ~1;
+            }
+            if (settings->f7F > 0) {
+                p->f98 = 0;
+            } else if (settings->f7F < 0) {
+                p->f98 = p->model->f10;
+            }
+        }
+    }
+}
 
 #undef SPATIAL_TRIGGER_EXEMPT
 

@@ -121,9 +121,28 @@ extern void func_L00_003E4948(void);
 
 extern char D_L05_002681E0[];
 
-extern char D_L05_001B251C[];
+/* sda: one absolute `lw` macro load at -G0, as in retail. */
+extern char *D_L05_001B251C __attribute__((sda));
 
 extern void func_L05_0041CB68(char *object);
+
+extern char D_00188660[];
+extern int func_002E5DA0(int, int, char *, int);
+extern void func_L05_00415D70(void);
+extern void func_L05_00415DA8(char *obj);
+extern void func_L05_00415F18(char *object);
+extern void func_L05_00415FD0(char *object);
+extern void func_L05_004161B0(char *obj);
+extern void func_L00_003BAAD0(void);
+
+/* The fields of the record func_379CA0 returns that func_L05_00415B38 uses; +0x120 is the
+   target moby (its position is at +0x10), +0x11C says one is set. */
+typedef struct {
+    char pad0[0x104];
+    int x104, x108, pad10C, mode, pad114, pad118;
+    int has_target;
+    char *target;
+} Target05;
 
 extern void func_L05_0041CE00(char *object);
 
@@ -466,7 +485,74 @@ void func_L05_004158B0(char *object)
 
 /* func_L05_00415958 is defined in L05_00415958-qcopy.c. */
 
-INCLUDE_ASM("asm/levels", func_L05_00415B38);
+/* Per-frame update. On the first frame it initializes the object and, if state+0x264 is set,
+   clears the owners of the 128 interpolation records; afterwards it creates the two
+   func_L05_00416D68 children once, points the record at moby state+0x260, and renews the
+   D_00188660 slot in state+0x274 when the object no longer owns it. */
+void func_L05_00415B38(char *object)
+{
+    char *state = *(char **)(object + 0x68);
+    Target05 *r;
+    char *rec;
+    char buf[0x10];
+
+    if (*(unsigned char *)(object + 0x20) == 0) {
+        *(unsigned char *)(object + 0x30) = 0xFF;
+        if (func_379860(object) == 0)
+            return;
+        func_L05_00415DA8(object);
+        func_3065F8(buf);
+        if (*(int *)(state + 0x264) != 0) {
+            char *base;
+            int *p;
+            int i;
+
+            func_379E60(object, (int)func_L05_00415D70, 0, 0);
+            base = D_L05_002659E0;
+            p = (int *)(base + 0x27F0);
+            i = 0x7F;
+            do {
+                *p = 0;
+                p -= 0x14;
+                i--;
+            } while (i >= 0);
+        }
+        return;
+    }
+    r = (Target05 *)func_379CA0(object);
+    if (r->mode == 0)
+        return;
+    if (*(int *)(state + 0x26C) == 0 && *(int *)(state + 0x270) == 0) {
+        *(int *)(state + 0x26C) = (int)func_L05_00416D68(object, 0);
+        *(int *)(state + 0x270) = (int)func_L05_00416D68(object, 1);
+        *(float *)(*(int *)(state + 0x26C) + 0x2C) = *(float *)(object + 0x2C);
+        *(float *)(*(int *)(state + 0x270) + 0x2C) = *(float *)(object + 0x2C);
+    }
+    {
+        int one = 1;
+
+        func_37C160(object);
+        func_37B538(object, 0, 0, 0);
+        func_37B948(object, one, 32.0f);
+        if (r->mode == one) {
+            if (*(int *)(state + 0x260) != -1) {
+                r->has_target = 1;
+                r->target = D_L05_001B251C + *(int *)(state + 0x260) * 256;
+            }
+            if (r->x108 != 0 && r->x104 != 0)
+                func_L05_00415F18(object);
+            if (func_37B888(object) != 0)
+                func_37B6D0(object);
+            func_3062A0(state + 0x268);
+            func_L05_00415FD0(object);
+        }
+    }
+    rec = D_00188660 + *(int *)(state + 0x274) * 0x70;
+    if (*(char **)(rec + 0x88) != object || *(unsigned char *)(rec + 0x74) == 0)
+        *(int *)(state + 0x274) = func_002E5DA0(1, 6, object, 0xF76);
+    func_L05_004161B0(object);
+    func_2FF698(func_L00_003BAAD0, object);
+}
 
 /* Clears one int field of each of 128 strided records. */
 void func_L05_00415D70(void)
@@ -550,10 +636,10 @@ void func_L05_00415F18(char *object)
 
 /* func_L05_004161B0 lives in its own compiler-profile unit. */
 
-INCLUDE_ASM("asm/levels", func_L05_00416468);
+/* func_L05_00416468 is defined in L05_00416468-g8.c. */
 
 
-INCLUDE_ASM("asm/levels", func_L05_00416918);
+/* func_L05_00416918 is defined in L05_00416918.c. */
 
 char *func_L05_00416D68(char *a0, int a1)
 {
@@ -643,9 +729,9 @@ void func_L05_0041CA70(char *obj)
     func_306630(obj + 0x10, table + 0x30, obj + 0x10);
 }
 
-INCLUDE_ASM("asm/levels", func_L05_0041CB68);
+/* func_L05_0041CB68 is defined in L05_004161B0.c (-fno-gcse profile). */
 
-INCLUDE_ASM("asm/levels", func_L05_0041CFE8);
+/* func_L05_0041CFE8 is defined in L05_0041CFE8-g8.c. */
 
 /* shared native body of family 5a97ab89858c */
 void func_L05_0041D1B0(char *p)
@@ -680,6 +766,8 @@ INCLUDE_ASM("asm/levels", func_L05_0041EF00);
 /* func_L05_0041FC60 is built with -G8: see L05_00314E28-g8.c. */
 
 /* func_L05_0041FD48 is built with -G8: see L05_00314E28-g8.c. */
+
+
 
 
 /* func_L05_0041FFF8 is built with -G8: see L05_00314E28-g8.c. */

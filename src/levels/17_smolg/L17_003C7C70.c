@@ -212,7 +212,47 @@ void func_L17_003E47E8(s32 a0) {
    taken when free or when its holder is in state 0xFE/0xFD, then in mode 1 handed to the
    nearest candidate; returns 1 once this object holds it in mode 2. func_L17_003E6F20
    releases it. */
-INCLUDE_ASM("asm/levels", func_L17_003E6DE8);
+extern float func_00282E48(void *, void *);
+
+int func_L17_003E6DE8(char *object)
+{
+    char *base = (char *)D_L17_001B2C1C;
+    int index = (object - base) >> 8;
+    char *state = *(char **)(object + 0x68);
+    int other;
+    char *target;
+    float *nearest;
+    float *best;
+    float distance;
+
+    if (*(u8 *)(object + 0x21) == 0xFF)
+        return 1;
+    other = **(int **)(state + 0x720);
+    if (other == -1 || (target = base + (other << 8)) == 0
+        || *(u8 *)(target + 0x20) == 0xFE || *(u8 *)(target + 0x20) == 0xFD) {
+        **(int **)(state + 0x720) = index;
+        **(int **)(state + 0x748) = 1;
+        nearest = *(float **)(state + 0x74C);
+        *nearest = func_00282E48(object + 0x10, state + 0x240);
+        return 0;
+    }
+    if (**(int **)(state + 0x748) == 1) {
+        if (index == other) {
+            **(int **)(state + 0x748) = 2;
+            return 1;
+        }
+        distance = func_00282E48(object + 0x10, state + 0x240);
+        best = *(float **)(state + 0x74C);
+        if (distance < *best) {
+            **(int **)(state + 0x720) = index;
+            *best = distance;
+            return 0;
+        }
+    }
+    if (**(int **)(state + 0x748) == 2 && **(int **)(state + 0x720) == index)
+        return 1;
+    return 0;
+}
 
 void func_L17_003E6F20(s32 a0)
 {
@@ -259,7 +299,7 @@ INCLUDE_ASM("asm/levels", func_L17_00417DB0);
 
 INCLUDE_ASM("asm/levels", func_L17_0041E208);
 
-INCLUDE_ASM("asm/levels", func_L17_0041EAA8);
+/* func_L17_0041EAA8 is defined in L17_003C7C70-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L17_0041ED58);
 
@@ -272,4 +312,4 @@ INCLUDE_ASM("asm/levels", func_L17_0041F478);
 
 /* func_L17_00420A50 is defined in L17_00420A50-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L17_00420E08);
+/* func_L17_00420E08 is defined in L17_003C7C70-g8.c. */

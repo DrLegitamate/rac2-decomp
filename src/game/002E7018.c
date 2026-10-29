@@ -175,7 +175,6 @@ void func_002EA8E8(void)
     }
 }
 
-INCLUDE_ASM("asm/game", func_002EA968);
 
 extern void func_001325E8(void *, void (*)(int, long), long long);
 extern void func_0011AEA0(int);
@@ -222,9 +221,9 @@ int func_002EB158(int index)
 /* func_002EB1E0 is matched in its own unit, 002EB1E0.c (-frac2-gcse-unsplit-edges). */
 
 
-INCLUDE_ASM("asm/game", func_002EB7E8);
+/* func_002EB7E8 is in 002EB7E8-g8.c (-G8 small data). */
 
-INCLUDE_ASM("asm/game", func_002EBAA8);
+/* func_002EBAA8 is in 002EBAA8-g8.c (-G8 small data). */
 
 
 INCLUDE_ASM("asm/game", func_002EBC70);
