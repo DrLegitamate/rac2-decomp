@@ -23,6 +23,9 @@
      (measured with the compiler itself, tools/probe3.c), so that word is
      out of reach.
 
+   A dedicated `-ftrapv` file was also rejected by this cc1 as an invalid
+   option, so it cannot be used to request the trapping `add`.
+
    The trapping `add` and the 64-bit union read are what is left.  The
    trapping `add` is the mark the repository already uses for handwritten
    code: func_00283150, in the same file, is marked ASM_FUNC and its body is

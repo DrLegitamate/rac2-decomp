@@ -1,4 +1,14 @@
-/* func_0033D2C0 - 384 bytes. Opus near miss (M18): the three-row slider panel in func_0033CC20 style; size exact, 41 lines of callee-saved register assignment (retail: object s1, format s0, bright s2, dim s3, &pair s4, color s5). Permuter queued. */
+/* func_0033D2C0 - 384 bytes. Rechecked 29 October 2026: isolated `python3 tools/check.py func_0033D2C0 --diff` candidate compiled 384/384 bytes, 0/28 USA v1.01 places; first difference is the callee-saved object register at +0x04. Opus near miss (M18): the three-row slider panel in func_0033CC20 style; size exact, 41 lines of callee-saved register assignment (retail: object s1, format s0, bright s2, dim s3, &pair s4, color s5). */
+/* 29 October 2026 decomp-permuter run (`rac2/ntsc`, -O2 -G0, four workers,
+   180 seconds): base score 42, best score 3 after 9,355 candidates. The best
+   generated source takes `&format` and later reads `*new_var`; it has no
+   permuter artefacts, but the actual checker still reports 0/28, first at
+   +0x114 in the selector/index setup. Splitting the boolean selector into a
+   local on that candidate moved the first mismatch to +0xF4 and still gave
+   0/28. Rewriting the selection as `D_001A7B98 ? pair.ids[1] : pair.ids[0]`
+   reduced the candidate to 376/384 bytes, also 0/28. No candidate passed
+   `tools/check.py`, so the marker remains. Search outputs are private under
+   /tmp and are not source. */
 #include "include_asm.h"
 /* Draws the three-row slider panel: two labelled sliders and the shared "%s: %s" option row,
  * the row matching the current selection in the bright color (func_0033CC20's layout). */

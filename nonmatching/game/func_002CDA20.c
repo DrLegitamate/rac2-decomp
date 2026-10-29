@@ -1,3 +1,9 @@
+/* Maintainer ABI correction, 29 October 2026: the qualified EE compiler
+ * measures sizeof(long) == sizeof(long long) == 8 and sizeof(void *) == 4.
+ * The PR #365 trials narrowing the style argument to u32 used a false
+ * interface. Their sizes are not a valid ABI-preserving improvement.
+ * Restore the earlier wide-argument candidate; no new match is claimed.
+ */
 #include "common.h"
 
 /* Near miss: the candidate is retail's exact 140 bytes and every call, the

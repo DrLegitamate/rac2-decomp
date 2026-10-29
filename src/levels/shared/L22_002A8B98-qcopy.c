@@ -1,18 +1,17 @@
-/* func_L22_002B7328: near miss, 448 B vs 440 (about 6 instructions off). The hero pointer is re-read into the same register after each call (separate pointer variables per segment give retail's $s2 high half and $s0), qcopy and the moby calls match; left: retail loads the D_001A8F00 mode with lui/lw into one register ($v1) and fills the bnel delay slot with the call's first argument, this build uses three registers there. -mno-split-addresses fixes the load but drops the $s2 high half. Own unit: -O2 -G0 -ffunction-sections -frac2-qcopy. */
 #include "common.h"
 
 extern char D_00189E20[];
-extern s32 D_001A8F00[];
+extern s32 D_001A8F00[] __attribute__((sda));
 
 extern void func_0029F338(s32);
 extern void func_0028B6C8(s32, s32);
 extern void func_L00_002A53B8(void);
-extern void func_0028B3D0(s32, s32, void *, void *, void *, s32, s32);
-extern void func_L00_002F6B90(s32);
+extern int func_0028B3D0(s32, s32, void *, void *, void *, s32, s32);
+extern int func_L00_002F6B90(s32);
 extern void func_L00_002A6708(void);
 extern void func_L00_002D24B8(void);
 extern s32 func_L00_002A4DB0(char *, s32, s32, char *);
-extern void func_L22_002C9898(s32, s32);
+extern int func_L22_002C9898(s32, s32);
 extern char D_00302FD0[];
 extern char D_00302F80[];
 extern char D_003026B0[];

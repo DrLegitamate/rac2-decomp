@@ -1,10 +1,14 @@
-/* Retained complete C repair, 2026-10-25; not linked or counted.
+/* Retained complete C reconstruction, requalified on current master
+ * 2026-10-28; not linked or counted.
  * Profile: -O2 -G8 -ffunction-sections.
  * Private placement checks: us: 0/28, us2: absent, pal: absent.
  * The observed loop reads four mission IDs; all four words are now within the
  * declared table. Historical screening measured 272/328 bytes.
- * Current code is 280/328 bytes. Separate output induction pointers and
- * record/global address scheduling still differ.
+ * Current in-unit `tools/check.py` result is 280/328 bytes, 0/28 in USA v1.01.
+ * Separate output induction pointers and record/global address scheduling
+ * still differ. A pointer-induction rewrite on 2026-10-28 compiled to 288/328
+ * and remained 0/28; it produced no useful improvement, so the 280-byte
+ * indexed-array form remains the retained best.
  */
 
 extern char *D_001A8CFC[] __attribute__((sda));

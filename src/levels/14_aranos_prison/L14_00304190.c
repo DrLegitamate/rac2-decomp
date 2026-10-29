@@ -686,7 +686,7 @@ float func_L14_003E22A8(char *arg0) {
 
 INCLUDE_ASM("asm/levels", func_L14_003E2328);
 
-INCLUDE_ASM("asm/levels", func_L14_003E2688);
+/* func_L14_003E2688 is defined in L14_00304190-g8.c. */
 
 float func_L14_003E28E8(float arg0) {
     float f = arg0;

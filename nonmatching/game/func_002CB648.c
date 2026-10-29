@@ -1,4 +1,7 @@
-/* func_002CB648 - 388 bytes.  Worker attempt, 27 October 2026 (draft below).
+/* func_002CB648 - 388 bytes. Worker attempt from 27 October 2026; rechecked 28 October 2026:
+   404/388 bytes, 0/28 USA v1.01 places with -O2 -G8 -ffunction-sections. A 29 October
+   flags-pointer probe (`flags = D_00210A40.flags; flags[i]`) measured 400/388,
+   still 0/28, and worsened loop setup/register allocation.
 
    func_002CB648: draft 404 B vs 388 (needs -G8 file, 002CB648-g8.c with "-O2
    -G8 -ffunction-sections"). Retail walks a flags pointer s4=&D_00210A40+0xC

@@ -187,9 +187,35 @@ void func_L01_003B5310(u8 *a0) {
 
 INCLUDE_ASM("asm/levels", func_L01_003B53C8);
 
-/* func_L01_003B57A8 is in nonmatching/levels/func_L01_003B57A8.c: it reads a word
-   through $gp and still differs from retail in four places. */
-INCLUDE_ASM("asm/levels", func_L01_003B57A8);
+/* func_L01_003B57A8 uses the SDA pointer to the position table. */
+extern u8 *D_L01_001B264C __attribute__((sda));
+extern char D_00189EA0[];
+extern float func_00282E80(void *, void *);
+
+/* Of the (up to four) positions whose indices are listed at the state's +0x310, copies the one
+   func_00282E80 rates highest against D_00189EA0 to OUT (its rating at +0xC), then stores
+   func_002A89A8's value for it at +0x8. A position is the 16-byte record at +0x30 of the
+   index's 0x80-byte entry in the D_L01_001B264C table. */
+void func_L01_003B57A8(u8 *arg0, u8 *out) {
+    s32 *p = (s32 *)(*(u8 **)(arg0 + 0x68) + 0x310);
+    u8 pos[16] __attribute__((aligned(16)));
+    s32 count = 4;
+    f32 f;
+
+    *(f32 *)(out + 0xC) = 0.0f;
+    while (--count >= 0) {
+        if (*p != -1) {
+            qcopy(pos, D_L01_001B264C + *p * 0x80 + 0x30);
+            f = func_00282E80(pos, D_00189EA0);
+            if (*(f32 *)(out + 0xC) < f) {
+                qcopy(out, pos);
+                *(f32 *)(out + 0xC) = f;
+            }
+        }
+        p++;
+    }
+    *(f32 *)(out + 0x8) = func_002A89A8(out, 0, 10.0f);
+}
 
 INCLUDE_ASM("asm/levels", func_L01_003B5878);
 

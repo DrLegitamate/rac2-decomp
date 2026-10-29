@@ -272,7 +272,7 @@ void func_L03_003D20F8(char *a0)
     func_30D710(0, -1);
 }
 
-INCLUDE_ASM("asm/levels", func_L03_003D22C8);
+/* func_L03_003D22C8 is defined in L03_00399230-g8.c. */
 
 /* func_L03_003D2518 is defined in L03_003D2518.c. */
 

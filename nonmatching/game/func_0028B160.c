@@ -1,4 +1,10 @@
-/* Best retained candidate: 280 bytes versus 292; 0/28 in us, pal and us2. */
+/* Best retained candidate: 280 bytes versus 292; 0/28 in us, pal and us2.
+ * 28 Oct 2026: `python3 tools/regalloc.py func_0028B160 --version us` on the
+ * retained candidate reported byte-identical baseline/dump objects under
+ * -O2 -G0. The candidate keeps the address of D_001B1894 in a saved register
+ * across the loop; retail rematerializes that global address on each pass and
+ * uses $s6 for the shift base 1, while this candidate needs $fp for that 1.
+ * This is a concrete allocation difference; no new C form was tested. */
 extern int *D_001B1888;
 extern unsigned int *D_001B1894;
 extern int D_001A7308;

@@ -1,5 +1,5 @@
-/* Retained nonmatching reconstruction, 27 October 2026.
- * Profile: -O2 -G0 -ffunction-sections. Candidate: 216 bytes; retail: 232 bytes. USA v1.01, USA v2.00 and PAL each reject all 28 carrying places. Absolute state accesses, the GP cursor and four-argument iterator ABI were measured from retail. The remaining difference is the active/inactive filter and shared return/call control flow. Reopen with evidence for that control-flow shape; do not add volatile or synthetic dependencies.
+/* Retained nonmatching reconstruction, rechecked 29 October 2026.
+ * Profile: -O2 -G0 -ffunction-sections. Candidate: 216 bytes; retail: 232 bytes. USA v1.01, USA v2.00 and PAL each reject all 28 carrying places. Absolute state accesses, the GP cursor and four-argument iterator ABI were measured from retail. Two distinct filter forms reach 232 bytes but match 0/28: an `onlyInactive`-first form differs in branch polarity, and a duplicated-call form with `includeInactive` outermost has retail's outer branch polarity but differs in class-byte branches, result setup and helper-call layout. A direct conditional-expression selection between the two policies also remains 216 bytes and 0/28, with changed branch polarity but unchanged shared helper/return layout. The shorter candidate's remaining difference is the active/inactive filter and shared return/call control flow. Reopen with evidence for that control-flow shape; do not add volatile or synthetic dependencies.
  */
 #include "common.h"
 extern int D_001B1B78[] __attribute__((sda));

@@ -17,6 +17,16 @@
  * The retail's "jr $v0" is therefore a tail call this compiler does not emit for
  * an indirect target; the body needs a way to spell it that plain C has not
  * found.
+ *
+ * Current-master computed-goto probe (plain GNU C extension, no asm or barrier):
+ *   void func_002B9380(void *a0) {
+ *       goto *(void *)(*(unsigned int *)((char *)a0 + 0x3C));
+ *   }
+ * It emits 12 bytes at all 28 places: `lw $v0,0x3C($a0); jr $v0; nop`.
+ * Retail has an additional `nop` between the load and `jr`. The compiler does
+ * not retain a no-op there from a source-level empty statement, and an artificial
+ * barrier or inline assembly is forbidden. The indirect tail-call shape is now
+ * confirmed; the remaining load/jump spacing is unresolved. No exact match.
  */
 
 void func_002B9380(void *a0)

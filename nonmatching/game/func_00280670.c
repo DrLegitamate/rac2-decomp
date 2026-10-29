@@ -1,3 +1,8 @@
+/* Current-master USA v1.01 recheck: 152/160 bytes, 0/28. Reordering the
+ * `count` and `total` declarations leaves the output unchanged. The remaining
+ * mismatch includes total/count and input-pointer allocation, loop setup and
+ * result-pointer reconstruction. */
+
 typedef int s32;
 typedef unsigned char u8;
 typedef unsigned int u32;

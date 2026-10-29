@@ -7,34 +7,38 @@
  *    of a directory inside a slot is 0x1C (the slot entry is
  *    0x0013F3E0 + slot * 0xA0 + dir * 0x1C);
  *  - the header passed in a0 is read at +0x10 (int), +0x1C (int), +0x2E
- *    (byte), +0x64 (int) and +0x70 (16 bytes);
+ *    (byte), +0x64 (int) and +0x70 (8 bytes);
  *  - the entry receives them at +0x30, +0x34, +0x38, +0x3C and +0x40, and
  *    the flag "func_0029AF58(a0) == 0" at +0x48;
  *  - the 16 bytes are copied with one R5900 unaligned 16-byte idiom
  *    (ldl/ldr + sdl/sdr).
  *
- * The C below is right about all of that but comes out 192 bytes: this cc1
- * copies a 16-byte aggregate as two 8-byte unaligned copies (eight
- * instructions) where retail uses one 16-byte copy (four instructions), and
- * it does not reproduce retail's register allocation (retail keeps the
- * header pointer and the index in $s0/$s1/$s2 and copies the entry pointer
- * into four argument registers before the first store).
- *
- * Measured: a `mode(TI)` copy through a TI16* gives lq/sq (the compiler
- * takes the cast's 16-byte alignment), a packed struct holding a mode(TI)
- * member gives uld/por/usd, and every 16-byte aggregate (int[4], float[4],
- * packed, char[16], memcpy) gives the two 8-byte ldl/ldr copies.  The single
- * 16-byte unaligned copy is not reachable from C with this compiler.
+ * The original 16-byte Quad candidate was wrong: retail copies only eight
+ * bytes at +0x70 into the slot's +0x40 field. The retained candidate below
+ * uses a packed eight-byte object, which compiles to the same four-instruction
+ * `ldl`/`ldr`/`sdl`/`sdr` copy sequence as retail. On 28 October 2026, a current
+ * USA v1.01 checker probe measured 148 bytes versus 184 and 0/28 placements.
+ * The remaining differences include the function's frame/register allocation,
+ * table base materialization, and the setup and order of its field stores. The
+ * previous 192-byte measurement and claim that the unaligned copy was
+ * unreachable described the superseded 16-byte candidate and are withdrawn.
+ * The current caller passes the header as `char *`; keeping that actual pointer
+ * type instead of an `int` plus cast leaves the candidate at 148 bytes and
+ * 0/28, while changing argument/register allocation.
+ * A 29 October dedicated-unit variant that explicitly advances the header
+ * pointer to `src + 0x10` before reading the fields compiles to 152 bytes,
+ * 0/28. It changes the table/index register assignments and source pointer
+ * placement, but still lacks retail's saved-register layout, retained output
+ * field pointers, and 32 bytes of code.
  */
 extern char D_0013F3E0[];
 
 extern int func_0029AF58(char *p);
 
-typedef struct { int a, b, c, d; } Quad;
+typedef struct __attribute__((packed)) { unsigned long long value; } Word64;
 
-void func_0029B0B0(int a0, int a1, int a2)
+void func_0029B0B0(char *src, int a1, int a2)
 {
-    char *src = (char *)a0;
     int flag = func_0029AF58(src);
     char *rec = (char *)D_0013F3E0 + a1 * 0xA0 + a2 * 0x1C;
     int *f1 = (int *)(rec + 0x30);
@@ -47,5 +51,5 @@ void func_0029B0B0(int a0, int a1, int a2)
     *f2 = *(int *)(src + 0x1C);
     *f3 = *(unsigned char *)(src + 0x2E);
     *f4 = *(int *)(src + 0x64);
-    *(Quad *)(rec + 0x40) = *(Quad *)(src + 0x70);
+    *(Word64 *)(rec + 0x40) = *(Word64 *)(src + 0x70);
 }

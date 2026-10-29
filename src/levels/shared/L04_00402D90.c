@@ -38,7 +38,20 @@ INCLUDE_ASM("asm/levels", func_L04_00402D90);
 
 INCLUDE_ASM("asm/levels", func_L04_00403530);
 
-INCLUDE_ASM("asm/levels", func_L04_00404068);
+extern void func_L00_002ECFE8(void *a0, void *a1, int a2, unsigned int a3,
+                              float f12, float f13, float f14, int t0, int t1);
+
+/* Steps the record's phase at +0x1FC down by 0.1 (wrapping up by 8 once it reaches -8) and
+   draws the effect with it. */
+void func_L04_00404068(void *arg0) {
+    char *o = *(char **)((char *)arg0 + 0x68);
+
+    *(float *)(o + 0x1FC) -= 0.1f;
+    if (*(float *)(o + 0x1FC) <= -8.0f)
+        *(float *)(o + 0x1FC) += 8.0f;
+    func_L00_002ECFE8(arg0, o + 0x200, 3, 0x60005AFF, 0.08f, 0.45f, *(float *)(o + 0x1FC), 0xFF,
+                      0x17);
+}
 
 typedef unsigned int B781AimQuad __attribute__((mode(TI)));
 extern float func_00282C48(float);

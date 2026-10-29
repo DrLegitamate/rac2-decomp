@@ -1,4 +1,10 @@
-/* USA trial: 220 bytes versus 224 expected, with 0 of 28 placements matching. */
+/* Current-master USA v1.01 replay: 220 bytes versus 224, 0/28 placements.
+ * Earlier 224-byte variants also missed, first at +0x4C. A 29 October
+ * conditional-expression form of the negative-index clamp emitted the same
+ * 220 bytes and the same `movn` sequence; it did not reach retail's `movz`.
+ * Making `direction == 0` an explicit early return also emits the same 220
+ * bytes and leaves the return-zero instruction in the call setup delay path;
+ * it does not reproduce retail's `beqz` delay-slot zero return. */
 extern int func_002E5E58(int, int, void *);
 
 int func_00347F80(char *object, int flags)

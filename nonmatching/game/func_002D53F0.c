@@ -1,3 +1,9 @@
+/* Maintainer ABI correction, 29 October 2026: the qualified EE compiler
+ * measures sizeof(long) == sizeof(long long) == 8 and sizeof(void *) == 4.
+ * The PR #365 trials narrowing the style argument to u32 used a false
+ * interface. Their sizes are not a valid ABI-preserving improvement.
+ * Restore the earlier wide-argument candidate; no new match is claimed.
+ */
 /* func_002D53F0 (140 bytes, 28 places), M16: 140/140 under -O2 -G0 in its own unit.
  * D_001B23A4 declared MACRO_ADDR gives retail's one absolute `lwc1 $f0,D_001B23A4` through
  * $at at retail's position (this replaces the old -mno-split-addresses note); the callees

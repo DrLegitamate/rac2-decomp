@@ -1,7 +1,18 @@
 #include "include_asm.h"
 
-/* Near miss (wave 13, worker g3): 124 bytes of retail, the body is reproduced except for
-   three points.
+/* 28 October 2026 current-master candidate: 120 bytes vs 124, 0/28 USA v1.01.
+   The fifth-argument register-copy shape now matches with a dedicated 64-bit prototype.
+   The remaining difference is the shared address/load ordering for the nearby short and
+   float data. Earlier 116-byte measurement follows as history.
+
+   A temporary explicit-statement-order probe kept the initial call first, then loaded the
+   short, called func_00283CE0, and loaded the float for the calculation. It remained 120/124:
+   the scheduler put the short load in the helper-call delay slot, unlike retail's empty slot,
+   and the address materializations/registers still differed. Isolated-unit
+   probes with `-fno-schedule-insns` and, separately, `-fno-schedule-insns2`
+   also remain 120/124 and 0/28. Neither moves the short load out of the call
+   delay slot; the second flag also changes stack-save and float-constant order.
+   No strict match.
 
    The retail body:
 
@@ -13,23 +24,15 @@
      addiu $v1,$v1,0x6480 / daddu $t0,$v0,$zero / lh $a3,0x150($v1) / daddu $a0,$zero /
      lh $a1,0x152($v1) / jal func_0027DE50 / daddu $a2,$zero / ld $ra / jr $ra
 
-   What differs:
+   Current blocker: the compiler shares a high-half address materialization for the
+   adjacent short and float data, and schedules the short load in the call delay slot.
+   Retail emits separate address materializations and leaves that delay slot empty,
+   loading the float before the 1.0f constant. The 64-bit fifth-argument prototype now
+   reproduces the retail `sll` plus `daddu` sequence. Keep this function in its own source
+   unit so its callee prototype can differ from func_002FFFE0.
 
-   1. The short is loaded into $a0 with the address folded into it (`lui $a0` then
-      `lh $a0,lo($a0)`) and the delay slot of the call stays empty; this C shares one
-      `lui` between the short and the float (both live in the same page) and puts the
-      short load in the delay slot.
-   2. For the same reason the float load comes after the 1.0f constant here and before
-      it in the retail.
-   3. The fifth argument: the retail shifts in $v0 and copies it to $t0
-      (`sll $v0,$v0,24` then `daddu $t0,$v0,$zero`); this C shifts straight into $t0
-      (`sll $t0,$v0,24`).  The retail's shape is what a 64-bit fifth parameter gives
-      (measured: a `long long` fifth parameter produces exactly `sll`+`daddu`), but
-      func_0027DE50's prototype is shared with func_002FFFE0 in the same unit, which
-      needs the 32-bit one.  The two functions cannot both match in one unit.
-
-   Measured: `tools/check.py func_002FFCF8 --diff` gives 116 bytes against the retail's
-   124, "instruction at +0x14 differs" in the boot and in every level.
+   The current 120-byte candidate was checked with a 64-bit fifth argument; it still
+   differs at the short/float address sequence and is not a match.
 
    The two data cells sit at a different address in the boot (0x1B2312 and 0x1B2314) and
    in the levels (0x1B2672 and 0x1B2674), so they are named without an address. */
@@ -46,12 +49,12 @@ extern short D_001A6480[];
 
 extern void func_002FC560(int, long long);
 
-extern void func_0027DE50(int, int, int, int, int);
+extern void func_0027DE50(int, int, int, int, long long);
 
 void func_002FFCF8(void)
 {
     int v;
     func_002FC560(0x42, 0x44);
     v = func_00283CF0((1.0f - func_00283CE0(ref_L00_002FFCF8_00) * ref_L00_002FFCF8_01) * 255.0f);
-    func_0027DE50(0, D_001A6480[0xA9], 0, D_001A6480[0xA8], v << 24);
+    func_0027DE50(0, D_001A6480[0xA9], 0, D_001A6480[0xA8], (long long)(v << 24));
 }

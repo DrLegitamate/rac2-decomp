@@ -1,18 +1,18 @@
-/* No attempt: the row is not a function. 52 bytes at 0x0012FB10 are
-   `sw $v1,0x70($v0); nop; sw $a1,0xD8($v0); nop; lw $v0,0xCC($v1); nop;
-   lw $v0,0xD0($v1); nop; addiu $v0,$v0,0xB4; nop; addiu $v0,$v0,0xB4; nop;
-   sd $a1,0xF0($v1)`: no `jr $ra` anywhere, and it reads $v0 and $v1 that no
-   entry sets. The block falls through into func_0012FB48 (_alalcInit), which
-   is a complete function with its own `jr $ra` and a caller at 0x0012F7B0.
-   The nop after every instruction is a MIPS I style the SDK compiler never
-   emits (the matched neighbours use the branch delay slots), and the two
-   `addiu $v0,$v0,0xB4` have no source: the second `lw` already overwrites
-   the first, so the value they add to is dead.
-   rac1-decomp keeps the same bytes as the linker remnant func_0012BCF0
-   (LINKER_REMNANT; libmpeg's address delta is +0x3E20, so rac1 0x0012BCF0
-   is rac2 0x0012FB10), and the USA v2.00 symbol table has no symbol at
-   0x0012FB10 while it has _alalcInit at 0x0012FB48.
-   Two C spellings measured with tools/check.py --diff: the plain one is 24
-   bytes against retail's 52, the volatile one reaches 52 bytes with every
-   word different (a frame, a spill of the third argument and a `jr $ra`
-   where retail has none). A split-off remnant - fix in tools/levels.py. */
+/* Unresolved catalogue-tail hypothesis, not an exact C match. USA v1.01
+   has a 52-byte row at 0x0012FB10:
+
+     sw $v1,0x70($v0); nop; sw $a1,0xD8($v0); nop;
+     lw $v0,0xCC($v1); nop; lw $v0,0xD0($v1); nop;
+     addiu $v0,$v0,0xB4; nop; addiu $v0,$v0,0xB4; nop;
+     sd $a1,0xF0($v1)
+
+   It follows a completed return, its stack-adjustment delay slot and one `nop`,
+   then falls into the next row. A scan of catalogued USA v1.01 boot functions
+   found no direct branch/jump target into it; no aligned loaded-word pointer
+   to its range was found. Earlier C probes (24 bytes and 52 bytes) are retained
+   historical measurements, not exact matches. rac1-decomp records the same
+   bytes as a linker remnant; that is provenance, not independent boundary proof.
+
+   The row appears in all three release catalogues, but PAL and USA v2.00 retail
+   dumps are unavailable in this checkout, so leave the source/catalogue intact
+   pending release-qualified maintainer review. */

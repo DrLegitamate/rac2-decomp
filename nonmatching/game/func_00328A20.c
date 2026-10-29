@@ -1,5 +1,7 @@
 /* Near miss for func_00328A20 (boot 0x00328A20, 324 bytes, 28 places: boot and 27
- * levels).  Best local check: 344 bytes, `func_00328A20: 0 of 28 places match`.
+ * levels).  Current-master in-unit check: 348 bytes, `func_00328A20: 0 of 28
+ * places match`. The older 344-byte measurement used a conflicting prototype
+ * for func_00328F18 and is superseded.
  *
  * Retail body: only when the object state (u8 at +0x20) is 2 or 3:
  *   data = object->0x68;
@@ -12,8 +14,8 @@
  *   func_00328F18(object + 0x10, 0x103080, func_002A7820(0x20, 0x40), 0xB, 2,
  *                 0.45f, 0.0f, 0.31f);
  *   func_00329488(object);
- * The prototype of func_00328F18 is (ptr, int, int, int, int, float, float,
- * float): this is the EE C ABI where integer arguments 5-8 live in $t0-$t3 and
+ * The prototype of func_00328F18 is (ptr, int, int, ptr, int, float, float,
+ * float): this is the EE C ABI where integer/pointer arguments 5-8 live in $t0-$t3 and
  * float arguments start at $f12.  Without a prototype in scope at the call, C89
  * default argument promotion passes the floats as doubles and the call is
  * completely different -- the forward declaration is mandatory.
@@ -40,7 +42,7 @@ extern void func_00328B68(char *);
 
 extern void func_00328D98(char *, int, int, char *, int, char *, float, float);
 
-extern void func_00328F18(char *, int, int, int, int, float, float, float);
+extern void func_00328F18(char *, int, int, char *, int, float, float, float);
 
 extern void func_00329488(char *);
 
@@ -55,9 +57,9 @@ void func_00328A20(char *obj)
         func_00328D98(data + 0x30, 0x204080, *(int *)(data + 0x58), (char *)0x2E, 1,
                       data + 0x20, func_002A7798(1.0f - f) * 0.75f, 0.0f);
         func_00328B68(obj);
-        func_00328F18(obj + 0x10, 0x7F7F, func_002A7820(0x20, 0x40), 0xB, 2,
+        func_00328F18(obj + 0x10, 0x7F7F, func_002A7820(0x20, 0x40), (char *)0xB, 2,
                       0.125f, 0.0f, 0.3f);
-        func_00328F18(obj + 0x10, 0x103080, func_002A7820(0x20, 0x40), 0xB, 2,
+        func_00328F18(obj + 0x10, 0x103080, func_002A7820(0x20, 0x40), (char *)0xB, 2,
                       0.45f, 0.0f, 0.31f);
         func_00329488(obj);
     }

@@ -1,13 +1,22 @@
-/* func_002828C8 - 40 bytes, 1 place (the boot), retail at 0x002828c8:
-   lui $at,0x3E80 ; lwc1 $f2,-0x76E0($gp) ; mtc1 $a0,$f1 ; mtc1 $at,$f3 ;
-   cvt.s.w $f1,$f1 ; 0x46031818 ; 0x4602085C ; cvt.w.s $f1,$f1 ; jr $ra ;
-   mfc1 $v0,$f1.  Same wall as func_00282890: the two words in the middle
-   are COP1 words with funct 0x18 and 0x1C that this cc1 never emits, and
-   the first of them computes a value ($f0) that is never read again.  The
-   body needs the -G8 profile, so it belongs in 0027F128-g8.c. */
+/* func_002828C8 - retained C near miss, not linked. Current-master -G8 probe:
+ * 44/40 bytes, 0/1 boot place. A 28 October 2026 `-ffast-math` probe exposed
+ * `adda.s`/`madd.s` and the correct GP-relative load but remained 44 bytes;
+ * spelling the offset as `(x * D + 0.25f) + 0.25f` grew to 48 bytes. Keep the
+ * marker: tested forms still miss retail's ordering and accumulator seed.
+ * The retail sequence loads D_001A7910 into $f2,
+ * seeds ACC with 0.25f + 0.25f using `adda.s`, then computes ACC + (float)a0 *
+ * D_001A7910 with `madd.s` before `cvt.w.s`. The corresponding C expression is
+ * below. The probe emits separate `mul.s`/`add.s`, materialises 0.5f directly,
+ * and emits the data load at 0($gp) instead of -0x76E0($gp). Keep the marker;
+ * the accumulator schedule and small-data reference remain unresolved. This
+ * is not evidence for handwritten assembly. Public instruction descriptions:
+ * https://ps2tek.github.io/.
+ */
 typedef float f32;
 typedef int s32;
 
-extern float D_001A7910 __attribute__((sda));
+extern f32 D_001A7910 __attribute__((sda));
 
-int func_002828C8(s32 a0) { f32 t = (f32)a0; return (s32)(t * 0.25f + D_001A7910); }
+int func_002828C8(s32 a0) {
+    return (s32)((f32)a0 * D_001A7910 + 0.5f);
+}

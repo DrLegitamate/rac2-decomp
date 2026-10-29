@@ -10,9 +10,23 @@
    `*(int *)(D_001B22A8 + off)` with D_001B22A8 a char pointer: `int *`
    indexing lets GCC keep the pointer in a register (244 bytes).
 
+   29 October 2026 integration check: moving this body to a temporary dedicated
+   `src/game/002B6480-g8.c` unit with `-O2 -G8 -ffunction-sections` kept it at
+   308 bytes but still matched 0/28; after relocation masking, the first
+   mismatch was +0xBC. The temporary source, flag entry and marker change were
+   restored. The profile does not resolve the packet/count scheduling.
+
    Tried (same swap or worse): count++ before the pointer advance (304 bytes),
    `+= 1`, an unsigned count, the count as int D_001B8840[13], the advance as
    `(int *)p + 8`, `p = p + 0x20`, the count in a local, a void * pointer. */
+
+/* 29 October 2026 typed-DMA-packet probe, not retained as a candidate:
+ * representing the two 16-byte tags as a struct array under
+ * `-O2 -G8 -ffunction-sections` compiles to 244/308 bytes and matches 0/28.
+ * The compiler reloads D_001B22A8 repeatedly and changes the tag-address
+ * materialization and setup order. This does not reproduce the packet/count
+ * scheduling in retail. The temporary source and cflags entry were removed.
+ */
 
 #include "include_asm.h"
 

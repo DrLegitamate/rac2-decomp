@@ -23,7 +23,10 @@
  * constants (`notfound`, `limit`, `one`) declared inside the loop's scope, the two
  * names of the level table (`D_001AA4F0` bare and `D_001AA4F0_1` through `$gp`), the
  * lookup's result compared through a function pointer cast (a 64-bit argument, which
- * makes the update block match but the -1 compare 64-bit again).
+ * makes the update block match but the -1 compare 64-bit again). On current master,
+ * counted-index `for` and pre-incremented `do` forms of the scan both retain 336 bytes.
+ * Declaring `delta` as `long long` gives 352 bytes; narrowing the update expression
+ * back to `int` before assigning to it gives 372. All three forms match 0/28.
  */
 extern int *D_001AA4F0;
 extern int *D_001AA4F0_1 __attribute__((sda));

@@ -10,7 +10,12 @@
    before the call with `daddu a0,v0` in the slot.
 
    Tried: the four bound stores in three orders, w and h stored together,
-   the halves stored early, D_001A7340 without sda (worse, 79 lines). */
+   the halves stored early, and moving the w store ahead of all screen-state
+   stores. On current master this retains the same 328-byte body and delay-slot
+   placement. A 29 Oct 2026 volatile-width-store probe compiled to 332/332 bytes,
+   0/28, first mismatch +0x4: it keeps the store before the call but changes the
+   constant register and downstream address/register scheduling. A typed in-unit
+   version also measured 332/332, 0/28. D_001A7340 without sda was worse (79 lines). */
 
 extern short D_001A6480[];
 extern int D_001A7340[] __attribute__((sda));

@@ -1,6 +1,9 @@
-/* func_00288870 in its own unit: it copies a 224-byte entry, which the
-   compiler's opt-in grouped copy turns into a 32-byte lq/sq loop
-   (config/cflags.txt gives this file -frac2-qcopy). */
+/* Standalone semantic reconstruction. Integration into the actual shared
+   unit src/game/002880E0.c under -O2 -G0 produces 272 bytes, 0/28 places;
+   the 224-byte record copy becomes an ld/sd loop. A temporary -frac2-qcopy
+   profile on that whole unit left the emitted code unchanged. Two qcopy_nc
+   calls per 0x20-byte loop iteration also produce 272 bytes, 0/28; the
+   measured qcopy form at 260 bytes remains the closest integrated attempt. */
 
 #include "include_asm.h"
 

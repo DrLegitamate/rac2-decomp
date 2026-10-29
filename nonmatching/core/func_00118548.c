@@ -1,19 +1,22 @@
-/* Updated manual-C near miss, 2026-10-25.
+/* Current manual-C near miss, rechecked 2026-10-29.
  * Measured standalone unit: src/core/00118548.c
  * Actual game profile: -O2 -G2 -ffunction-sections -mastra-quad-saves
- * Release checks: US 0/1 (exit1); PAL 0/1 (exit1); US2 0/1 (exit1).
- * Current residual: 156/156 bytes. The retained unsigned complement-plus-one form keeps
- * the body nearest retail; conditional negation/control flow and frame/division scheduling
- * differ. Native unsigned negation and a named-magnitude/later-counter-lifetime form
- * are 160 bytes. no-sched-spec, no-force-mem and no-rerun-loop-opt did not fix that 160-byte
- * shape; no-sched-interblock ties on the retained 156-byte form.
- * Reopen only for: A concrete non-artificial if-conversion/lifetime model preserving the
- * parameter and conditional negation, then actual frame/division scheduling.
- * Older notes below are historical; the marker and trial-only flags were restored.
+ * Current check: 164/156 bytes, 0/1 USA v1.01 boot place. The function's
+ * first mismatch is at +0x08: the compiler places the sign test before the
+ * frame save; retail saves first. The candidate also retains the documented
+ * A 29 October combined condition (`if (neg && base == 10)`) now produces
+ * retail's `negu`/`movz` pair, but is still 164/156 bytes and 0/1: the frame
+ * save moves after the sign branch, the digit-loop scheduling differs, and
+ * the epilogue/call layout remains shifted. A 25 October
+ * note reported 156/156; that result is stale for the current compiler/checker.
+ * Older source-form trials below are historical; the marker and trial-only
+ * flags were restored.
  */
 
-/* from src/core/001163B0.c: C that compiles to 156 bytes where retail has 156
- * - the same size, but 19 words differ.
+/* Historical 25 October measurement: this source form was reported as 156
+ * bytes where retail has 156, with 19 words differing. The current replay is
+ * 164 bytes; see the header above. The register/negation observations below
+ * describe those earlier measurements and remain useful only as history.
  *
  * Itoa, and the unsigned arithmetic is settled: retail divides with `divu`
  * and negates with `negu` + `movz $a0,$v1,$v0` (v0 = base ^ 10), which only

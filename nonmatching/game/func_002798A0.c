@@ -1,6 +1,11 @@
 /* Publication review uses the catalogue data name D_001B7F80; historical
- * measurements below precede that naming correction. This draft is not linked. */
-/* 224-byte plain-C near miss for the 228-byte func_002798A0. */
+ * measurements below precede that naming correction. This draft is not linked.
+ * Current-master USA v1.01 standalone replay on 29 October 2026: 224/228 bytes,
+ * 0/28 placements. The diff starts with the table-base/register assignment and
+ * later reaches the known same-group branch-direction mismatch. A 29 October
+ * explicit early return when adjacent records have different keys emitted the
+ * same 224 bytes and `beq` to the same-group path; retail branches the other
+ * way around that path. */
 typedef struct {
     char pad000[0x20];
     unsigned short idx;

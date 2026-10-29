@@ -8,10 +8,15 @@
    The frame, the calls, the second loop and the final store match; the first loop
    does not: the retail keeps an empty loop of 28 iterations whose test is
    `slti $v0,$v1,0x1C` / `bnez` with the increment in the delay slot, which is the
-   shape of `while (i++ < 28)`, while this cc1 folds that loop away (it computes the
-   final value of the counter instead) or reverses it into a countdown loop.  The
-   loop's result is dead in the retail as well, so the source must have kept it
-   alive with a side effect this attempt does not reproduce. */
+   shape of `while (i++ < 28)`. The retained source uses
+   `while (delay++ < 28) {}`: it preserves retail's increasing counter and
+   places the increment in the branch delay slot. The current-master USA v1.01
+   check is 164 bytes, 0/28; the counter register and later branch/register
+   allocation still differ. A separate delay variable produces the target
+   counter register but adds a copy before the compare. `while (delay < 28)
+   delay++` becomes a countdown, and this cc1 rejects `-fno-ivopts`. The loop
+   has no source-level side effect beyond its finite delay; do not add a fake
+   dependency. */
 typedef unsigned char u8;
 
 extern u8 D_001A7BC8[];
@@ -20,11 +25,12 @@ extern int D_0000D948[];
 void func_002AD7B8(int a0)
 {
     int i;
+    int delay = 0;
     int count = 0;
 
     if (D_001A7BC8[a0] != 0)
         return;
-    for (i = 0; i < 28; i++) ;
+    while (delay++ < 28) { }
     if (a0 >= 0x15)
         D_001A7BC8[a0] = 1;
     if (a0 != 24)
