@@ -1499,6 +1499,9 @@ src/levels/shared/L04_003F9C60-zero.c	-O2 -G0 -ffunction-sections -frac2-zero-ti
 src/game/0029AE78-menu-g8.c	-O2 -G32 -ffunction-sections -Wa,-G32
 src/levels/shared/L00_002AE388-range.c	-O2 -G0 -ffunction-sections -ffast-math -g -frac2-hazard-labels
 src/levels/shared/L00_002AE388-select.c	-O2 -G0 -ffunction-sections -g
+src/levels/shared/L05_00444DF8-g8.c	-O2 -G8 -ffunction-sections -mno-split-addresses
+src/levels/shared/L05_00442F90-g8.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por
+src/levels/shared/L05_004445E8-g8.c	-O2 -G8 -ffunction-sections -frac2-keep-block-order
 src/game/0031E3A8-update.c	-O2 -G0 -ffunction-sections -mno-split-addresses -g -fno-sched-interblock
 src/levels/shared/L14_003DE908-g32.c	-O2 -G32 -ffunction-sections -Wa,-G32
 
@@ -1665,6 +1668,7 @@ src/game/0030F7B0-nearest.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcop
 src/levels/shared/L00_002B8CB8-g8.c	-O2 -G8 -ffunction-sections -fno-strict-aliasing -g
 src/levels/shared/L02_003C9D78-g8.c	-O2 -G8 -ffunction-sections -frac2-gcse-unsplit-edges
 
+src/levels/shared/L06_0047AC68-g8.c	-O2 -G8 -ffunction-sections -fno-gcse
 
 src/levels/shared/L00_003F5B10-g8.c	-O2 -G8 -ffunction-sections -g
 src/levels/shared/L00_00322428-g8.c	-O2 -G8 -ffunction-sections -frac2-keep-block-order -fno-schedule-insns
@@ -1712,7 +1716,9 @@ src/game/0030F7B0-g16.c	-O2 -G16 -ffunction-sections -Wa,-G16
 src/game/002CFDA8-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections -fno-builtin
 
 src/game/00291850.c	-O2 -G0 -ffunction-sections -frac2-keep-block-order
+src/levels/shared/L05_00443740-g8.c	-O2 -G8 -ffunction-sections -g
 
+src/levels/shared/L06_004638F0.c	-O2 -G0 -ffunction-sections -g
 
 src/levels/shared/L00_002A5840-g8.c	-O2 -G8 -ffunction-sections -fno-sched-interblock
 
@@ -1724,6 +1730,7 @@ src/game/00274128-projection.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-q
 src/game/002D3390-002D36A0-g8.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por -frac2-qcopy
 
 src/levels/shared/L00_002A9760-g8.c	-O2 -G8 -ffunction-sections -g
+src/levels/shared/L06_004009B8-g8.c	-O2 -G8 -Wa,-G64 -ffunction-sections
 
 # Preserve the FPU padding before the slope division.
 src/levels/shared/L04_002CC748-movement.c	-O2 -G0 -g -ffunction-sections
@@ -1740,6 +1747,7 @@ src/levels/shared/L00_002A6420-target-g8.c	-O2 -G8 -ffunction-sections -frac2-ke
 src/levels/shared/L03_003E26C8-g8.c	-O2 -G8 -ffunction-sections -frac2-hazard-labels
 src/game/002FDF40-g8.c	-O2 -G8 -ffunction-sections -g -frac2-hazard-labels
 
+src/levels/shared/L05_00445338-g8.c	-O2 -G8 -ffunction-sections -g -frac2-gcse-unsplit-edges
 src/game/002FC8D0-disturb-g8.c	-O2 -G8 -ffunction-sections -g
 
 
@@ -1748,6 +1756,7 @@ src/game/002C94C8.c	-O2 -G0 -ffunction-sections -g
 
 # Ammo pickup: vector clear, division padding and compare-label hazards.
 src/game/0031F210-pickup-g8.c	-O2 -G8 -ffunction-sections -g -frac2-zero-ti-por -frac2-hazard-labels
+src/levels/shared/L06_00403710-g8.c	-O2 -G8 -ffunction-sections -frac2-hazard-labels
 src/levels/shared/L00_003D1258-g8.c	-O2 -G8 -ffunction-sections -frac2-keep-block-order -frac2-gcse-unsplit-edges -frac2-zero-ti-por -g -frac2-hazard-labels
 src/levels/shared/L04_003C8380-stream.c	-O2 -G0 -ffunction-sections -g
 
@@ -1757,6 +1766,7 @@ src/levels/shared/L00_002D3798-aim-g8.c	-O2 -G8 -ffunction-sections -g
 
 src/game/002CDD88-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections -fno-builtin
 
+src/levels/shared/L06_0035EA68-fall.c	-O2 -G0 -g -ffunction-sections
 
 
 src/game/0030F7B0-throw.c	-O2 -G0 -ffunction-sections -g -frac2-hazard-labels

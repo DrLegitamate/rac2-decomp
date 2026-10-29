@@ -39,6 +39,41 @@ extern void func_002FEE50(int);
 extern void ref_L08_0039DBE8_05(void *, void *, void *);
 extern void func_00282CC0(char *, char *, char *);
 
+typedef int Quad_L08_003B2DB0 __attribute__((mode(TI)));
+
+typedef struct {
+    float dir[4];                 /* 0x00 */
+    float f10;                    /* 0x10 */
+    int f14;                      /* 0x14 */
+    int owner;                    /* 0x18 */
+    short h1C, h1E;               /* 0x1C */
+    float f20;                    /* 0x20 */
+    int f24, f28;                 /* 0x24 */
+} Bolt_L08_003B2DB0;
+typedef struct {
+    char pad0[0x10];
+    float pos[4];                 /* 0x10 */
+    char pad20[0x23 - 0x20];
+    u8 b23;                       /* 0x23 */
+    char pad24[0x2C - 0x24];
+    float scale;                  /* 0x2C */
+    u8 b30, b31;                  /* 0x30 */
+    short h32;                    /* 0x32 */
+    u16 h34;                      /* 0x34 */
+    char pad36[0x68 - 0x36];
+    Bolt_L08_003B2DB0 *state;     /* 0x68 */
+    char pad6C[0xF0 - 0x6C];
+    int fF0;                      /* 0xF0 */
+    float fF4, fF8;               /* 0xF4 */
+} Moby_L08_003B2DB0;
+
+extern char D_00189EA0[];
+extern Moby_L08_003B2DB0 *func_0029EFD0(int);
+extern float func_00282E48(void *, void *);
+extern void *func_L04_00358868(void *, float, int, int, int);
+extern void func_002A0F48(void *);
+
+
 extern f32 D_L08_001BE0B0;
 extern void func_0027AB40();
 
@@ -68,7 +103,24 @@ void func_L08_002F2D10(DrawCallback_r002F2D10 fn, void *arg) {
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L08_002F5CB8);
+extern int func_L00_002E9210(u8 *, int, float);
+extern u64 func_0027C878(int);
+extern void func_0027F640(float, float, u64, u8 *, int, float, u64, u8 *);
+extern u8 D_L08_00296CD0[];
+
+/* Scaled FontPrintCenter: x is moved left by half the scaled text width, then
+ * the text is drawn with font texture 1. func_0027F640 is declared with its
+ * integer and float parameters interleaved; each register bank keeps its
+ * order, and the interleaving sets the order of the argument moves. */
+void func_L08_002F5CB8(int x, int y, u64 color, u8 *text, int length, float scale) {
+    float fx, fy;
+    u64 texture;
+
+    fx = x - (func_L00_002E9210(text, length, scale) >> 1);
+    fy = y;
+    texture = func_0027C878(1);
+    func_0027F640(fx, fy, color, text, length, scale, texture, D_L08_00296CD0);
+}
 
 void func_L08_00300100(void) {
     D_L08_001BE0B0 = 0.62f;
@@ -450,7 +502,47 @@ finish:
 
 INCLUDE_ASM("asm/levels", func_L08_003A35E0);
 
-INCLUDE_ASM("asm/levels", func_L08_003B2DB0);
+Moby_L08_003B2DB0 *func_L08_003B2DB0(int owner, float *pos, float *dir, int life)
+{
+    float p[4] __attribute__((aligned(16)));
+    float d[4] __attribute__((aligned(16)));
+    Moby_L08_003B2DB0 *moby;
+    Bolt_L08_003B2DB0 *state;
+    int n;
+    float *pp = p;
+    float *dd = d;
+
+    *(Quad_L08_003B2DB0 *)p = *(Quad_L08_003B2DB0 *)pos;
+    *(Quad_L08_003B2DB0 *)d = *(Quad_L08_003B2DB0 *)dir;
+    moby = func_0029EFD0(0x4EA);
+    if (moby) {
+        state = moby->state;
+        state->owner = owner;
+        moby->fF0 = 0;
+        moby->scale *= 4.0f;
+        moby->b30 = 0xFF;
+        moby->h32 = 0xFF;
+        moby->b31 = 1;
+        moby->fF4 = -func_00283248(func_00282E20(dd), dd[2]);
+        moby->fF8 = func_00283248(d[0], dd[1]);
+        qcopy(moby->pos, pp);
+        qcopy(state->dir, dd);
+        state->f10 = func_002A7878(-0.02617994323372841f, 0.02617994323372841f);
+        state->f14 = 0;
+        state->h1C = life;
+        state->h1E = life;
+        state->f20 = func_00282E48(moby->pos, D_00189EA0);
+        state->f24 = 0;
+        state->f28 = 0;
+        n = life * 5 / 4;
+        moby->h34 |= 0x200;
+        moby->b23 = 0x40;
+        func_L04_00358868(moby, 400000.0f, 0x2F7F4F4F, n, -1);
+        func_L04_00358868(moby, 160000.0f, 0x4F7F7F7F, n, -1);
+        func_002A0F48(moby);
+    }
+    return moby;
+}
 
 INCLUDE_ASM("asm/levels", func_L08_003B2F70);
 
@@ -459,7 +551,30 @@ INCLUDE_ASM("asm/levels", func_L08_003C5940);
 /* Defined in L08_003C63F0-g8.c. */
 
 
-INCLUDE_ASM("asm/levels", func_L08_003C66F0);
+extern void func_0029FCC0(void *, int, void *);
+extern void *func_L08_003D4600(void *, void *);
+extern float func_00283CE0(int);
+
+/* Keeps a child object at points 7 and 8 of obj: spawns a missing one,
+ * otherwise moves it there and copies the parent's orientation. */
+void func_L08_003C66F0(char *obj) {
+    float p[4] __attribute__((aligned(16)));
+    char **slot = (char **)(*(char **)(obj + 0x68) + 0x80);
+    char *child = 0;
+    int i;
+    for (i = 0; i < 2; ++i, ++slot) {
+        func_0029FCC0(obj, i + 7, p);
+        if (*slot == 0) {
+            *slot = func_L08_003D4600(obj, p);
+        } else {
+            child = *slot;
+            qcopy(child + 0x10, p);
+            *(float *)(child + 0xF8) = *(float *)(obj + 0xF8);
+            *(float *)(child + 0xF4) = *(float *)(obj + 0xF4);
+            *(float *)(child + 0xF0) = func_00283CE0(i) * 3.1415927410125732f;
+        }
+    }
+}
 
 INCLUDE_ASM("asm/levels", func_L08_003C67B8);
 

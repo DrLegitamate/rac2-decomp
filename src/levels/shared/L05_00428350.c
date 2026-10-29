@@ -312,11 +312,9 @@ INCLUDE_ASM("asm/levels", func_L05_00442560);
 
 INCLUDE_ASM("asm/levels", func_L05_00442A58);
 
-INCLUDE_ASM("asm/levels", func_L05_00442F90);
-INCLUDE_ASM("asm/levels", func_L05_004431A0);
+/* func_L05_004431A0 is defined in L05_004431A0.c. */
 
 INCLUDE_ASM("asm/levels", func_L05_004432E0);
-INCLUDE_ASM("asm/levels", func_L05_00443740);
 
 /* func_L05_00443740 is defined in L05_00443740-g8.c. */
 
@@ -326,9 +324,7 @@ INCLUDE_ASM("asm/levels", func_L05_00443740);
 
 INCLUDE_ASM("asm/levels", func_L05_00443D08);
 
-INCLUDE_ASM("asm/levels", func_L05_004445E8);
 INCLUDE_ASM("asm/levels", func_L05_00444840);
-INCLUDE_ASM("asm/levels", func_L05_00444B20);
 
 /* Converts a two-float record to the coordinate pair the level's bias words expect. */
 void func_L05_00444D60(char *a0, int *a1, int *a2, int a3)
@@ -344,10 +340,9 @@ void func_L05_00444D60(char *a0, int *a1, int *a2, int a3)
 }
 
 
-INCLUDE_ASM("asm/levels", func_L05_00444DF8);
 /* func_L05_00444FD0 is in L05_00444FD0.c. */
 
-INCLUDE_ASM("asm/levels", func_L05_00445338);
+/* func_L05_00445338 is defined in L05_00445338-g8.c. */
 
 /* Reads a state word from a fixed global; unless its +0x86 halfword is 0x19 it
    returns 0, otherwise it reports whether the signed halfword reached through
