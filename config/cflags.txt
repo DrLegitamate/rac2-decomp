@@ -1491,6 +1491,7 @@ src/levels/shared/L00_003ACA60-particles-g.c	-O2 -G0 -g -ffunction-sections
 
 src/levels/shared/L00_00308538-g8.c	-O2 -G8 -Wa,-G64 -ffunction-sections
 
+src/levels/shared/L04_003F9C60-zero.c	-O2 -G0 -ffunction-sections -frac2-zero-ti-por
 
 
 src/game/0029AE78-menu-g8.c	-O2 -G32 -ffunction-sections -Wa,-G32
@@ -1543,6 +1544,7 @@ src/game/00273730.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrie
 src/levels/shared/L00_00324D18.c	-O2 -G0 -ffunction-sections -frac2-keep-block-order -frac2-gcse-unsplit-edges
 src/levels/shared/L00_003296C0.c	-O2 -G0 -ffunction-sections -mno-split-addresses
 
+src/levels/shared/L04_003C6FE8-timer.c	-O2 -G0 -ffunction-sections -g
 src/levels/shared/L00_003F8E08-003feba0.c	-O2 -G0 -ffunction-sections -g
 
 src/levels/shared/L00_004282F0-spawn.c	-O2 -G32 -Wa,-G32 -ffunction-sections
@@ -1666,6 +1668,8 @@ src/levels/shared/L00_003F5B10-g8.c	-O2 -G8 -ffunction-sections -g
 src/levels/shared/L00_00322428-g8.c	-O2 -G8 -ffunction-sections -frac2-keep-block-order -fno-schedule-insns
 src/levels/shared/L00_0031D670.c	-O2 -G0 -ffunction-sections -fno-schedule-insns
 
+src/levels/shared/L04_0033D0C0.c	-O2 -G0 -ffunction-sections -fno-schedule-insns
+src/levels/shared/L04_00365300.c	-O2 -G0 -ffunction-sections -g
 src/levels/shared/L00_002A9E30-retime.c	-O2 -G0 -ffunction-sections -g
 
 
@@ -1714,6 +1718,8 @@ src/game/002D3390-002D36A0-g8.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por -
 
 src/levels/shared/L00_002A9760-g8.c	-O2 -G8 -ffunction-sections -g
 
+# Preserve the FPU padding before the slope division.
+src/levels/shared/L04_002CC748-movement.c	-O2 -G0 -g -ffunction-sections
 
 src/game/0030F7B0-crate-g8.c	-O2 -G8 -ffunction-sections -ffast-math
 
@@ -1736,6 +1742,7 @@ src/game/002C94C8.c	-O2 -G0 -ffunction-sections -g
 # Ammo pickup: vector clear, division padding and compare-label hazards.
 src/game/0031F210-pickup-g8.c	-O2 -G8 -ffunction-sections -g -frac2-zero-ti-por -frac2-hazard-labels
 src/levels/shared/L00_003D1258-g8.c	-O2 -G8 -ffunction-sections -frac2-keep-block-order -frac2-gcse-unsplit-edges -frac2-zero-ti-por -g -frac2-hazard-labels
+src/levels/shared/L04_003C8380-stream.c	-O2 -G0 -ffunction-sections -g
 
 
 src/levels/shared/L00_003C6298-pool-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier

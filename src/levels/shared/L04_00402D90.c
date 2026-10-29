@@ -1,5 +1,9 @@
 #include "common.h"
 
+extern void func_002A7398(void *, int, int);
+extern char D_00189EA0[];
+extern unsigned char *D_L04_001B24E8 __attribute__((sda));
+
 extern signed char *D_L04_001B24DC __attribute__((sda));
 extern void func_L04_0040E248(int, unsigned char *);
 extern float func_0033BBE0(void);
@@ -281,7 +285,83 @@ void func_L04_0040A310(void)
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L04_0040A3B8);
+void func_L04_0040A3B8(unsigned char *m, int keep)
+{
+    unsigned char *p = *(unsigned char **)(m + 0x68), *node;
+    unsigned char *other;
+    qzero(p + 0x2b0);
+    *(float *)(p + 0x2b8) = 1.0f;
+    qzero(p + 0x290);
+    qzero(p + 0x2a0);
+    qzero(p + 0x2c0);
+    qzero(p + 0x6c0);
+    *(B781AimQuad *)(m + 0x10) = *(B781AimQuad *)D_00189EA0;
+    *(int *)(p + 0x76c) = 0;
+    *(int *)(p + 0x718) = 0;
+    *(short *)(p + 0x274) = 0;
+    p[0x349] = 0;
+    *(int *)(p + 0x34c) = 0;
+    *(int *)(p + 0x354) = 0;
+    *(int *)(p + 0x358) = 0;
+    *(int *)(p + 0x278) = 0;
+    *(int *)(p + 0x27c) = 0;
+    *(int *)(p + 0x300) = 0;
+    *(int *)(p + 0x304) = 0;
+    *(int *)(p + 0x308) = 0;
+    *(int *)(p + 0x30c) = 0;
+    *(int *)(p + 0x280) = 0;
+    *(int *)(p + 0x288) = 0;
+    *(int *)(p + 0x750) = 0;
+    *(int *)(p + 0x738) = 0;
+    *(int *)(p + 0x724) = 0;
+    *(float *)(p + 0x28c) = 90.0f;
+    func_L04_0040E248((int)m, p);
+    other = (unsigned char *)D_L04_001B24DC + (*(int *)(p + 0x1dc) << 8);
+    *(int *)(p + 0x3a8) = 10;
+    *(int *)(p + 0x328) = -1;
+    *(int *)(p + 0x330) = -1;
+    *(int *)(p + 0x334) = -1;
+    *(int *)(p + 0x3bc) = -1;
+    *(int *)(p + 0x714) = -1;
+    *(int *)(p + 0x324) = 0;
+    *(int *)(p + 0x32c) = 0;
+    *(int *)(p + 0x33c) = 0;
+    *(int *)(p + 0x338) = 0;
+    *(int *)(p + 0x38c) = 0;
+    *(int *)(p + 0x390) = 0;
+    *(int *)(p + 0x4c4) = 0;
+    *(int *)(p + 0x3b0) = 0;
+    *(int *)(p + 0x3ac) = 0;
+    *(int *)(p + 0x3b4) = 0;
+    *(int *)(p + 0x360) = 0;
+    *(int *)(p + 0x364) = 0;
+    *(int *)(p + 0x368) = 0;
+    *(int *)(p + 0x4d8) = 0;
+    *(int *)(p + 0x4dc) = 0;
+    if (other) func_002A7398(other, 0, 0);
+    *(short *)(p + 0x34a) = -1;
+    *(int *)(p + 0x36c) = 0;
+    /* This cleared vector has no scalar consumers in the surrounding resets. */
+    qzero_nc(p + 0x2f0);
+    *(int *)(p + 0x64c) = 0;
+    *(int *)(p + 0x70c) = 0;
+    if (!keep) {
+        *(int *)(p + 0x3a4) = 0;
+        *(int *)(p + 0x314) = -1;
+        *(int *)(p + 0x3b8) = 0;
+        *(int *)(p + 0x310) = 0;
+        *(int *)(p + 0x318) = 0;
+    }
+    for (node = D_L04_001B24E8; node; node = *(unsigned char **)(node + 0x28)) {
+        unsigned short type = *(unsigned short *)(node + 0xaa);
+        if ((unsigned int)(type - 0xb3d) < 4 || (short)type == 0x27f ||
+            (short)type == 0x70 || (short)type == 0x7a) {
+            func_0029F338(node);
+        }
+    }
+    *(int *)(p + 0x388) = 0;
+}
+
 
 
 INCLUDE_ASM("asm/levels", func_L04_0040A628);
