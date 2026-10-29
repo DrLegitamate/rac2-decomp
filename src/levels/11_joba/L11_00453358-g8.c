@@ -397,3 +397,9 @@ void func_L11_00458A98(char *self, int a1, int a2, int a3, float f12, float f13,
     *(int *)(s1 + 0x164) = a3;
     *(int *)(self + 0x78) = 0xFF84E643;
 }
+
+extern char *func_0029EFD0(int);
+extern void func_L11_00460258(void *, int);
+extern float D_L11_001B22C4 __attribute__((sda));
+extern int D_L11_001B22CC __attribute__((sda));
+extern void func_002E5DA0(int, int, char *, int);

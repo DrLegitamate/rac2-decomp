@@ -1,5 +1,107 @@
 #include "common.h"
 
+/* The actor object: position, stage and flags at fixed offsets, its state block behind `state`. */
+typedef struct {
+    u8 pad00[0x10];
+    float position[4];
+    u8 stage;
+    u8 pad21[0x10];
+    u8 active;
+    u8 pad32[0x68 - 0x32];
+    void *state;
+    u8 pad6C[3];
+    u8 f6F;
+    u8 pad70[0xAA - 0x70];
+    s16 id;
+} JobaObject;
+
+/* What func_002A9640 finds: the object that was hit, and a field cleared on it. */
+typedef struct {
+    u8 pad00[0x20];
+    JobaObject *object;
+    u8 pad24[8];
+    s32 f2C;
+} HitRecord;
+
+/* State block of the main actor (offsets as the retail code reads them). */
+typedef struct {
+    u8 pad00[0x28];
+    u8 f28;
+    u8 f29;
+    u8 pad2A[4];
+    u8 f2E;
+    u8 pad2F;
+    float f30;
+    u8 pad34[0x48 - 0x34];
+    u8 f48;
+    u8 pad49;
+    u8 f4A;
+    u8 pad4B[5];
+    char contact[0x10];
+    u8 f60;
+    u8 pad61[0x80 - 0x61];
+    float f80;
+    float f84;
+    u8 pad88[4];
+    float f8C;
+    u8 pad90[8];
+    s32 f98;
+    u8 pad9C[0xE0 - 0x9C];
+    s32 fE0;
+    float fE4;
+    u8 padE8[0x100 - 0xE8];
+    float f100;
+    float f104;
+    float f108;
+    float f10C;
+    float f110;
+    u8 pad114[0x12C - 0x114];
+    float f12C;
+    float f130;
+    float f134;
+    u8 pad138[0x256 - 0x138];
+    s16 f256;
+} JobaActorState;
+
+/* State block of the point-ring effect: up to eight 16-byte points, then its tuning values. */
+typedef struct {
+    float points[8][4];
+    s32 count;
+    float minRadius;
+    float maxRadius;
+    float maxElevation;
+    float minElevation;
+    float f94;
+    float f98;
+    float f9C;
+    float fA0;
+    float fA4;
+} JobaRingState;
+
+/* The resident player block: its position and the player object. */
+typedef struct {
+    u8 pad00[0x80];
+    float position[4];
+    u8 pad90[0x2290 - 0x90];
+    JobaObject *player;
+} PlayerBlock;
+
+extern int func_00277F48(int, int, void *, int, float);
+extern void func_002A8F70(void *, void *, int, float, float *, float *);
+extern PlayerBlock D_00189E20;
+extern JobaObject *D_L11_001C4D80[];
+extern int func_00283CF0(float);
+extern HitRecord *func_002A9640(void *, int, int);
+extern int func_002B0ED8(void *, void *, int);
+extern float func_00282E48(void *, void *);
+extern void func_002A93B0(void *);
+extern char D_L11_001BA8C0[];
+extern void func_002AF000(void *, float, float, float);
+extern void func_00282CC0(void *, void *, void *);
+extern float func_00283BE0(float, float);
+extern float func_002A78D8(float, float);
+extern void func_L00_002E6EF8(void *, char *);
+
 typedef int TI128 __attribute__((mode(TI)));
 
 
@@ -67,7 +169,7 @@ extern void func_L11_0045FFB0(char *pkt);
 
 extern long long func_0027C878(char *p);
 
-extern float func_00282E80(char *p, float *v);
+extern float func_00282E80(void *p, float *v);
 
 extern void func_00283410(float *matrix, float *quat);
 
@@ -224,8 +326,59 @@ void func_L11_00454DD8(char *p)
 
 INCLUDE_ASM("asm/levels", func_L11_00454F18);
 
-/* Initialize the actor settings, process contacts and advance its attack state. */
-INCLUDE_ASM("asm/levels", func_L11_00455DF8);
+/* Sets up the actor's tuning on its first stage, handles contacts while active, and runs the
+   attack-state update. */
+void func_L11_00455DF8(JobaObject *obj)
+{
+    JobaActorState *state = obj->state;
+    HitRecord *hit;
+    JobaObject *other;
+
+    if (obj->stage == 0) {
+        state->f48 = func_00283CF0(15.0f);
+        state->f4A = func_00283CF0(12.0f);
+        state->f80 = 0.5f;
+        state->f84 = 0.5f;
+        state->f108 = 0.5f;
+        state->f256 = 0;
+        state->f60 = 13;
+        state->f98 = 4;
+        state->f8C = 0.4f;
+        state->f100 = 1.0f;
+        state->f104 = 0.25f;
+        state->f10C = 0.5f;
+        state->f110 = 1.57079649f;
+        state->f130 = 0.52359885f;
+        state->f134 = 0.01f;
+        state->f12C = 0.00555555569f;
+        state->f28 = 3;
+        state->f30 = 0.75f;
+        state->f29 = 1;
+        func_L11_00456540((char *)obj);
+    }
+
+    if (obj->active) {
+        if (obj->stage >= 3) {
+            hit = func_002A9640(obj, 0x10000, 1);
+            if (hit && (other = hit->object) && !obj->active) {
+                if (other->id == 0xDF9 || other->id == 0xB89)
+                    hit->f2C = 0;
+            }
+            if (func_002B0ED8(obj, state->contact, 0) == 5) {
+                state->fE0 = 0;
+                state->fE4 = 0.837758183f;
+            }
+        }
+        if (obj->active && func_00282E48(obj->position, D_L11_001BA8C0) < 24.0f) {
+            func_002A93B0(obj);
+            obj->f6F = 22;
+        }
+    }
+
+    if (obj->stage >= 2 && state->f2E == 2)
+        func_L11_00456540((char *)obj);
+    func_L11_00456378((char *)obj);
+}
 
 void func_L11_00456010(char *p)
 {
@@ -300,14 +453,118 @@ void func_L11_004565D8(char *arg0, char *arg1) {
     *(float *)(state + 0x234) += radius * func_00283198(angle);
 }
 
-INCLUDE_ASM("asm/levels", func_L11_004566C0);
+/* func_L11_004566C0 lives in L11_00453358-aim-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L11_00456938);
+/* Defined in L11_00453358-retreat-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L11_00456A48);
+/* Damages and knocks back every object within radius of the source, with separate damage,
+   scale and lift for the player and for everything else. */
+void func_L11_00456A48(JobaObject *source, int kind, float radius, float playerDamage,
+                       float otherDamage, float playerScale, float otherScale, float playerZ,
+                       float otherZ)
+{
+    float pos[4];           /* receives a copy of the target position that is not read again */
+    float impulseStorage[4];
+    float *impulse;
+    int count = func_00277F48(kind, 0, source, 0, radius);
+    JobaObject **entry;
+    PlayerBlock *resident;
+    int remaining;
+    JobaObject *target;
+    float *point;
+    float scale, z, damage;
 
-/* Keep the state's points inside the configured radial and angular limits. */
-INCLUDE_ASM("asm/levels", func_L11_00456C20);
+    if (count != 0) {
+        if (count > 0) {
+            impulse = impulseStorage;
+            resident = &D_00189E20;
+            entry = D_L11_001C4D80;
+            remaining = count;
+            do {
+                target = *entry;
+                if (target == resident->player) {
+                    if (playerDamage <= 0.0f)
+                        goto next;
+                    qcopy(pos, resident->position);
+                    scale = playerScale;
+                    z = playerZ;
+                    damage = playerDamage;
+                    point = target->position;
+                } else {
+                    if (target->id == 0xDF9)
+                        goto next;
+                    qcopy_nc(pos, target->position);
+                    point = target->position;
+                    scale = otherScale;
+                    z = otherZ;
+                    damage = otherDamage;
+                }
+                func_00282CF0(impulse, point, source->position);
+                impulseStorage[2] = 0.0f;
+                func_00282F20(impulse, impulse, scale);
+                impulseStorage[2] = z;
+                impulseStorage[3] = 5627.925f;
+                func_002A8F70(target, source, 0x10001, damage, point, impulse);
+            next:
+                remaining--;
+                entry++;
+            } while (remaining != 0);
+        }
+    }
+}
+
+/* Keeps the ring's points inside the configured radial and angular limits. */
+void func_L11_00456C20(JobaObject *obj)
+{
+    JobaRingState *state = obj->state;
+    float *point;
+    int i, j;
+    float scratch[4];
+    float radius, azimuth, elevation, step;
+
+    if (obj->stage == 0) {
+        if (state->count > 8)
+            state->count = 8;
+        obj->stage = 1;
+        for (i = 0; i < state->count; i++) {
+            float newRadius, newAzimuth;
+
+            newRadius = func_002A7878(state->minRadius, state->maxRadius);
+            newAzimuth = func_002A7940();
+            func_002AF000(state->points[i], newRadius, newAzimuth, func_002A7940());
+            func_00282CC0(state->points[i], obj->position, state->points[i]);
+        }
+    }
+
+    if (obj->stage == 1) {
+        func_L00_002E6EF8(func_L11_00456EA0, (char *)obj);
+        for (j = 0; j < state->count; j++) {
+            point = state->points[j];
+            func_00282CF0(scratch, obj->position, point);
+            azimuth = func_00283248(point[0] - obj->position[0], point[1] - obj->position[1]);
+            elevation = func_00283248(func_00282E80(obj->position, point),
+                                      point[2] - obj->position[2]);
+            azimuth = func_00283BE0(azimuth, state->f9C * 0.017453294f);
+            elevation = func_00283BE0(elevation,
+                                      func_002A78D8(state->fA4, state->fA0) * 0.017453294f);
+            if (state->maxElevation < elevation)
+                elevation = state->maxElevation;
+            if (elevation < state->minElevation)
+                elevation = state->minElevation;
+
+            radius = func_00282E48(obj->position, point);
+            step = func_002A78D8(state->f98 * 0.0166666675f, state->f94 * 0.0166666675f);
+            radius += step;
+            if (state->maxRadius < radius)
+                radius = state->maxRadius;
+            if (radius < state->minRadius)
+                radius = state->minRadius;
+
+            func_002AF000(point, radius, azimuth, elevation);
+            func_00282CC0(point, obj->position, point);
+        }
+    }
+}
 
 /* func_L11_00456EA0 lives in L11_00456EA0-g8.c. */
 
@@ -460,13 +717,13 @@ void func_L11_00459EA0(char *p)
 /* func_L11_0045A578 lives in the sibling small-data unit (L11_00453358-g8.c). */
 
 
-INCLUDE_ASM("asm/levels", func_L11_0045B5C8);
+/* Defined in L11_00453358-pulse.c. */
 
 /* func_L11_0045B6C8 is defined in L11_0045B6C8-g64.c. */
 
 /* func_L11_0045FA68 is in L11_0045FA68-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L11_0045FDB0);
+/* func_L11_0045FDB0 is defined in L11_00453358-spawn-g8.c. */
 
 /* Scales four consecutive 16-byte XYZ vectors in place by one scalar through a vector helper. */
 void func_L11_00460038(char *p, float scale)

@@ -860,7 +860,7 @@ void func_L11_0043A620(char *p)
     func_32E480(p, p + 0x10, 0x4000000, 1.2f, 1.0f, 1.0f, 0, 1, 0);
 }
 
-INCLUDE_ASM("asm/levels", func_L11_0043A680);
+/* func_L11_0043A680 is defined in L11_0043A680-g8.c. */
 
 /* True when the byte at 0x20 is above the measured small-id range. */
 int func_L11_0043A800(char *p)
