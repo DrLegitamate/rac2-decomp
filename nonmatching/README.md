@@ -64,6 +64,7 @@ the placement rules are in `tools/fcheck.py`'s docstring; its tests are
 
 | Function | Size | Status and remaining differences |
 | --- | ---: | ---: |
+| [`func_002DE618`](game/func_002DE618.c) | 212 | 28 October 2026: 212/212, only the two reduced table pointers swapped ($a1/$a2: keys/flags), 10 lines; about 25 hand variants and 12,499 permuter candidates leave it. See source. |
 | [`func_00285030`](game/func_00285030.c) | 680 | 26 October 2026 (xcarry): carried from rac3-decomp func_00392820, whose match uses an empty asm register fence (not allowed here). Without it, as a -g8 unit, the TEX0 build order and the second packet's registers differ (about 25 lines). See source. |
 | [`func_002DC900`](game/func_002DC900.c) | 428 | 26 October 2026 (M32): 420/428 at -G8; address-sum order and the half-offset branch left. See source. |
 | [`func_002BDCE8`](game/func_002BDCE8.c) | 452 | 26 October 2026 (M32): 452/452, one store scheduled two slots late; in the permuter. See source. |
