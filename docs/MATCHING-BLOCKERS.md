@@ -1570,6 +1570,14 @@ shape, and the three nops remained after the mask instead of between the load
 and mask. Its retained best remains 44/56 bytes; this confirms that this
 particular label spelling does not unblock the loop layout.
 
+**29 October 2026 SPR-address allocator probe — `func_0029CF58`:** At 28
+USA v1.01 placements, the retained volatile SPR-block candidate is 36/32
+bytes and 0/28. A `-ffixed-v1` whole-file profile keeps the shared base
+in `$v0`, not retail `$at`, and remains 36/32 and 0/28. The earlier
+`-fno-schedule-insns2` profile does choose `$at`, but still materializes
+0x100 with `addiu`, places the final store before `jr`, and appends a
+`nop`. No exact linked match is established.
+
 <a id="blocker-40"></a>
 
 ## 40. Smaller things worth knowing
