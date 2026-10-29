@@ -369,7 +369,7 @@ int func_L14_003C9548(char *arg0) {
     return (arg0[0x95] ^ 1) == 0;
 }
 
-INCLUDE_ASM("asm/levels", func_L14_003CB258);
+/* func_L14_003CB258 is defined in L14_003CB258-g8.c (it reads its tuning through $gp). */
 
 /* func_L14_003CB4D8 is defined in L14_003CB4D8-g8.c. */
 
@@ -447,7 +447,7 @@ void func_L14_003CB608(char *self) {
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L14_003CB868);
+/* func_L14_003CB868 is defined in L14_003CB868.c. */
 
 /* func_L14_003D18C8 is defined in L14_003D18C8.c. */
 
@@ -531,9 +531,9 @@ void func_L14_003DE990(char *arg0) {
     func_321F58(arg0, 2, -1);
 }
 
-INCLUDE_ASM("asm/levels", func_L14_003DE9B0);
+/* func_L14_003DE9B0 is in its -g8 unit. */
 
-INCLUDE_ASM("asm/levels", func_L14_003DECE0);
+/* func_L14_003DECE0 is defined in L14_003DECE0.c. */
 
 /* func_L14_003DF100 lives in the -g8 sibling file (its calls pass floats, so it needs real prototypes). */
 
@@ -657,7 +657,7 @@ void func_L14_003E1DD0(char *arg0) {
 }
 
 
-INCLUDE_ASM("asm/levels", func_L14_003E1E78);
+/* func_L14_003E1E78 is in its -g8 unit. */
 
 void func_L14_003E2238(char *arg0) {
     float f = func_3E22A8(arg0);
@@ -684,7 +684,7 @@ float func_L14_003E22A8(char *arg0) {
     return 1.0f;
 }
 
-INCLUDE_ASM("asm/levels", func_L14_003E2328);
+/* func_L14_003E2328 is defined in L14_003E2328-g8.c. */
 
 /* func_L14_003E2688 is defined in L14_00304190-g8.c. */
 

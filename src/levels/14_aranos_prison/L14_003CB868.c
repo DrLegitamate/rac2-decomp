@@ -1,19 +1,7 @@
-/*
- * Retained manual C reconstruction; not linked or counted.
- * Profile: -O2 -G8 -ffunction-sections
- * Retail: 960 bytes; compiled: 956 bytes.
- * Final coverage: us: 0/1; us2: 0/1; pal: catalogue absent.
- * Residual: 956/960 bytes with the complete 64-byte inverse matrix and three full
- * vectors. The final reviewed qcopy preserves its subsequent memory effects; canonical
- * pointer inputs and resident field accesses are explicit. Owner/id/entity allocation,
- * projection pointer lifetime and one saved GPR differ.
- * Reopen: An independently measured owner/group/projection lifetime witness. The held
- * hero pointer and actual owner prefix views tie at 956 bytes; retain their semantic
- * repairs rather than repeat renaming, loop or prototype permutations.
+/* Project group members and the player through a launch volume.
+ * The flight-time stages share source lines to preserve the measured -g division padding.
  */
 #include "common.h"
-
-typedef int TI128 __attribute__((mode(TI)));
 
 extern void func_00283698(void *dst, void *src);
 extern void func_00282CF0(void *dst, void *a, void *b);
@@ -26,9 +14,10 @@ extern void func_00282D30(void *dst, void *src, float s);
 extern void func_L14_003C96E0(char *e, void *v, float a, float b, float c);
 extern void func_L00_002C42E0(int a0, int a1);
 extern unsigned short *D_L14_001FB060[];
-extern unsigned char *D_L14_001B259C NOT_SDA;
-extern int D_L14_001B25B8 MACRO_ADDR;
-extern char *D_L14_001B268C NOT_SDA;
+extern unsigned char *D_L14_001B259C MACRO_ADDR;
+extern int D_L14_001B25B8 __attribute__((sda));
+struct Projection { char pad[0x38]; float height; char tail[0x44]; };
+extern struct Projection *D_L14_001B268C MACRO_ADDR;
 extern char D_00189E20[];
 
 /* Only the observed table/group fields are described. */
@@ -48,13 +37,14 @@ void func_L14_003CB868(char *self) {
     float a;
     float b;
     float c;
+    float duration;
 
     func_00283698(mtx, self + 0xC0);
     for (p = D_L14_001FB060[state->groupIndex];
          (state->groupIndex & 0xFF) != 0xFF && state->groupIndex <= D_L14_001B25B8 &&
          p != 0 && ((p != 0 && (short)p[-1] >= 0) || p == D_L14_001FB060[state->groupIndex]);
          p++) {
-        e = D_L14_001B259C + ((*p & 0x7FFF) << 8);
+        e = ((*p & 0x7FFF) << 8) + D_L14_001B259C;
         if (e == 0)
             break;
         if (e[0x20] != 0xFE) {
@@ -65,9 +55,9 @@ void func_L14_003CB868(char *self) {
                 off[0] = off[0] + 2.0f;
                 inside = func_00282C48(off[0]) < 1.0f && func_00282C48(off[1]) < 1.0f;
                 if (inside) {
-                    func_002830C0(tmp, off, D_L14_001B268C + (state->tableIndex << 7));
+                    func_002830C0(tmp, off, &D_L14_001B268C[state->tableIndex]);
                     func_L14_003C96E0((char *)e, tmp,
-                                      *(float *)(D_L14_001B268C + (state->tableIndex << 7) + 0x38) +
+                                      D_L14_001B268C[state->tableIndex].height +
                                           func_002A7878(1.0f, 2.0f),
                                       0.0055555557f, 0.0055555557f);
                 }
@@ -83,13 +73,13 @@ void func_L14_003CB868(char *self) {
         off[0] = off[0] + 2.0f;
         inside = func_00282C48(off[0]) < 1.0f && func_00282C48(off[1]) < 1.0f;
         if (inside) {
-            func_002830C0(tmp, off, D_L14_001B268C + (state->tableIndex << 7));
+            func_002830C0(tmp, off, &D_L14_001B268C[state->tableIndex]);
             hero2 = D_00189E20;
-            a = *(float *)(D_L14_001B268C + (state->tableIndex << 7) + 0x38) + 1.5f;
-            b = (a - *(float *)(hero2 + 0x88)) * 2.0f;
-            c = (a - tmp[2]) * 2.0f;
-            func_00282CF0(vec, tmp, hero2 + 0x80);
-            func_00282D30(vec, vec, 1.0f / (func_00282C10(b / 0.0055555557f) + func_00282C10(c / 0.0055555557f)));
+            a = D_L14_001B268C[state->tableIndex].height + 1.5f;
+            b = a - *(float *)(hero2 + 0x88);
+            b *= 2.0f; duration = func_00282C10(b / 0.0055555557f);
+            c = (a - tmp[2]) * 2.0f; duration += func_00282C10(c / 0.0055555557f);
+            func_00282CF0(vec, tmp, hero2 + 0x80); func_00282D30(vec, vec, 1.0f / duration);
             vec[2] = func_00282C10(b * 0.0055555557f);
             func_L00_002C42E0(0x44, 1);
             qcopy(hero2 + 0xF0, vec);

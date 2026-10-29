@@ -18,7 +18,7 @@ extern void func_803807B0(void);
 
 /* Publishes the level's frame budget: seeds the counters and points the stage at
    the record the factory returned, then runs the three stage hooks. */
-INCLUDE_ASM("asm/levels", func_L15_0042FD40);
+/* func_L15_0042FD40 is defined in L15_0042FD40-g8.c. */
 
 extern int D_L15_001B1520 __attribute__((sda));
 extern int D_L15_001B1524;
