@@ -24,3 +24,65 @@ int func_L01_002A7248(char *a0)
         return 0;
     return 0x51;
 }
+
+/* One entry of the subtitle history (src/game/00289178.c): how often the selection was
+   shown, the frame it was last shown, and a bit per level it was shown in (bit 31: any). */
+typedef struct {
+    unsigned short count, pad;
+    unsigned int time;
+    int levels;
+} SubtitleHistory;
+
+extern SubtitleHistory D_0018C958[];
+extern unsigned int D_001A7390[] __attribute__((sda));
+extern int D_001A79F0[] __attribute__((sda));
+extern char D_00189EA0[];
+extern int func_002ACBC8(void *, int);
+extern int func_00288E18(int, int);
+
+/* Subtitle trigger: when the hero stands in area (and not in exclude), queue the subtitle
+   selection by mode: 0 once, 1 again after 1080 frames, 2 first only recorded then like 1,
+   3 unless already shown. Own unit, like func_L01_002A7248. The cases index the history table
+   again instead of reusing entry: sharing the pointer changes the compiled code. */
+void func_L01_002EABA8(int key, int selection, int mode, int area, int exclude)
+{
+    int limit = mode == 0 ? 1 : 65535;
+    SubtitleHistory *entry = &D_0018C958[selection];
+
+    if (entry->count < limit) {
+        if (exclude != -1 && func_002ACBC8(D_00189EA0, exclude)) {
+            entry->count = 65535;
+            return;
+        }
+        if (func_002ACBC8(D_00189EA0, area)) {
+            switch (mode) {
+            case 0:
+                func_00288E18(key, selection);
+                break;
+            case 1:
+                if (D_001A7390[0] - D_0018C958[selection].time > 1080 || D_0018C958[selection].time == 0)
+                    func_00288E18(key, selection);
+                else if (D_0018C958[selection].time < D_001A7390[0])
+                    D_0018C958[selection].time = D_001A7390[0];
+                break;
+            case 2:
+                if (D_0018C958[selection].count != 0) {
+                    if (D_001A7390[0] - D_0018C958[selection].time > 1080 || D_0018C958[selection].time == 0)
+                        func_00288E18(key, selection);
+                    else if (D_0018C958[selection].time < D_001A7390[0])
+                        D_0018C958[selection].time = D_001A7390[0];
+                    break;
+                }
+                D_0018C958[selection].count++;
+                if (D_0018C958[selection].time < D_001A7390[0])
+                    D_0018C958[selection].time = D_001A7390[0];
+                D_0018C958[selection].levels = (D_0018C958[selection].levels | (1 << D_001A79F0[0])) | 0x80000000;
+                break;
+            case 3:
+                if (D_0018C958[selection].levels >= 0)
+                    func_00288E18(key, selection);
+                break;
+            }
+        }
+    }
+}

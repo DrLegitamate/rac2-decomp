@@ -88,10 +88,6 @@ void func_L02_003D28E0(void *a0)
     }
 }
 
-/* Near miss (best attempt in nonmatching/levels/func_L02_004013C0.c): the frame, the
-   prologue, the two calls and the tail call match; the two words retail writes at
-   sp+0 and sp+4 are the open difference, and they are no arguments of the call
-   (the callee reads only $a0-$a3, $t0 and $f12). */
 INCLUDE_ASM("asm/levels", func_L02_004013C0);
 
 /* The kind's table gives a count; the kind's own helper gives the kind's id. */

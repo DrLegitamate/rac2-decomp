@@ -1,5 +1,18 @@
 #include "include_asm.h"
 
+struct RouteNode {
+    int path;
+    unsigned char neighbors[4];
+    unsigned char portals[4];
+    unsigned short flags;
+    unsigned char unused[18];
+};
+extern char *D_L02_001FF1C0[];
+extern float func_00283248(float, float);
+extern float func_00283B98(float, float);
+extern int func_L02_0032EDD8(void *, struct RouteNode *, int, int *);
+extern float func_L02_0032EC98(void *, void *, void *, float, float);
+
 
 /* func_L02_002DCEA0 is matched in its own unit, src/levels/shared/L02_002DCEA0.c (-g). */
 
@@ -128,7 +141,7 @@ float func_L02_00329C48(char *arg0, TI128 *arg1, char *transform) {
     return func_00282C48(func_002B04E0(arg0, (float *)&buf, transform));
 }
 
-INCLUDE_ASM("asm/levels", func_L02_0032B468);
+/* func_L02_0032B468 is defined in L02_0032B468.c. */
 
 extern int func_L02_0032E3B0(void *a0, float *a1, int a2);
 
@@ -181,7 +194,70 @@ int func_L02_0032E3B0(void *object, float *target, int index) {
 
 INCLUDE_ASM("asm/levels", func_L02_0032E508);
 
-INCLUDE_ASM("asm/levels", func_L02_0032E998);
+int func_L02_0032E998(float *position, float *target, float *heading, struct RouteNode *nodes, int count, int *sourceNode, int *targetNode, float override, float margin) {
+    unsigned char visited[256];
+    int i, j, found, portal, step, routeDepth;
+    int layer;
+    char *path;
+    float angle;
+    *heading = func_00283248(target[0] - position[0], target[1] - position[1]);
+    if (override != 0.0f)
+        *heading = func_00283B98(override, *heading);
+    if (!func_L02_0032EDD8(position, nodes, count, sourceNode))
+        return 0;
+    if (!func_L02_0032EDD8(target, nodes, count, targetNode))
+        return 0;
+    if (nodes[*targetNode].flags & 1)
+        return 0;
+    if (*sourceNode == *targetNode)
+        return 1;
+    {
+        int clear;
+        for (clear = 0; clear < count; clear++)
+            visited[clear] = 0;
+    }
+    found = -1;
+    portal = -1;
+    visited[*targetNode] = 1;
+    for (layer = 1; layer < 50; layer++) {
+        for (i = 0; i < count; i++) {
+            if (visited[i] == layer) {
+                for (j = 0; j < 4; j++) {
+                    unsigned int neighbor = nodes[i].neighbors[j];
+                    if (!(neighbor & 0x80) && !visited[neighbor] && ((nodes[neighbor].flags ^ 1) & 1)) {
+                        visited[neighbor] = layer + 1;
+                        if (neighbor == *sourceNode) {
+                            portal = nodes[i].portals[j];
+                            found = i;
+                        }
+                    }
+                }
+            }
+            if (found != -1)
+                break;
+        }
+        if (found != -1)
+            break;
+    }
+    if (found == -1)
+        return 0;
+    path = D_L02_001FF1C0[nodes[found].path];
+    angle = *heading;
+    routeDepth = visited[found];
+    if (routeDepth >= 3) {
+        int edge;
+        step = routeDepth - 1;
+        for (edge = 0; edge < 4; edge++) {
+            if (visited[nodes[found].neighbors[edge]] == step) {
+                int offset = nodes[found].portals[edge] * 16;
+                angle = func_L02_0032EC98(path + (offset + 0x10), path + (offset + 0x20), position, angle, margin);
+                break;
+            }
+        }
+    }
+    *heading = func_L02_0032EC98(path + (portal * 16 + 0x10), path + (portal * 16 + 0x20), position, angle, margin);
+    return 1;
+}
 
 INCLUDE_ASM("asm/levels", func_L02_0032EC98);
 
@@ -347,7 +423,7 @@ void func_L02_00332A80(char *object, char *data, void *target, TI128 *input, voi
 
 
 
-INCLUDE_ASM("asm/levels", func_L02_00333218);
+/* func_L02_00333218 is defined in L02_00333218.c. */
 
 extern void func_002AFFD8(char *a0, char *a1, int a2);
 extern void func_00282CC0(void *a0, void *a1, void *a2);
@@ -551,7 +627,7 @@ INCLUDE_ASM("asm/levels", func_L02_0038BD00);
 
 /* func_L02_0038C998 is defined in L02_002B5F50-g8.c (it reads $gp data). */
 
-INCLUDE_ASM("asm/levels", func_L02_0038CDE8);
+/* func_L02_0038CDE8 is defined in L02_002B5F50-lamps.c. */
 
 extern int func_00282978(void *p);
 extern int func_00283D38(int a0, int a1, float f12);
@@ -987,6 +1063,6 @@ void func_L02_003AA650(char *arg0) {
 
 INCLUDE_ASM("asm/levels", func_L02_003C26F0);
 
-INCLUDE_ASM("asm/levels", func_L02_003C4068);
+/* func_L02_003C4068 is defined in L02_003C4068.c. */
 
-INCLUDE_ASM("asm/levels", func_L02_003C4280);
+/* func_L02_003C4280 is defined in L02_003C4280.c. */

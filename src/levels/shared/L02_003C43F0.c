@@ -1,8 +1,9 @@
 #include "include_asm.h"
 #include "common.h"
 
-struct CFPair { int a, b; } __attribute__((packed));
-struct CFQuad { int a, b, c, d; } __attribute__((packed));
+
+extern void func_00282C88(void *);
+extern void func_002A7A00(void *, float, float);
 
 typedef int TI128 __attribute__((mode(TI)));
 
@@ -338,11 +339,9 @@ int func_L02_003C5098(char *a0)
 
 INCLUDE_ASM("asm/levels", func_L02_003C51F8);
 
-/* The C is in nonmatching/levels/func_L02_003C5438.c: the matrix address still takes a
-   sixth callee-saved register instead of being rematerialized at both call sites. */
-INCLUDE_ASM("asm/levels", func_L02_003C5438);
+/* Defined in L02_003C5438.c. */
 
-INCLUDE_ASM("asm/levels", func_L02_003C9D78);
+/* Defined in L02_003C9D78-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L02_003C9ED0);
 
@@ -616,6 +615,7 @@ void func_L02_003CE908(char *a0) {
 }
 
 INCLUDE_ASM("asm/levels", func_L02_003CEA28);
+/* Defined in L02_003CEA28.c. */
 
 /* The entity pool base and the highest group id once more, as the `sda` arrays the twin walk
    func_L02_003CD5B0 reads (02_maktar_nebula/L02_002ED7B0.c): read as X[0] they give retail's
@@ -795,6 +795,7 @@ void func_L02_003CF1B8(u8 *self)
                       func_002A77E0(0xFF) & 0xFF, 0, size.y);
     }
 }
+
 
 /* Positions A0 with four angles, then moves it kind six to kind two of length ten. */
 void func_L02_003D1588(char *a0) {
@@ -1063,7 +1064,6 @@ int func_L02_00400B00(unsigned char *a0) {
     return *(unsigned char *)(a0 + 0x20) >= 2;
 }
 
-INCLUDE_ASM("asm/levels", func_L02_00400D08);
 
 /* The pointer and the five helpers this calls sit at their own addresses in every level
    that has the function, so all six are reached under names that carry no address. */

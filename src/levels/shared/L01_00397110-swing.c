@@ -1,19 +1,17 @@
-/* Near miss from src/levels/shared/L01_00397110-g8.c: the build refuses this body at its
-   place — instruction at +0x4 differs. Kept as a starting point;
-   not linked, not counted. */
+#include "common.h"
 
-/* Standalone declarations recovered from src/levels/shared/L01_00397110-g8.c. */
-extern float D_L01_001AF638 __attribute__((sda));
+/* Sets the random swing band and derives its duration from the resulting speed. */
+extern float D_L01_001AF638 SDATA(D_L01_001AF638);
 
-extern float D_L01_001AF63C __attribute__((sda));
+extern float D_L01_001AF63C SDATA(D_L01_001AF63C);
 
-extern float D_L01_001B2EF0 __attribute__((sda));
+extern float D_L01_001B2EF0 SDATA(D_L01_001B2EF0);
 
-extern float D_L01_001B2F00 __attribute__((sda));
+extern float D_L01_001B2F00 SDATA(D_L01_001B2F00);
 
-extern float D_001B2EF4 __attribute__((nosda));
+extern float D_L01_001B2EF4[] NOT_SDA;
 
-extern int D_001B2F04 __attribute__((nosda));
+extern int D_L01_001B2F04 MACRO_ADDR;
 
 extern float func_00310580(float, float);
 
@@ -21,6 +19,7 @@ extern float func_002E35D0(char *);
 
 extern float func_002E35A0(float *);
 
+extern float swing_vector __asm__("D_L01_001B2EF0") MACRO_ADDR;
 void func_L01_003993C8(int a0)
 {
     float s, x, lo, hi;
@@ -47,11 +46,11 @@ void func_L01_003993C8(int a0)
         float v[4];
 
         D_L01_001B2EF0 = func_00310580(-k, k);
-        D_001B2EF4 = func_00310580(-k, k);
+        D_L01_001B2EF4[0] = func_00310580(-k, k);
         D_L01_001B2F00 = func_00310580(x, 10.0f);
         v[0] = k;
         v[1] = k;
-        D_001B2F04 = (int)((func_002E35D0((char *)&D_L01_001B2EF0) /
+        D_L01_001B2F04 = (int)((func_002E35D0((char *)&swing_vector) /
                             func_002E35A0(v)) *
                                (hi - lo) +
                            lo);
