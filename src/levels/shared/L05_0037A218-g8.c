@@ -1,14 +1,4 @@
-/* M21 2026-10-26: 992 of 992 bytes with -O2 -G8 -ffunction-sections -frac2-qcopy
-   -frac2-qcopy-barrier, us 05_feltzin_system. Four words off, register/order only: at the
-   projectile-loop top retail builds the table base (lui $v0; addiu $v1,$v0,lo) before
-   `sll $v0,j,7`; here sll comes first and the high part lands in $a0. What closed the rest:
-   the hit state as one struct (flag at -8 from the position), qcopy from a `pos` copy set
-   after the empty-slot continue (retail's daddu $s4,$s1 in the jal slot), D_L05_001A8F20
-   MACRO_ADDR, store order slow/frames/flags. Spellings of the index (&D[j], D+j, int-first,
-   <<7, unsigned j, do/while) all give the same code. Permuter queued. */
-
 #include "common.h"
-typedef int Quad __attribute__((mode(TI)));
 typedef struct {
     float position[4], previous[4], origin[4], target[4], velocity[4];
     u8 *object;
@@ -46,6 +36,7 @@ extern void func_002A8F70(void *,void *,int,void *,void *,float);
 extern float func_002A7940(void);
 extern void func_00281EB8(void *,int,int,int,float,float,float);
 extern void func_L05_0037D7D8(void *,void *,u32,int,float);
+/* Update active object callbacks, then advance and resolve the projectile pool. */
 void func_L05_0037A218(void *unused)
 {
     float step[4],check[4];
@@ -59,7 +50,9 @@ void func_L05_0037A218(void *unused)
         if (D_L05_00225ED0[i]) D_L05_00225ED0[i](D_L05_00225DD0[i]);
     }
     for (j=0;j<128;j++) {
-        record = (L05Projectile *)(j * sizeof(L05Projectile) + (unsigned int)D_L05_00221DD0);
+        unsigned int base = (unsigned int)D_L05_00221DD0;
+        unsigned int offset = j * sizeof(L05Projectile);
+        record = (L05Projectile *)(base + offset);
         if (!record->object) continue;
         pos = record->position;
         state = (u8 *)func_002ED688(record->object);

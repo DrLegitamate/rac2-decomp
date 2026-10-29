@@ -1,5 +1,37 @@
 #include "common.h"
 
+extern float func_332BB0(float, float);
+extern int func_307778(float);
+extern int func_332AF8(int, int);
+extern void func_332C60(void *, float, float);
+extern char *func_352B28(void *, void *, int, int, int, int, int, int, float, float, float);
+extern float func_306CD0(float, float);
+extern float func_307620(float, float);
+extern char *func_347040(void *, int, void *, int, float, float, float, float, int);
+extern float func_307768(int);
+typedef struct {
+    char pad[0x140];
+    float pos[4];
+} ParticleCamera99268;
+extern ParticleCamera99268 D_L05_001B9580;
+extern unsigned char *D_L05_001FF240[];
+typedef struct {
+    int v[2];
+} __attribute__((packed)) ParticleColors99268;
+extern ParticleColors99268 D_L05_001AEC00;
+extern void func_33B330(void *, float, float, float);
+
+extern int D_L05_00221D3C;
+extern float func_00282E48(void *, void *);
+extern float func_00282E80(void *, void *);
+extern int func_002761F8(void *, void *, int, void *, int);
+extern char *D_L05_001BFB18;
+extern void func_00283658(void *, void *);
+extern void func_002AB6D8(void *, void *);
+extern float func_00283248(float, float);
+extern float func_00283C80(float, float);
+extern int func_00283DB8(void *, float);
+
 extern int func_002ED688(char *);
 
 extern void func_002EE678(char *, int);
@@ -79,7 +111,53 @@ void func_L05_0037B6D0(char *obj)
 }
 
 
-INCLUDE_ASM("asm/levels", func_L05_0037B948);
+
+
+
+void func_L05_0037B948(char *obj, int check, float range)
+{
+    float angles[4];
+    float matrix[16];
+    float sphere[4];
+    char *s = (char *)func_002ED688(obj);
+    float angle;
+    float elevation;
+    float limit;
+    if (!s)
+        return;
+    if (!*(char **)(s + 0x120))
+        return;
+    *(int *)(s + 0x104) = 0;
+    *(int *)(s + 0x108) = 0;
+    limit = 0.7068582773f;
+    if (D_L05_00221D3C == 1)
+        return;
+    if (func_00282E48(*(char **)(s + 0x120) + 0x10, obj + 0x10) > range)
+        return;
+    if (func_002761F8(obj + 0x10, *(char **)(s + 0x120) + 0x10, 0, obj, 0)) {
+        if (!D_L05_001BFB18)
+            return;
+        if (*(short *)(D_L05_001BFB18 + 0xAA) != *(short *)(*(char **)(s + 0x120) + 0xAA))
+            return;
+    }
+    func_00283658(matrix, obj + 0xC0);
+    func_002AB6D8(matrix, angles);
+    angle = func_00283C80(func_00283248(
+        *(float *)(*(char **)(s + 0x120) + 0x10) - *(float *)(obj + 0x10),
+        *(float *)(*(char **)(s + 0x120) + 0x14) - *(float *)(obj + 0x14)), angles[2]);
+    elevation = func_00282E80(*(char **)(s + 0x120) + 0x10, obj + 0x10);
+    elevation = func_00283C80(func_00283248(elevation,
+        *(float *)(*(char **)(s + 0x120) + 0x18) - *(float *)(obj + 0x18)), 0.0f);
+    if (angle <= limit && elevation <= limit)
+        *(int *)(s + 0x104) = 1;
+    if (check) {
+        qcopy(sphere, obj + 0x10);
+        sphere[3] = 0.1f;
+        if (func_00283DB8(sphere, 256.0f) == -1)
+            return;
+    }
+    *(int *)(s + 0x108) = 1;
+}
 
 extern void func_3065F8(int);
 
@@ -148,7 +226,7 @@ void func_L05_0037BE98(char *obj)
         func_L05_0037BF48(child);
 }
 
-INCLUDE_ASM("asm/levels", func_L05_0037BF48);
+/* func_L05_0037BF48 is in L05_0037BF48.c. */
 
 /* func_L05_0037C160 is in L05_0037C160.c. */
 
@@ -170,7 +248,7 @@ int func_L05_0037CEB8(char *obj)
     return *(int *)((char *)p + 0x114);
 }
 
-INCLUDE_ASM("asm/levels", func_L05_0037CEE0);
+/* func_L05_0037CEE0 is in L05_0037CEE0-g8.c. */
 
 
 struct S_L05_002A1800 {
@@ -205,20 +283,94 @@ INCLUDE_ASM("asm/levels", func_L05_003979B0);
 
 INCLUDE_ASM("asm/levels", func_L05_00397B30);
 
-INCLUDE_ASM("asm/levels", func_L05_00397F48);
+/* func_L05_00397F48 is in L05_00397F48-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L05_00398018);
 
 
 INCLUDE_ASM("asm/levels", func_L05_00398618);
 
-INCLUDE_ASM("asm/levels", func_L05_00398A38);
+/* func_L05_00398A38 is in L05_00398A38.c. */
 
 /* func_L05_00398F18 is in L05_00398F18.c. */
 
-INCLUDE_ASM("asm/levels", func_L05_00399268);
+void func_L05_00399268(char *obj)
+{
+    float pos[4];
+    float vel[4];
+    ParticleColors99268 colors;
+    char *s = *(char **)(obj + 0x68);
+    int i, j, k, sign;
+    float angle;
+    char *p, *d;
 
-INCLUDE_ASM("asm/levels", func_L05_003CD1A8);
+    for (i = 0; i < *(int *)(s + 0x20); i++) {
+        int type, life;
+        float scale;
+
+        type = func_307778(func_332BB0(2.0f, 5.0f));
+        life = func_332AF8(30, 50);
+        pos[0] = *(float *)(obj + 0x10) + func_332BB0(0.0f, 0.1f) * *(float *)(s + 0x14);
+        pos[1] = *(float *)(obj + 0x14) + func_332BB0(0.0f, 0.1f) * *(float *)(s + 0x14);
+        pos[2] = *(float *)(obj + 0x18) + func_332BB0(0.0f, 0.1f) * *(float *)(s + 0x14);
+        scale = func_332B50(0.6f, 1.0f) * *(float *)(s + 0x14);
+        func_332C60(vel, 0.06f, 0.1f);
+        func_352B28(pos, vel, life, 0x102FFF, type, 255, 0, 1, scale * 210000.0f, scale * 105000.0f, 0.0019444444915279746f);
+    }
+
+    for (j = 0; j < *(int *)(s + 0x24); j++) {
+        int type, life;
+        float scale;
+
+        type = func_307778(func_332BB0(2.0f, 5.0f));
+        life = func_332AF8(30, 50);
+        pos[0] = *(float *)(obj + 0x10) + func_332BB0(0.0f, 0.1f) * *(float *)(s + 0x14);
+        pos[1] = *(float *)(obj + 0x14) + func_332BB0(0.0f, 0.1f) * *(float *)(s + 0x14);
+        pos[2] = *(float *)(obj + 0x18) + func_332BB0(0.0f, 0.1f) * *(float *)(s + 0x14);
+        scale = func_332B50(0.75f, 1.5f) * *(float *)(s + 0x14);
+        func_332C60(vel, 0.5f, 0.8f);
+        func_352B28(pos, vel, life, 0x8FFF, type, 127, 127, 5, scale * 210000.0f, *(float *)(s + 0x14) * 2100.0f, 0.004055555909872055f);
+    }
+
+    angle = func_306CD0(D_L05_001B9580.pos[0] - *(float *)(obj + 0x10), D_L05_001B9580.pos[1] - *(float *)(obj + 0x14));
+    sign = 1;
+    for (k = 0; (float)k < (float)*(int *)(s + 0x2C) * 3.0f + (float)(*(int *)(s + 0x3C) * 10); k++) {
+        float scale, a, b;
+
+        pos[0] = *(float *)(obj + 0x10) + func_332BB0(0.0f, 0.5f) * *(float *)(s + 0x14);
+        sign = -sign;
+        pos[1] = *(float *)(obj + 0x14) + func_332BB0(0.0f, 0.5f) * *(float *)(s + 0x14);
+        pos[2] = *(float *)(obj + 0x18) + func_332BB0(0.0f, 0.5f) * *(float *)(s + 0x14);
+        scale = func_332B50(0.01666666753590107f, 0.02500000223517418f) * *(float *)(s + 0x14);
+        a = func_332BB0(0.0f, 1.396263599395752f);
+        b = func_332BB0(0.0f, 1.5707964897155762f);
+        func_33B330(vel, scale, func_307620(angle, b), a);
+        p = func_347040(pos, sign, vel, *(int *)(s + 0x3C) ? 0xD10572 : 0x5A182, 0.0f, 1.0f, 1.01f, *(float *)(s + 0x14) * 31500.001953125f, 0);
+        colors = D_L05_001AEC00;
+        if (p) {
+            d = p + 0x20;
+            {
+                int index = func_001163B0() % 2;
+                p[3] = colors.v[index];
+            }
+            if (*(int *)(s + 0x3C))
+                *(short *)(p + 0xA) = func_332AF8(120, 150);
+            else
+                *(short *)(p + 0xA) = func_332AF8(90, 120);
+            p[9] = func_307778(4.0f) + 64;
+            *(int *)(d + 4) = 3;
+            *(float *)(d + 0x1C) = func_307768(func_332AF8(1, 10));
+            d[0xA] = func_332AF8(64, 128);
+            d[0xB] = p[0xA];
+            if (func_332AB8(4) != 0)
+                p[2] = D_L05_001FF240[34][0];
+            else
+                p[2] = D_L05_001FF240[105][0];
+        }
+    }
+}
+
+/* func_L05_003CD1A8 is in L05_003CD1A8-g8.c. */
 
 
 void func_L05_003CD4C0(char *object)
@@ -257,7 +409,7 @@ void func_L05_003CD4C0(char *object)
 
 INCLUDE_ASM("asm/levels", func_L05_003CF350);
 
-INCLUDE_ASM("asm/levels", func_L05_003CFAB8);
+/* func_L05_003CFAB8 is in L05_0037B6D0-g8.c. */
 
 int func_L05_003CFC28(int a0)
 {

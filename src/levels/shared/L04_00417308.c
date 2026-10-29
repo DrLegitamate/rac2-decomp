@@ -18,7 +18,7 @@ INCLUDE_ASM("asm/levels", func_L04_00417308);
 
 INCLUDE_ASM("asm/levels", func_L04_00418BF0);
 
-INCLUDE_ASM("asm/levels", func_L04_004195E0);
+/* func_L04_004195E0 is defined in L04_004195E0-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L04_00419918);
 
@@ -33,6 +33,9 @@ INCLUDE_ASM("asm/levels", func_L04_00419918);
 
 
 
+
+
+/* func_L04_0043BC58 is defined in L04_0043BC58-g8.c. */
 
 extern void func_002833F0(char *a, char *b);
 
@@ -69,6 +72,7 @@ void func_L04_0043BE40(char *a0)
     func_002A0488(*(char **)(s0 + 0x48), v & 0xFF, (v >> 8) & 0xFF, (v >> 16) & 0xFF);
     func_002A10E8(*(char **)(s0 + 0x48));
 }
+
 
 /* func_L04_0043BEE8 is defined in L04_0043BEE8-g8.c. */
 
@@ -118,7 +122,7 @@ void func_L04_00451150(float *pos, int count) {
 
 /* func_L04_00454BF8 is matched in L04_00454BF8.c (built with -g). */
 
-INCLUDE_ASM("asm/levels", func_L04_00455418);
+/* func_L04_00455418 is in L04_00455418.c. */
 
 /* evaluates the ordered scalar cubic value squared times negative two times value plus three */
 f32 func_L04_004554F8(f32 value) {
@@ -177,9 +181,11 @@ int func_L04_0046B740(void *arg0) {
 
 
 
-INCLUDE_ASM("asm/levels", func_L04_0046CFB8);
+/* func_L04_0046CE68 is defined in L04_0046CE68.c. */
 
-INCLUDE_ASM("asm/levels", func_L04_0046D250);
+/* func_L04_0046CFB8 is defined in L04_0046CFB8-g8.c. */
+
+/* func_L04_0046D250 is in L04_0046D250-g8.c. */
 
 
 extern s32 D_L04_001B1E84 __attribute__((sda));
