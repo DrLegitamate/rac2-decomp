@@ -362,9 +362,9 @@ INCLUDE_ASM("asm/levels", func_L17_003A4740);
 /* func_L17_003BCBC8 is defined in L17_0032C070-g8.c: the -G8 profile of that
    unit is what makes its register allocation come out right. */
 
-INCLUDE_ASM("asm/levels", func_L17_003BCC30);
+/* func_L17_003BCC30 is defined in L17_0032C070-path.c. */
 
-INCLUDE_ASM("asm/levels", func_L17_003BCEC0);
+/* func_L17_003BCEC0 is defined in L17_0032C070-path.c. */
 
 INCLUDE_ASM("asm/levels", func_L17_003BD310);
 
@@ -402,19 +402,19 @@ void func_L17_003C3250(char *a2)
     *(unsigned short *)(base + 0x24FE) = *(unsigned short *)(s5 + 0xD0);
 }
 
-INCLUDE_ASM("asm/levels", func_L17_003C3330);
+/* func_L17_003C3330 is defined in L17_0032C070-lift-g8.c. */
 
 
 
-INCLUDE_ASM("asm/levels", func_L17_003C3AF0);
+
 
 INCLUDE_ASM("asm/levels", func_L17_003C3C50);
 
-INCLUDE_ASM("asm/levels", func_L17_003C4090);
+/* func_L17_003C4090 is defined in L17_0032C070-motion-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L17_003C45A0);
 
-INCLUDE_ASM("asm/levels", func_L17_003C5200);
+
 
 /* raises the state word to 0x920 and runs a three-argument setup, or, when it is already 0x929,
    re-runs the 0x71B0 activation if the object is still unmarked */
@@ -434,7 +434,6 @@ void func_L17_003C5AF8(int a0)
 }
 
 
-INCLUDE_ASM("asm/levels", func_L17_003C5C28);
 
 /* true for the sub-state 0x922 when the object's stage byte sits in the 2..6 window */
 int func_L17_003C5DF0(int a0)
@@ -496,7 +495,6 @@ void func_L17_003C5E78(char *a2)
     *(unsigned short *)(base + 0x24FE) = *(unsigned short *)(s5 + 0x128);
 }
 
-INCLUDE_ASM("asm/levels", func_L17_003C5F58);
 
 INCLUDE_ASM("asm/levels", func_L17_003C6130);
 
@@ -514,9 +512,7 @@ void func_L17_003C7250(char *a0, int a1)
     *(int *)(*(char **)(a0 + 0x68) + 0xA4) = a1;
 }
 
-INCLUDE_ASM("asm/levels", func_L17_003C7260);
 
-INCLUDE_ASM("asm/levels", func_L17_003C7498);
 
 INCLUDE_ASM("asm/levels", func_L17_003C7680);
 

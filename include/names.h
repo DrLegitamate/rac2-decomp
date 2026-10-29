@@ -13,6 +13,7 @@
 
 /* recovered */
 #define FastDecTimer                     func_00282978
+#define PlayMobySound                    func_002E5CF8
 
 /* descriptive */
 #define QueueMobyImpact                  func_002A8E20
@@ -38,5 +39,7 @@
 #define UpdateSkyShellsAnimated          func_L00_0028A6F8
 #define BuildTfragTextureDma             func_L00_002963D8
 #define HeroUpdate                       func_L01_00228E08
+#define FloatToInt                       func_00283CF0
+#define IsPointInCuboid                  func_002ACBC8
 
 #endif /* NAMES_H */
