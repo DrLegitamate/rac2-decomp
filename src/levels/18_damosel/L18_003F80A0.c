@@ -67,7 +67,7 @@ void func_L18_003F9018(u8 *a0) {
 
 INCLUDE_ASM("asm/levels", func_L18_003F90A0);
 
-INCLUDE_ASM("asm/levels", func_L18_003FB308);
+/* func_L18_003FB308 is in L18_003FB308-g8.c. */
 
 /* func_L18_003FB620 is in L18_003FB620-particles.c (-G32 settings record). */
 
@@ -234,7 +234,7 @@ void func_L18_0042F768(u8 *a0) {
 
 /* func_L18_0042F7B8 is in L18_0042F7B8-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L18_0042FBC8);
+/* func_L18_0042FBC8 is in L18_0042FBC8-g8.c. */
 
 extern void func_L18_004302B0(u8 *a0);
 extern void func_L18_004308F0(u8 *a0);
@@ -255,12 +255,12 @@ void func_L18_00430248(u8 *a0) {
     func_L18_00432310(a0);
 }
 
-INCLUDE_ASM("asm/levels", func_L18_004302B0);
+/* func_L18_004302B0 is in L18_004302B0.c. */
 
 /* func_L18_004308F0 is matched in L18_004308F0.c (built with -frac2-hazard-labels). */
 
 
-INCLUDE_ASM("asm/levels", func_L18_00432070);
+/* func_L18_00432070 is in L18_00432070.c. */
 
 /* func_L18_00432310 is in L18_00432310.c. */
 

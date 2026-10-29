@@ -1,43 +1,16 @@
-/* Opus big44, 26 October 2026: under -O2 -G0 -ffunction-sections -frac2-qcopy
- * -frac2-qcopy-barrier (split addresses, i.e. without -mno-split-addresses) this source is
- * 369/372 instructions with 21 register-blind lines off, against 30 under the profile below.
- * Retail's lui/addiu pairs land in different registers (lui v0; addiu s0, v0), which is
- * split addressing. Left: D_L19_001B2728 stores want the lui $at macro form (MACRO_ADDR),
- * the hero base reached as (D_00189E20+0x80)-0x80, and 0.3f is kept in $f20 across the
- * first func_002AEC48 call where retail rematerialises it.
- */
-/*
- * Retained handwritten near miss; historical evidence only.
- * No linked-image equality or complete retail semantics is established.
- * Compiler: game EE-GCC 2.9-ee-991111b (project profile).
- * Profile: -O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -mno-split-addresses.
- * Reported final C / retail: 1480 / 1488 bytes; size equality is not a match.
- * us: 0/1 placements; 1480/1488 bytes.
- * us2: not run after us mismatch; no exact candidate.
- * pal: not run after us mismatch; no exact candidate.
- * Residual: Six source/profile trials; final 1480 versus 1488 bytes with the correct 0x80 frame. Grouped player-state address formation and float constant reuse differ; materialized quadword transfers now have the qualified qcopy shape.
- * Reopening condition: Recover the original player-record base expression and final repeated0.3f materialization without artificial barriers.
- * Where listed, tools/check.py measurements predate retention; no compilation was rerun for this copy.
- */
-
-/* Not matched, 2026-10-23.
- * Six source/profile trials; final 1480 versus 1488 bytes with the correct 0x80 frame. Grouped player-state address formation and float constant reuse differ; materialized quadword transfers now have the qualified qcopy shape.
- * Profile: -O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -mno-split-addresses
- * Final us check: func_L19_0042A9A0: 0 of 1 places match (src/levels/19_grelbin/L19_0042A9A0-g8.c); exit 1.
- * This source has not passed a linked build or a runtime test.
- */
 #include "common.h"
 
 typedef int Quadword __attribute__((mode(TI)));
 typedef union { Quadword q; float f[4]; } Vector;
-typedef struct { u8 prefix[0x30]; int field30,field34,field38,field3c,field40,field44; } BarlowUtilityQueueView;
-extern int D_L19_001B2508;
-extern int D_L19_001B2728 __attribute__((nosda));
+typedef struct { u8 prefix[0x30]; int field30,field34,field38,field3c,field40,field44; } L19UtilityQueueView;
+extern int D_L19_001B2508[] __attribute__((sda));
+extern int D_L19_001B2724[4] __attribute__((sda));
 extern int D_L19_001A8F00 __attribute__((sda));
 extern u8 *D_L19_001B2A1C __attribute__((sda));
-extern u8 D_001A7A40;
+extern u8 D_001A7A40[] __attribute__((sda));
 extern u32 D_00139800;
-extern BarlowUtilityQueueView D_L19_001BFC40;
+extern L19UtilityQueueView D_L19_001BFC40;
+typedef union { u8 b[0x2600]; s32 i[0x980]; f32 f[0x980]; Quadword q[0x260]; } Hero;
 extern u8 D_00189E20[];
 extern void func_L19_0042A8B8(void);
 extern int func_L19_0042A860(void);
@@ -47,7 +20,7 @@ extern void func_L01_003128C0(char *);
 extern int func_L01_003245E0(u8 *,int,float);
 extern void func_L01_003246D0(u8 *);
 extern int func_00288AA0(u8 *,int);
-extern int func_00288BE8(BarlowUtilityQueueView *);
+extern int func_00288BE8(L19UtilityQueueView *);
 extern int func_002F5D10(void);
 extern int func_00282978(void *);
 extern int func_00282948(void *);
@@ -72,9 +45,10 @@ void func_L19_0042A9A0(u8 *object)
     u8 *state = *(u8 **)(object + 0x68);
     float rate, yaw, pitch, rotation, radians;
     int aiming;
+    float blend = 0.3f;
 
     func_L19_0042A8B8();
-    if (D_L19_001B2508 == 5) func_L19_0042A860();
+    if (D_L19_001B2508[0] == 5) func_L19_0042A860();
     switch (object[0x20]) {
     case 0:
         func_L19_0042A860();
@@ -102,13 +76,13 @@ void func_L19_0042A9A0(u8 *object)
         }
         break;
     case 2:
-        D_L19_001B2728 = 1;
+        D_L19_001B2724[1] = 1;
         if (D_L19_001A8F00 == 2) {
             object[0x31]=0;
             *(u16 *)(object+0x34) |= 1;
         }
         if (!func_002F5D10()) {
-            D_L19_001B2728 = 0;
+            D_L19_001B2724[1] = 0;
             object[0x31] = 1;
             *(u16 *)(object+0x34) &= 0xfffe;
             func_0029F338(object);
@@ -128,15 +102,15 @@ void func_L19_0042A9A0(u8 *object)
     rate = 0.02f;
     if (object[0x43] == 1) {
         aiming = 1;
-        if (func_00282E80(object+0x10,D_00189E20+0x80) < 8.0f &&
+        if (func_00282E80(object+0x10,&((Hero *)D_00189E20)->q[8]) < 8.0f &&
             func_00283C80(*(float *)(object+0xf8),
-                func_00283248(*(float *)(D_00189E20+0xe0)-*(float *)(object+0x10),
-                             *(float *)(D_00189E20+0xe4)-*(float *)(object+0x14))) < 1.5707965f) {
-            if (func_00282DF0(D_00189E20+0x110)>0.01f) *(int *)(state+0x114)=120;
+                func_00283248(((Hero *)D_00189E20)->f[0xe0 / 4]-*(float *)(object+0x10),
+                             ((Hero *)D_00189E20)->f[0xe4 / 4]-*(float *)(object+0x14))) < 1.5707965f) {
+            if (func_00282DF0(&((Hero *)D_00189E20)->q[0x110 / 16])>0.01f) *(int *)(state+0x114)=120;
             else func_00282948(state+0x114);
         } else if (*(int *)(state+0x114)) {
             *(int *)(state+0x114)=0;
-            *(Quadword *)(state+0x100)=*(Quadword *)(D_00189E20+0xe0);
+            qcopy(state+0x100, &((Hero *)D_00189E20)->q[0xe0 / 16]);
         }
         if (func_00282948(state+0x118)) {
             radians=0.017453294f;
@@ -146,12 +120,12 @@ void func_L19_0042A9A0(u8 *object)
             func_00282CC0(state+0x100,state+0x100,object+0x10);
         }
         if (*(int *)(state+0x114)) {
-            target.q = *(Quadword *)(D_00189E20+0xe0);
+            qcopy(&target, &((Hero *)D_00189E20)->q[0xe0 / 16]);
             rate=0.04f;
-        } else target.q=*(Quadword *)(state+0x100);
+        } else qcopy(&target, state+0x100);
     }
     if (aiming) {
-        origin.q=*(Quadword *)(object+0x10);
+        qcopy(&origin, object+0x10);
         origin.f[2]+=2.0f;
         func_00282CF0(&direction,&target,&origin);
         yaw=func_00283BE0(func_00283248(direction.f[0],direction.f[1]),*(float *)(object+0xf8));
@@ -164,7 +138,7 @@ void func_L19_0042A9A0(u8 *object)
         *(float *)(state+0x68)=yaw*0.6f;
         *(float *)(state+0xe8)=yaw*0.4f;
     }
-    if (D_001A7A40) *(float *)(state+0x70)=1.9f;
-    func_002AEC48(object,state,0,rate,0.3f);
-    func_002AEC48(object,state+0x80,1,rate,0.3f);
+    if (D_001A7A40[0]) *(float *)(state+0x70)=1.9f;
+    func_002AEC48(object,state,0,rate,blend);
+    func_002AEC48(object,state+0x80,1,rate,blend);
 }
