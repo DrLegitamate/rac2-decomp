@@ -1,16 +1,3 @@
-/*
- * Complete manual reconstruction retained as nonmatching; no coverage credit.
- * Fresh checks on the qualified current compiler, 2026-10-25.
- * Profile: -O2 -G8 -ffunction-sections -frac2-zero-ti-por
- * Coverage: US: 0/1; US2: 0/1; PAL: absent from catalogue.
- * Compiled text: 1544 bytes; retail text: 1536 bytes.
- * Remaining difference: Frame 0x80 matches. The finite state dispatch and 4-byte-aligned four-
- * action aggregate now reproduce the retail branch/copy model. Status-bit tests still introduce
- * extra sign-extension instructions; later scheduling and dispatch differ.
- * Reopen when: Qualify the status-result width and boolean lowering with independent caller
- * evidence, then revisit live ranges; do not change the canonical 64-bit callee return.
- */
-
 #include "common.h"
 
 typedef int Quad __attribute__((mode(TI)));
@@ -31,7 +18,7 @@ extern int func_002E5CF8(int, int, char *);
 extern void *func_0032C700(void *, int, int, int, int, int, int, int, int, int, int, void *, float, float);
 extern void func_002AB6D8(float *, float *);
 extern void func_00282F20(void *, void *, float);
-extern void func_002B0A68(char *, int, float *, unsigned char, float, float, float, float);
+extern void func_002B0A68(char *, int, float *, float, float, float, float, unsigned char);
 extern void func_0029F338(void *);
 extern int func_002A7820(int, int);
 extern int func_002B3868(unsigned char *);
@@ -84,7 +71,7 @@ void func_L26_003DB818(unsigned char *object) {
         break;
     case 3:
         flags = func_002B1C20(object, private + 0x50);
-        if (((flags & 1UL) != 0UL) || *(float *)(private + 0x20) <= 0.0f) {
+        if (((flags & 1UL) == 1UL) || *(float *)(private + 0x20) <= 0.0f) {
             func_00325D30((char *)object, private + 0x270);
             func_002A6C58(object, 0, 3);
             seed.q = 0;
@@ -95,11 +82,11 @@ void func_L26_003DB818(unsigned char *object) {
             func_0032C700(&workspace.position, 0, 25, 20, 20, 20, 45, 0, 0, 1, 0, 0, 0.8f, 20.0f);
             func_002AB6D8((float *)(object + 0xC0), (float *)(object + 0xF0));
             func_00282F20(&velocity, private + 0xD0, 0.083333336f);
-            func_002B0A68((char *)object, 0x3F8, velocity.f, 0xFF, 3.0f, 6.0f, 3.0f, 6.0f);
+            func_002B0A68((char *)object, 0x3F8, velocity.f, 3.0f, 6.0f, 3.0f, 6.0f, 0xFF);
             func_0029F338(object);
             return;
         }
-        if (((flags & 2UL) != 0UL) || (unsigned char)private[0x6A] > 1) {
+        if (((flags & 2UL) == 2UL) || (unsigned char)private[0x6A] > 1) {
             func_002A7750(object, 6, 2);
             *(short *)(private + 0x220) = func_002A7820(580, 600);
         }
@@ -130,8 +117,8 @@ void func_L26_003DB818(unsigned char *object) {
         if (func_002B3868(object) && object[0x43] != 8)
             func_002A7470(object, 8, 0, 20);
         func_L02_00333438((char *)object, private + 0x1F0);
-        if (!(D_L26_001B05C0 <= *(float *)(private + 0x1CC)) &&
-            !(0.17453295f <= func_00282C48(func_L26_00324598(object, private + 0x1F0, private + 0x230))))
+        if ((*(float *)(private + 0x1CC) < D_L26_001B05C0) &&
+            (func_00282C48(func_L26_00324598(object, private + 0x1F0, private + 0x230)) < 0.17453295f))
             func_002A7750(object, 6, -1);
         break;
     case 6:

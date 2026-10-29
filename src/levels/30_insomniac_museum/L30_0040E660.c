@@ -9,6 +9,11 @@ extern void func_2EDB20(void *, void *);
 extern void func_323FB0(void *, int, int);
 extern void func_L30_004135A0(char *);
 
+extern void func_002FC560(int, int);
+extern void func_0027DE50(int, int, int, int, unsigned long);
+extern struct { char pad[0x150]; short x, y; } D_001A6480;
+extern void func_L05_0042F4E8(void *, int, float, float, float, float, float, int);
+
 extern void func_42C028(int);
 extern void func_316DB8(char *);
 extern int D_0018C0E8;
@@ -96,7 +101,7 @@ INCLUDE_ASM("asm/levels", func_L30_004158B0);
 
 INCLUDE_ASM("asm/levels", func_L30_00416A88);
 
-INCLUDE_ASM("asm/levels", func_L30_00416D88);
+/* func_L30_00416D88 is defined in L30_00416D88-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L30_00417988);
 
@@ -121,7 +126,24 @@ void func_L30_00418570(char *a0) {
 
 INCLUDE_ASM("asm/levels", func_L30_004186B0);
 
-INCLUDE_ASM("asm/levels", func_L30_004191E0);
+void func_L30_004191E0(char *obj) {
+    char *st = *(char **)(obj + 0x68);
+    if (*(short *)(st + 2) - *(short *)st < 2 && *(short *)(st + 4)) {
+        if (*(int *)(st + 0x1C)) {
+            func_002FC560(0x42, 0x48);
+            func_0027DE50(0, D_001A6480.y, 0, D_001A6480.x, (unsigned long)(int)0x80808080);
+        }
+    }
+    if (*(int *)(st + 0x18)) {
+        if (*(short *)(st + 2) - *(short *)st < 10) {
+            float t = (*(short *)(st + 2) - *(short *)st) * 0.1f;
+            func_L05_0042F4E8(obj + 0x10, 0x3C, *(float *)(st + 8) + (*(float *)(st + 12) - *(float *)(st + 8)) * t, 0.5f, 0.0f, 0.0f, 0.0f, 0);
+        } else if ((unsigned short)(*(unsigned short *)st - 0x2E) < 4) {
+            float t = (*(short *)st - 0x2D) * 0.1f;
+            func_L05_0042F4E8(obj + 0x10, 0x3C, *(float *)(st + 8) + (*(float *)(st + 12) - *(float *)(st + 8)) * t, 0.5f, 0.0f, 0.0f, 0.0f, 0);
+        }
+    }
+}
 
 extern int func_2F4B08(char *);
 extern void func_2EDD78(void *, char *);

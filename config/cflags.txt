@@ -1524,6 +1524,7 @@ src/levels/shared/L00_0033C238.c	-O2 -G0 -ffunction-sections -fstrict-aliasing
 
 src/levels/09_dobbo/L09_002F8BA0-draw-g8.c	-O2 -G8 -g -ffunction-sections
 
+src/levels/30_insomniac_museum/L30_003B3C18-g8.c	-O2 -G8 -ffunction-sections -g
 
 src/levels/11_joba/L11_00446C78-g16.c	-O2 -G16 -Wa,-G16 -ffunction-sections
 src/levels/12_todano/L12_00389988-g64.c	-O2 -G64 -Wa,-G64 -ffunction-sections
@@ -1592,6 +1593,7 @@ src/levels/02_maktar_nebula/L02_003DB310-reinit-g8.c	-O2 -G8 -ffunction-sections
 src/levels/11_joba/L11_002DE9E0-effect.c	-O2 -G8 -ffunction-sections -mno-split-addresses
 
 src/levels/shared/L02_00410E58.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -g
+src/levels/30_insomniac_museum/L30_003D9E60-g8.c	-O2 -G32 -Wa,-G32 -ffunction-sections
 
 src/levels/shared/L00_00409558-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
 src/game/0027EE58.c	-O2 -G0 -ffunction-sections -g
@@ -1644,6 +1646,7 @@ src/levels/11_joba/L11_004465F8-aim-004530E0-g8.c	-O2 -G8 -ffunction-sections -f
 
 src/levels/06_notak/L06_003FE178-g8.c	-O2 -G8 -ffunction-sections -g
 
+src/levels/26_jamming_array/L26_002FC8D8-g64.c	-O2 -G64 -Wa,-G64 -ffunction-sections
 src/levels/shared/L00_0033F678-projection.c	-O2 -G0 -ffunction-sections -g
 src/levels/11_joba/L11_00453358-aim-g8.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por -frac2-keep-block-order
 
@@ -1762,6 +1765,8 @@ src/levels/11_joba/L11_003F4060-g8.c	-O2 -G8 -g -ffunction-sections
 src/levels/11_joba/L11_003F4490-g8.c	-O2 -G8 -ffunction-sections -g
 
 src/levels/shared/L00_003E4508-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
+src/levels/30_insomniac_museum/L30_0040AE38-g8.c	-O2 -G8 -ffunction-sections -g
+src/levels/30_insomniac_museum/L30_00382FB8-g8.c	-O2 -G8 -ffunction-sections -fno-rerun-loop-opt
 
 # Mixed materialized and direct quadword clears in the Siberius launcher.
 src/levels/07_siberius/L07_003E4BD0-g8.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por -g
@@ -1854,6 +1859,7 @@ src/levels/11_joba/L11_002DE9E0-g-g8.c	-O2 -G8 -ffunction-sections -g
 src/game/0030F7B0-crate-g8.c	-O2 -G8 -ffunction-sections -ffast-math
 
 src/levels/shared/L00_003A5FC0-contact.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
+src/levels/30_insomniac_museum/L30_00383398-g8.c	-O2 -G8 -ffunction-sections -ffast-math -g
 src/levels/shared/L00_002B5B60-motion.c	-O2 -G0 -ffunction-sections -g
 src/levels/19_grelbin/L19_002A88C8-ground-g8.c	-O2 -G8 -ffunction-sections -frac2-hazard-labels
 
@@ -1869,6 +1875,7 @@ src/levels/11_joba/L11_00432628-reset-g64.c	-O2 -G64 -Wa,-G64 -ffunction-section
 src/levels/01_oozla/L01_003CC280-g8.c	-O2 -G8 -ffunction-sections -fno-cse-follow-jumps -frac2-hazard-labels
 src/levels/shared/L03_003E26C8-g8.c	-O2 -G8 -ffunction-sections -frac2-hazard-labels
 src/levels/09_dobbo/L09_002F8BA0-beam-g8.c	-O2 -G8 -ffunction-sections -g -frac2-keep-block-order -frac2-no-null-pointer-checks
+src/levels/26_jamming_array/L26_003DF7E8-g32.c	-O2 -G32 -Wa,-G32 -ffunction-sections
 src/levels/12_todano/L12_0041DDA8-g8.c	-O2 -G8 -ffunction-sections -g
 src/game/002FDF40-g8.c	-O2 -G8 -ffunction-sections -g -frac2-hazard-labels
 
@@ -1877,6 +1884,7 @@ src/game/002FC8D0-disturb-g8.c	-O2 -G8 -ffunction-sections -g
 src/levels/18_damosel/L18_004302B0.c	-O2 -G0 -ffunction-sections -g
 
 src/levels/09_dobbo/L09_00409308.c	-O2 -G0 -ffunction-sections -g
+src/levels/30_insomniac_museum/L30_003E1BA0-g8.c	-O2 -G8 -ffunction-sections -Wa,-G32
 
 src/levels/shared/L00_002B6560.c	-O2 -G0 -ffunction-sections -frac2-hazard-labels
 src/game/002C94C8.c	-O2 -G0 -ffunction-sections -g
