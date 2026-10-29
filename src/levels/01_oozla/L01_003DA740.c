@@ -147,7 +147,6 @@ void func_L01_003DC9E0(void *arg, void *fallback) {
 
 
 
-INCLUDE_ASM("asm/levels", func_L01_003DCE70);
 
 INCLUDE_ASM("asm/levels", func_L01_003DCF40);
 
@@ -187,13 +186,77 @@ INCLUDE_ASM("asm/levels", func_L01_003E8ED8);
 
 INCLUDE_ASM("asm/levels", func_L01_003EC0C0);
 
-INCLUDE_ASM("asm/levels", func_L01_003ECCF8);
+/* func_L01_003ECCF8 */
+extern f32 func_00283B98(f32, f32);
+extern void func_0029FCC0(void *, s32, void *);
+extern f32 func_00283198(f32);
+extern s32 func_00283CF0(f32);
+extern s32 func_002E5DA0(s32, s32, void *, s32);
+typedef struct { u8 pad[0x80]; f32 pos[4]; u8 pad90[0x2AC]; u8 *object; s32 active; } PlayerECC;
+extern PlayerECC D_00189E20;
+extern s32 D_001A79F0[] __attribute__((sda));
+extern u8 D_0019B4A8[];
+typedef struct { u8 pad[0x464]; u8 collected[0]; } LevelSaveState;
+extern LevelSaveState D_L01_0021E4B0;
+
+/* Pulses the object's grey colour until the player touches it (save nibble counter at
+   D_0019B4A8) or its id is already collected; then marks it and its linked record active
+   and plays sound 0x8A1 once. */
+void func_L01_003ECCF8(u8 *obj) {
+    f32 pos[4] __attribute__((aligned(16)));
+    u8 *state = *(u8 **)(obj + 0x68);
+    f32 dist;
+    s32 shade;
+    u16 id;
+    u32 color;
+    if (!state) return;
+    *(f32 *)(state + 4) = func_00283B98(*(f32 *)(state + 4), 0.10471977293491364f);
+    if (obj[0x20] == 0) {
+        func_0029FCC0(obj, 0, pos);
+        dist = func_00282E80(D_00189E20.pos, pos);
+        *(s32 *)(state + 8) = 0;
+        if (D_00189E20.object == obj && D_00189E20.active && dist < 0.5f) {
+            u16 objectId;
+            objectId = *(u16 *)(obj + 0xB2);
+            if (objectId & 1) {
+                if (((D_0019B4A8[((s16)objectId >> 1) + (D_001A79F0[0] << 10)] >> 4) & 7) != 7)
+                    D_0019B4A8[((s16)objectId >> 1) + (D_001A79F0[0] << 10)] += 16;
+            } else {
+                if ((D_0019B4A8[((s16)objectId >> 1) + (D_001A79F0[0] << 10)] & 7) != 7)
+                    D_0019B4A8[((s16)objectId >> 1) + (D_001A79F0[0] << 10)] += 1;
+            }
+        }
+        if (obj[0xB0] != 255) {
+            s32 nibble;
+            id = *(u16 *)(obj + 0xB2);
+            if (D_L01_0021E4B0.collected[(s16)id] != 0) goto activate;
+            nibble = D_0019B4A8[((s16)id >> 1) + (D_001A79F0[0] << 10)];
+            if ((id & 1) ? ((nibble >> 4) & 7) : (nibble & 7)) {
+activate:
+                obj[0x20] = 1;
+                obj[0xBC] = 1;
+                if (*(s32 *)state != -1) D_L01_001B255C[*(s32 *)state].data[0xBC] = 1;
+            }
+        }
+        shade = func_00283CF0((func_00283198(*(f32 *)(state + 4)) * 4.0f - 3.0f) * 128.0f);
+        if (shade > 128) shade = 128;
+        else if (shade < 32) shade = 32;
+        color = (shade << 8) | 0x80000000;
+        *(u32 *)(obj + 0x78) = (shade << 16) | color | shade;
+    } else {
+        if (!*(s32 *)(state + 8)) {
+            func_002E5DA0(0, 0, obj, 0x8A1);
+            *(s32 *)(state + 8) = 1;
+        }
+        *(u32 *)(obj + 0x78) = 0x80208010;
+    }
+}
 
 INCLUDE_ASM("asm/levels", func_L01_00405300);
 
-INCLUDE_ASM("asm/levels", func_L01_0040EED0);
+/* func_L01_0040EED0 is in L01_0040EED0-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L01_0040F118);
+/* func_L01_0040F118 is in L01_0040F118-g8.c. */
 
 void func_L01_0040F340(u8 *a0) {
     if (*(u8 *)(a0 + 0x20) == 0) {
@@ -202,7 +265,7 @@ void func_L01_0040F340(u8 *a0) {
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L01_0040F360);
+/* func_L01_0040F360 is in L01_0040F360-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L01_0040F5A8);
 

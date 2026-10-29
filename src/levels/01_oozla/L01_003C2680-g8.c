@@ -1,5 +1,4 @@
-/* near miss: 412/408 B -g8 + -frac2-qcopy; switch(f20) 0/1, K&R func_L01_003BAFB0; dead Quad frame[2] copies kept as array. Remaining: pa=obj+0x10 lands in a2 (retail a0), second copy dst/lbu order. */
-#include "include_asm.h"
+#include "common.h"
 
 typedef int Quad __attribute__((mode(TI)));
 typedef struct { Quad q; } QuadBox;
@@ -43,7 +42,7 @@ extern float D_L01_001AFF6C __attribute__((sda));
 extern long long D_L01_001AFF60 __attribute__((sda));
 extern long long D_L01_001AFF50 __attribute__((sda));
 extern long long D_L01_001AFF40 __attribute__((sda));
-extern char D_L01_001A4C50[];
+extern char D_L01_002A4C50[];
 
 void func_L01_003C2680(L01_003C2680_OBJ *a0)
 {
@@ -52,19 +51,19 @@ void func_L01_003C2680(L01_003C2680_OBJ *a0)
     Quad frame[2];
 
     if (s1 == 0) {
-        func_002A6CF0(D_L01_001A4C50, a0->fAA, a0->fB2);
+        func_002A6CF0(D_L01_002A4C50, a0->fAA, a0->fB2);
         return;
     }
-    frame[0] = *(Quad *)(p + 0x10);
-    frame[1] = *(Quad *)(p + 0xF0);
+    qcopy(&frame[0], p + 0x10);
+    qcopy(&frame[1], p + 0xF0);
     switch (a0->f20) {
     case 0:
         if (func_L01_003BAFB0(p + 0x10) > 0.0f) {
             s1->f120 = func_002A7940();
             s1->f124 = func_002A7940();
             s1->f128 = 0.02f;
-            s1->f130 = *(Quad *)(p + 0xF0);
-            s1->f140 = 0;
+            qcopy(&s1->f130, p + 0xF0);
+            qzero(&s1->f140);
             func_002A7750(a0, 1, -1);
         }
         a0->f18 = a0->f18 + D_L01_001AFF6C;
