@@ -21,10 +21,16 @@ Inputs: baserom/ (tools/levels.py dump), toolchain/sn-prodg-2.0/ee/bin/{Ps2EeAs,
 and build/compiler/tools/{cpp,cc1,as} (docs/BUILDING.md). The Windows tools run through
 $RAC2_WINE (default `wine`; `{cwd}` is replaced by the directory they run in), the
 32-bit Linux compiler through $RAC2_LINUX (default: directly).
+
+One wineserver serves a whole Wine prefix and runs single-threaded, so `all` and `levels`
+give each program running at once a prefix of its own, build/wine/<slot> (made once by
+wineboot, then reused): a 32-job build runs 32 wineservers instead of queueing behind one.
+A WINEPREFIX already set, or RAC2_ONE_PREFIX=1, keeps every program on that one prefix.
 """
 import hashlib
 import json
 import os
+import queue
 import re
 import shlex
 import shutil
@@ -924,6 +930,32 @@ def build_program(name: str, reference: Path, strict: bool = False) -> tuple[int
     return len(placement.placed), c_bytes
 
 
+def wine_prefixes(jobs: int) -> "queue.Queue[Path] | None":
+    """A Wine prefix per program running at once (module docstring), ready to use: None when
+    the build keeps one prefix (WINEPREFIX set, RAC2_ONE_PREFIX=1, or one job)."""
+    if jobs < 2 or os.environ.get("WINEPREFIX") or os.environ.get("RAC2_ONE_PREFIX") == "1":
+        return None
+    slots = [BUILD / "wine" / str(n) for n in range(jobs)]
+    wine = shlex.split(os.environ.get("RAC2_WINE", "wine").replace("{cwd}", str(ROOT)))
+
+    def ready(slot: Path) -> None:
+        # A prefix wineboot finished has its system.reg; a half-made one is made again.
+        if (slot / "system.reg").is_file():
+            return
+        shutil.rmtree(slot, ignore_errors=True)
+        slot.mkdir(parents=True)
+        env = {**os.environ, "WINEPREFIX": str(slot), "WINEDEBUG": "-all"}
+        subprocess.run([*wine, "wineboot", "-i"], env=env, stdout=subprocess.DEVNULL,
+                       stderr=subprocess.DEVNULL, timeout=600)
+
+    with ThreadPoolExecutor(jobs) as pool:
+        list(pool.map(ready, slots))
+    free: "queue.Queue[Path]" = queue.Queue()
+    for slot in slots:
+        free.put(slot)
+    return free
+
+
 def main() -> None:
     version = levels.version_argument()
     strict = "--strict" in sys.argv[1:]
@@ -938,10 +970,20 @@ def main() -> None:
         jobs = int(args[2]) if len(args) == 3 else max(1, min(8, JOBS // 2))
         programs = ([["boot"]] if args[0] == "all" else []) + [["level", str(n)] for n in sorted(levels.NAMES)]
 
+        prefixes = wine_prefixes(jobs)
+
         def one(program: list[str]) -> tuple[int, str]:
-            done = subprocess.run([sys.executable, __file__, *program, "--version", version,
-                                   *(["--strict"] if strict else [])],
-                                  capture_output=True, text=True)
+            env = None
+            if prefixes:
+                slot = prefixes.get()
+                env = {**os.environ, "WINEPREFIX": str(slot)}
+            try:
+                done = subprocess.run([sys.executable, __file__, *program, "--version", version,
+                                       *(["--strict"] if strict else [])],
+                                      capture_output=True, text=True, env=env)
+            finally:
+                if prefixes:
+                    prefixes.put(slot)
             return done.returncode, (done.stdout + done.stderr).rstrip()
 
         failed = 0
