@@ -118,10 +118,14 @@ void func_L00_00423038(int reposition)
     qcopy(object + 0x40, object);
 }
 
+/* func_L00_00423038 is in a separate compilation unit. */
+
 INCLUDE_ASM("asm/levels", func_L00_00423290);
 
 INCLUDE_ASM("asm/levels", func_L00_004233F8);
 
+
+/* func_L00_004237C8 is in a separate compilation unit. */
 
 INCLUDE_ASM("asm/levels", func_L00_004239A8);
 
@@ -449,7 +453,7 @@ void func_L00_00425490(char *obj)
 
 INCLUDE_ASM("asm/levels", func_L00_00425560);
 
-INCLUDE_ASM("asm/levels", func_L00_00425A98);
+/* func_L00_00425A98 is in a separate compilation unit. */
 
 INCLUDE_ASM("asm/levels", func_L00_00425CD0);
 

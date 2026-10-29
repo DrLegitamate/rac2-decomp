@@ -1,14 +1,4 @@
-/* Retained complete C reconstruction; not linked or counted.
- * Profile: -O2 -G32 -ffunction-sections -Wa,-G32
- * 216/216 bytes; 0/27 placements in us, us2 and pal.
- * Residual: Saved-FPR scheduling and early zero construction differ; the three real GP references are recovered.
- * Reopen: Independent lifetime/scheduling evidence for the persistent zero blend weight, without undersizing the GP objects.
- * Trial source markers and per-file flags are restored after checking.
- */
-
 #include "common.h"
-
-typedef int TI128 __attribute__((mode(TI)));
 
 extern void *func_00270280(int a0);
 extern void func_00270598(void *a0);
@@ -31,7 +21,7 @@ void *func_L00_004282F0(u8 *a0) {
     u8 *s0 = a0;
     u8 *s2;
     u8 *p;
-    f32 f20 = 0.0f;
+    f32 f20;
 
     s2 = func_00270280(6);
     D_L00_001B8F10 = 0;
@@ -39,6 +29,7 @@ void *func_L00_004282F0(u8 *a0) {
     func_L00_00428000(s2, s0);
     p = *(u8 **)(s2 + 0x70);
     qcopy(p + 0xB0, p + 0x80);
+    f20 = 0.0f;
     func_L00_002D7958(p + 0x14, &D_L00_001B15E0, f20);
     func_L00_002D7958(s2 + 0x50, p + 0x14, f20);
     func_L00_00427C78(s2);

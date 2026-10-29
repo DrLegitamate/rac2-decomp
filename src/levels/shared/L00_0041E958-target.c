@@ -1,16 +1,11 @@
-/* func_L00_0041E958: retained near miss (M9, 2026-10-26). Profile -O2 -G0 -ffunction-sections.
- * 456/476 bytes, 0/27. The Hero union view gives retail's addressing (a %hi in a callee-saved
- * register, the %lo added per block, fresh lui for the D+0x80/D+0xBC0 arguments) and qcopy()
- * gives the materialised quad copies in source order. Open: retail keeps the %hi register
- * (s2) apart from the base in the hit arm (s0) and the target in s1, three saves where this
- * uses two; a local Hero pointer in that arm did not do it.
- */
 #include "common.h"
+
 typedef int Quad __attribute__((mode(TI)));
 typedef union { u8 b[0x2600]; s16 h[0x1300]; s32 i[0x980]; f32 f[0x980]; char *ptr[0x980]; Quad q[0x260]; } Hero;
 extern u8 D_00189E20[];
 extern float func_L00_002B39F0(int, float);
-extern char *func_002AF580(void *, void *, int *, void *, int, int, int, int, float, float, float, float, float);
+/* The EE assigns the integer and floating arguments in separate register banks. */
+extern char *func_002AF580(void *, void *, int *, int, int, int, float, float, float, float, float, int, void *);
 extern float func_00283248(float, float);
 extern void func_00282CF0(void *, void *, void *);
 extern void func_L00_002D3B58(void *, void *, float);
@@ -22,6 +17,7 @@ void func_L00_0041E958(float range, float angle, float elevation)
     Quad position;
     float heading;
     char *target;
+    char *candidate;
     int count;
     if (HERO->i[0xBE8 / 4] != 0)
         return;
@@ -37,15 +33,15 @@ void func_L00_0041E958(float range, float angle, float elevation)
             HERO->i[0xBE8 / 4] = 1;
         }
     }
-    target = HERO->ptr[0x1450 / 4];
-    if (target == 0 || (u8)target[0x20] == 254 || (u8)target[0x20] == 253)
-        target = func_002AF580(D_00189E20 + 0x80, &position, &count, 0, 0, 0, 1, 0, angle, elevation, range, 0.0f, 0.0f);
-    if (target) {
-        if (HERO->i[0xBE4 / 4] == 0 || HERO->i[0xBE8 / 4] != 0) {
-            HERO->f[0xBEC / 4] = func_00283248(*(float *)(target + 0x10) - HERO->f[0x80 / 4], *(float *)(target + 0x14) - HERO->f[0x84 / 4]);
-            func_00282CF0(&HERO->q[0xBC0 / 16], target + 0x10, &HERO->f[0x80 / 4]);
-            HERO->ptr[0xBE4 / 4] = target;
-        }
+    candidate = HERO->ptr[0x1450 / 4];
+    if (candidate == 0 || (u8)candidate[0x20] == 254 || (u8)candidate[0x20] == 253)
+        target = func_002AF580(D_00189E20 + 0x80, &position, &count, 0, 0, 0, angle, elevation, range, 0.0f, 0.0f, 1, 0);
+    else
+        target = candidate;
+    if (target && (HERO->i[0xBE4 / 4] == 0 || HERO->i[0xBE8 / 4] != 0)) {
+        HERO->f[0xBEC / 4] = func_00283248(*(float *)(target + 0x10) - HERO->f[0x80 / 4], *(float *)(target + 0x14) - HERO->f[0x84 / 4]);
+        func_00282CF0(&HERO->q[0xBC0 / 16], target + 0x10, &HERO->f[0x80 / 4]);
+        HERO->ptr[0xBE4 / 4] = target;
     } else {
         HERO->f[0xBEC / 4] = heading;
         qcopy(&HERO->q[0xBC0 / 16], &position);

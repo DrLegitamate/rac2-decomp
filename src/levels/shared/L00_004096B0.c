@@ -141,7 +141,7 @@ INCLUDE_ASM("asm/levels", func_L00_0040BA30);
 
 /* func_L00_0040CCA0 is in L00_0040CCA0.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_0040D058);
+/* func_L00_0040D058 is defined in L00_0040D058-ribbon.c. */
 
 char *func_L00_0040DC08(float size, char *position, int trigger, int kind, int red, int green, int blue, int enabled, int flags, int extra, int control)
 {
@@ -226,11 +226,11 @@ INCLUDE_ASM("asm/levels", func_L00_0040DF58);
 
 /* func_L00_0040F6A0 is in L00_0040F6A0-g16.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_00410178);
+/* func_L00_00410178 is defined in L00_00410178.c. */
 
 
 
-INCLUDE_ASM("asm/levels", func_L00_00410690);
+/* func_L00_00410690 is defined in L00_00410690-g64.c. */
 
 /* Reads the halfword at +0x1A of the object's node and grades it: 4 at or above 90, 3 above 60,
    2 above 30, else 1. The two lower bounds stay in variables, which is what keeps them in
@@ -251,7 +251,7 @@ int func_L00_00410840(char *object)
     return result;
 }
 
-INCLUDE_ASM("asm/levels", func_L00_00410888);
+/* func_L00_00410888 is defined in L00_00410888-g8.c. */
 
 void func_L00_00410D18(void)
 {
