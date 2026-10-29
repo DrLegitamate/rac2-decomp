@@ -82,6 +82,9 @@ that negative result.
 **29 October 2026 scheduling follow-up:** func_002A0488 remains 48/48 bytes and 0/28 with isolated -fno-schedule-insns2. The probe exchanges the first dsll32 and ld, while the final store remains before jr $ra instead of in its delay slot. This later scheduler setting does not resolve the return-slot mismatch.
 
 
+**29 October 2026 scheduling follow-up:** func_002A04B8 remains 44/48 bytes and 0/28 with isolated -fno-schedule-insns2; the later scheduler pass does not restore the missing four bytes. The retained ordinary-memory candidate still needs the retail wide-load/extraction sequence and exact return-slot placement.
+
+
 ## Topic index
 
 The 52 original section numbers are preserved for existing references. Anyone may improve
