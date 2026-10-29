@@ -1,4 +1,5 @@
-/* First plain-C attempt from worker w08. Last check: 316 bytes vs 336; 0/27. */
+#include "common.h"
+/* Projects the horizontal velocity onto a copied direction before reducing its Z component. */
 extern float func_00282E20(char *);
 extern float func_00283248(float, float);
 extern void func_00282D30(char *, char *, float);
@@ -12,27 +13,29 @@ void func_L00_002B4308(void)
     float distance;
     float angle;
     float value;
-    float vector[4];
+    float vector[4] __attribute__((aligned(16)));
 
     if (*(short *)(p + 0x34E) == 0)
         return;
-    if (*(float *)(p + 0x31C) < 0.15f)
+    if (!(*(float *)(p + 0x31C) < 0.15f))
         return;
-    if (*(float *)(p + 0x118) <= 0.0f)
+    if (!(0.0f < *(float *)(p + 0x118)))
         return;
     if (*(unsigned char *)(p + 0x287) == 0)
         return;
-    if (*(float *)(p + 0x238) <= 0.0f)
+    if (!(0.0f < *(float *)(p + 0x238)))
         return;
     distance = func_00282E20(p + 0x230);
     angle = func_00283248(*(float *)(p + 0x238), distance);
-    if (angle >= 0.87265f)
+    if (!(angle >= 0.8726646900177002f))
         return;
+    qcopy(vector, p + 0x230);
+    vector[2] = 0.0f;
     func_001290E0((int *)vector, (int *)vector);
-    value = -(*(float *)(p + 0xF0) * vector[0] + *(float *)(p + 0xF4) * vector[1]);
+    value = -*(float *)(p + 0xF0) * vector[0] - *(float *)(p + 0xF4) * vector[1];
     if (value > 0.0f) {
         func_00282D30((char *)vector, (char *)vector, value);
         func_00282CC0(p + 0xF0, p + 0xF0, (char *)vector);
+        *(float *)(p + 0xF8) -= 0.030000001192092896f;
     }
-    *(float *)(p + 0xF8) -= 0.029999f;
 }

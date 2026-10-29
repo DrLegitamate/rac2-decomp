@@ -1471,6 +1471,7 @@ src/levels/23_damosel_orbit/L23_00416388-scan.c	-O2 -G8 -ffunction-sections -Wa,
 
 
 src/game/002C7BB8.c	-O2 -G0 -ffunction-sections -g
+src/levels/shared/L00_002AFBC0-velocity.c	-O2 -g -G0 -ffunction-sections -frac2-keep-block-order -frac2-hazard-labels
 
 src/game/0030A188-g8.c	-O2 -G8 -ffunction-sections -g -frac2-qcopy -frac2-qcopy-barrier
 src/game/00308600-beam-g8.c	-O2 -G8 -ffunction-sections -frac2-hazard-labels
@@ -1483,6 +1484,8 @@ src/game/00270EE0-qcopy.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-
 
 
 src/game/0029AE78-menu-g8.c	-O2 -G32 -ffunction-sections -Wa,-G32
+src/levels/shared/L00_002AE388-range.c	-O2 -G0 -ffunction-sections -ffast-math -g -frac2-hazard-labels
+src/levels/shared/L00_002AE388-select.c	-O2 -G0 -ffunction-sections -g
 src/game/0031E3A8-update.c	-O2 -G0 -ffunction-sections -mno-split-addresses -g -fno-sched-interblock
 src/levels/shared/L14_003DE908-g32.c	-O2 -G32 -ffunction-sections -Wa,-G32
 
@@ -1628,6 +1631,7 @@ src/game/00291850.c	-O2 -G0 -ffunction-sections -frac2-keep-block-order
 
 src/levels/shared/L00_002A5840-g8.c	-O2 -G8 -ffunction-sections -fno-sched-interblock
 
+src/levels/shared/L00_002B7718-g8.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por
 src/game/002BEBC0-hazard-labels.c	-O2 -G0 -ffunction-sections -frac2-hazard-labels
 src/game/002BC508-g8.c	-O2 -G8 -ffunction-sections -g
 
@@ -1639,6 +1643,7 @@ src/levels/shared/L00_002A9760-g8.c	-O2 -G8 -ffunction-sections -g
 
 src/game/0030F7B0-crate-g8.c	-O2 -G8 -ffunction-sections -ffast-math
 
+src/levels/shared/L00_002B5B60-motion.c	-O2 -G0 -ffunction-sections -g
 
 
 src/game/002CE5D0-g8.c	-O2 -G8 -ffunction-sections -g
@@ -1648,6 +1653,7 @@ src/game/002FDF40-g8.c	-O2 -G8 -ffunction-sections -g -frac2-hazard-labels
 src/game/002FC8D0-disturb-g8.c	-O2 -G8 -ffunction-sections -g
 
 
+src/levels/shared/L00_002B6560.c	-O2 -G0 -ffunction-sections -frac2-hazard-labels
 src/game/002C94C8.c	-O2 -G0 -ffunction-sections -g
 
 # Ammo pickup: vector clear, division padding and compare-label hazards.
