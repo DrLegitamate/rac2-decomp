@@ -1,4 +1,3 @@
-/* 26 October 2026 (M24): ported from func_L00_003A3B58 (exact). -O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier, 1076/1084 bytes: retail recomputes the velocity buffer address (addiu $a0, $sp, 0x10) at each use and keeps the muzzle pointer in $fp; here the velocity address is kept in $fp. Body, calls and data names are retail's. */
 #include "common.h"
 typedef int HeroQ __attribute__((mode(TI)));
 typedef union { unsigned char b[0x2600]; signed char c[0x2600]; short h[0x1300]; unsigned short uh[0x1300]; int i[0x980]; unsigned int u[0x980]; float f[0x980]; char *ptr[0x980]; HeroQ q[0x260]; } Hero;
@@ -33,17 +32,17 @@ void func_L00_003E4508(char *moby)
 {
     Vector origin, velocity, targetPosition, delta, unit;
     char *state = *(char **)(moby + 0x68);
-    char *muzzle;
+
     char *beam;
     float speed = (D_L00_00262570 + D_00139568[0x17])->speed * 0.016666668f;
     int mode;
+    char *model;
+    char *collision;
     if (H->h[4726] == 1) {
         func_0029FCC0(moby, 0, (char *)origin);
-        muzzle = moby + 0xD0;
-        func_00282F20(velocity, muzzle, -speed);
+        func_00282F20(velocity, moby+0xD0, -speed);
     } else {
         func_0029FCC0(moby, 0, (char *)origin);
-        muzzle = moby + 0xD0;
         func_00282F20(velocity, (&H->f[472]), speed);
     }
     *(int *)(state + 0x10) = func_00291308(origin, 10.0f, 0.0f, 0xFF0000FF);
@@ -64,17 +63,17 @@ void func_L00_003E4508(char *moby)
                 /* lq ignores the low four address bits: this reads the quadword holding +0xBF8. */
                 qcopy(targetPosition, &H->ptr[766]);
             func_00282CF0(delta, targetPosition, origin);
-            mode = 2;
             func_00282F20(unit, velocity, 1.0f);
             func_00282D30(velocity, unit, func_00282DB0(unit, delta) + 3.0f);
+            mode = 2;
         }
     }
-    func_00282D30(targetPosition, muzzle, -1.5f);
+    func_00282D30(targetPosition, moby+0xD0, -1.5f);
     func_00282CC0(targetPosition, targetPosition, moby + 0x10);
     func_00282D30(delta, moby + 0xC0, 0.275f);
     func_00282CC0(targetPosition, targetPosition, delta);
-    if (func_00277F48(targetPosition, 1, H->ptr[2212], 0, 1.0f) && D_L00_001BF200[6] &&
-        ((*(char **)(D_L00_001BF200[6] + 0x24) && *(short *)(*(char **)(D_L00_001BF200[6] + 0x24) + 0x46) == 5) ||
+    if (func_00277F48(targetPosition, 1, H->ptr[2212], 0, 1.0f) &&
+        (((collision = D_L00_001BF200[6]) && (model = *(char **)(collision + 0x24)) && *(short *)(model + 0x46) == 5) ||
          func_002ABB78(D_L00_001BF200[6]))) {
         func_L00_003F5390(moby, targetPosition);
     } else {
