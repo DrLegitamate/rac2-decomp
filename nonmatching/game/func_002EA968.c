@@ -1,5 +1,11 @@
 /* func_002EA968 - 320 bytes.  Worker attempt, 27 October 2026 (draft below).
 
+   Current-master isolated-unit recheck (28 October 2026): with the candidate
+   in `src/game/002EA968-g8.c` and `-O2 -G8 -ffunction-sections -frac2-qcopy
+   -frac2-qcopy-barrier`, it compiles to 320 bytes but matches 0/28 placements;
+   first difference is +0x58. The temporary source and cflags entry were
+   removed after the check.
+
    draft.c goes to src/game/002E7018-g8-qcopy.c with cflags line `-O2 -G8
    -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier`; marker removed from
    002E7018.c.

@@ -1,5 +1,6 @@
-/* Near miss: the loop's shape and the frame are right, but the compiler picks
-   different branch forms and registers.
+/* Current-master USA v1.01 replay: 152 bytes against 148 and 0/28 placements.
+   The loop's shape and frame are right, but the compiler picks different
+   branch forms and registers.
 
    func_002B6658, boot 0x002B6658, catalogue size 148 (0x94).
 

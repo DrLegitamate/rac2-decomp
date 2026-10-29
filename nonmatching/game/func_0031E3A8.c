@@ -1,4 +1,6 @@
-/* func_0031E3A8 - 380 bytes.  Worker attempt, 27 October 2026 (draft below).
+/* func_0031E3A8 - 380 bytes. Worker attempt from 27 October 2026; rechecked 28 October 2026:
+   376/380 bytes, 0/28 USA v1.01 placements in the current source unit. A 29 October
+   volatile-phase-field probe grew to 388/380, 0/28.
 
    func_0031E3A8 376B vs 380B. Logic right (64 particles of 0x30 B at
    D_001B2754[0], id match, phase wrap, respawn). Left: scheduling only.

@@ -3,9 +3,14 @@
    0x1C4FA0, asks the engine for the table's count (through $gp) and keeps
    the slot's counter at the table at 0x1A79F0 up to date.
 
-   Measured near miss: the first fifteen instructions are the retail's (the
-   frame, the two guards, the count's load and the branch to the engine's
-   call), but the body then diverges: 208 bytes against 192.
+   Historical near-miss measurement: 208 bytes against 192. Current USA v1.01
+   probe on 29 October 2026, using the retained source as a standalone -G8
+   unit: 212 bytes and 0/28 placements. The current diff confirms that cc1
+   saves $s2 and uses it for the count, where retail has no $s2 save and keeps
+   the count in $s0. It also delays the first table-base calculation until
+   after the saves, unlike retail's `addiu $s1,$v1,0` in the prologue. The
+   older note that the first fifteen instructions match does not describe this
+   current probe.
 
    What is measured:
 

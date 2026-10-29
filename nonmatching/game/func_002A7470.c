@@ -1,8 +1,15 @@
-/* func_002A7470 - 364 bytes, 28 places (boot + 27 levels). M35: size exact, -O2 -G8
+/* func_002A7470 - 364 bytes, 28 places (boot + 27 levels). Rechecked 28 October 2026: 364/364
+ * bytes, 0/28 USA v1.01 places, with -O2 -G8 -ffunction-sections -frac2-qcopy. M35: size exact;
  * -ffunction-sections in its own unit; the slot copy is qcopy() into the
  * per-program table, the tail reads the animation byte at 0x11. Only the head is
  * off: retail keeps animation*4 in $a0 and the frame count in $a0 (this cc1: $v1/$v0),
- * 6 instructions, register allocation only. Queued for the permuter. */
+ * 6 instructions, register allocation only. A 28 Oct probe used the already-
+ * written object[0x43] for the final table lookup to shorten the argument's
+ * live range across calls; it grew to 368/364 bytes and remained 0/28. A 29 Oct local `animation + 0x12` index for the first lookup measured 368/364.
+ * A typed `entries = table + 0x48; entries[animation][0x10]` view stayed 364/364
+ * but retained the register mismatch; computing `last_frame` before the bound
+ * test also stayed nonmatching and changed its instruction order. All probes were
+ * 0/28. Keep this 364-byte form. */
 #include "common.h"
 
 typedef int TI128_002A7470 __attribute__((mode(TI)));

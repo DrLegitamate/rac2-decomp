@@ -1,4 +1,9 @@
-/* from src/game/0027F128.c: retained plain-C hypothesis; 248 bytes vs 240 retail */
+/* 29 October 2026 standalone USA v1.01 replay with the verified
+ * func_002FC560(unsigned int, unsigned long long) prototype: 248 bytes vs
+ * 240 retail, 0/28. The helper relocations resolve. The first block mismatch
+ * is the resident D_001A65EE load and the saved-mode branch target; clamp,
+ * floating-point argument setup, and 64-bit helper-call argument layout also
+ * differ. Retained plain-C hypothesis from src/game/0027F128.c. */
 extern short D_001A65EE;
 extern void func_00285030(int, int, int, int);
 extern void func_0027B2F8(float, unsigned int, unsigned int, float, float, float);

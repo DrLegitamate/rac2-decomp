@@ -3,7 +3,9 @@
    The relocation loop and the call match. Left: the record loop. Retail keeps one pointer
    and bumps it after each of the four loads (no giv combining) while still hoisting the
    table base and base+4 into $s4/$s5; for/do-while combine the givs (s1/s2), a goto loop
-   keeps the bumps but loses the hoist (296 B). */
+   keeps the bumps but loses the hoist (296 B). A 29 Oct 2026 probe with paired output
+   pointers (base and base+4, advanced by two words per record) measured 304/312, 0/28;
+   it did not preserve the retail register allocation. */
 #include "include_asm.h"
 #include "common.h"
 

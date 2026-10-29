@@ -10,6 +10,13 @@
  * `lw v0,D_001B23CC($gp)`; this cc1 keeps 0xD9048 in a saved register and
  * reuses it (`addu a0,a0,s5`), which is two instructions shorter.  Both
  * transfer calls, the two engine addresses and the return comparison match.
+ * A 28 Oct 2026 probe gave that call a second `SDATA` view of the same
+ * measured pointer and used it only for the ring-pointer expression. It grew
+ * to 300/312 bytes and remained 0/28, so the alias did not recover retail's
+ * sequence in this unit. On 29 Oct 2026, a volatile array-element declaration
+ * produced 308/312, 0/28; changing to a scalar volatile pointer object and
+ * replacing `[0]` reads with the equivalent pointer read produced 296/312,
+ * 0/28, but emitted absolute-address loads instead of the retail `$gp` load.
  */
 typedef unsigned char u8;
 typedef unsigned int u32;

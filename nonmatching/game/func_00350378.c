@@ -1,5 +1,11 @@
 /* func_00350378 - 228 bytes, 28 places (the boot and every level).
 
+   Rechecked 28 October 2026 in the current master worktree after correcting
+   func_0034FA30's observed return contract: the in-place candidate is 220
+   bytes and 0/28 USA v1.01 placements. Modeling the 0xD9100 ring offset as a
+   byte pointer yields the same instructions. The helper's corrected int
+   return is byte-identical at all 28 of its own placements.
+
    Near miss: the shape is right (the four outputs of func_0034F960 in a
    16-byte stack array, the clamps, the two calls and the return test), but the
    register allocation differs: the retail puts the object pointer in $s3 and
@@ -15,11 +21,22 @@
    use of a named local for the 0xD9100 constant and the for-init order all
    leave the allocation unchanged.
 
+   29 October 2026: making the ring address itself a pointer used by both
+   helper calls compiles to 216 bytes and 0/28 USA v1.01 placements. It still
+   allocates the object in $s3 and the 0xD9100 address in $s4, opposite retail,
+   and moves the two structure reads. The integer-offset candidate at 220 bytes
+   remains closer.
+
    Note: the retail's func_0034FA30 leaves its last value in $v0 and the
    caller reads it, so the original prototype of func_0034FA30 returned an int
    even though src/game/0034CEA0.c declares it void.  Declaring it int leaves
    its own body byte-identical, but the change is not taken here because this
    function is not matched.
+
+   A 29 October direct-return spelling of `func_0034FA30(...) > 0` also emits
+   the same 220-byte candidate and 0/28. It keeps the result in `$s0` before
+   the comparison; the expected `slt $v0,$zero,$v0` in the call delay slot is
+   still not produced.
 */
 
 extern char *D_001B23CC[] __attribute__((sda));

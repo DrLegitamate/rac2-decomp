@@ -11,6 +11,14 @@
  * The size mismatch prevents relocation-qualified placement checks; generated
  * switch data would also require integration qualification. Reopen with source
  * type/lifetime evidence for the root/index and verified dispatch-arm layout.
+ * 29 October 2026: setting mode 2 before the switch and assigning mode 1 in
+ * the selected cases, then passing that mode directly to the shared helper,
+ * compiles to 196/248 bytes and 0/28. This removes the later mode-selection
+ * branch but changes the shared tail and register layout; the 244-byte
+ * retained candidate remains closer. A 29 October probe capturing the type
+ * field once before dispatch measures 192/248 and 0/28, but GCC lowers the
+ * switch to a computed-goto table with arm offsets that do not match retail;
+ * the generated table is not integration-qualified and this form is not kept.
  */
 /* func_002F6510: the copied records have the measured 0xE0-byte extent. */
 typedef int F6510Quad __attribute__((mode(TI)));

@@ -1,4 +1,5 @@
-/* func_00335960 - 360 bytes.  Worker attempt, 27 October 2026 (draft below).
+/* func_00335960 - 360 bytes. Worker attempt from 27 October 2026; rechecked 28 October 2026.
+   The current source-unit check remains 316/360 bytes, 0/28 USA v1.01 places; no match.
 
    Close: first 22 insns match. Mine 316 B vs 360 B. Differences:
    - retail copies list ptr to $t0 (daddu t0,a2) and loads mode (lw 0x14(t0))
@@ -7,8 +8,10 @@
    key,time), body, then i++/sltu/next/key re-test, a2=v1 in delay slot of
    back branch. Mine does `b` into the middle (shared tail), 44 B shorter.
    Tried: for-loop with break, while with split ifs, while(i<count && b->next
-   && b->key<=time). All give the same jump-into-middle shape. mode test as
-   `<0` then `<2` vs combined: retail is bltz + slti (separate). */
+   && b->key<=time). An explicit label/goto loop body with peeled first-node
+   tests (28 Oct 2026) compiled to 328 bytes, 0/28, so it did not reproduce
+   the rotated loop. mode test as `<0` then `<2` vs combined: retail is bltz +
+   slti (separate). */
 
 typedef struct KeyNode {
     struct KeyNode *next;

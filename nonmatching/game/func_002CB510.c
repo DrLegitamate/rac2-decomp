@@ -10,7 +10,10 @@
  * Same cc1 "address destination as its own temporary" wall as
  * func_L05_004155A0: retail folds the %hi/%lo pair into one register, this
  * build gives the %hi a separate temporary and the rest of the allocation
- * follows it. Reopen with a source form that makes the %hi/%lo pair coalesce.
+ * follows it. A 28 Oct explicit state-pointer and byte-table-pointer form
+ * measured 300/312 bytes, 0/28, and changed the allocation more broadly; the
+ * original 312-byte form remains closer. Reopen with a source form that makes
+ * the %hi/%lo pair coalesce.
  */
 extern char D_001F2840[];
 

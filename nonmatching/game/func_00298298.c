@@ -1,4 +1,8 @@
-/* func_00298298 - near miss: 216 of 232 bytes, the boot place (and all 27 level
+/* func_00298298 - 29 October 2026 standalone USA v1.01 replay: 216/232 bytes,
+   0/28. The output retains the source's state transitions but differs from
+   retail in register allocation, branch-likely layout and loop-head delay
+   slot constants.
+   Near miss: the boot place (and all 27 level
    places) differ in the register allocation and in two dead constants.
 
    The retail body (0x298298, 232 bytes):

@@ -5,8 +5,18 @@
    inside), everything matches except the loop entry: retail enters with `b` to the
    rotated test (the first `i < 100` is evaluated), ours has the exit test duplicated by
    jump.c and folded (0 < 100), so the body comes first and the test sits at the bottom.
-   Pointer walks, && tests and int-cast compares were worse. What stops retail's
-   duplicate_loop_exit_test is the open question. */
+   Pointer walks, && tests and int-cast compares were worse. A separate explicit
+   goto test with distinct table/write cursors grew to 188 bytes and a 0x50-byte
+   frame (0/28); the indexed qcopy candidate remains better. What stops retail's
+   duplicate_loop_exit_test is the open question.
+
+   29 October 2026: an alternate qcopy-profile goto loop with an entry jump to
+   the test, a backward jump to the body, and separate `entry`/`payload`
+   pointers compiled to 196 bytes and 0/28 USA v1.01 placements. The compiler
+   preserved the entry jump but allocated a 0x30-byte frame, saved six
+   registers, and retained both pointer increments and an indexed counter.
+   This is worse than the retained 172-byte candidate and does not recover the
+   retail's rotated test and register allocation. */
 #include "common.h"
 typedef int TI128 __attribute__((mode(TI)));
 typedef struct { TI128 a; TI128 b; float f20; void *owner; int pad28, pad2C; } Slot;

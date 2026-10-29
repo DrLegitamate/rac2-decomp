@@ -1,21 +1,25 @@
-/* func_00328B68 - 316 bytes, 28 places (the boot and every level).
+/* func_00328B68 - retained near miss, USA v1.01.
+ *
+ * Current-master check: temporarily compiled in src/game/00327038.c using
+ * `python3 tools/check.py func_00328B68 --diff`: 312 bytes against 316 retail,
+ * 0 of 28 places. Expressing the call as func_00283180(a - pi) correctly keeps
+ * retail's subtraction in the call delay slot and restores the pi constant.
+ * The remaining mismatch starts in the prologue: retail saves f26 and uses it
+ * for pi, with a 0x70-byte frame; this cc1 allocates pi to f25 and a 0x60-byte
+ * frame. Later FPU register choices and call setup also differ. 29 Oct 2026 probes keeping pi in a const local outside the loop and inlining
+ * the angle load into the call both remained 312/316, 0/28; neither changed
+ * the prologue allocation.
+ *
+ * Retail body: 28 placements (the boot and every level).
    Retail at 0x00328B68: the hundred resident entries at 0x247900 are walked
    (the entry pointer steps by 0x40); for the entry whose +0x24 word is the
    argument, the +0x20 angle is turned by func_00283180, halved between 0 and
    1, scaled by 128 and drawn twice (func_L00_003E0F58 with the colours
    0x103080 and 0x7F7F7F).
-   The candidate below is that body; two things differ. The retail's
-   sub.s $f12,$f12,$f25 (the angle minus pi, in the delay slot of the first
-   call) is dead - nothing reads $f12 afterwards - and this cc1 removes it,
-   which takes pi out of the constant pool and shifts every float register
-   (retail: pi in $f25, 1.0 in $f24, 0.5 in $f23, 128.0 in $f22, 0.0 in $f21
-   and 0.01099406534 in $f20; this cc1 starts at $f25 with 1.0). The second
-   difference is the table's address: retail materialises the symbol and adds
-   0x10 to it (lui $v0,0x23 ; addiu $v0,$v0,-0x4F60 ; addiu $s1,$v0,0x10)
-   where the candidate folds the +0x10 into the pointer. The angle's constant
-   is 0x3C343958, that is 0.010994065341472625732421875f.
-   What would unblock it: a spelling that keeps the dead subtraction (a
-   volatile local adds a store and breaks the shape). */
+   Retail materialises the table symbol and adds 0x10 to it (lui $v0,0x23 ;
+   addiu $v0,$v0,-0x4F60 ; addiu $s1,$v0,0x10), while this candidate folds the
+   +0x10 into the pointer. The main remaining obstacle is the FPU register
+   allocation/prologue; later call setup follows from that allocation. */
 extern float func_00283180(float);
 extern int func_00283CF0(float);
 extern void ref_L00_00328B68_00(void *, int, int, float, float, float, int, int);
@@ -33,8 +37,7 @@ void func_00328B68(char *a0)
     for (i = 0x63; i >= 0; i--) {
         if (*(int *)(p + 0x24) == (int)a0) {
             a = *(float *)(p + 0x20);
-            s = func_00283180(a);
-            a = a - 3.1415927f;
+            s = func_00283180(a - 3.1415927f);
             s = (s + 1.0f) * 0.5f;
             n = func_00283CF0(s);
             u = s * 128.0f;

@@ -69,6 +69,18 @@
  * the back edge no longer rotated; qcopy is irrelevant to this body. These
  * nine measured forms do not move the two loop-invariant constants or the
  * cursor allocation, so the 112-byte retained body below is kept unchanged.
+ * 28 October 2026: rewriting the cursor and end as unsigned integer addresses
+ * rather than pointers also gives 112 bytes and 0/28 USA v1.01 placements. The
+ * pointer/end registers and loop schedule do not move. A volatile declaration
+ * for the list-end reference, matching retail's per-iteration reload, also
+ * gives 112 bytes and 0/28. It reloads after advancing the cursor and still
+ * leaves a nop before the branch-likely store; register allocation is
+ * unchanged. The unresolved ref relocations limit interpretation of the
+ * disassembly beyond this emitted shape and size.
+ * 29 October 2026: a volatile end reference with an outer empty-list test and
+ * a `for` loop emits 120 bytes and 0/28. The compiler adds a second end test
+ * after the loop and keeps the same cursor/end register allocation, so this
+ * structured loop form does not improve the candidate.
  */
 
 extern int ref_L00_002F0FA0_00;

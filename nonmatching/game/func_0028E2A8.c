@@ -1,4 +1,5 @@
-/* Best ordinary-C attempt: 332 bytes against retail's 348 (0/28 places).
+/* Best ordinary-C attempt, requalified on current master: 332 bytes against
+   retail's 348 (0/28 USA v1.01 places, default -O2 -G8 -ffunction-sections).
    It reconstructs the selected-map setup and the mode-dependent cleanup, but
    the compiler's register allocation and instruction scheduling still differ. */
 #include "include_asm.h"

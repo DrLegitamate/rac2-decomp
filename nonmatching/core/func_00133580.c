@@ -1,4 +1,19 @@
-/* from src/core/00133490-g8.c: 180 bytes against retail's 188 - same size of
+/* 29 October 2026 corrected-helper recheck in a temporary `-G8` unit,
+ * `-O2 -G8 -ffunction-sections`: 180 bytes against retail's 188, 0/1. The
+ * fallback uses func_00124B88(int), matching its source definition and
+ * forwards arg0. A `-fno-gcse` diagnostic is byte-identical; this compiler rejects
+ * `-fno-cse`. The diff still
+ * has the `$s0`/`$s1`/`$s2` allocation and GP/global addressing
+ * sequence wrong; the retained candidate below also fails to reproduce the
+ * documented 188-byte form. A separate volatile-qualified `D_001A7100`
+ * hypothesis, based on the polled load-in-progress status, also measured
+ * 180/188 bytes and 0/1 in the same profile. It made the compiler rematerialize
+ * the flag address before both calls, but still chose the wrong saved registers
+ * and control flow. The flag's asynchronous-write contract is unverified, so
+ * this volatile spelling is not retained as C. Temporary sources and cflags
+ * entries were removed.
+ *
+ * Historical source note: 180 bytes against retail's 188 - same size of
  * body, same frame (0x20) in the first attempt, but retail keeps only
  * s0/s1/ra where both candidates need a third saved register.
  *
@@ -26,10 +41,17 @@
  * is for: without it the candidate is 8 bytes shorter still.
  *
  * Tried: address as a local (168 bytes, s2 for the 0x713F half);
- * `(D_001A7100 < 1)` signed then unsigned (slti -> sltiu, 180 bytes).
+ * `(D_001A7100 < 1)` signed then unsigned (slti -> sltiu, 180 bytes);
+ * an unsigned argument type with the correct `func_00124B88(arg0)` call and
+ * redundant busy check (180 bytes, still not the 188-byte retail extent).
  *
  * The candidate below is the 180-byte one, minus the D_001A7498 declaration
- * which already belongs to the unit.
+ * which already belongs to the unit. A 28 October recheck copied `arg0` to a
+ * named `mode` local at entry and used it for both the fallback call and the
+ * later comparison, under a temporary `-O2 -G8 -ffunction-sections` unit. It
+ * remained 180/188 bytes, 0/1; cc1 assigned the argument to `$s1` and the
+ * endpoint to `$s2`, retaining the register mismatch. The temporary unit and
+ * cflags entry were removed.
  */
 
 extern int D_001A748C __attribute__((sda));
@@ -37,7 +59,7 @@ extern int D_001A7498 __attribute__((sda));
 extern unsigned int D_001A7100 NOT_SDA;
 extern char D_001A713F NOT_SDA;
 extern void func_0011B500(void *, void *);
-extern int func_00124B88(void);
+extern int func_00124B88(int);
 extern int func_00132028(void);
 
 int func_00133580(int arg0) {
@@ -45,7 +67,7 @@ int func_00133580(int arg0) {
     int busy;
 
     if (D_001A748C == 0)
-        return func_00124B88();
+        return func_00124B88(arg0);
 
     func_0011B500(&D_001A7100, end);
     busy = D_001A7100 < 1;
@@ -65,34 +87,9 @@ int func_00133580(int arg0) {
     return 0;
 }
 
-/* --- wave 24, worker 02: a candidate with the retail SIZE (188 bytes) but the
- * callee-saved registers swapped. ---
- *
- * The candidate below compiles to 188 bytes - the retail's size - and every
- * instruction matches the retail in order, including the store of the flag in
- * the delay slot of the first `beq`, the `bnez` that skips the retry loop,
- * the `daddu $v0,$zero,$zero` in its delay slot and the store of the flag in
- * the delay slot of the loop's `beqz`.  The only difference is the register
- * assignment: the retail keeps the argument in $s0 and the address of
- * D_001A713F in $s1, this cc1 keeps the address in $s0 and the argument in
- * $s1.
- *
- * Measured here (all with the -G8 unit, the sda attribute is ignored in a
- * -G0 unit):
- *   - with the address in a local pointer: the address gets $s0, the argument
- *     $s1 (188 bytes, every instruction but the two registers matching);
- *   - with the address passed as &D_001A713F: the address is re-materialised
- *     at every call, the frame shrinks to 0x10 and there is no $s1 at all
- *     (180 bytes);
- *   - declaring the locals in either order, copying the argument into a local
- *     first, passing a char * instead of an int *, and assigning the local
- *     just before the call all give the same $s0/$s1 swap (the last one only
- *     moves the two materialisations of the constant 1 the other way round);
- *   - the shape above keeps the redundant `bnez $v0` (the `if (busy != 0)`
- *     test) and the store of the flag inside the loop, which is what the
- *     earlier candidate in this file lost.
- *
- * tools/check.py func_00133580 --diff (with the candidate below):
- *   boot: instruction at +0x8 differs
- *   func_00133580: 0 of 1 places match
+/* Historical 188-byte trial (not retained): a local endpoint pointer kept the
+ * exact instruction sequence and size, but this cc1 assigned the endpoint to
+ * $s0 and the argument to $s1, opposite retail. Passing &D_001A713F directly
+ * reduced it to 180 bytes. Local declaration order, argument copies and
+ * assigning the pointer just before the call did not reverse the allocation.
  */

@@ -1,4 +1,5 @@
-/* func_00335438 - 364 bytes.  Worker attempt, 27 October 2026 (draft below).
+/* func_00335438 - 364 bytes. Worker attempt from 27 October 2026; rechecked 28 October 2026:
+   364/364 bytes, 0/28 USA v1.01 places under the documented qcopy profile.
 
    Draft is a whole new file src/game/00335438-qcopy.c with config/cflags.txt
    line:
@@ -13,7 +14,11 @@
    Key finds: sub = (Sub*)&d->e0 (d+0xE0) taken right after d = obj->f70 gives
    the s5 base and the a3 spill; d80 = &d->q80 as an early local pointer; `if
    (type != 2) { if (type != 3) return; ...} common tail`.
-   Tried: local src pointer for D_00189EA0, d90 pointer hoist (worse). */
+   Tried: local src pointer for D_00189EA0, d90 pointer hoist (worse). A typed
+   TI128 assignment for the final D_00189EA0 copy, then a separate live local
+   destination pointer, both kept the 364-byte body and the same +0x114 register
+   reversal. The temporary candidate unit used common.h and the recorded qcopy
+   profile, then was removed. */
 
 #include "include_asm.h"
 #include "common.h"

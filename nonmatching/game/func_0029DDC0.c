@@ -1,4 +1,11 @@
-/* func_0029DDC0 - near miss (wave 2, worker 5).
+/* func_0029DDC0 - current-master recheck, 28 October 2026: 104 bytes vs 120,
+ * 0/28 USA v1.01 placements. Both resident byte symbols and the cross-program
+ * halfword target are `nosda`, as retail uses absolute addressing. The checker
+ * does not align the restructured stores with the target's retail relocation,
+ * so their displayed candidate high halves are unresolved. The compiler
+ * removes each `& 0xFF` after a byte
+ * load, reshaping the retail branches and shortening the function by 16 bytes.
+ * The original blocker measurements below are retained as history.
  *
  * The retail body (boot 0x0029DDC0, 120 bytes; the same code is in the 27 levels):
  *
@@ -50,12 +57,14 @@
  * The address of the halfword that is stored (0x00257A32 in the boot, 0x00280472
  * in level 00) differs from program to program, so it is named ref_L00_0030EE40_00.
  */
-extern unsigned short ref_L00_0030EE40_00;
+extern unsigned short ref_L00_0030EE40_00 __attribute__((nosda));
+extern unsigned char D_001A7BD5 __attribute__((nosda));
+extern unsigned char D_001A7B08 __attribute__((nosda));
 
 int func_0029DDC0(void)
 {
-    int g1 = *(unsigned char *)0x001A7BD5;
-    int g2 = *(unsigned char *)0x001A7B08;
+    int g1 = D_001A7BD5;
+    int g2 = D_001A7B08;
     int a = g1;
 
     if (g1 != 0) {

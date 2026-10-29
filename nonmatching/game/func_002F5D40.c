@@ -1,9 +1,17 @@
 /* Nonmatching C reconstruction.
  * Profile: -O2 -G8 -ffunction-sections.
- * Compiled 236 bytes; retail 224 bytes.
- * USA v1.01, PAL and USA v2.00: 0/28 places in each release.
+ * Current-master USA v1.01 replay, freshly checked 29 October 2026: 236 bytes;
+ * retail 224 bytes, 0/28 places. The decoded diff begins with the mismatched
+ * negative-request branch target, then shows the full-width index conversions
+ * and conditional/address scheduling differences described below.
+ * Historical PAL and USA v2.00 checks also reported 0/28.
  * No applicable carrying place was absent; no strict-build qualification.
- * Full-width unsigned-long callee result requires extra conversions before 32-bit address shifts; remaining conditional/address scheduling differs. Reopen after a real return-contract audit and an independently justified source lifetime change.
+ * Full-width unsigned-long callee result must be preserved at the call. The effective table
+ * address is 32-bit, so a temporary probe narrowed only that address index to unsigned int:
+ * it reduced the candidate from 236 to 216 bytes (0/28), but changed register allocation
+ * and control-flow/address scheduling. The original 236-byte form remains below. The helper
+ * itself is verified as unsigned long by its 28/28 check; do not change its return contract.
+ * Reopen with a new control-flow/register-allocation hypothesis.
  */
 extern int ref_L00_002F5D40_01 __attribute__((sda));
 extern unsigned int D_00139768[];

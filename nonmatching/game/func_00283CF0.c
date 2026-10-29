@@ -6,7 +6,9 @@
    unsigned cast, with the argument used twice, with the argument used in an
    addition): all give $f0.  The SDK compiler in build/compiler/sdk gives
    the same words.  What would unblock it: a source that lets the
-   conversion reuse the argument's register. */
+   conversion reuse the argument's register. 28 October 2026 current-master
+   check of the retained direct cast: 16 bytes, 0/28; only the first word
+   differs (`cvt.w.s $f0,$f12` versus `$f12`). */
 typedef float f32;
 
 int func_00283CF0(f32 a0) { return (int)a0; }

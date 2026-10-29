@@ -19,6 +19,10 @@
  * eight-slot append loop at the end differs, where retail's two-way
  * beql/bnel if-conversion (comparing $v0 with the id while the delay slot
  * loads the next `slti`) is not reproduced by the plain break loop below.
+ * Rechecked 28 Oct 2026: the index form remains 248 bytes (0/28). A pointer
+ * loop and a nested zero-then-id condition both compile to 244 bytes (0/28),
+ * so those source shapes do not reproduce retail's counted if-conversion. A
+ * direct-return append form is 208/252 bytes, 0/28.
  */
 
 typedef int s32;

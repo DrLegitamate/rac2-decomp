@@ -1,9 +1,13 @@
-/* func_002DE618 - 212 bytes, 27 places (src/game/002DDEC8.c): clears bit 2 of
+/* func_002DE618 - 212 bytes, boot plus 27 level places (src/game/002DDEC8.c): clears bit 2 of
    the chunk table entry (D_001B1F50, five {key, flags} pairs) whose key is
    `key`; if bit 4 was set it is cleared too, and a pending flag at
    D_001F2840+0xDB is serviced through func_002B7AD0.  Returns 0.
 
-   Best: 188 of 212 bytes (below).  Retail keeps four values in $s0-$s3: the
+   Best: 188 bytes against retail's 212 (0/28, freshly replayed 29 October
+   2026 with the temporary standalone candidate). The compiled loop merges the
+   final clear into the flags walk, so the tested source is the earlier best
+   candidate, not the separate break-then-clear probe. Retail keeps four values
+   in $s0-$s3: the
    owner address, the base 0x1B1F54 (built inside the loop, after the key
    matches), a byte offset that steps by 8 (the loop counter, kept because the
    final clear is `base + offset`) and the mask -3.  The key and flags walks
@@ -14,7 +18,11 @@
    Tried (all 176-192 bytes, same merge): pointer walks with a counter;
    array index i*2 everywhere; ((Chunk *)table)[i] for all accesses or only
    for the clear; a local `int *flags = &D_001B1F54[i*2]`; a byte-offset
-   counter (below); the flags value cached in a local.  D_001B1F50 must be
+   counter (below); the flags value cached in a local. A 28 October 2026
+   break-then-clear probe keeps the final clear outside the loop but grows to
+   212 bytes and remains 0/28 in USA v1.01; its entry differs at +0x10 and
+   the loop/call layout diverges broadly. The 188-byte merged-clear candidate
+   remains best. D_001B1F50 must be
    declared without sda here (block-scope extern), though func_002DE3A0 in
    the same file reaches it through $gp.
 

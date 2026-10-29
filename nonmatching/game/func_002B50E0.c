@@ -46,6 +46,10 @@
  * The rest is retail's: the prologue, self in $s2, target in $s3, data in $s1, the stack slots,
  * the `$gp` / absolute mix of D_001B1688 (the `sda` declaration) and the register-address copy
  * (`addiu $v1,$s2,0x10` / `lq $v0,0($v1)` / `sq $v0,0($sp)`).
+ * A new aligned 48-byte character-buffer probe, with the position copied through an aligned
+ * `TI128 *` and helper slots at offsets 0/16/32, still differs first at +0x124 in the same
+ * three argument moves (0/21 under this profile). This storage spelling does not change the
+ * permanent soft-frame-pointer tie; no trial source or cflags entry remains.
  */
 extern int D_001B1688 __attribute__((sda));
 extern char *func_002B5D28(void *);

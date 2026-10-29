@@ -1,4 +1,6 @@
-/* func_002CCF68 - 384 bytes.  Worker attempt, 27 October 2026 (draft below).
+/* func_002CCF68 - 384 bytes. Worker attempt from 27 October 2026; rechecked 28 October 2026:
+   380/384 bytes, 0/28 USA v1.01 places with -O2 -G8 -ffunction-sections. A 29 October
+   isolated -g8 source-unit check reproduced 380/384 and 0/28.
 
    func_002CCF68: control flow matches retail (gp/at/delay-slot structure
    close), draft 380 B vs 384, needs own file 002CCF68-g8.c "-O2 -G8

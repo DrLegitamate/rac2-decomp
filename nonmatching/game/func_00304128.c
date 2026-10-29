@@ -1,4 +1,5 @@
-/* func_00304128 - 228 bytes, 28 places (the boot and every level), retail at
+/* Current-master USA v1.01 replay: 228/228 bytes, 0/28; first mismatch +0x44.
+ * func_00304128 - 228 bytes, 28 places (the boot and every level), retail at
    0x00304128: addiu $sp,$sp,-0x40 ; sd $s1,0x28($sp) ; sd $ra,0x30($sp) ;
    daddu $s1,$a0,$zero ; sd $s0,0x20($sp) ; lw $s0,0x68($s1) ; lw $v0,0x4C($s0) ;
    andi $v0,$v0,0x8 ; bnel $v0,$zero,+0x2C ; ld $s0,0x20($sp) ; jal func_282948 ;
@@ -47,6 +48,11 @@
       the object's fields 0x74 and 0x7C; this compiler takes the base later
       and finishes it earlier.  The same shift moves the loads of the fields
       0x74 and 0x7C and the loads of the float 0x88 past the `mtc1 $zero,$f13`.
+
+   A 29 October 2026 trial of both reviewed helpers, `qcopy` and `qcopy_nc`,
+   preserves the same 228-byte output and 0/28 result. Both emit the desired
+   `lq $v0`/`sq $v0` pair, but the destination pointer is still assigned before
+   the load and the unrelated call arguments retain the same scheduling.
 
    What was tried: the source of the copy as a pointer variable and inline; the
    copy written as a direct assignment through pointers; the destination

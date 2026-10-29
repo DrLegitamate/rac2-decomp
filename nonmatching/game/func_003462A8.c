@@ -24,11 +24,19 @@
  *   sw    $s4, 0x68($sp)             f[22] = 1, in the call's delay slot
  *
  * What this candidate gets wrong:
- *   - 296 bytes against retail's 288: the eight-byte copy keeps its value in a
- *     callee-saved register ($s5/$s6) where retail uses $a2, so the frame is
- *     0xC0 and $s6/$s7 are saved as well.  With -mno-split-addresses the copy
- *     comes out as `lui $at` + `ldl`/`ldr` through $at, retail's `lui $v1` +
- *     `addiu $t1` + `ldl`/`ldr` through $t1; the register class is the wall.
+ *   - The original initializer compiled to 296 bytes against retail's 288:
+ *     the eight-byte copy kept its value in a callee-saved register ($s5/$s6)
+ *     where retail uses $a2, so the frame was 0xC0 and $s6/$s7 were saved as
+ *     well. Moving the copy to just before f[20] is assigned shortened its
+ *     lifetime and measured 276 bytes, 0/28; the frame fell to 0xA0 and the
+ *     remaining saved-register and descriptor-store order still differ.
+ *     Loading through an explicit pointer did not improve that result. The
+ *     original initializer with -mno-split-addresses gives `lui $at` +
+ *     `ldl`/`ldr` through $at, while retail uses `lui $v1` + `addiu $t1` +
+ *     `ldl`/`ldr` through $t1.
+ *   - Making the descriptor array volatile and casting it to the helper's
+ *     existing `int *` interface measured 252 bytes, 0/28, with a 0x80 frame;
+ *     it does not reproduce retail's allocation or store order.
  *   - the two dead stores retail keeps (f[21] = 1 through the descriptor
  *     pointer $a0, and f[20] = 0 before f[20] = &local) are removed by this
  *     cc1, because it can see that both words are written again.
@@ -65,7 +73,7 @@ extern int D_001AE468 __attribute__((sda));
 
 void func_003462A8(char *o)
 {
-    Word2_462A8 q = D_001AE0B0;
+    Word2_462A8 q;
     int f[23];
 
     f[20] = 0;
@@ -91,6 +99,7 @@ void func_003462A8(char *o)
     f[14] = 0;
     f[11] = 0;
     f[13] = 0;
+    q = D_001AE0B0;
     f[20] = (int)&q;
     f[22] = 1;
     func_00337210(f);

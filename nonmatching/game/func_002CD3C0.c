@@ -49,6 +49,7 @@
  * as well.  The literal reproduces retail exactly.
  */
 extern void func_0029C1A8(void);
+extern char *D_001A8CFC[] __attribute__((sda));
 
 extern void func_0027FAA8(int v, int p7, long k, int r, int m1);
 

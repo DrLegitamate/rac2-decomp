@@ -1,20 +1,25 @@
 /* func_00350190 - 76 bytes, 28 places (the boot and every level).
 
-   Near miss: 68 of 76 bytes match at every place.  The only difference is the
-   pair of privileged instructions the retail body ends with:
+   28 October 2026 current-master check in its original translation unit:
+   68-byte candidate, 0/28 USA v1.01 placements. Rechecked by temporarily
+   restoring this definition at its marker: the boot and all 27 levels report
+   68 bytes, expected 76. The diff shows differences in both global-address
+   sequences, the helper-call relocation, and the ending.
+   The retail body ends with the privileged instructions:
 
        0x003501c4  0000000f  sync
        0x003501c8  42000038  ei
 
-   The rest of the body is reproduced byte for byte by the C below, including
-   the `lui`/`lw` pairs for D_001AE7D8 and D_001B23CC and the store through
-   `$at`.
+   The current check does not reproduce the global-address setup or helper-call
+   relocation, so the earlier note that only the ending differed is stale.
 
    `sync` and `ei` are privileged R5900 instructions that this compiler never
    emits.  Measured: `__builtin___sync_synchronize()` compiles to a call to
-   an undefined `__builtin___sync_synchronize` symbol, and `strings` on
-   build/compiler/tools/cc1 shows no `sync` builtin at all.  The only C
-   spelling of them is an inline `asm`, which AGENTS.md forbids in src/.
+   an undefined `__builtin___sync_synchronize` symbol. The standard
+   `__sync_synchronize()` spelling likewise becomes a call to `func_000000`
+   followed by a nop in the original unit; it does not emit `sync`. `strings`
+   on build/compiler/tools/cc1 shows no `sync` builtin. The only C spelling of
+   these instructions is inline `asm`, which AGENTS.md forbids in src/.
 
    What would unblock it: a maintainer decision to accept this body as
    handwritten assembly (ASM_FUNC), because it uses instructions the
