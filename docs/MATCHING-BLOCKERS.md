@@ -2079,6 +2079,17 @@ appropriate; leave `INCLUDE_ASM` until a maintainer agrees to `ASM_FUNC`.
   `mode(TI)` type and a 16-byte struct copy reach them. Section 11 and this section
   replace the wave 13 screen's opcode list, which dropped 604 reachable bodies for
   nothing.
+
+**29 October 2026 current-master evidence — `func_00283678`:** Retail is a
+32-byte routine copying 48 bytes at 28 USA v1.01 placements. The ordinary
+`mode(TI)` candidate is 28/32 bytes and 0/28. A temporary volatile-destination
+control with `-fno-schedule-insns` reached 32 bytes and the retail transfer order,
+but allocated `$v0`/`$v1`/`$a2` instead of `$at`/`$v0`/`$v1`; the volatile type
+falsely describes ordinary memory and is not an admissible source method. An
+aligned three-word `mode(TI)` aggregate is 52/32 using six `ld`/`sd` transfers.
+Three `qcopy` calls are 48/32 and 0/28, with each load/store pair interleaved
+and the helper using `$v0`. No exact match is established.
+
 * **Decode with the R5900 category and the real address.**
   `rabbitizer.Instruction(word, address, rabbitizer.InstrCategory.R5900)`.
   Without the category a valid MMI word is printed `INVALID`, and a data word is
