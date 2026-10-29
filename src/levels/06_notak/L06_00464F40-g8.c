@@ -1,9 +1,6 @@
-/* Mid worker 19 near miss (func_L06_00464F40).
-   Profile: -O2 -G8 -ffunction-sections -frac2-qcopy.
-   Status: identical shape; only the callee-saved register of the object pointer ($s1 here, $s2 in retail) is swapped with the vector address. */
-typedef int TI128 __attribute__((mode(TI)));
+#include "common.h"
 
-extern int func_002E5CF8(int, int, char *);
+extern int func_003A0948(int, int, char *);
 extern void *func_00312D58(float *, float);
 extern void func_L02_0031E9E8(float *, float);
 extern float func_002A7878(float, float);
@@ -21,8 +18,8 @@ void func_L06_00464F40(char *self)
     int i;
     char *p;
 
-    func_002E5CF8(2, 0, self);
-    *(TI128 *)pos = *(TI128 *)(self + 0x10);
+    func_003A0948(2, 0, self);
+    qcopy(pos, self + 0x10);
     D_L06_001B37CC = pos[2];
     func_00312D58(pos, 11.25f);
     for (i = 0x59; i >= 0; i--) {

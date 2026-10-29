@@ -639,7 +639,7 @@ void func_L05_00415F18(char *object)
 /* func_L05_00416468 is defined in L05_00416468-g8.c. */
 
 
-INCLUDE_ASM("asm/levels", func_L05_00416918);
+/* func_L05_00416918 is defined in L05_00416918.c. */
 
 char *func_L05_00416D68(char *a0, int a1)
 {
@@ -731,7 +731,7 @@ void func_L05_0041CA70(char *obj)
 
 /* func_L05_0041CB68 is defined in L05_004161B0.c (-fno-gcse profile). */
 
-INCLUDE_ASM("asm/levels", func_L05_0041CFE8);
+/* func_L05_0041CFE8 is defined in L05_0041CFE8-g8.c. */
 
 /* shared native body of family 5a97ab89858c */
 void func_L05_0041D1B0(char *p)
