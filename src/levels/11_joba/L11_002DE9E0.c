@@ -104,16 +104,15 @@ INCLUDE_ASM("asm/levels", func_L11_00340500);
 
 INCLUDE_ASM("asm/levels", func_L11_00369700);
 
-INCLUDE_ASM("asm/levels", func_L11_00396DC8);
+/* func_L11_00396DC8 is in L11_002DE9E0-g8.c ($gp tuning reads). */
 
 /* func_L11_003973F8 is matched in its own unit, src/levels/11_joba/L11_003973F8-qcopy.c (-frac2-qcopy -frac2-qcopy-barrier). */
 
-INCLUDE_ASM("asm/levels", func_L11_003974A8);
+/* func_L11_003974A8 is in L11_002DE9E0-g-g8.c (-G8 -g: line labels give retail's pre-div.s padding). */
 
-INCLUDE_ASM("asm/levels", func_L11_00397820);
-INCLUDE_ASM("asm/levels", func_L11_003982F0);
+/* func_L11_003982F0 is in L11_002DE9E0-g8.c ($gp tuning reads). */
 
-INCLUDE_ASM("asm/levels", func_L11_003983F0);
+/* func_L11_003983F0 is in L11_002DE9E0-effect.c (G8, absolute flag accesses). */
 
 void func_L11_003A2FF0(unsigned char *obj) {
     struct {

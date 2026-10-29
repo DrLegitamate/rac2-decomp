@@ -81,7 +81,7 @@ extern f32 func_002AA548(void *, void *, f32, f32, f32, f32);
 
 INCLUDE_ASM("asm/levels", func_L11_003DCEB0);
 
-INCLUDE_ASM("asm/levels", func_L11_003DD068);
+/* Defined in L11_003DD068-g8.c. */
 
 void func_L11_003F1C68(u8 *arg0) {
     u8 *s0 = arg0;
@@ -101,7 +101,6 @@ void func_L11_003F1C68(u8 *arg0) {
         func_L11_003F2C28(s0);
     }
 }
-
 void func_L11_003F1D18(u8 *arg0) {
     u8 *s1 = arg0;
     u8 *s0 = *(u8 **)(s1 + 0x68);
@@ -119,8 +118,6 @@ void func_L11_003F1D18(u8 *arg0) {
 /* func_L11_003F1DB0 is defined in L11_003D6270-g8.c (this unit has no $gp access for it). */
 
 INCLUDE_ASM("asm/levels", func_L11_003F1F48);
-
-INCLUDE_ASM("asm/levels", func_L11_003F2A30);
 
 /* Defined in L11_003F2A30-g8.c. */
 
@@ -222,13 +219,13 @@ INCLUDE_ASM("asm/levels", func_L11_003F33E0);
 
 /* func_L11_003F3CB8 is in L11_003F3CB8-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L11_003F4060);
+/* Defined in L11_003F4060-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L11_003F4490);
+/* Defined in L11_003F4490-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L11_003F4A58);
 
-INCLUDE_ASM("asm/levels", func_L11_003F4F30);
+/* Defined in L11_003F4F30-g8.c. */
 
 /* func_L11_003F7B70 is in L11_003F7B70-g8.c. */
 
@@ -236,7 +233,7 @@ INCLUDE_ASM("asm/levels", func_L11_003F4F30);
 
 /* Defined in L11_003F8150.c. */
 
-INCLUDE_ASM("asm/levels", func_L11_003F8510);
+/* Defined in L11_003F8510-g8.c. */
 
 
 INCLUDE_ASM("asm/levels", func_L11_00411D40);
@@ -244,6 +241,10 @@ INCLUDE_ASM("asm/levels", func_L11_00411D40);
 INCLUDE_ASM("asm/levels", func_L11_00412B20);
 
 INCLUDE_ASM("asm/levels", func_L11_00415E70);
+
+/* Defined in L11_00412B20-g8.c. */
+
+/* Defined in L11_00415E70.c. */
 
 
 /* Steps a seven-state swing, easing the angle at 0xF0 between -90 and -75/-85 degrees, then

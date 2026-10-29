@@ -1,7 +1,6 @@
-/* from src/levels/11_joba/L11_003D6270-g8.c: C that compiles but does not match yet */
-/* Aims the object the engine holds under id 0xA77 at the shape the caller passes and
-   walks it the measured distance. Needs the -g8 profile (the 1.0 and 45.0 factors are
-   reached through $gp) and a -g8.c source unit when checked again. */
+#include "common.h"
+
+/* Spawns class 0xA77, copies its position and initializes its travel vector. */
 extern u8 *func_0029EFD0(s32 arg0);
 
 extern void func_002B37E8(void *a0, void *a1);
@@ -32,13 +31,15 @@ u8 *func_L11_003DD068(u8 *arg0, u8 *arg1, u8 *arg2, f32 arg3) {
         TI128 *dst;
         f32 f20;
 
-        func_002B37E8(s1, s0);
+        v1 = s0;
         s0 = *(u8 **)(s1 + 0x68);
+        func_002B37E8(s1, v1);
         v1 = *(u8 **)(s1 + 0x24);
         dst = (TI128 *)(s1 + 0x10);
-        *dst = *(TI128 *)s2;
+
         *(f32 *)(s1 + 0x2C) = *(f32 *)(v1 + 0x24) * D_L11_001B016C;
         *(u16 *)(s1 + 0x34) |= 0x5000;
+        *dst = *(TI128 *)s2;
         func_00282CF0((f32 *)s0, (f32 *)s3, (f32 *)s2);
         *(s32 *)(s0 + 0x8) = 0;
         f20 = func_00282DF0((f32 *)s0) / D_L11_001B0168;
