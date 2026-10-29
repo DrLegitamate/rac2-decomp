@@ -1498,6 +1498,8 @@ src/game/0033F030-draw.c	-O2 -G0 -ffunction-sections -fno-gcse
 
 src/game/002DF1B8-clear.c	-O2 -G0 -ffunction-sections -fno-strength-reduce
 src/game/00294BC8-map-point-g8.c	-O2 -G32 -Wa,-G32 -ffunction-sections -g
+src/levels/shared/L00_002B91C0-impulse.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
+src/levels/shared/L00_002B91C0-burst.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -fno-sched-interblock
 
 src/game/002AAC80-smoothing.c	-O2 -G0 -ffunction-sections -g
 
@@ -1547,8 +1549,10 @@ src/game/002D2918-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections 
 
 src/game/002EE3B0-g8.c	-O2 -G8 -ffunction-sections -frac2-hazard-labels
 
+src/levels/shared/L00_002D1ED8-24E8.c	-O2 -G0 -ffunction-sections -g
 src/core/00118BC0.c	-O2 -G2 -ffunction-sections -mastra-quad-saves
 src/core/00119AC0.c	-O2 -G2 -ffunction-sections -mastra-quad-saves
+src/levels/shared/L00_002ECFE8.c	-O2 -G0 -ffunction-sections -g
 
 src/game/0031F210-basis-g8.c	-O2 -G8 -ffunction-sections -fno-sched-spec
 src/game/002DF1B8-packet.c	-O2 -G0 -ffunction-sections -fno-strength-reduce
@@ -1601,6 +1605,7 @@ src/levels/16_snivelak/L16_00412F48-g8.c	-O2 -G8 -ffunction-sections
 src/levels/03_endako/L03_003D2518.c	-O2 -G0 -ffunction-sections -frac2-zero-ti-por
 src/game/0030F7B0-nearest.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
 
+src/levels/shared/L00_002B8CB8-g8.c	-O2 -G8 -ffunction-sections -fno-strict-aliasing -g
 
 
 
@@ -1611,7 +1616,11 @@ src/levels/shared/L00_002A9E30-retime.c	-O2 -G0 -ffunction-sections -g
 
 src/game/002AA800-nearest.c	-O2 -G0 -ffunction-sections -g -ffast-math
 src/game/003427B0-fade.c	-O2 -G0 -ffunction-sections -frac2-hazard-labels
+# Preserve the movement-mode handler order.
+src/levels/shared/L00_002D3798-3D98.c	-O2 -G0 -ffunction-sections -frac2-keep-block-order
 
+# Keep the local loop counter distinct and reload each object-table entry.
+src/levels/shared/L00_002B91C0-effects.c	-O2 -g -G0 -ffunction-sections -fno-gcse
 
 
 src/core/00133580-g8.c	-O2 -G8 -ffunction-sections -mno-split-addresses -fno-gcse
@@ -1660,6 +1669,7 @@ src/game/002C94C8.c	-O2 -G0 -ffunction-sections -g
 src/game/0031F210-pickup-g8.c	-O2 -G8 -ffunction-sections -g -frac2-zero-ti-por -frac2-hazard-labels
 
 
+src/levels/shared/L00_002D3798-aim-g8.c	-O2 -G8 -ffunction-sections -g
 
 src/game/002CDD88-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections -fno-builtin
 

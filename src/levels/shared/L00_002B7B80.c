@@ -204,9 +204,9 @@ void func_L00_002B7B80(void)
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L00_002B8930);
+/* func_L00_002B8930 is implemented in L00_002B8930-motion.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_002B8CB8);
+/* func_L00_002B8CB8 is implemented in L00_002B8CB8-g8.c. */
 
 /* func_L00_002B8E48 is matched in its own unit, src/levels/shared/L00_002B8E48-qcopy.c (-frac2-qcopy -frac2-qcopy-barrier). */
 

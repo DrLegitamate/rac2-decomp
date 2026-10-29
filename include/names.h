@@ -12,6 +12,7 @@
 #define NAMES_H
 
 /* recovered */
+#define FastDecTimer                     func_00282978
 
 /* descriptive */
 #define QueueMobyImpact                  func_002A8E20
