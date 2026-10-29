@@ -39,7 +39,7 @@ INCLUDE_ASM("asm/game", func_002F9C80);
 
 INCLUDE_ASM("asm/game", func_002FA270);
 
-INCLUDE_ASM("asm/game", func_002FA880);
+/* func_002FA880 is matched in 002F9BC0-vendor-g8.c. */
 
 
 
@@ -132,4 +132,4 @@ void func_002FC220(void)
     D_L06_001B2374 = a1 - 8192;
 }
 
-INCLUDE_ASM("asm/game", func_002FC280);
+/* func_002FC280 is matched in 002F9BC0-packet-g8.c. */

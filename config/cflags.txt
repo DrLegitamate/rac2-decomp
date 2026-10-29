@@ -1500,6 +1500,7 @@ src/game/00284FC0-g8.c	-O2 -G8 -ffunction-sections -fno-strength-reduce
 
 src/game/00290A40-g16.c	-O2 -G16 -ffunction-sections -Wa,-G16
 
+src/game/00300618-vectors.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -g -frac2-zero-ti-por
 src/core/00118460.c	-O2 -G2 -ffunction-sections
 
 src/core/00120528-eh.c	sdk -O2 -G2 -ffunction-sections -fexceptions
@@ -1521,11 +1522,13 @@ src/core/00118548.c	-O2 -G2 -ffunction-sections -mastra-quad-saves
 
 
 
+src/game/002FD828-g8.c	-O2 -G8 -ffunction-sections -g
 src/core/00116E10.c	-O2 -G2 -ffunction-sections -mastra-quad-saves
 src/core/00115FC0.c	-O2 -G2 -ffunction-sections -mastra-quad-saves
 
 src/game/002D1228-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections -fno-builtin
 src/game/002D0B98-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections -fno-builtin
+src/game/00304128.c	-O2 -G0 -ffunction-sections -mno-split-addresses
 src/game/002D2918-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections -fno-builtin -Wa,-G32
 
 
@@ -1533,6 +1536,7 @@ src/game/002D2918-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections 
 
 
 
+src/game/002EE3B0-g8.c	-O2 -G8 -ffunction-sections -frac2-hazard-labels
 
 src/core/00118BC0.c	-O2 -G2 -ffunction-sections -mastra-quad-saves
 src/core/00119AC0.c	-O2 -G2 -ffunction-sections -mastra-quad-saves
@@ -1624,7 +1628,9 @@ src/game/002D3390-002D36A0-g8.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por -
 
 
 src/game/002CE5D0-g8.c	-O2 -G8 -ffunction-sections -g
+src/game/002FDF40-g8.c	-O2 -G8 -ffunction-sections -g -frac2-hazard-labels
 
+src/game/002FC8D0-disturb-g8.c	-O2 -G8 -ffunction-sections -g
 
 
 src/game/002C94C8.c	-O2 -G0 -ffunction-sections -g

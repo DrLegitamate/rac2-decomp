@@ -1,18 +1,4 @@
-/* Manual reconstruction; not linked. Profile: -O2 -G8 -ffunction-sections -frac2-qcopy
- * -frac2-qcopy-barrier -g (split addresses; the earlier -mno-split-addresses trial was wrong).
- * 1628/1628 bytes, us 0/28. 26 October 2026 (M10): hero fields through the Hero union view
- * (retail's lui/addiu base + offset), D_00138320 outside small data, D_001B5340/D_001B5570 one
- * object (retail derives 0x1B5340 as the 0x1B5570 register - 0x230), and both if/else chains with
- * the complex arm first. 26 October 2026 (integrate/holds): with the division label floor after
- * a call (rule D, pad_div_erratum_nops.py) and the duration's call and division as two statements,
- * the size is retail's and the pair before that div.s is in place; the jal at +0x1A8 is
- * func_0026F748. Left: (1) the prologue move order of sourceObject () against acceleration ();
- * (2) the camera-basis block's call/argument order near +0x1F4; (3) the reach clamp's branches
- * target the div.s, where retail's label sits on the first of its two pad nops (the old and the
- * new assembler give the same bytes there, so that is the branch-group padding rule, not rule D);
- * (4) the gravity/reciprocal block's operand order near +0x58C.
- */
-typedef unsigned char u8;
+#include "common.h"
 typedef int Quad __attribute__((mode(TI)));
 typedef union { Quad q; float f[4]; } Vector;
 extern char D_00189E20[];
@@ -39,8 +25,8 @@ extern void func_00282CC0(void *,void *,void *);
 extern int func_002AB1F0(u8 *);
 
 void func_002FDF40(Vector *output, Vector *origin, char *targetObject,
-                   char *sourceObject, float minimum, float maximum,
-                   float speed, float acceleration)
+                   float minimum, float maximum,
+                   float speed, float acceleration, char *sourceObject)
 {
     Vector projected, temporary, normal, target;
     Vector displacement, correction, originProjection, targetProjection;
@@ -52,16 +38,16 @@ void func_002FDF40(Vector *output, Vector *origin, char *targetObject,
     float duration, reciprocal, angle, projection, planeOffset, factor, reach;
     float *targetData;
     if(sourceObject) {
-        sourcePosition.q=*(Quad *)(sourceObject+0x10);
-        *(Quad *)(sourceBasis+0)=*(Quad *)(sourceObject+0xc0);
-        *(Quad *)(sourceBasis+4)=*(Quad *)(sourceObject+0xd0);
-        *(Quad *)(sourceBasis+8)=*(Quad *)(sourceObject+0xe0);
+        qcopy(&sourcePosition,sourceObject+0x10);
+        qcopy(sourceBasis+0,sourceObject+0xc0);
+        qcopy(sourceBasis+4,sourceObject+0xd0);
+        qcopy(sourceBasis+8,sourceObject+0xe0);
     } else {
         char *heroObject=H->ptr[0x2290/4];
-        sourcePosition.q=*(Quad *)(heroObject+0x10);
-        *(Quad *)(sourceBasis+0)=H->q[0x730/16];
-        *(Quad *)(sourceBasis+4)=H->q[0x740/16];
-        *(Quad *)(sourceBasis+8)=H->q[0x750/16];
+        qcopy(&sourcePosition,heroObject+0x10);
+        qcopy(sourceBasis+0,&H->q[0x730/16]);
+        qcopy(sourceBasis+4,&H->q[0x740/16]);
+        qcopy(sourceBasis+8,&H->q[0x750/16]);
     }
     output->f[0]=1.0f; output->f[1]=0.0f; output->f[2]=0.0f; output->f[3]=0.0f;
     if(H->h[0x348/2]!=0 && D_001A8CA4==0)
@@ -72,7 +58,8 @@ void func_002FDF40(Vector *output, Vector *origin, char *targetObject,
         if(H->i[0x2294/4]==1) func_0026F748(29,1);
         if((D_00138320&4)!=0 && H->b[0x22bc]==0) {
             func_00282F20(&forward,CAMERA_BASIS,1.0f);
-            func_00282D30(&temporary,&normal,func_00282DB0(&forward,&normal));
+            projection=func_00282DB0(&forward,&normal);
+            func_00282D30(&temporary,&normal,projection);
             func_00282CF0(&projected,&forward,&temporary);
             func_00282F20(&projected,&projected,1.0f);
             func_00282DD8(&axis,&forward,&projected);
@@ -109,11 +96,11 @@ void func_002FDF40(Vector *output, Vector *origin, char *targetObject,
                 func_00282D30(&quaternion,targetObject+0xe0,targetData[4]);
                 func_00282CC0(&target,targetObject+0x10,&quaternion);
             } else {
-                target.q=*(Quad *)(targetObject+0x10);
+                qcopy(&target,targetObject+0x10);
                 target.f[2]+=targetData[4];
             }
         } else {
-            target.q=*(Quad *)(targetObject+0x10);
+            qcopy(&target,targetObject+0x10);
         }
     }
     func_00282CF0(&displacement,&target,origin);
@@ -123,9 +110,11 @@ void func_002FDF40(Vector *output, Vector *origin, char *targetObject,
     duration=func_00282DF0(&projected);
     duration=duration/speed;
     reciprocal=1.0f/duration;
-    func_00282D30(&originProjection,&normal,func_00282DB0(origin,&normal));
-    func_00282D30(&targetProjection,&normal,func_00282DB0(&target,&normal));
-    func_00282D30(&gravity,&normal,acceleration*duration*duration*0.5f);
+    projection=func_00282DB0(origin,&normal);
+    func_00282D30(&originProjection,&normal,projection);
+    projection=func_00282DB0(&target,&normal);
+    func_00282D30(&targetProjection,&normal,projection);
+    func_00282D30(&gravity,&normal,acceleration*(duration*duration)*0.5f);
     func_00282CF0(&working,&originProjection,&targetProjection);
     func_00282CC0(&working,&working,&gravity);
     func_00282D30(&working,&working,-1.0f);

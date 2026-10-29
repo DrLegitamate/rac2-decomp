@@ -165,6 +165,31 @@ extern int func_00282948(void *p);
 
 extern void func_00307FC0(void *p);
 
+typedef struct {
+    u8 pad00[0x80]; float position[4];
+    u8 pad90[0x288]; float previousHeight;
+    u8 pad31C[0x1514]; char *field1830;
+    u8 pad1834[0xA5C]; char *field2290; int state;
+    u8 pad2298[0x1C]; u8 field22B4;
+} SurfacePlayer;
+extern SurfacePlayer D_00189E20;
+extern char D_001A8BD0[] __attribute__((sda));
+typedef struct {
+    u8 pad000[0x140]; float position[4];
+    u8 pad150[0x3C8 - 0x150]; float heightOffset;
+} SurfaceCamera;
+extern SurfaceCamera D_001B5200;
+extern V4_F213135aa ref_00302DA0_04[];
+extern void ref_00302DA0_00(int, int, float);
+extern int ref_00302DA0_01(int, int);
+extern void ref_00302DA0_02(void);
+extern int ref_00302DA0_03(void);
+extern int func_00303E20(char *, void *, int *, int *);
+extern void func_002A7750(u8 *, u8, s32);
+extern float func_002AA140(float, float, float);
+extern void func_002ABBB8(void *, void *, void *, float, float, int, int, int,
+    float, float, float, float, int, float, int, int, int, int, int);
+
 /* Relocates serialized header offsets and compacts each row in its original storage. */
 
 #ifndef RAC2_T_V4_F213135AA
@@ -348,7 +373,53 @@ INCLUDE_ASM("asm/game", func_00302848);
 
 
 
-INCLUDE_ASM("asm/game", func_00302DA0);
+/* Resolve the player onto the surface grid and blend their height into it. */
+void func_00302DA0(char *object)
+{
+    char *state=*(char **)(object+0x68);
+    float center, ceiling, blend;
+    int index;
+    if (*(int *)(state+0x98)==-1) {
+        if (func_00303E20(object,D_00189E20.position,(int *)(state+0x90),(int *)(state+0x94))) {
+            *(int *)(state+0x98)=0;
+            func_002A7750((u8 *)object,5,-1);
+        }
+    }
+    if (*(int *)(state+0x98)>=0) {
+        center=*(float *)(state+0x70)+*(float *)(state+4);
+        ceiling=center+*(float *)(state+0x34)+1.0f;
+        if (D_001B5200.position[2]<=ceiling && center-*(float *)(state+0x34)-1.0f<=D_001B5200.position[2])
+            D_001B5200.heightOffset=ceiling-D_001B5200.position[2];
+        { SurfacePlayer *player = &D_00189E20;
+        if (player->state!=0x38 && player->state!=0x79 &&
+            (player->state!=0x39 || *(int *)(*(char **)(player->field2290+0x24)+0x1f0)) &&
+            player->state!=0x7a) {
+            if (player->state==0x31) {
+                func_002ABBB8(player->field1830, D_001A8BD0, 0, 0.0f, 0.0f, 10, 3, 16,
+                    4.0f, 2.0f, 9.0f, 1.0f, -1, 15.0f, 1, 1, -1, 0, 0x00810001);
+                ref_00302DA0_00(0x88,0,0.0f);
+                player->field1830=0;
+                ref_00302DA0_01(0,1);
+                ref_00302DA0_02();
+                player->previousHeight=player->position[2];
+            }
+            if (player->field22B4)
+                ref_00302DA0_01(0x7a,1);
+            else if (*(int *)(*(char **)(player->field2290+0x24)+0x1f0))
+                ref_00302DA0_01(0x79,1);
+            else ref_00302DA0_01(0x39,1);
+        }
+        }
+        if (D_00189E20.state==0x31 && *(int *)(state+0x98)>5)
+            ref_00302DA0_03();
+        blend=(float)*(int *)(state+0x98)*0.05f;
+        if (blend>1.0f) blend=1.0f;
+        index=*(int *)(state+0x40)*64+*(int *)(state+0x94)*8+*(int *)(state+0x90);
+        D_00189E20.position[2]=func_002AA140(D_00189E20.position[2],
+            ref_00302DA0_04[index].z-(float)*(int *)(state+0x98)*0.016666668f,blend);
+        ++*(int *)(state+0x98);
+    }
+}
 
 typedef unsigned long long u64;
 
@@ -421,14 +492,14 @@ void func_00303070(u8 *obj)
 
 INCLUDE_ASM("asm/game", func_00303210);
 
-INCLUDE_ASM("asm/game", func_00303568);
+/* func_00303568 is defined in 00303568.c. */
 
 
 
 
-INCLUDE_ASM("asm/game", func_00303E20);
+/* func_00303E20 is defined in 00303E20.c. */
 
-INCLUDE_ASM("asm/game", func_00304128);
+/* func_00304128 is defined in 00304128.c. */
 
 INCLUDE_ASM("asm/game", func_00304210);
 
@@ -480,7 +551,7 @@ void func_00304C78(void *object)
     }
 }
 
-INCLUDE_ASM("asm/game", func_00304D38);
+/* func_00304D38 is defined in 00304D38-g8.c. */
 
 
 /* func_00305058 is defined in 00305058-qcopy.c. */
@@ -506,7 +577,6 @@ void func_00305228(Owner_F9e2cd219 *self)
     }
 }
 
-INCLUDE_ASM("asm/game", func_00305310);
 
 
 void func_00305418(void) {
@@ -757,7 +827,7 @@ void func_00307440(void *object)
     }
 }
 
-INCLUDE_ASM("asm/game", func_00307500);
+/* func_00307500 is defined in 00307500-g8.c. */
 
 
 
@@ -782,7 +852,6 @@ void func_003079E8(Owner_F9e2cd219 *self)
     }
 }
 
-INCLUDE_ASM("asm/game", func_00307AD0);
 
 void func_00307BD0(void) {
     func_00300330(D_00228610);
