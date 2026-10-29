@@ -442,6 +442,7 @@ candidate has the same 12-byte missing-nop result as the previously measured
 `func_L00_002EDCB8` family; the catalogue prefix correction does not change
 that compiler blocker.
 29 October 2026 follow-up: func_002828B8 also remains a 12-byte candidate against its 16-byte extent under isolated -fno-schedule-insns2. It retains lwc1 $f0,0($gp) ; jr $ra ; mul.s $f0,$f0,$f12, so this later scheduler pass does not restore either retail's load-delay nop or its -0x76E0($gp) offset.
+The same isolated profile leaves sibling func_002828F0 at 12/16 bytes and 0/1, with 0($gp) instead of -0x76DC($gp) and the same compact sequence.
 
 <a id="blocker-05"></a>
 
