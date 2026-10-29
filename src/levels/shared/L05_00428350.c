@@ -64,9 +64,9 @@ typedef struct {
 } Vec16_Fc936841d;
 #endif
 
-INCLUDE_ASM("asm/levels", func_L05_00428350);
+/* func_L05_00428350 is defined in L05_00428350-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L05_00428518);
+/* func_L05_00428518 is defined in L05_00428518-g8.c. */
 
 /* func_L05_00428AC8 is defined in L05_00428AC8-g8.c. */
 
@@ -120,7 +120,27 @@ typedef int TI128 __attribute__((mode(TI)));
 
 /* Creates the 0x1226 object, seeds its flags from the caller's two floats and copies the
    caller's quadword into the object's transform slot. */
-INCLUDE_ASM("asm/levels", func_L05_0042BCE0);
+char *func_L05_0042BCE0(char *a0, char *a1, float f12, float f13)
+{
+    char *obj = func_328508((char *)0x1226);
+
+    if (obj != 0) {
+        char *sub;
+
+        *(unsigned char *)(obj + 0x30) = 0xFF;
+        *(unsigned short *)(obj + 0x32) = 0x1FF;
+        *(unsigned char *)(obj + 0x31) = 1;
+        *(float *)(obj + 0x2C) = *(float *)(*(char **)(obj + 0x24) + 0x24) * f12;
+        *(unsigned short *)(obj + 0x34) =
+            (*(unsigned short *)(obj + 0x34) & 0xFFF8) | 0x100;
+        sub = *(char **)(obj + 0x68);
+        qcopy(obj + 0x10, a0);
+        func_3073E0(a1, obj + 0xC0);
+        *(float *)(sub + 0x10) = f13;
+        func_32AF08(obj);
+    }
+    return obj;
+}
 
 INCLUDE_ASM("asm/levels", func_L05_0042BDB0);
 
@@ -269,7 +289,7 @@ void func_L05_00430BF0(Vec16_Fc936841d *object, int index)
 
 
 /* Creates the 0x10E3 object and copies the caller's transforms into it. */
-INCLUDE_ASM("asm/levels", func_L05_00432080);
+/* func_L05_00432080 is defined in L05_00432080.c. */
 
 /* func_L05_00432158 is matched in its own unit, src/levels/shared/L05_00432158.c (-frac2-qcopy -frac2-qcopy-barrier -fno-strength-reduce). */
 
@@ -277,9 +297,9 @@ INCLUDE_ASM("asm/levels", func_L05_00432080);
 INCLUDE_ASM("asm/levels", func_L05_00441D40);
 
 
-INCLUDE_ASM("asm/levels", func_L05_00441F30);
+/* func_L05_00441F30 is defined in L05_00441F30-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L05_00442398);
+/* func_L05_00442398 is defined in L05_00442398-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L05_00442560);
 
@@ -288,16 +308,14 @@ INCLUDE_ASM("asm/levels", func_L05_00442560);
 /* func_L05_004427A8 is defined in L05_004427A8-flags.c. */
 
 
-INCLUDE_ASM("asm/levels", func_L05_00442880);
+/* func_L05_00442880 is defined in L05_00428350-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L05_00442A58);
 
 INCLUDE_ASM("asm/levels", func_L05_00442F90);
-
 INCLUDE_ASM("asm/levels", func_L05_004431A0);
 
 INCLUDE_ASM("asm/levels", func_L05_004432E0);
-
 INCLUDE_ASM("asm/levels", func_L05_00443740);
 
 /* func_L05_00443740 is defined in L05_00443740-g8.c. */
@@ -309,9 +327,7 @@ INCLUDE_ASM("asm/levels", func_L05_00443740);
 INCLUDE_ASM("asm/levels", func_L05_00443D08);
 
 INCLUDE_ASM("asm/levels", func_L05_004445E8);
-
 INCLUDE_ASM("asm/levels", func_L05_00444840);
-
 INCLUDE_ASM("asm/levels", func_L05_00444B20);
 
 /* Converts a two-float record to the coordinate pair the level's bias words expect. */
@@ -329,7 +345,6 @@ void func_L05_00444D60(char *a0, int *a1, int *a2, int a3)
 
 
 INCLUDE_ASM("asm/levels", func_L05_00444DF8);
-
 /* func_L05_00444FD0 is in L05_00444FD0.c. */
 
 INCLUDE_ASM("asm/levels", func_L05_00445338);
@@ -351,5 +366,9 @@ INCLUDE_ASM("asm/levels", func_L05_004459B0);
 /* func_L05_00445B58 lives in L05_00445B58.c. */
 
 /* func_L05_00445C38 lives in L05_00445C38-g8.c. */
+
+/* func_L05_00445B58 is defined in L05_00445B58.c. */
+
+/* func_L05_00445C38 is defined in L05_00445C38-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L05_00445D60);

@@ -474,7 +474,7 @@ void func_L05_003D08C0(float *a0, char *a1)
 
 /* func_L05_003D0960 is in L05_003D0960-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L05_003D0B20);
+/* func_L05_003D0B20 is in L05_003D0B20-g8.c. */
 
 extern void func_002AFFD8(char *a0, char *a1, int a2);
 
@@ -576,9 +576,9 @@ void func_L05_003D1148(void *a0, void *a1, void *a2, void *a3,
     func_002ACDE8(a1, a1, v1);
 }
 
-INCLUDE_ASM("asm/levels", func_L05_003D1368);
+/* func_L05_003D1368 is in L05_003D1368-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L05_003D15E8);
+/* func_L05_003D15E8 is in L05_003D15E8.c. */
 
 void func_L05_003D18E0(char *obj)
 {

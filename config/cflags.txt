@@ -1482,6 +1482,7 @@ src/levels/shared/L00_00401668-ground-g8.c	-O2 -G8 -ffunction-sections -g
 src/levels/shared/L00_00408800.c	-O2 -G0 -ffunction-sections -frac2-hazard-labels
 src/levels/shared/L00_003FFA70-ribbon-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-hazard-labels
 
+src/levels/shared/L05_003D1E60-g8.c	-O2 -G8 -ffunction-sections -frac2-keep-block-order
 src/levels/shared/L01_002B6948-velocity.c	-O2 -g -G0 -ffunction-sections -frac2-keep-block-order -frac2-hazard-labels
 src/game/00270EE0-qcopy.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
 
@@ -1693,6 +1694,7 @@ src/levels/shared/L00_00410690-g64.c	-O2 -G64 -Wa,-G64 -ffunction-sections -fstr
 src/levels/shared/L05_00397F48-g8.c	-O2 -G8 -ffunction-sections -mno-split-addresses
 
 src/core/00133580-g8.c	-O2 -G8 -ffunction-sections -mno-split-addresses -fno-gcse
+src/levels/shared/L05_00432080.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -fno-strength-reduce
 
 
 src/game/002B68C8.c	-O2 -G0 -ffunction-sections -fno-schedule-insns

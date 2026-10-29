@@ -195,14 +195,12 @@ void func_L05_00418508(char *a0)
         func_002A10E8(*(int *)(s0 + 0x278));
     }
 }
-INCLUDE_ASM("asm/levels", func_L05_004186D8);
-
-INCLUDE_ASM("asm/levels", func_L05_00418D68);
-
-INCLUDE_ASM("asm/levels", func_L05_00418E90);
+/* func_L05_004186D8 is defined in L05_004186D8-g8.c. */
 
 
-INCLUDE_ASM("asm/levels", func_L05_00419370);
+
+
+/* func_L05_00419370 is defined in L05_00419370-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L05_00419888);
 
@@ -217,7 +215,6 @@ void func_L05_0041A218(void)
 
 INCLUDE_ASM("asm/levels", func_L05_0041A228);
 
-INCLUDE_ASM("asm/levels", func_L05_0041C118);
 
 INCLUDE_ASM("asm/levels", func_L05_0041C1F0);
 
@@ -288,7 +285,6 @@ void func_L05_0041D728(char *object)
 
 INCLUDE_ASM("asm/levels", func_L05_0041ED18);
 
-INCLUDE_ASM("asm/levels", func_L05_00421860);
 
 /* func_L05_00421908 is in L05_003D33E8-reward-g8.c: -G8, with its own jump table. */
 
