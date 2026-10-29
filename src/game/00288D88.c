@@ -225,7 +225,7 @@ INCLUDE_ASM("asm/game", func_0028A670);
 
 
 
-INCLUDE_ASM("asm/game", func_0028AB70);
+/* func_0028AB70 is in 00288D88-init-g8.c. */
 
 
 INCLUDE_ASM("asm/game", func_0028ACB0);
@@ -421,7 +421,54 @@ void func_0028B950(u8 *a0) {
 
 void func_0028BA50(HudElem *a0) { a0->unk7C = 0xD2; a0->unk48 = 0; a0->unk4A = 0; func_0028B950((u8 *)a0); }
 
-INCLUDE_ASM("asm/game", func_0028BA88);
+extern float func_00282C10(float);
+extern void func_0028DF80(void *);
+
+void func_0028BA88(HudElem *p)
+{
+    unsigned char *c = p->cnt;
+    int delta, limit, step;
+    if (p->unk0C) {
+        int value = *p->unk0C;
+        if (value < 0) value = 0;
+        p->unk78 = value;
+        if (p->unk08 < value) p->unk78 = p->unk08;
+    }
+    if (p->unk74 != p->unk78) {
+        p->unk7C = 180;
+        if (p->unk6C >= 24) {
+            delta = __builtin_abs(p->unk74 - p->unk78);
+            if (delta) {
+                step = func_00283CF0(func_00282C10(func_00283CE0(delta) * 0.04f) * 5.0f);
+                limit = delta / 5;
+                if (step < limit) step = limit;
+                if (step > 121) step = 121;
+                else if (step < 1) step = 1;
+                c[3] += step;
+                if (c[3] >= 3) {
+                    step = c[3] / 2;
+                    if (p->unk78 < p->unk74) p->unk74 -= step;
+                    else p->unk74 += step;
+                    c[3] -= step * 2;
+                }
+            }
+        }
+    }
+    if (p->unk7C >= 5) {
+        if (c[0] < 8) c[0]++;
+        else if (c[1] < 8) c[1]++;
+    } else {
+        if (c[1] != 0 || c[0] != 0) p->unk6C = 1;
+        {
+            int fade = c[1];
+            if (fade) c[1] = fade - 1;
+            else {
+                if (c[0]) c[0]--;
+            }
+        }
+    }
+    func_0028DF80((char *)p + 0x40);
+}
 
 
 extern void func_0029CCD8(int, int);

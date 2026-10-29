@@ -460,7 +460,41 @@ void func_00279790(int p0, int p1, int p2, int p3, int p4, int p5,
     D_L04_001BCE48[idx].v[9] = p9;
 }
 
-INCLUDE_ASM("asm/game", func_002798A0);
+/* Walk the item table from the current index, carrying the offset across entries of one group; return 1 when it lands inside an entry. */
+int func_002798A0(int value, int *out_index, int *out_offset)
+{
+    OozlaTable_001B8308 *table;
+    char *start_field;
+    char *end_field;
+
+    *out_index = (short)OozlaHolder->idx;
+    *out_offset = (short)OozlaHolder->idx2 + value;
+
+    while (*out_index >= 0 && *out_index < D_001B8308.count) {
+        int row, start, end, offset, next_offset;
+
+        table = &D_001B8308;
+        start_field = (char *)table + 4;
+        end_field = (char *)table + 8;
+        row = *out_index * sizeof(OozlaEntry_001B8308);
+        start = *(int *)(row + start_field);
+        end = *(int *)(row + end_field);
+        offset = *out_offset;
+
+        if (end >= start + offset)
+            return 1;
+        if (*out_index + 1 >= table->count)
+            return 0;
+        if (*(int *)(row + (char *)table) != table->e[*out_index + 1].key)
+            return 0;
+
+        next_offset = offset - 1;
+        next_offset -= end - start;
+        *out_offset = next_offset;
+        *out_index = *out_index + 1;
+    }
+    return 0;
+}
 
 int func_00279988(void) {
     return func_00282948(D_001B7FA8);
@@ -544,11 +578,39 @@ void func_0027A9A0(void)
         func_0027A288();
 }
 
-/* InitViewContext: the display's size from D_001A6480 into the screen extent, then the
-   draw context's fixed scales and the half extents as floats (as in RAC1). */
-INCLUDE_ASM("asm/game", func_0027A9F0);
+/* InitViewContext: set the screen extent from the display size and the view's fixed scales. */
+void func_0027A9F0(void)
+{
+    ScreenDimensions *dimensions = &D_001A6480;
+    ScreenState *view = &D_001B9040;
+    short width = dimensions->width;
+    short height = dimensions->height;
+    int half_width = width >> 1;
+    int half_height = height >> 1;
+    float half_height_f;
 
-INCLUDE_ASM("asm/game", func_0027AB40);
+    D_001A7340.width = width;
+    D_001A7340.height = height;
+    D_001A7340.half_width = half_width;
+    D_001A7340.half_height = half_height;
+    D_001A7340.left = (2048 - half_width) << 4;
+    D_001A7340.top = (2048 - half_height) << 4;
+    D_001A7340.right = (half_width + 2048) << 4;
+    D_001A7340.bottom = (half_height + 2048) << 4;
+
+    view->fA0 = 32.0f;
+    view->fA4 = 1048576.0f;
+    view->fB0 = 0.62f;
+    view->f200 = func_00283CE0(width) * 0.5f;
+    half_height_f = func_00283CE0(dimensions->height) * 0.5f;
+    view->f204 = half_height_f;
+    view->f208 = view->f200 * 4.0f;
+    view->f20C = half_height_f * 4.0f;
+    view->f218 = 0.0f;
+    view->f21C = 524288.0f;
+    view->f228 = 255.0f;
+    view->f22C = 0.0f;
+}
 
 /* ConfigureGraphicsProjection: InitViewContext for a given size and scale, with the four
    context values from the arguments, then func_0027AB40. */

@@ -1489,9 +1489,11 @@ src/levels/shared/L14_003DE908-g32.c	-O2 -G32 -ffunction-sections -Wa,-G32
 
 
 
+src/game/00284FC0-g8.c	-O2 -G8 -ffunction-sections -fno-strength-reduce
 
 
 
+src/game/00290A40-g16.c	-O2 -G16 -ffunction-sections -Wa,-G16
 
 src/core/00118460.c	-O2 -G2 -ffunction-sections
 
@@ -1505,6 +1507,7 @@ src/game/00273730.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrie
 
 
 
+src/game/0027EE58.c	-O2 -G0 -ffunction-sections -g
 
 src/core/00118548.c	-O2 -G2 -ffunction-sections -mastra-quad-saves
 
@@ -1593,6 +1596,7 @@ src/core/00133580-g8.c	-O2 -G8 -ffunction-sections -mno-split-addresses -fno-gcs
 
 
 
+src/game/00274128-projection.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -g
 
 
 

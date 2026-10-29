@@ -1,14 +1,3 @@
-/* Plain-C texture descriptor and upload-queue reconstruction; not matched.
- * Profile: -O2 -G8 -ffunction-sections. 1356/1356 bytes (16 lines off), us 0/28.
- * 26 October 2026 (M10): the descriptor word as a linear or-chain over separate statements in a
- * fresh temp, and the upload stores in climbed order, take it from 45 to 18 differing lines. Left:
- * pure scheduling in the descriptor block (the height load and palette-bits pair come early) and
- * the palette constant register pair (a0/v1). Expression forms of palette_bits, the height local
- * and the sign constant compile identically. In the permuter farm.
- * 26 October 2026 (M14): upload stores in retail order (palette at +6 right after +0, texture at
- * +14 last) fix the store block: 16 lines left, all in the descriptor block. A statement-order
- * climb over the descriptor block finds nothing better.
- */
 #include "include_asm.h"
 
 typedef unsigned long TextureBits;
@@ -36,7 +25,8 @@ extern int ref_0027C878_05;
 extern char *ref_0027C878_06;
 extern char ref_0027C878_07[];
 
-/* Resolve a cached texture descriptor, allocating VRAM and queuing its upload
+/* Incremental descriptor construction follows RAC1 draw.c (GPL-3.0).
+ * Resolve a cached texture descriptor, allocating VRAM and queuing its upload
  * when necessary. Negative identifiers select the render-target descriptors. */
 TextureBits func_0027C878(int id)
 {
@@ -124,26 +114,28 @@ TextureBits func_0027C878(int id)
             int base = D_001A72D0;
             int width = (short)entry->width_shift;
             int shift = width - 6;
-            int palette, texture, count, height;
-            long bits, column_bits, width_bits, height_bits, palette_bits;
+            int palette, texture, count;
+            long bits, width_bits, height_bits, palette_bits;
             if (shift < 0)
                 shift = 0;
             palette = base >> 8;
             base += 0x400;
             texture = base >> 8;
-            column_bits = (long)texture | ((long)(1 << shift) << 14);
+            count = ref_0027C878_05;
+            bits = ((TextureBits)(1 << shift) << 14);
+            bits |= texture;
             width_bits = ((long)((TextureBits)entry->width_shift << 48) >> 22) | 0x01300000L;
-            height = (short)entry->height_shift;
-            height_bits = (long)((TextureBits)entry->height_shift << 48) >> 18;
-            palette_bits = ((long)palette << 37) | (0x8000L << 19);
-            D_001A72D0 = base + (1 << (width + height));
-            bits = column_bits;
             bits |= width_bits;
+            height_bits = (long)((TextureBits)entry->height_shift << 48) >> 18;
             bits |= height_bits;
+            palette_bits = (TextureBits)palette << 37;
+            palette_bits |= (TextureBits)1 << 34;
+            width += (short)entry->height_shift;
+
             bits |= palette_bits;
             bits |= (-9223372036854775807L - 1);
+            D_001A72D0 = base + (1 << width);
             entry->bits = bits;
-            count = ref_0027C878_05;
             if (count < 64) {
                 char *upload = ref_0027C878_07 + (count << 4);
                 *(unsigned int *)(upload + 0) = (unsigned int)(ref_0027C878_06 + (entry->second_offset << 4));
