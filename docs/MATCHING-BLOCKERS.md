@@ -79,6 +79,9 @@ that negative result.
 **29 October 2026 near miss:** `func_0029DD30` was rechecked with an explicit-goto C form preserving repeated volatile reads. It compiles to 132/140 bytes and 0/28 USA v1.01 placements; the output still has ordinary bnez/bltz branches and a shared base, while retail uses a branch-likely path. The source-shape change does not recover retail control flow or qualify relocation placement.
 
 
+**29 October 2026 scheduling follow-up:** func_002A0488 remains 48/48 bytes and 0/28 with isolated -fno-schedule-insns2. The probe exchanges the first dsll32 and ld, while the final store remains before jr $ra instead of in its delay slot. This later scheduler setting does not resolve the return-slot mismatch.
+
+
 ## Topic index
 
 The 52 original section numbers are preserved for existing references. Anyone may improve
