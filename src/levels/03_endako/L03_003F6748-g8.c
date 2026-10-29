@@ -1,11 +1,10 @@
-/* near miss (register allocation only): func_L03_003F6748 in a -g8 unit matches instruction for instruction except the hoisted loop bases and the state pointer take other registers (retail: 7AF8 base t0, state t1, ids t2, table t3; ours: state t0, ids t1, flags t2, table t3). Tried: local base pointers, do/while, declaration order. */
 #include "common.h"
 
 /* The -G8 sibling of L03_003F09C0.c: with -G8 the level globals are re-materialised at each use, as in retail. */
 
 extern s32 D_L03_001B2548;
 extern u8 *D_L03_001B2A1C;
-extern u8 D_001A7AF8[];
+extern u8 D_001A7AF8[] __attribute__((sda));
 extern u8 D_00139568[];
 extern s32 D_00139688[];
 extern struct { u8 pad[0xE0]; } D_L03_00266DA0[];

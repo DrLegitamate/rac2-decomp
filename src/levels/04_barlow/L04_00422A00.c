@@ -119,7 +119,7 @@ void func_L04_00422DA8(u8 *object) {
     }
     D_L04_001B9980.intensity = 0.0f;
 }
-INCLUDE_ASM("asm/levels", func_L04_00423258);
+/* func_L04_00423258 is in L04_00423258-g8.c. */
 /* Counts the object's state up, easing its timer down while it is over the
    limit, and hands the level's recorder the object's channel when it runs out. */
 void func_L04_0042BF58(u8 *a0) {

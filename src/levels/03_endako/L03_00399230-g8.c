@@ -77,7 +77,7 @@ void func_L03_003CACA8(char *a0)
 }
 
 /* spawns the actor and seeds its aim from the caller's vector */
-INCLUDE_ASM("asm/levels", func_L03_003D18F8);
+/* func_L03_003D18F8 is defined in L03_003D18F8-g8.c. */
 
 /* The object the level's state points at: the retail writes six floats, a run
    of bytes and shorts, and two counters into it. */

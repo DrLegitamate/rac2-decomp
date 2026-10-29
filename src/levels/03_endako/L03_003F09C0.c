@@ -83,7 +83,7 @@ extern Entry41D1D8 *D_L03_001FE700[];
 
 INCLUDE_ASM("asm/levels", func_L03_003F09C0);
 
-INCLUDE_ASM("asm/levels", func_L03_003F11A0);
+/* func_L03_003F11A0 is in L03_003F11A0-g8.c. */
 
 extern void func_L02_00327350(s32, s32);
 extern void func_00288308(s32);
@@ -199,7 +199,7 @@ void func_L03_003F66D8(u8 *entity) {
     } while (1);
 }
 
-INCLUDE_ASM("asm/levels", func_L03_003F6748);
+/* func_L03_003F6748 is defined in L03_003F6748-g8.c. */
 
 /* appends one word to the level state's 30-entry table */
 void func_L03_003F68E8(u8 *entity, u32 value) {
@@ -217,7 +217,7 @@ void func_L03_003F6918(u8 *entity, s32 index) {
     state->entries[index] = state->entries[--state->count];
 }
 
-INCLUDE_ASM("asm/levels", func_L03_003F6948);
+/* func_L03_003F6948 is defined in L03_003F6948-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L03_003F6BA8);
 
@@ -261,11 +261,11 @@ void func_L03_003F71E0(u8 *a0, s32 a1) {
 /* func_L03_004198B0 lives in L03_003F09C0-g8.c (it reaches D_L03_001A8F00
  * through $gp). */
 
-INCLUDE_ASM("asm/levels", func_L03_00419CA0);
+/* func_L03_00419CA0 is in L03_00419CA0-effects.c. */
 
 INCLUDE_ASM("asm/levels", func_L03_0041A090);
 
-INCLUDE_ASM("asm/levels", func_L03_0041A570);
+/* func_L03_0041A570 is in L03_0041A570-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L03_0041BE50);
 
@@ -320,7 +320,7 @@ u32 func_L03_0041D1D8(u8 *entity) {
     return 0;
 }
 
-INCLUDE_ASM("asm/levels", func_L03_0041D258);
+/* func_L03_0041D258 is in L03_0041D258-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L03_0041DAD0);
 

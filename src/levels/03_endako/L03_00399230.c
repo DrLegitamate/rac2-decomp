@@ -163,7 +163,7 @@ void func_L03_003CBD70(char *a0)
 
 /* func_L03_003CBE58 lives in the -G8 sibling L03_00399230-g8.c (it reads $gp-relative floats). */
 
-INCLUDE_ASM("asm/levels", func_L03_003CF0C0);
+/* func_L03_003CF0C0 is defined in L03_003CF0C0-g8.c. */
 
 s32 func_L03_003CF7B8(u8 *a0)
 {
@@ -188,7 +188,7 @@ void func_L03_003CFB30(char *a0)
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L03_003D0300);
+/* func_L03_003D0300 is defined in L03_003D0300-g8.c. */
 
 void func_L03_003D1100(char *a0)
 {
@@ -236,7 +236,7 @@ void func_L03_003D1FB0(char *a0)
     *(u16 *)(*(s32 *)(s0 + 0x2C) + 0x96) = 0;
 }
 
-INCLUDE_ASM("asm/levels", func_L03_003D2018);
+/* func_L03_003D2018 is defined in L03_003D2018.c. */
 
 extern u8 *D_L03_001B2A1C_tbl[] __asm__("D_L03_001B2A1C") __attribute__((sda));
 

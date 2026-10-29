@@ -1,32 +1,11 @@
-/*
- * Complete manual reconstruction retained as nonmatching; no coverage credit.
- * Fresh qualified-compiler checks, 2026-10-25.
- * Profile: -O2 -G8 -ffunction-sections
- * Coverage: US: 0/1; US2: absent from catalogue; PAL: absent from catalogue.
- * Compiled text: 1612 bytes; retail: 1652 bytes.
- * Remaining difference: A real five-state C switch replaces the external-table workaround;
- * complete target/origin vectors use approved copies. Explicit transition call branches give
- * 1612/1652 with the correct 0x80 frame. The observed owner/key remains an explicit integer
- * argument, not an invented void-only call.
- * Reopen when: Measured owner/key, controller and vector-field lifetimes beyond the current source
- * interface; preserve all real incoming registers.
- */
-
-/* M34 2026-10-26: hero globals (D_00189EA0/EB0/F00/F30) rewritten as the Hero view of
- * D_00189E20 (retail keeps the hero base in a saved register): 1608/1652, fewer differences.
- * Left: retail stores D_L04_001B2228 = 1 as lui $at/sw outside the bne delay slot (here a $gp
- * sw in the slot; nosda, MACRO_ADDR, [] / [2] / [3] and -mno-split-addresses all worse), the
- * func_0029B3E0(0, -1) arm placement, a missing neg.s and float compare near +0x5AC, and a
- * float constant retail rematerialises per call (+0x620).
- */
 #include "common.h"
 
 typedef int TI128 __attribute__((mode(TI)));
 typedef union { TI128 q; f32 f[4]; } BarlowVector;
-extern u8 *D_L04_001B24DC;
 extern u8 D_L04_001BF880[];
 extern int D_L04_001A8F00;
-extern int D_L04_001B2228;
+/* Shared conversation flags, as in func_L04_00439950. */
+extern int D_L04_001B2224[] __attribute__((sda));
 typedef union { u8 b[0x2600]; s32 i[0x980]; f32 f[0x980]; TI128 q[0x260]; } Hero;
 extern u8 D_00189E20[];
 extern u8 D_001A7A40;
@@ -55,8 +34,9 @@ extern void func_00282CF0(void *, void *, void *);
 extern f32 func_00283BE0(f32, f32);
 extern f32 func_00282E20(void *);
 extern void func_002AEC48(void *, void *, int, f32, f32);
-extern u32 D_0013979C;
-extern u8 D_001A7BCD, D_00139605;
+extern u32 D_0013979C __attribute__((nosda));
+extern u8 D_001A7BCD;
+extern u8 D_00139605 __attribute__((nosda));
 extern int D_001A79F0 __attribute__((sda));
 extern u8 D_0019B2E8[];
 extern void func_L04_00423178(void *);
@@ -70,11 +50,14 @@ extern void func_002DF3F8(void *, void *);
 extern void func_0029B3E0(int, int);
 extern void func_0029F338(void *);
 
+/* Advances the conversation states and turns the two manipulators toward the
+ * hero or a periodically chosen idle target. */
 void func_L04_00423258(u8 *object) {
     BarlowVector target, origin, delta;
     u8 *data = *(u8 **)(object + 0x68);
     unsigned int state;
     f32 rate, heading, yaw, pitch;
+    f32 blend = 0.3f;
     int look;
     func_L04_00423178(object);
     state = object[0x20];
@@ -98,13 +81,13 @@ void func_L04_00423258(u8 *object) {
     }
     goto stateDone;
     case 2:
-    D_L04_001B2228 = 1;
+    D_L04_001B2224[1] = 1;
     if (D_L04_001A8F00 == 2) {
         object[0x31] = 0;
         *(u16 *)(object + 0x34) |= 1;
     }
     if (!func_002F5D10()) {
-        D_L04_001B2228 = 0;
+        D_L04_001B2224[1] = 0;
         object[0x31] = 1;
         *(u16 *)(object + 0x34) &= ~1;
         func_L00_00427290();
@@ -124,25 +107,25 @@ void func_L04_00423258(u8 *object) {
     }
     goto stateDone;
     case 4:
-    D_L04_001B2228 = 1;
+    D_L04_001B2224[1] = 1;
     if (D_L04_001A8F00 == 2) {
         object[0x31] = 0;
         *(u16 *)(object + 0x34) |= 1;
     }
     if (!func_002F5D10()) {
-        D_L04_001B2228 = 0;
+        D_L04_001B2224[1] = 0;
         object[0x31] = 1;
         *(u16 *)(object + 0x34) &= ~1;
         func_002AD7B8(5);
         func_00288308(0x30);
         func_002AF0A8(5);
-        if (object[0xB0] == 0xFF) {
-            func_0029B3E0(0, -1);
-        } else {
+        if (object[0xB0] != 0xFF) {
             int channel = object[0xB0];
             if (!(D_0019B2E8[channel + D_001A79F0 * 16] & 0x80))
                 func_002A0430(channel);
             func_002DF3F8(&((Hero *)D_00189E20)->q[0x80 / 16], &((Hero *)D_00189E20)->q[0x90 / 16]);
+        } else {
+            func_0029B3E0(0, -1);
         }
         func_0029F338(object);
         return;
@@ -197,11 +180,13 @@ stateDone:
         /* This object's update computes pitch but only applies yaw. */
         if (pitch > 0.523598849773407f)
             pitch = 0.523598849773407f;
+        else if (pitch < -0.523598849773407f)
+            pitch = -0.523598849773407f;
         *(f32 *)(data + 0x68) = yaw * 0.6f;
         *(f32 *)(data + 0xE8) = yaw * 0.4f;
     }
     if (D_001A7A40)
         *(f32 *)(data + 0x70) = 2.75f;
-    func_002AEC48(object, data, 0, rate, 0.3f);
-    func_002AEC48(object, data + 0x80, 1, rate, 0.3f);
+    func_002AEC48(object, data, 0, rate, blend);
+    func_002AEC48(object, data + 0x80, 1, rate, blend);
 }
