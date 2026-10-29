@@ -1525,3 +1525,5 @@ src/core/00120F00-unwind.c	sdk -O2 -G2 -ffunction-sections -fexceptions
 src/levels/shared/L04_003FA350.c	-O2 -G0 -ffunction-sections -frac2-hazard-labels
 src/game/002977A8.c	-O2 -G0 -ffunction-sections -fno-strength-reduce
 src/levels/shared/L00_003E7E40-trails.c	-O2 -G0 -ffunction-sections -mno-split-addresses
+src/levels/shared/L22_002A8B98-qcopy.c	-O2 -G0 -ffunction-sections -frac2-qcopy
+src/levels/01_oozla/L01_002BEB90-nsa-g8.c	-O2 -G8 -ffunction-sections -mno-split-addresses
