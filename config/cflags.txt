@@ -1489,6 +1489,7 @@ src/levels/shared/L14_003DE908-g32.c	-O2 -G32 -ffunction-sections -Wa,-G32
 
 
 
+src/game/002DF1B8-clear.c	-O2 -G0 -ffunction-sections -fno-strength-reduce
 src/game/00294BC8-map-point-g8.c	-O2 -G32 -Wa,-G32 -ffunction-sections -g
 
 src/game/002AAC80-smoothing.c	-O2 -G0 -ffunction-sections -g
@@ -1536,6 +1537,7 @@ src/game/002D2918-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections 
 src/core/00118BC0.c	-O2 -G2 -ffunction-sections -mastra-quad-saves
 src/core/00119AC0.c	-O2 -G2 -ffunction-sections -mastra-quad-saves
 
+src/game/002DF1B8-packet.c	-O2 -G0 -ffunction-sections -fno-strength-reduce
 
 
 src/game/002BDCE8.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
@@ -1602,6 +1604,7 @@ src/game/002B68C8.c	-O2 -G0 -ffunction-sections -fno-schedule-insns
 
 src/game/002CF7F0-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections -fno-builtin
 src/game/002D1970-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections -fno-builtin
+src/game/002D5E98-audio.c	-O2 -G0 -ffunction-sections -mno-split-addresses
 
 src/game/002CFDA8-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections -fno-builtin
 
@@ -1613,6 +1616,7 @@ src/game/002BEBC0-hazard-labels.c	-O2 -G0 -ffunction-sections -frac2-hazard-labe
 src/game/002BC508-g8.c	-O2 -G8 -ffunction-sections -g
 
 src/game/00274128-projection.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -g
+src/game/002D3390-002D36A0-g8.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por -frac2-qcopy
 
 
 

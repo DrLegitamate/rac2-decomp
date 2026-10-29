@@ -1,5 +1,6 @@
-/* functional: medium. One captured call. Spawns the hero equipment pieces from the equipment bits (same calls and writes in the same order); near-miss draft of the retail code, differing only in scheduling and register allocation. */
 #include "common.h"
+
+typedef struct { char pad[8]; void *active; char gap[20]; float data[4]; } EquipState;
 
 typedef struct {
     char pad00[0x30];
@@ -10,15 +11,15 @@ typedef struct {
     char pad36[0x63 - 0x36];
     unsigned char mode;
     char pad64[4];
-    char *state;
+    EquipState *state;
 } EquipPiece;
 
 extern EquipPiece *func_0029EFD0(int);
 extern void func_002E6120(void);
 extern EquipPiece *D_00152C00;
 extern unsigned int D_001A7AF0 MACRO_ADDR;
-extern short D_001A8C28[], D_001A8C30[], D_001A8C38[], D_001A8C40[];
-extern short D_001A8C48[], D_001A8C50[], D_001A8C58[];
+extern short D_001A8C28[] MACRO_ADDR, D_001A8C30[] MACRO_ADDR, D_001A8C38[] MACRO_ADDR, D_001A8C40[] MACRO_ADDR;
+extern short D_001A8C48[] MACRO_ADDR, D_001A8C50[] MACRO_ADDR, D_001A8C58[] MACRO_ADDR;
 extern EquipPiece *D_00214920[];
 
 /* Spawns the hero's equipment pieces from the equipment bits and flags them. */
@@ -27,7 +28,7 @@ void func_002E6178(EquipPiece *base)
     EquipPiece **parts;
     EquipPiece **p;
     EquipPiece *piece;
-    char *state;
+    EquipState *state;
     unsigned int equipment;
     int chassis, partA, partB, partC, partD, partE, partF, count;
 
@@ -70,15 +71,17 @@ void func_002E6178(EquipPiece *base)
         parts[count++] = func_0029EFD0(0x10E4);
     if (partF)
         parts[count] = func_0029EFD0(D_001A8C58[partF]);
-    for (p = parts; *p; p++) {
-        if ((*p)->mode)
-            (*p)->mode = 8;
-        (*p)->flags |= 0x124;
-        (*p)->drawMask = 0x1FF;
-        state = (*p)->state;
-        *(char **)(state + 8) = state + 0x20;
+    if (*parts) {
+        p = parts;
+        do {
+            if ((*p)->mode)
+                (*p)->mode = 8;
+            (*p)->flags |= 0x124;
+            (*p)->drawMask = 0x1FF;
+            (*p)->state->active = (*p)->state->data;
+        } while (*++p);
     }
     base->flags |= 0x20;
     state = base->state;
-    *(char **)(state + 8) = state + 0x20;
+    state->active = state->data;
 }
