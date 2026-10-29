@@ -1,7 +1,3 @@
-/* func_0029B168 (boot, 628 B, 28 places): rac1 memcard_restore_data twin. M29 2026-10-26:
-   628/628 B under -O2 -G8 -ffunction-sections (own -g8 unit: the error counter is a $gp
-   scalar in ordinary flow), 12 lines off: errors and the cached entry offset swap $s5/$s6,
-   and the joined tail emits the status store before the copySize move. Permuter queued. */
 /* Restores a memory card save packet into the registered blocks (rac1's
    memcard_restore_data): after the CRC check, copies each saved block into the matching
    entry's slot, marking it exact (1), short (-1) or long (-2); counts changed blocks,
@@ -47,7 +43,6 @@ int func_0029B168(unsigned char *save_packet, int slot, RestoreEntry29B168 *rest
     int i;
     int copySize;
     unsigned char *slot_destination;
-    int status;
 
     if (func_0029AF58((char *)save_packet) == 0) {
         return 1;
@@ -77,17 +72,15 @@ int func_0029B168(unsigned char *save_packet, int slot, RestoreEntry29B168 *rest
             blockSize = ((RestoreBlock29B168 *)save_packet)->size;
             slot_destination = matched_entry->data + slot * entrySize;
             if (blockSize == entrySize) {
-                status = 1;
+                copySize = entrySize;
+                matched_entry->status = 1;
             } else if (blockSize < entrySize) {
                 copySize = blockSize;
                 matched_entry->status = -1;
-                goto copied;
             } else {
-                status = -2;
+                copySize = entrySize;
+                matched_entry->status = -2;
             }
-            matched_entry->status = status;
-            copySize = entrySize;
-        copied:
             if (func_00115340(slot_destination, ((RestoreBlock29B168 *)save_packet)->data, copySize) != 0) {
                 D_001A9968++;
             }
