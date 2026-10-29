@@ -1004,6 +1004,13 @@ other way round. Also shows up as a store landing in the second `jal` delay slot
 first. This is `reorg`'s forward-fill choice and it is the single most common near miss in the
 six waves' drafts (37 of 240 worker notes mention a delay slot).
 
+**29 October 2026 FPU scheduling probe:** `func_00282C68` remains 16/16 bytes
+and 0/28 with isolated `-O2 -G0 -ffunction-sections -ffast-math
+-fno-schedule-insns2`. The max operation moves to the first word and min fills
+the return delay slot, but the max destination and min source still use the
+wrong FPRs. Reversing both comparisons is byte-identical; the fast-math
+if-chain is 44/16. No match is established.
+
 **Measured examples:** `func_L18_0042FAA8` (56 bytes, 13 of 14 instructions identical, "the delay-slot filler takes" the other value); `func_L02_003D69F0` (48 against 44, the
 `sw $zero` lands in the second `jal` delay slot instead of the first); `func_L23_003C0E98`
 (prologue reordered, the `lw` in the slot instead of before it).
