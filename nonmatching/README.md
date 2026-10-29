@@ -421,7 +421,7 @@ the placement rules are in `tools/fcheck.py`'s docstring; its tests are
 | [`func_0012FB48`](boot/func_0012FB48.c) | 20 | 3 |
 | [`func_00278E78`](game/func_00278E78.c) | 48 | C candidate emits 40 bytes; control flow and global address sequence differ |
 | [`func_0028B288`](boot/func_0028B288.c) | 44 | 14 |
-| [`func_00295870`](game/func_00295870.c) | 68 | Candidate is 64 bytes; mask is not in the retail branch delay slot |
+| [`func_00295870`](game/func_00295870.c) | 68 | Corrected boot-resident base `D_0010B540`: default `-O2 -G0` is 64/68 and 0/28; corrected byte-offset and branch-local forms are 56/68 and 0/28. Retail uses `$v0` for the mask, `$v1` for the table base, `$a0` for the load; cc1 allocates `$v1`/`$v0`/`$v0`. A temporary file-wide `-fno-schedule-insns2` linked boot check still differs at +0x14 and changes 17 functions total, including 16 others in the unit, so it is not viable as a permanent profile. No artificial accesses or dependencies. See retained source. |
 | [`func_0029DC58`](game/func_0029DC58.c) | 52 | 26 bytes differ; retail uses bnel with a zero delay-slot result then tests bit 27 |
 | [`func_0029FAE0`](game/func_0029FAE0.c) | 60 | 4 bytes differ; retail uses literal lui high halves, not %hi relocations |
 | [`func_002A0380`](game/func_002A0380.c) | 60 | 2 bytes differ; table load and branch use v1 instead of retail v0 |

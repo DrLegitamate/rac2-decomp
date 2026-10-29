@@ -34,6 +34,14 @@ agreed result here. A persistent personal issue comment is no longer required fo
 
 ## Recent verified updates
 
+**29 October 2026 table-base scheduling probe — `func_00295870`:** With the
+corrected boot-resident `D_0010B540` base, the default candidate remains
+64/68 bytes and 0/28 USA v1.01 placements; byte-offset and branch-local
+forms are 56/68 and 0/28. A temporary whole-file `-fno-schedule-insns2`
+profile linked into the boot but still mismatched at +0x14. It changed
+17 functions total, including 16 others in the translation unit, so it
+is not a viable file-wide flag change.
+
 **Source-method update, 25 October 2026:** RAC1's reviewed shared EE helpers
 (`qcopy`, `qcopy_nc`, `qzero`) and original public runtime-library target
 primitives are now permitted under `AGENTS.md`. Earlier prohibitions below are
