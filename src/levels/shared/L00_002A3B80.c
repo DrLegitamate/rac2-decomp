@@ -14,7 +14,7 @@ INCLUDE_ASM("asm/levels", func_L00_002A4928);
 extern char D_00189E20[];
 extern int D_001A79F0;
 extern void func_L00_002D24B8(void);
-extern void func_L00_002C42E0(int, int);
+extern int func_L00_002C42E0(int, int);
 extern void func_L00_003B09F8(void);
 /* Incomplete sda array: retail clears this word as `lui $at; sw` (COMPILER-NOTES.md). */
 extern int D_001A73A0[] __attribute__((sda));

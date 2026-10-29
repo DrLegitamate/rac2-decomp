@@ -187,8 +187,7 @@ void func_L01_003B5310(u8 *a0) {
 
 INCLUDE_ASM("asm/levels", func_L01_003B53C8);
 
-/* func_L01_003B57A8 is in nonmatching/levels/func_L01_003B57A8.c: it reads a word
-   through $gp and still differs from retail in four places. */
+/* func_L01_003B57A8 uses the SDA pointer to the position table. */
 extern u8 *D_L01_001B264C __attribute__((sda));
 extern char D_00189EA0[];
 extern float func_00282E80(void *, void *);

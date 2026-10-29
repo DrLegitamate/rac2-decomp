@@ -293,7 +293,7 @@ void func_002B8048(int value, long address)
 
 INCLUDE_ASM("asm/game", func_002B80B8);
 
-INCLUDE_ASM("asm/game", func_002B8108);
+/* func_002B8108 is in 002B7E28-g8.c. */
 
 void func_002B8518(void) {
     D_00138180.active = 0;

@@ -34,29 +34,22 @@ agreed result here. A persistent personal issue comment is no longer required fo
 
 ## Recent verified updates
 
-**28 October 2026 near miss:** `func_002CF2B8` was checked in its current-master `-G8`
-unit with a corrected 32-bit style argument matching `func_0027FAA8`'s target
-`unsigned long` parameter. The candidate is 132/136 bytes and passes 0/28 USA v1.01
-placements. Retail keeps 256.0f in `$f1` and 0.5f in `$f2`; cc1 swaps them and
-schedules the x constant in the call delay slot instead of before the call. The
-previous `u64` prototype was incorrect. Splitting the multiplication into a named
-`scaled` local before adding 0.5f leaves the 132-byte output unchanged. This remains
-a retained near miss, not a match.
+**29 October 2026 cross-release integration:** `func_L15_00434D28` passed its
+local PAL check but failed strict linking because its direct in-unit call needed
+the C section for `func_L15_004351E0`, whose body is not carried into PAL.
+The documented `ref_L15_00434D28_00` external binds the actual particle helper
+in each release. Strict Gorn builds now pass in USA v1.01, USA v2.00 and PAL.
+Keep the helper's real arguments; local text equality alone does not validate
+the caller's linked dependencies.
 
-An isolated `-O2 -G8 -ffunction-sections -fno-schedule-insns` unit also stays
-132/136 bytes and 0/28. It retains the same float-register swap, expanded style
-constant and x constant in the call delay slot; disabling instruction
-scheduling does not recover the retail sequence. Two further isolated flag
-probes on 29 October, `-fno-gcse` and `-ffast-math`, also produce byte-identical
-132/136-byte candidates and 0/28 placements. `-fno-schedule-insns2` remains
-132/136 and 0/28, reorders the per-program float load and call setup, but still
-assigns the constants to opposite FPRs from retail. Retain as a near miss for a
-new allocator or scheduling hypothesis.
-
-**29 October 2026 related probe:** `func_002CDA20` has the same helper-call and
-float-constant allocation pattern. Its corrected 32-bit ABI candidate remains
-136/140 bytes and 0/28 under isolated `-fno-schedule-insns2`, so the second
-scheduler-pass setting does not resolve that sibling near miss either.
+**29 October 2026 maintainer ABI correction:** the qualified game compiler
+measures `sizeof(long) == sizeof(long long) == 8` and `sizeof(void *) == 4`.
+The `unsigned long` style argument of `func_0027FAA8` is therefore 64 bits.
+PR #365's 32-bit-style probes for `func_002CF2B8`, `func_002CDA20` and
+`func_002D53F0` used an incorrect interface; their 132/136, 136/140 and 136/140
+byte measurements do not establish an ABI-preserving improvement. The earlier
+wide-argument near misses are retained. Reopen on register/lifetime evidence
+while preserving the complete colour argument, not by narrowing its prototype.
 
 **28 October 2026 recheck:** `func_0029DD30`'s old retained note blamed a limitation
 in build relocation derivation. A common-base source probe using `D_00140000` and
@@ -85,34 +78,6 @@ the remaining work has no new plain-C hypothesis within the documented small
 function budget. PAL and USA v2.00 checks are historical and were not rerun
 because those ROMs are absent from this checkout. Keep the marker and retained
 candidate; do not classify it as handwritten based on difficulty.
-
-**28 October 2026 recheck:** `func_002CDA20`'s corrected 32-bit style ABI
-candidate (`-O2 -G8`) compiles to 136/140 bytes and 0/28 current-master USA
-v1.01 placements. Retail keeps 293.0f in `$f2` and 0.5f in `$f1`; cc1 swaps
-them, expands the 32-bit style constant beyond retail's `lui`/`ori`, and puts
-the x argument in the call delay slot. Reversing the addition operands stays
-136 bytes; a separate scaled local is 156. Its prior `u64` prototype was
-incorrect because the matched callee's target `unsigned long` is 32 bits.
-PAL and USA v2.00 data are absent here; no current checks were run for them.
-
-**29 October 2026 follow-up:** an isolated `-O2 -G8 -ffunction-sections
--ffast-math` probe remains 136/140 bytes and 0/28, with the same FP constant
-register swap, expanded style constant and call-argument setup differences.
-This flag does not provide a new matching route. Reversing the multiplication
-operands (`ref * 293.0f`) is also byte-identical at 136/140 and 0/28.
-
-An isolated `-O2 -G8 -ffunction-sections -fno-schedule-insns` unit likewise
-measures 136/140 bytes and 0/28. It retains the float-register swap and
-expanded style constant; its argument setup and call/epilogue scheduling differ
-further. Disabling instruction scheduling does not recover the retail body.
-
-**28 October 2026 recheck:** `func_002D53F0`'s earlier exact-size candidate
-declared the `func_0027FAA8` style argument with common.h's 64-bit `u64`.
-The matched callee uses a local `unsigned long` alias, which is 32 bits in
-this target. With a 32-bit argument the candidate is 136/140 bytes and 0/28
-current-master USA v1.01 placements. Retail keeps 329.0f in `$f2` and 0.5f
-in `$f1`; cc1 reverses them and emits a different constant sequence for the
-style argument. The corrected candidate replaces the stale 140-byte result.
 
 **28 October 2026 recheck:** `func_002B6658`'s dedicated `-G8` candidate is
 152/148 bytes and 0/28 in current-master USA v1.01. Five source forms covering
@@ -145,9 +110,9 @@ that difference. Keep the marker and retained near miss.
 **28 October 2026 recheck:** `func_002DE618`'s break-then-clear source
 hypothesis compiles to 212 bytes and 0/28 in current-master USA v1.01. It keeps
 the final bit clear outside the scan but diverges from retail's loop and call
-layout; the first mismatch is `+0x10`. The existing merged-clear candidate at
-188 bytes remains the best near miss. Keep the marker and both measured source
-shapes; no tool or catalogue change is indicated.
+layout; the first mismatch is `+0x10`. PR #362 subsequently supplied the retained 212-byte candidate with reduced
+key/flag pointer registers swapped. That newer source supersedes the 188-byte
+merged-clear draft; the older trials remain history, not the current best result.
 
 **28 October 2026 recheck:** `func_002F5D40`'s retained `-G8` candidate is
 236/224 bytes and 0/28 in current-master USA v1.01. Its `func_002EF010`
@@ -1330,9 +1295,10 @@ frontend treats the unsupported spelling as an implicit helper call, emitting
 No strict match is established.
 
 **28 October 2026 follow-up:** `func_0029DC90` is 60 bytes at 28 USA v1.01 places.
-Its retail low return word in `$v0` is boolean, but `$v1` contains values left by
-the nested flag tests and the function is referenced through a data table, so the
-callback return width is unresolved. The retained 64-bit-result C candidate is
+Its retail result in `$v0` is boolean and it is referenced through a data
+table. The earlier inference from a residual `$v1` was invalid: EE 64-bit
+integer results occupy `$v0`, not an o32 `$v0`/`$v1` pair. The callback's
+original declared width remains unverified. An earlier 64-bit-result C probe was
 64 bytes (0/28); a nested `int` result variable compiles to 52 bytes (0/28), and
 explicit early returns compile to 64 bytes (0/28). These variants differ in
 allocation and branch layout. The neighboring `func_0029DCD0` also uses ordinary
@@ -2791,6 +2757,14 @@ different at two. The binder at the end of `func_L00_003F87B0` likewise has
 remain in the retained C even though neither body matches. The latter's normalize
 call precedes initialization of its packet input in retail; the source preserves
 that ordering and does not invent a zero vector.
+
+The same review issue prevents integrating PR #361's `func_00333048` draft.
+In USA v1.01, the call at +0x36C normalizes the hit packet at stack +0x40;
+its first identified initialization follows at +0x3CC. This reads meaningful
+XYZ components before their producer. The draft remains in `nonmatching`
+with corrected allocator return declarations; the source marker stays assembly.
+Resolve the packet's producer/lifetime before claiming defined C or adding
+initialization that the retail body does not perform.
 
 The 320-record state machine `func_L00_003F0680` reaches 796 bytes with O2/G0
 and its SDA declaration, reproducing the initial absolute and later GP table load;

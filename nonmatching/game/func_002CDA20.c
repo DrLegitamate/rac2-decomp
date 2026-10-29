@@ -1,25 +1,20 @@
+/* Maintainer ABI correction, 29 October 2026: the qualified EE compiler
+ * measures sizeof(long) == sizeof(long long) == 8 and sizeof(void *) == 4.
+ * The PR #365 trials narrowing the style argument to u32 used a false
+ * interface. Their sizes are not a valid ABI-preserving improvement.
+ * Restore the earlier wide-argument candidate; no new match is claimed.
+ */
 #include "common.h"
 
-/* Near miss: current-master USA v1.01 -G8 check is 136 bytes against 140 and
- * 0/28 placements. The float computation and calls are recovered, but cc1
- * swaps the float constant registers, builds the style argument in several
- * instructions instead of retail's lui/ori pair, and schedules the x argument
- * in the jal delay slot. Reversing the add operands preserves 136 bytes; using
- * a separate scaled local grows the function to 156 bytes.
+/* Near miss: the candidate is retail's exact 140 bytes and every call, the
+ * float computation and the u64 argument are right, but three instructions
+ * differ.
  *
  * Retail keeps the 293.0f in `$f2` and the 0.5f in `$f1`
  * (`mtc1 $at,$f2` ; `mtc1 $at,$f1`), this cc1 keeps them the other way
- * round (`$f1` and `$f2`). Both addition operand orders give the same 136-byte
- * result. Reversing the multiplication operands (`ref * 293.0f`) is also
- * byte-identical at 136/140 and 0/28. A separate scaled local is 156 bytes.
- * A 29 October isolated `-O2 -G8 -ffunction-sections -ffast-math` probe also
- * remains 136/140 and 0/28. It retains the same `$f1`/`$f2` swap, expanded
- * style constant and call-argument setup differences; fast-math does not help.
- * An isolated `-fno-schedule-insns` unit also remains 136/140 and 0/28. The
- * float-register swap and expanded style constant persist, and the call
- * argument setup and call/epilogue schedule diverge further from retail.
- * An isolated `-fno-schedule-insns2` unit also remains 136/140 and 0/28;
- * the later scheduler pass does not recover the four missing bytes.
+ * round (`$f1` and `$f2`). The order of the two constants in the source does
+ * not change it: `x * 293.0f + 0.5f`, `0.5f + x * 293.0f` and the forms with
+ * a local for either constant all give the same allocation.
  *
  * Retail also sets up the arguments of the `func_0027FAA8` call as `$a1`,
  * `$a3`, `$a2` and `$t0`; this cc1 sets up `$a3`, `$a2` and `$a1`.
@@ -29,8 +24,7 @@
  * the symbolic `l.s $f0,sym` that retail's `lui $at`+`lwc1` pair comes from,
  * and with `-G0` the address is materialised in `$v0` instead.
  *
- * The unit needs `-G8` for the symbolic load. The matched callee takes a
- * 32-bit target `unsigned long` style argument; do not declare it as u64.
+ * The unit needs `-G8` for the symbolic load.
  */
 
 extern void func_0027C540(long);
@@ -41,7 +35,7 @@ extern void func_L00_0030D598(void);
 
 extern s32 func_00288FB8(s32);
 
-extern s32 func_0027FAA8(s32, s32, u32, s32, s32);
+extern s32 func_0027FAA8(s32, s32, u64, s32, s32);
 
 extern float ref_L00_002CDA20_01;
 
@@ -52,7 +46,7 @@ int func_002CDA20(void)
     func_0027C540(0);
     func_L00_0030D598();
     s0 = (s32)(0.5f + 293.0f * ref_L00_002CDA20_01);
-    func_0027FAA8(0x1A5, s0, 0x80F0F0F0u, func_00288FB8(0x2D4F), -1);
+    func_0027FAA8(0x1A5, s0, 0x80F0F0F0, func_00288FB8(0x2D4F), -1);
     func_0027C660();
     return 0;
 }
