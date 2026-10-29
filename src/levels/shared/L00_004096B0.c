@@ -127,7 +127,7 @@ INCLUDE_ASM("asm/levels", func_L00_00409E48);
 /* func_L00_0040A4A8 is defined in L00_0040A4A8.c. */
 
 
-INCLUDE_ASM("asm/levels", func_L00_0040B098);
+/* func_L00_0040B098 is defined in L00_0040B098.c. */
 
 /* func_L00_0040B2C0 is defined in L00_0040B2C0-flags-g8.c. */
 
@@ -137,7 +137,7 @@ INCLUDE_ASM("asm/levels", func_L00_0040B398);
 
 INCLUDE_ASM("asm/levels", func_L00_0040BA30);
 
-INCLUDE_ASM("asm/levels", func_L00_0040C7D8);
+/* func_L00_0040C7D8 is defined in L00_0040C7D8-g8.c. */
 
 /* func_L00_0040CCA0 is in L00_0040CCA0.c. */
 

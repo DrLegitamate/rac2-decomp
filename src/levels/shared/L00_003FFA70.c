@@ -62,7 +62,7 @@ void func_L00_003FFA70(char *arg)
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L00_003FFBA0);
+/* func_L00_003FFBA0 is defined in L00_003FFBA0-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L00_004003F0);
 
@@ -73,7 +73,8 @@ INCLUDE_ASM("asm/levels", func_L00_004003F0);
 
 /* func_L00_00401168 is defined in L00_00401168-basis-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_00401668);
+/* func_L00_00401668 is defined in L00_00401668-ground-g8.c. */
+
 
 /* func_L00_00402068 is defined in L00_003FFA70-ring-g8.c. */
 
@@ -195,7 +196,7 @@ void func_L00_00404368(float *pos, int unused, int mode)
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L00_004045E8);
+/* func_L00_004045E8 is defined in L00_004045E8.c. */
 
 /* func_L00_00404B48 is defined in L00_00404B48-g8.c. */
 
@@ -212,21 +213,19 @@ extern void func_0035F450(int a, int b, void *c, int d);
 
 INCLUDE_ASM("asm/levels", func_L00_00405808);
 
-INCLUDE_ASM("asm/levels", func_L00_00406040);
+/* func_L00_00406040 is defined in L00_00406040-g8.c. */
 
 
 
 INCLUDE_ASM("asm/levels", func_L00_00406FB0);
 
-INCLUDE_ASM("asm/levels", func_L00_004073D8);
 
-INCLUDE_ASM("asm/levels", func_L00_004079C8);
+/* func_L00_004079C8 is defined in L00_004079C8-g64.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_00407C18);
+/* func_L00_00407C18 is defined in L00_00407C18-g64.c. */
 
 INCLUDE_ASM("asm/levels", func_L00_00407E38);
 
-INCLUDE_ASM("asm/levels", func_L00_00408800);
 
 INCLUDE_ASM("asm/levels", func_L00_00408E58);
 
@@ -252,4 +251,4 @@ void func_L00_00409420(char *object)
 }
 
 
-INCLUDE_ASM("asm/levels", func_L00_00409558);
+/* func_L00_00409558 is in L00_00409558-g8.c. */

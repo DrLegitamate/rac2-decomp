@@ -1,5 +1,14 @@
 #include "include_asm.h"
 
+extern int D_L00_001A8F00 __attribute__((sda));
+extern void func_L00_002E54E0(float value);
+extern float func_00282C48(float value);
+extern char D_L00_001D9F00[];
+extern char D_L00_001DA860[];
+int func_L00_003D3DE0(char *a, char *b);
+int func_L00_003EB610(char *a, char *b);
+void func_L00_0035F180(char *a, int b, int c, char *d, int e);
+
 typedef struct Rac2Native_9cdc323a4d0c2fbd_AnalysisOwner {
     unsigned char prefix_00[0x68];
     void *context_68;
@@ -85,8 +94,45 @@ void func_L00_003EA0E0(char *p, int v, char *a, char *b)
     func_00282CC0_4(a, a, p + 16);
 }
 
+void func_L00_003EA408(char *p)
+{
+    float v;
+    float x;
+    float a;
+    float b;
+    float c;
+    int *q;
 
-INCLUDE_ASM("asm/levels", func_L00_003EA408);
+    if (*(unsigned char *)(p + 0x20) == 0) {
+        *(unsigned short *)(p + 0x32) = 0xAF0;
+        *(unsigned char *)(p + 0x30) = 0xFF;
+        *(unsigned char *)(p + 0x20) = 1;
+        func_L00_002E54E0(3000.0f);
+    }
+    if (*(unsigned char *)(p + 0x20) != 1)
+        return;
+    if (D_L00_001A8F00 == 2)
+        return;
+
+    v = *(float *)(p + 0x14);
+    v = v - 1.6666667f;
+    *(float *)(p + 0x14) = v;
+    x = func_00282C48(v);
+
+    a = 3000.0f - x;
+    b = 750.0f - a;
+    c = 1.0f - b * (1.0f / 750.0f);
+    if (c > 3.0f)
+        c = 3.0f;
+    if (c < 0.0f)
+        c = 0.0f;
+
+    q = *(int **)(p + 0x24);
+    *(float *)(p + 0x2C) = *(float *)((char *)q + 0x24) * c;
+    if (*(float *)(p + 0x14) <= -3000.0f)
+        *(float *)(p + 0x14) = 3000.0f;
+}
+
 
 /* func_L00_003EA540 is defined in its own unit. */
 
@@ -179,7 +225,7 @@ void func_L00_003EA8C8(char *unused, char *position, int color, float alpha)
     func_2EAC30((char *)work, (char *)work + 0x90, 0);
 }
 
-INCLUDE_ASM("asm/levels", func_L00_003EAA58);
+/* func_L00_003EAA58 is defined in L00_003EAA58.c. */
 
 /* When the context flag at offset 0x24 is nonzero, pass scale 1.0, the context, its vector at offset 0x10 and mode zero to the bound helper; original game role is unknown. */
 void func_L00_003EAC88(Rac2Native_9cdc323a4d0c2fbd_AnalysisOwner *owner)
@@ -303,8 +349,6 @@ void func_L00_003EB400(char *self)
 INCLUDE_ASM("asm/levels", func_L00_003EB610);
 
 
-INCLUDE_ASM("asm/levels", func_L00_003EB7C0);
-
 INCLUDE_ASM("asm/levels", func_L00_003EB8E8);
 
 
@@ -361,7 +405,33 @@ void func_L00_003ECB38(char *obj, void *rec, char *mob, float fa, float fb, floa
     func_31DE50(obj + 0xF8, angle, mob, fa, fb, fc, 0);
 }
 
-INCLUDE_ASM("asm/levels", func_L00_003ECC90);
+extern Rac2Native_003ECB38_ConstBlock D_00189E20;
+
+void func_L00_003ECC90(char *a, int b)
+{
+    int done = 0;
+    int i;
+    char *pa;
+    int bv;
+
+    i = 0;
+    pa = a;
+    bv = b;
+    do {
+        if (bv == 0xB02) {
+            if (func_L00_003D3DE0(D_00189E20.tbl, pa) != 0)
+                done = 1;
+        } else {
+            if (func_L00_003EB610(D_00189E20.tbl, pa) != 0)
+                done = 1;
+        }
+    } while (++i < 4);
+    if (done != 0)
+        return;
+    func_L00_0035F180((char *)(*(int *)(*(int *)(D_L00_001D9F00 + *(unsigned char *)(D_L00_001DA860 + bv) * 4) + 0x28) + 0xC0),
+                      0, 0, (char *)D_00189EA0, 0x400);
+}
+
 
 
 INCLUDE_ASM("asm/levels", func_L00_003ED198);

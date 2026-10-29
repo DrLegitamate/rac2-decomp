@@ -1,13 +1,14 @@
-/* Bounded manual reconstruction; not linked.
- * Profile: -O2 -G8 -ffunction-sections.
- * 1044/1148 bytes; us: 0/27 places; us2: 0/27 places; pal: 0/27 places.
- * Complete strip construction uses144-byte packets, four-byte packed color unions and
- * measured48-byte point stride. Retail accesses color alpha bytes absolutely but packed words
- * through GP; this view selects GP for both. Color spills, scalar zero stores and
- * the 0x1d0/0x1e0 frame differ. Reopen with the original color/packet types and alias lifetimes.
- */
-typedef struct { float x,y,z,w; } StripVector;
-typedef struct { StripVector vertices[4]; unsigned int colors[4]; float uv[8]; long long zero,texture,state,flags; } StripPacket;
+#include "common.h"
+typedef struct { float x, y, z, w; } __attribute__((aligned(16))) StripVector;
+typedef struct {
+    StripVector vertices[4];
+    unsigned int colors[4];
+    union {
+        float uv[8];
+        unsigned int uv_bits[8];
+    } tex;
+    long long zero, texture, state, flags;
+} StripPacket;
 typedef struct { unsigned char pad[0x70]; long f70,f78,f80,f88; } QuadPacket;
 typedef union { unsigned int value; unsigned char bytes[4]; } StripColor;
 extern char *func_L00_0032A088(int, int);
@@ -21,10 +22,14 @@ extern void func_00282CC0(void *, void *, void *);
 extern void func_00282D30(void *, void *, float);
 extern int func_00283D38(int, int, float);
 extern void func_00280B90(void *, void *, int);
-extern StripColor D_L00_001B0958 __attribute__((sda));
-extern StripColor D_L00_001B095C __attribute__((sda));
-extern StripColor D_L00_001B0960 __attribute__((sda));
-extern StripColor D_L00_001B0964 __attribute__((sda));
+extern StripColor D_L00_001B0958;
+extern unsigned int D_L00_001B0958_word SDATA(D_L00_001B0958);
+extern StripColor D_L00_001B095C;
+extern unsigned int D_L00_001B095C_word SDATA(D_L00_001B095C);
+extern StripColor D_L00_001B0960;
+extern unsigned int D_L00_001B0960_word SDATA(D_L00_001B0960);
+extern StripColor D_L00_001B0964;
+extern unsigned int D_L00_001B0964_word SDATA(D_L00_001B0964);
 extern float D_L00_001B0968 __attribute__((sda));
 extern float D_L00_001B096C __attribute__((sda));
 extern int D_L00_001B0974 __attribute__((sda));
@@ -32,42 +37,49 @@ extern int D_L00_001B0978 __attribute__((sda));
 extern int D_0018C0B4 __attribute__((nosda));
 extern StripVector D_L00_001B8DC0 __attribute__((nosda));
 
-void func_L00_003F5B10(char *object) {
+/* Draws inner and outer strips along the effect's 0x30-byte point records.
+   Each point uses the view direction to face the strip towards the camera;
+   its stored width scales the inner strip, then the shared factor widens the
+   outer strip. Endpoint colors fade with the state and interpolate along it. */
+void func_L00_003F5B10(char *object)
+{
     char *state = *(char **)(object + 0x68);
     StripPacket inner, outer;
     StripVector normal, offset, view, direction;
     char *base, *point;
-    unsigned int innerA, innerB, outerA, outerB;
     int i;
-    float fade, step, t;
+    unsigned int innerA, innerB, outerA, outerB;
+    float fade, step, t, zero, scroll;
     if (*(short *)(state + 0x20) <= 1 || *(short *)(state + 0x22) == 0)
         return;
     base = *(char **)(func_L00_0032A088(0xC04, *(short *)(state + 0x1A)) + *(short *)(state + 0x18) * 4);
     func_00281DE8((QuadPacket *)&inner, D_L00_001B0974, 1, 0x80);
-    inner.uv[0] = D_L00_001B096C;
-    inner.uv[1] = 0.0f;
-    inner.uv[2] = D_L00_001B096C;
-    inner.uv[3] = 1.0f;
-    inner.uv[4] = D_L00_001B096C + 1.0f;
-    inner.uv[5] = 0.0f;
-    inner.uv[6] = D_L00_001B096C + 1.0f;
-    inner.uv[7] = 1.0f;
+    scroll = D_L00_001B096C;
+    inner.tex.uv[0] = 0.0f;
+    inner.tex.uv_bits[1] = 0;
+    inner.tex.uv[3] = 1.0f;
+    /* Reuse the initial zero for the outer strip's V coordinates. */
+    zero = inner.tex.uv[0];
+    inner.tex.uv[2] = scroll;
+    inner.tex.uv[0] = scroll;
+    inner.tex.uv[4] = inner.tex.uv[6] = D_L00_001B096C + 1.0f;
+    /* The packet also exposes coordinates as raw words for zero initialization. */
+    inner.tex.uv_bits[5] = 0;
+    inner.tex.uv[7] = 1.0f;
     func_00281DE8((QuadPacket *)&outer, D_L00_001B0978, 1, 0x80);
-    outer.uv[0] = D_L00_001B096C;
-    outer.uv[1] = 0.0f;
-    outer.uv[2] = D_L00_001B096C;
-    outer.uv[3] = 1.0f;
-    outer.uv[4] = D_L00_001B096C + 1.0f;
-    outer.uv[5] = 0.0f;
-    outer.uv[6] = D_L00_001B096C + 1.0f;
-    outer.uv[7] = 1.0f;
+    outer.tex.uv[3] = 1.0f;
+    outer.tex.uv[7] = 1.0f;
+    outer.tex.uv[1] = zero;
+    outer.tex.uv[0] = outer.tex.uv[2] = D_L00_001B096C;
+    outer.tex.uv[5] = zero;
+    outer.tex.uv[4] = outer.tex.uv[6] = D_L00_001B096C + 1.0f;
     fade = (float)*(short *)(state + 0x22) * *(float *)(state + 0x24);
     if (D_0018C0B4 == 0x1D)
         fade *= 0.5f;
-    innerA = (unsigned int)func_00283CF0(func_00283CE0(D_L00_001B0958.bytes[3]) * fade) << 24 | (D_L00_001B0958.value & 0xFFFFFF);
-    innerB = (unsigned int)func_00283CF0(func_00283CE0(D_L00_001B0960.bytes[3]) * fade) << 24 | (D_L00_001B0960.value & 0xFFFFFF);
-    outerA = (unsigned int)func_00283CF0(func_00283CE0(D_L00_001B095C.bytes[3]) * fade) << 24 | (D_L00_001B095C.value & 0xFFFFFF);
-    outerB = (unsigned int)func_00283CF0(func_00283CE0(D_L00_001B0964.bytes[3]) * fade) << 24 | (D_L00_001B0964.value & 0xFFFFFF);
+    innerA = (unsigned int)func_00283CF0(func_00283CE0(D_L00_001B0958.bytes[3]) * fade) << 24 | (D_L00_001B0958_word & 0xFFFFFF);
+    innerB = (unsigned int)func_00283CF0(func_00283CE0(D_L00_001B0960.bytes[3]) * fade) << 24 | (D_L00_001B0960_word & 0xFFFFFF);
+    outerA = (unsigned int)func_00283CF0(func_00283CE0(D_L00_001B095C.bytes[3]) * fade) << 24 | (D_L00_001B095C_word & 0xFFFFFF);
+    outerB = (unsigned int)func_00283CF0(func_00283CE0(D_L00_001B0964.bytes[3]) * fade) << 24 | (D_L00_001B0964_word & 0xFFFFFF);
     inner.colors[0] = inner.colors[1] = innerA;
     outer.colors[0] = outer.colors[1] = outerA;
     func_00282CF0(&view, base, &D_L00_001B8DC0);
@@ -83,7 +95,7 @@ void func_L00_003F5B10(char *object) {
     for (i = 1; i < *(short *)(state + 0x20); i++) {
         point = base + i * 0x30;
         func_00282CF0(&view, point, &D_L00_001B8DC0);
-        func_00282CF0(&direction, point, point - 0x30);
+        func_00282CF0(&direction, point, base + (i * 0x30 - 0x30));
         func_00282DD8(&normal, &direction, &view);
         func_00282F20(&offset, &normal, *(float *)(point + 0xC));
         func_00282CC0(&inner.vertices[2], point, &offset);
@@ -96,10 +108,10 @@ void func_L00_003F5B10(char *object) {
         outer.colors[2] = outer.colors[3] = func_00283D38(outerA, outerB, t);
         func_00280B90(&inner, 0, 0);
         func_00280B90(&outer, 0, 0);
-        *(long long *)&inner.vertices[0] = *(long long *)&inner.vertices[2];
-        *(long long *)&inner.vertices[1] = *(long long *)&inner.vertices[3];
-        *(long long *)&outer.vertices[0] = *(long long *)&outer.vertices[2];
-        *(long long *)&outer.vertices[1] = *(long long *)&outer.vertices[3];
+        qcopy(&inner.vertices[0], &inner.vertices[2]);
+        qcopy(&inner.vertices[1], &inner.vertices[3]);
+        qcopy(&outer.vertices[0], &outer.vertices[2]);
+        qcopy(&outer.vertices[1], &outer.vertices[3]);
         inner.colors[0] = inner.colors[1] = inner.colors[2];
         outer.colors[0] = outer.colors[1] = outer.colors[2];
     }
