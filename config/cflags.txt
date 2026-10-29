@@ -1487,6 +1487,7 @@ src/game/0031E3A8-update.c	-O2 -G0 -ffunction-sections -mno-split-addresses -g -
 src/levels/shared/L14_003DE908-g32.c	-O2 -G32 -ffunction-sections -Wa,-G32
 
 
+src/game/0033F030-draw.c	-O2 -G0 -ffunction-sections -fno-gcse
 
 
 
@@ -1605,6 +1606,7 @@ src/game/0030F7B0-nearest.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcop
 
 
 src/game/002AA800-nearest.c	-O2 -G0 -ffunction-sections -g -ffast-math
+src/game/003427B0-fade.c	-O2 -G0 -ffunction-sections -frac2-hazard-labels
 
 
 

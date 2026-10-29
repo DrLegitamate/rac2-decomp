@@ -24,8 +24,6 @@ unsigned long func_003427B0(unsigned long param_1)
 }
 
 
-INCLUDE_ASM("asm/game", func_003427C0);
-
 extern void *func_00336E40(void *);
 extern void *func_00336DA8(void *, void *);
 extern void *func_00115484(void *, int, int);
@@ -54,7 +52,6 @@ void func_003428E0(char *object, void *argument)
     *(int *)(object + 0x94) = 0;
 }
 
-INCLUDE_ASM("asm/game", func_00342978);
 
 s32 func_00342BC0(u8 *a0) {
  if(*(s32 *)(a0+0x10)!=0) return *(s32 *)((u32)a0+(*(s32 *)(a0+0x14)<<2)+0x28);

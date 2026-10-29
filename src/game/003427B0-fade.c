@@ -1,8 +1,4 @@
-/*
- * Measured near miss: 284 bytes, 0/28 placements in USA v1.01, PAL, and USA v2.00.
- * The remaining differences are the branch displacement at +0x88 and the final
- * floating-point multiply/conversion destinations near +0xF0.
- */
+/* List-entry alpha falls off with scaled distance from the upper bound. */
 extern double func_001234F0(float);
 extern int func_00123028(double, double);
 extern double func_00122A98(double, double);
@@ -29,6 +25,8 @@ int func_003427C0(void *unused, int limit, float start, float offset, float end,
         value = func_00122A98(0.0, value);
     ratio = func_00123298(value);
 
-    result = (int)((1.0f - ratio) * 255.0f);
+    scaled = (1.0f - ratio) * 255.0f;
+    result = (int)scaled;
     return limit < result ? limit : result;
 }
+

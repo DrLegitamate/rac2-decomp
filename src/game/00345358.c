@@ -1,5 +1,14 @@
 #include "include_asm.h"
 
+extern float *func_00335E10(char *);
+extern void func_0034AA30(char *);
+extern void func_00349680(char *, int);
+extern float ref_L00_001AEAC8_00 __attribute__((section(".sdata")));
+extern float ref_L00_001AEACC_00 __attribute__((section(".sdata")));
+extern float ref_L00_001AEAD0_00 __attribute__((section(".sdata")));
+extern float ref_L00_001AEAD4_00 __attribute__((section(".sdata")));
+
+
 extern void F6402b823_FUN_00336320(char *a);
 
 extern void F6402b823_FUN_00336A78(char *a);
@@ -134,6 +143,14 @@ extern void F01bd4546_FUN_00349678(char *p, float v);
 
 extern void F076896f4_FUN_00349AB8(void *, int);
 
+extern int func_002A9588(int, int, int, int, int);
+extern void func_00336320(char *);
+extern void func_00336548(char *);
+extern void func_0034A808(char *, int, int, float *, float *, float *, int *);
+extern void func_00335E38(char *, float, float, float, float);
+extern void func_00335F88(char *, float, float, float, float);
+extern char *D_001A8CFC __attribute__((section(".sdata")));
+
 void func_00345358(char *obj)
 {
     if (*(int *)(obj + 1080) != 0) {
@@ -185,7 +202,7 @@ INCLUDE_ASM("asm/game", func_00345D58);
 
 INCLUDE_ASM("asm/game", func_00345F70);
 
-INCLUDE_ASM("asm/game", func_003462A8);
+/* func_003462A8 is built from 00345358-descriptor-g8.c for small-data access. */
 
 /* func_003463C8 and func_003464D0 are built from 00345358-g8.c for small-data access. */
 
@@ -604,9 +621,115 @@ INCLUDE_ASM("asm/game", func_0034A4E0);
 
 INCLUDE_ASM("asm/game", func_0034AA30);
 
-INCLUDE_ASM("asm/game", func_0034AC10);
+void func_0034AC10(char *self)
+{
+    float *out = func_00335E10(self + 0x5C);
 
-INCLUDE_ASM("asm/game", func_0034AD10);
+    {
+        float x = ref_L00_001AEAC8_00;
+        float px = (*(float **)(self + 8))[0];
+        float y = ref_L00_001AEACC_00;
+        out[0] = x + px;
+        out[1] = y + (*(float **)(self + 8))[1];
+    }
+
+    out = func_00335E10(self + 0xA8);
+    {
+        float x = ref_L00_001AEAD0_00;
+        float px = (*(float **)(self + 8))[0];
+        float y = ref_L00_001AEAD4_00;
+        out[0] = x + px;
+        out[1] = y + (*(float **)(self + 8))[1];
+    }
+
+    func_0034AA30(self);
+    func_00349680(self + 0x140, 1);
+
+    if (*(int *)(self + 0x3F4) != 0) {
+        int remaining = *(int *)(self + 0x3F4) - 1;
+        *(int *)(self + 0x3F4) = remaining;
+        if (remaining == 0) {
+            *(int *)(self + 0x0C) = 0;
+            *(int *)(self + 0x3F8) = 0;
+            *(int *)(self + 0x400) = 1;
+            func_00349630_2(self + 0x1D4, -1);
+            func_00349630_2(self + 0x25C, -1);
+            func_00349630_2(self + 0x2E4, -1);
+            func_00349630_2(self + 0x36C, -1);
+        }
+    }
+}
+
+void func_0034AD10(char *o)
+{
+    if (*(int *)(o + 0xC)) {
+        float x, y, size;
+        int mode, color = 0, i;
+
+        func_00336320(o + 0x5C);
+        func_00336320(o + 0xA8);
+        func_00336548(o + 0xF4);
+        x = 0;
+        y = 0;
+        size = 0;
+        mode = 0;
+        if (*(int *)(o + 0x3F8)) {
+            color = func_002A9588(-1, 0x22222222, 10, 0, 0);
+            --*(int *)(o + 0x3F8);
+        }
+        for (i = 0; i < *(int *)(o + 4); i++) {
+            int flash = 0;
+            float sx, sy;
+
+            if (*(int *)(o + 0x3F8) && i >= *(int *)(o + 0x3FC))
+                flash = 1;
+            func_0034A808(o, *(int *)(o + 4), i, &x, &y, &size, &mode);
+            func_00335E38(o + 0x10, x, y, 0, 0);
+            sx = size;
+            sy = size;
+            switch (mode) {
+            case 0:
+                break;
+            case 1:
+                sx = -size;
+                break;
+            case 2:
+                sy = -size;
+                break;
+            case 3:
+                sy = -size;
+                sx = -sx;
+                break;
+            }
+            func_00335F88(o + 0x10, sx, sy, 0, 0);
+            if (*(int *)(o + 4) < 21) {
+                if (*(int *)o >= i + 1) {
+                    func_00336390(o + 0x10, D_001A8CFC + 0x8710, 26);
+                    if (flash)
+                        *(int *)func_00335E20((unsigned char *)o + 0x10) = color;
+                    else
+                        *(float *)func_00335E20((unsigned char *)o + 0x10) = **(float **)(o + 0x1C8);
+                    func_00336320(o + 0x10);
+                }
+                func_00336390(o + 0x10, D_001A8CFC + 0x8710, 25);
+                *(int *)func_00335E20((unsigned char *)o + 0x10) = 0x55F0C070;
+                func_00336320(o + 0x10);
+            } else {
+                if (*(int *)o >= i + 1) {
+                    func_00336390(o + 0x10, D_001A8CFC + 0x8710, 27);
+                    if (flash)
+                        *(int *)func_00335E20((unsigned char *)o + 0x10) = color;
+                    else
+                        *(float *)func_00335E20((unsigned char *)o + 0x10) = **(float **)(o + 0x1C8);
+                    func_00336320(o + 0x10);
+                }
+                func_00336390(o + 0x10, D_001A8CFC + 0x8710, 24);
+                *(int *)func_00335E20((unsigned char *)o + 0x10) = 0x55F0C070;
+                func_00336320(o + 0x10);
+            }
+        }
+    }
+}
 
 void func_0034AFE8(u8 *a0, f32 a1, f32 a2) {
     *(f32 *)*(u8 **)(a0 + 0x8) = a1;
