@@ -1,54 +1,4 @@
-/*
- * Updated manual-C near miss, 2026-10-25.
- * Measured standalone unit: src/levels/23_damosel_orbit/L23_00422A30-g8.c
- * Game profile: -O2 -G8 -ffunction-sections
- * Release coverage: US 0/1 (exit1); US2 0/1 (exit1); PAL catalogue absent (exit1).
- * Current residual: 980/980 bytes. Only the final source-address addiu and
- * global-destination lui are exchanged at +0x330/+0x334. A real source pointer ties;
- * mno-split-addresses gives 972 and disabling sched2 changes earlier code. The three
- * pose-row transfers intentionally remain ordinary folded TI assignments.
- * Reopen only for: A concrete address lifetime/assembler model for the last global vector
- * copy; retain both real relocation identities.
- * Older notes below are historical. ASM marker and trial-only profiles were restored.
- */
-
 #include "common.h"
-
-/* func_L23_00422A30 (level 23, 980 bytes) -- NEAR MISS, not integrated.
-   state: 976 bytes against retail's 980 (`-O2 -G8 -ffunction-sections -frac2-qcopy`, a unit of its own: it
-   reads $gp outside delay slots, hence -G8); 0 of 1 places match, about 78 words differ (instruction order
-   around the 16-byte copies, see below).
-   right (each measured): the frame (0xB0, locals at sp+0x00..0x3F as one TI16[4]), the allocation call and
-   its early exit, the field setup, the target / hero / none three-way, the PRE register copies of the
-   address expressions (`obj + 0x10` -> $a0 then $s7, `st + 0x30` -> $s1 then $s6, `&loc[2]` -> $s0 then
-   $s7): written as the literal expression at every use, not as a pointer variable (a named pointer
-   coalesces them and the `daddu` copies disappear); the two byte parameters declared `s32` (`u8` gives an
-   `andi $s2,$a3,0xFF` that retail does not have); the global hero pointer read ONCE into a local before the
-   target test (retail loads it into the delay slot of the `beqz $s0`, and every later use is that register);
-   the inner test as `== 0xF7F` first (retail's `bne` skips the &D_L23_001B36E0 arm); `st->0x20 = 0` written
-   once after the big block (retail reaches it through branch-delay copies); the dot product in a variable of
-   its own (it lands in $f1, a short-lived register, and the two magnitudes keep $f21/$f20); func_002E5CF8
-   declared as returning s32 (it ends with `daddu $v0,$a0,$zero`): that is what moves the last `lhu`/`ori`
-   temporary from $v0 to $v1; the three plain copies of rows +0xC0/+0xD0/+0xE0 go through TI16 temporaries
-   (`c0 = *src; *dst = c0`) so that -frac2-qcopy does not group them: retail keeps those three as ordinary
-   `lq`/`sq` with the offsets folded (and $v0, $v1, $v0 as temporaries), while the other six copies (obj+0x10,
-   the four vectors in the aim block, the +0xE0 copy into D_L23_001B1FB0 and its copy back) are grouped
-   `lq $v0,0(src) ; sq $v0,0(dst)` pairs through address registers.
-   what still differs (wall (2) of the brief): the grouped copies are scheduling barriers in retail and are not
-   with -frac2-qcopy, so instructions move across them (the first copy's `lwc1`/`mul.s`/`lui` set-up, the
-   argument moves before the aim block's calls, the `daddu $s6,$s1` copies) and about 78 words differ.
-   In a SCRATCH copy (build/, never src/) with the six grouped copies written as
-   `asm volatile ("lq $2,0(%1) ; sq $2,0(%0)" : : "r"(dst), "r"(src) : "$2")` (no memory clobber) the same C
-   compiles to retail's 980 bytes and only TWO words differ: `addiu $v1,$s5,0xE0` and `lui $s0,0x1B` of the
-   last copy come in the other order (a scheduling tie of the two address computations; not changed by the
-   asm operand order).
-   tried without effect: -frac2-zero-ti-barrier is not involved (no clear in this body); default flags without
-   qcopy give 956 bytes (the six register-address copies come out folded). */
-
-
-
-
-
 
 typedef int TI16 __attribute__((mode(TI)));
 
@@ -70,7 +20,8 @@ extern u8 *D_L23_001B1484 __attribute__((sda));
 
 extern s32 D_L23_001B36E0;
 
-extern TI16 D_L23_001B1FB0;
+/* A 16-byte global vector: retain the unsplit address form, as in retail. */
+extern TI16 D_L23_001B1FB0 MACRO_ADDR;
 
 extern u8 *func_0029EFD0(s32);
 

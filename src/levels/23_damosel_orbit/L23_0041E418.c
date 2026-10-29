@@ -45,9 +45,9 @@ char *func_L23_00422540(char *pos, char *dir, float *damage) {
 
 /* func_L23_00422798 is matched in L23_00422798-g8.c (built with -frac2-zero-ti-por). */
 
-INCLUDE_ASM("asm/levels", func_L23_00422A30);
+/* func_L23_00422A30 is defined in L23_00422A30-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L23_00422E08);
+/* func_L23_00422E08 is defined in L23_00422E08-g8.c. */
 
 
 /* func_L23_00423380 is defined in L23_0041E418-g8.c (this unit has no $gp access for it). */
@@ -62,7 +62,7 @@ INCLUDE_ASM("asm/levels", func_L23_004236B8);
 
 /* func_L23_00425848 is matched in L23_00425848.c (built with -frac2-qcopy -frac2-qcopy-barrier). */
 
-INCLUDE_ASM("asm/levels", func_L23_00425AF8);
+/* func_L23_00425AF8 is defined in L23_00425AF8-g8.c. */
 
 typedef int TI16 __attribute__((mode(TI)));
 
@@ -115,8 +115,7 @@ void func_L23_004260F0(u8 *obj, float *dst, TI16 *src1, TI16 *src2, float scale)
 
 /* func_L23_00426248 is defined in L23_00426248-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L23_004265D0);
-
+/* func_L23_004265D0 is defined in L23_004265D0-g8.c. */
 extern void func_L23_004277E8(u8 *);
 extern void func_L23_004278B0(u8 *);
 

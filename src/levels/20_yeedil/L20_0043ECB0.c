@@ -121,7 +121,7 @@ done:
     *(int *)(state + 0x17F4) = *(unsigned char *)(arg0 + 0x95);
 }
 
-INCLUDE_ASM("asm/levels", func_L20_00442CD8);
+/* func_L20_00442CD8 is defined in L20_00442CD8-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L20_00442E68);
 
@@ -279,7 +279,7 @@ void func_L20_00444AA8(char *arg0, float *arg1) {
     *(float *)(state + 0x2B8) = f;
 }
 
-INCLUDE_ASM("asm/levels", func_L20_00444B48);
+/* func_L20_00444B48 is defined in L20_00444B48-g8.c. */
 
 extern void func_L00_002E6EF8(void (*)(void), int);
 
@@ -288,7 +288,7 @@ void func_L20_00444C68(int arg0) {
     func_L00_002E6EF8(func_L20_00440570, arg0);
 }
 
-INCLUDE_ASM("asm/levels", func_L20_00444CA8);
+/* func_L20_00444CA8 is defined in L20_00444CA8.c. */
 
 INCLUDE_ASM("asm/levels", func_L20_004450D8);
 /* func_L20_004450D8 reads a global through $gp: its near miss is in
@@ -298,8 +298,7 @@ INCLUDE_ASM("asm/levels", func_L20_004451C0);
 
 INCLUDE_ASM("asm/levels", func_L20_00445738);
 
-INCLUDE_ASM("asm/levels", func_L20_00445890);
-
+/* func_L20_00445890 is defined in L20_00445890-g8.c. */
 
 /* The level's own jump table (the label of the data blob at 0x002B5980). */
 extern void *jtbl_002B5980[];

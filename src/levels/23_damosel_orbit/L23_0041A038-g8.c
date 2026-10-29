@@ -1,20 +1,8 @@
-/*
- * Retained handwritten near miss; historical evidence only.
- * No linked-image equality or complete retail semantics is established.
- * Compiler: game EE-GCC 2.9-ee-991111b (project profile).
- * Profile: -O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -fno-gcse.
- * Reported final C / retail: 896 / 896 bytes; size equality is not a match.
- * us: 0/1 placements.
- * us2: 0/1 placements.
- * pal: absent from catalogue (not a match).
- * Residual: Equal size; copy-address operand registers and call argument scheduling differ. Final source preserves full16-byte vectors.
- * Reopening condition: New measured source/data-layout or allocator hypothesis; do not repeat retained flag/control-flow trials or use artificial aliases/barriers.
- * Where listed, tools/check.py measurements predate retention; no compilation was rerun for this copy.
- */
+#include "common.h"
 
-/* 896/896 bytes, remaining allocation and copy-address operand scheduling. Six trials; -fno-gcse avoids high-address lifetime across calls.
- * Profile: -O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -fno-gcse. */
-#include "include_asm.h"
+/* The complete vector extents and macro address forms preserve retail's absolute
+ * copies under -G8. Take the persistent direction pointer after the query so
+ * its earlier uses can share the block-local scratch register. */
 typedef int Quad __attribute__((mode(TI)));
 extern int D_L23_001B1438 __attribute__((sda));
 extern int D_L23_001B1440 __attribute__((sda));
@@ -27,11 +15,13 @@ extern float D_L23_001B158C __attribute__((sda));
 extern int D_L23_001B1648 __attribute__((sda));
 extern int D_L23_001B140C __attribute__((sda));
 extern int D_L23_001B36AC;
-extern char D_L23_001B3850[16], D_L23_001B3870[16];
+extern Quad D_L23_001B3850 MACRO_ADDR;
+extern Quad D_L23_001B3870 MACRO_ADDR;
 extern float D_L23_001B3728;
 extern int D_L23_001B3784;
-extern char D_L23_001B3860[], D_L23_001B36C0[];
-extern char *D_0018C0B0;
+extern char D_L23_001B3860[] MACRO_ADDR;
+extern char D_L23_001B36C0[] MACRO_ADDR;
+extern char *D_0018C0B0 __attribute__((nosda));
 extern void func_00282C88(Quad *);
 extern void func_0029FC20(char *, int, char *);
 extern void func_0029FCC0(char *, int, char *);
@@ -61,8 +51,8 @@ int func_L23_0041A038(char *object, char *target) {
     ((unsigned char *)state)[0x473] = 1;
     *(Quad *)(state + 0x480) = local.zero;
     func_0029FC20(object, 39, (char *)local.matrix);
-    *(Quad *)D_L23_001B3850 = local.matrix[3];
-    *(Quad *)D_L23_001B3870 = local.matrix[0];
+    qcopy(&D_L23_001B3850, &local.matrix[3]);
+    qcopy(&D_L23_001B3870, &local.matrix[0]);
     if (D_L23_001B1438) return 0;
     local.axis = 0;
     ((float *)&local.axis)[2] = 1.0f;
@@ -70,11 +60,11 @@ int func_L23_0041A038(char *object, char *target) {
     func_00282D30(state + 0x4A0, (char *)&local.axis,
         (float)D_L23_001B1440 * D_L23_001B1448 * D_L23_001B144C);
     func_0029FCC0(object, 42, (char *)&local.axis);
-    direction = (char *)&local.direction;
-    func_00282CF0(direction, target, (char *)&local.axis);
-    func_00282F20(direction, direction, 1.0f);
-    D_L23_001B3728 = func_00282DB0(direction, D_L23_001B3870);
+    func_00282CF0((char *)&local.direction, target, (char *)&local.axis);
+    func_00282F20((char *)&local.direction, (char *)&local.direction, 1.0f);
+    D_L23_001B3728 = func_00282DB0((char *)&local.direction, (char *)&D_L23_001B3870);
     D_L23_001B3784 = func_002761F8(D_L23_001B3860, D_L23_001B36C0, 16, D_0018C0B0, 0) == 0;
+    direction = (char *)&local.direction;
     speed = D_L23_001B1580 * 0.00029088825f;
     if (((unsigned char *)state)[0x404] && ((unsigned char *)state)[0x405]) {
         mode = ((unsigned char *)object)[0x20];
@@ -82,7 +72,7 @@ int func_L23_0041A038(char *object, char *target) {
             if ((unsigned char)mode == 16) speed = D_L23_001B1584 * 0.00029088825f;
             else if ((unsigned)(mode - 13) < 3) speed = D_L23_001B1588 * 0.00029088825f;
         }
-        func_00282DD8((char *)&local.cross, direction, D_L23_001B3870);
+        func_00282DD8((char *)&local.cross, direction, (char *)&D_L23_001B3870);
         dot = func_00282DB0((char *)&local.cross, object + 0xD0);
         angle = func_002831B0(dot);
         func_00283C28(angle + 1.5707964f);

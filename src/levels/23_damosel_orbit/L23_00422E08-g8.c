@@ -1,59 +1,4 @@
-/*
- * Updated manual-C near miss, 2026-10-25.
- * Measured standalone unit: src/levels/23_damosel_orbit/L23_00422E08-g8.c
- * Game profile: -O2 -G8 -ffunction-sections
- * Release coverage: US 0/1 (exit1); US2 0/1 (exit1); PAL catalogue absent (exit1).
- * Current residual: 1376/1380 bytes. Grouped transfers are expressed with approved qcopy,
- * but pointer allocation and surrounding copy/call scheduling remain different. The old
- * three-float declaration explicitly chosen to exceed the GP threshold and the
- * guessed 0x20-byte table extent were replaced by incomplete views. Canonical float/int
- * return declarations were repaired.
- * Reopen only for: Qualify the actual global object extents/storage and the remaining
- * pointer lifetime difference; do not reinstate guessed array sizes.
- * Older notes below are historical. ASM marker and trial-only profiles were restored.
- */
-
 #include "common.h"
-
-/* func_L23_00422E08 (level 23, 1380 bytes) -- NEAR MISS, not integrated.
-   state: 1380 bytes against retail's 1380 (345 instructions each); tools/check.py: 0 of 1 places
-   match (instruction at +0x24 differs); 63 of 345 words differ once the two bodies are aligned.
-   built as part of L23_0041E418-g8.c (-G8): the six steering constants are $gp floats, and the
-   function is the only use of each name below.
-   matches: the 0x160 frame and the local layout (vectors at sp+0x20/0x30, the 3x4 matrix at sp+0x40,
-   the quaternion at sp+0x70, vectors at sp+0x80..0xB0, the collision record at sp+0xC0), the
-   prologue, every call with its arguments, the cross-jumped tail the two func_L00_00320B70 calls
-   share, the collision and class tests, the record stores (order found by trying all 5040), and
-   the func_002ABBB8 set-up. D_L23_001A8F20 has to be a bare symbol (sda, sized past the $gp limit):
-   as a plain extern its %hi is kept by GCSE in a saved register across five calls, where retail
-   rematerialises `lui $a1,0x1B; addiu $a1,$a1,-0x70E0` at both calls; the bare form gives
-   retail's pair and puts &lA0/&l90/dir in retail's $s2/$s3/$s6.
-   what still differs: the four 16-byte copies. Retail moves each through registers at offset 0:
-   `lq $v0,0($s3); sq $v0,0($s6)` (path 3), `addiu $s0,$s5,0x10; lq $v0,0($s0); sq $v0,0($s2)`
-   (the join), `lq $v0,0($s0); sq $v0,0($s3)`, and `addiu $a0,$a0,0x20; lq $v0,0($a0);
-   sq $v0,0($s1)` (the hit position). This cc1 folds every offset (`lq 0x90($sp)`, `sq 0xC0($s5)`,
-   `lq 0x10($s5)`, `lq 0x20($a0)`, `sq 0x10($s5)`): cse's find_best_addr prefers reg+offset on the
-   address-cost tie whenever the pointer was set in the same extended block, which is the case for
-   all four here. Knock-on effects of the fold: obj and &lB0 swap $s5/$s4 (the folded copies give
-   obj four more references), the copy of obj+0x10 kept for the collision code lands in $s6 early
-   instead of $s1 at the func_00282CC0 call, reorg steals the folded `lq` of the join into a beql
-   at the `< 0x91` test (retail: beqz with `daddu $a0,$s3,$zero`), and two argument set-ups
-   (path 2 of func_L00_00320B70, func_002C65A0) are scheduled one move apart.
-   tried: pointer variables for every vector (1388 bytes), pointers only for the join copies'
-   destinations (1400 bytes), the join copies through a pointer taken before the branches (107
-   words off), a plain extern for D_L23_001A8F20 (74 off), all 210 int/float interleavings of the
-   func_L00_00320B70 prototype and all 165 of func_002C65A0 (one word better at most), a second
-   variable for the second hit read (gives retail's $v0 there; kept).
-   what would unblock it: the 16-byte copy fold (compiler side); the shape fits copies whose
-   addresses are register operands, such as an inline-asm qcopy helper, which AGENTS.md rules out. */
-
-
-
-
-
-
-
-
 
 typedef int TI16 __attribute__((mode(TI)));
 
@@ -75,9 +20,9 @@ extern float D_L23_001B192C __attribute__((sda));
 extern float D_L23_001B1930 __attribute__((sda));
 
 /* Absolute scalar view; the surrounding object extent is unqualified. */
-extern float D_L23_001B3700[] __attribute__((nosda));
+extern float D_L23_001B3700[] __attribute__((sda));
 
-extern u8 D_L23_001A8F20[];
+extern u8 D_L23_001A8F20[] __attribute__((sda));
 
 /* the last hit reported by the collision query */
 typedef struct {
@@ -142,7 +87,8 @@ extern void func_00277F48(void *, s32, s32, void *, float);
 
 extern void func_L00_00320B70(void *, void *, void *, void *, void *, void *, float, float, float, float);
 
-extern void func_002C65A0(void *, void *, s32, s32, s32, s32, s32, s32, float, float, float);
+/* EE ABI: retain integer and float argument order within their register banks. */
+extern void func_002C65A0(void *, void *, s32, s32, s32, s32, s32, float, float, float, s32);
 
 void func_L23_00422E08(u8 *obj) {
     float up[4] __attribute__((aligned(16)));
@@ -205,7 +151,7 @@ void func_L23_00422E08(u8 *obj) {
     n = func_002A77E0(0xFF);
     func_002A7A00(a, 0.0f, 0.1f);
     func_00282CC0(a, a, b);
-    func_002C65A0(a, D_L23_001A8F20, 0xF, 0x808080, n, 0x20, 0, 0, r * 210000.0f, r * 42000.0f, 0.0f);
+    func_002C65A0(a, D_L23_001A8F20, 0xF, 0x808080, n, 0x20, 0, r * 210000.0f, r * 42000.0f, 0.0f, 0);
     func_00282CC0(b, b, c);
     qcopy(a, obj + 0x10);
     func_00282CC0(obj + 0x10, obj + 0x10, vel);

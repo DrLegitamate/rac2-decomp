@@ -1,22 +1,7 @@
-/* Retained C reconstruction; not linked or counted.
- * Profile: -O2 -G8 -ffunction-sections.
- * Compiled 1140 bytes; retail 1148 bytes.
- * us: 0/1 placements match (exit 1).
- * us2: 0/1 placements match (exit 1).
- * pal: canonical name absent; no match credit.
- * Remaining: Shared qcopy preserves all three complete vector snapshots, but the critical-edge
- * placement of state+0x140, loop alignment and position lifetime remain eight bytes short. The
- * destination is now a full 16-byte vector, and the scalar threshold uses NOT_SDA rather than a
- * fabricated three-element array to avoid GP addressing. The callback symbol is declared as an
- * actual function.
- * Reopen: Independent tail fall-through or state-field lifetime evidence; preserve the scalar
- * threshold and complete vector destination.
- */
-
 #include "common.h"
 typedef int TI16 __attribute__((mode(TI)));
 
-/* from the unit */
+/* The critical-edge profile preserves the shield pointer at both hit-path entries. */
 extern char *D_L23_001B1484 __attribute__((sda));
 
 extern int D_L23_001B1694 __attribute__((sda));
@@ -37,8 +22,8 @@ extern float D_L23_001B16BC __attribute__((sda));
 
 extern float D_L23_001B16C0 __attribute__((sda));
 
-/* Retail reads this scalar through an absolute address. */
-extern float D_L23_001B13CC NOT_SDA;
+/* The section address model preserves retail's absolute scalar load through $at. */
+extern float D_L23_001B13CC MACRO_ADDR;
 
 extern int D_0018C0B0 NOT_SDA;
 
@@ -85,7 +70,7 @@ extern float func_00283180(float);
 
 extern float func_00283198(float);
 
-extern char *func_00273730(void *, int, int, int, void *, void *, void *, float, float, int);
+extern char *func_00273730(void *, int, int, int, void *, void *, void *, float, float, unsigned char);
 
 extern void func_00310C88(unsigned char *);
 
@@ -121,7 +106,7 @@ void func_L23_0041B9F0(unsigned char *moby) {
     if (*(int *)(st + 0x60C) == -1 && *(char **)(st + 0x610) == 0) {
         func_00282D30(tmp, moby + 0xE0, D_L23_001B16BC);
         func_00282CC0(tmp, tmp, moby + 0x10);
-        qcopy(&D_L23_001B36E0 ,tmp);
+        qcopy(&D_L23_001B36E0, tmp);
         hit = func_002A9640(moby, 0x30000, 0);
         moby[0xA8] = 0xFF;
         func_00282978(st + 0x26);
@@ -153,8 +138,8 @@ void func_L23_0041B9F0(unsigned char *moby) {
                         if (child != 0)
                             *(void **)(child + 0x64) = (void *)func_00310C88;
                     }
+                    *(unsigned short *)(moby + 0x7C) = 0;
                 }
-                *(unsigned short *)(moby + 0x7C) = 0;
                 func_L23_0041C578(*(char **)(hit + 0x20));
                 *(float *)(st + 0x20) -= *(float *)(hit + 0x2C);
                 *(short *)(st + 0x26) = 20;
@@ -181,7 +166,7 @@ void func_L23_0041B9F0(unsigned char *moby) {
             func_0029FC20(moby, *(int *)(st + 0x60C) + 1, mtx);
             func_00282D30(tmp, (char *)(mtx + 4), D_L23_001B16C0);
             func_00282CC0(tmp, tmp, moby + 0x10);
-            qcopy(&D_L23_001B36E0 ,tmp);
+            qcopy(&D_L23_001B36E0, tmp);
             for (k = 0; k < 5; k++) {
                 char *gen = ((char **)(st + 0x358))[k];
 
@@ -195,7 +180,7 @@ void func_L23_0041B9F0(unsigned char *moby) {
         } else {
             func_00282D30(tmp, moby + 0xE0, D_L23_001B16BC);
             func_00282CC0(tmp, tmp, moby + 0x10);
-            qcopy(&D_L23_001B36E0 ,tmp);
+            qcopy(&D_L23_001B36E0, tmp);
         }
         held = *(char **)(st + 0x610);
         if (held != 0) {

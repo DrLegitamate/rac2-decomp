@@ -1,13 +1,3 @@
-/* Retained C reconstruction; not linked or counted. Updated by Opus big44, 26 October 2026.
- * Profile: -O2 -G8 -ffunction-sections.
- * 379/380 instructions, 319 identical; 16 register-blind lines off (was 25).
- * Fixed: func_L23_00419088 is called unprototyped (as in L23_00418DC0.c), so the int index
- * passes without a sign extension; the final direction is an if/else.
- * Remaining: the first loop's sll/sw order, the d2 argument load order in the last loop,
- * and the tail, where retail loads idx[best] in the join before storing dir (bnez slot
- * holds the idx address, then-arm ends in b).
- */
-
 #include "common.h"
 typedef int TI128 __attribute__((mode(TI)));
 
@@ -101,6 +91,7 @@ void func_L23_004190C8(PickMoby *arg0, u64 mask, int mode, int check) {
         return;
     }
     if (mode == 0) {
+        int k;
         int v;
 
         k = idx[func_002A77E0(n)];
@@ -112,9 +103,10 @@ void func_L23_004190C8(PickMoby *arg0, u64 mask, int mode, int check) {
         return;
     }
     for (i = 0; i < n; i++) {
-        int k = idx[i];
-        int v = func_L23_00418FD0(arg0, k, state->kind);
+        int v;
         float (*e)[4];
+        k = idx[i];
+        v = func_L23_00418FD0(arg0, k, state->kind);
 
         res[i] = v;
         e = D_L23_001FF300[state->group[k]];
@@ -218,11 +210,13 @@ void func_L23_004190C8(PickMoby *arg0, u64 mask, int mode, int check) {
         }
         break;
     }
-    if (res[best] == 0)
+    if (res[best] == 0) {
+        k = idx[best];
         state->dir = 1;
-    else
+    } else {
+        k = idx[best];
         state->dir = -1;
-    k = idx[best];
+    }
     state->res = res[best];
     func_L23_00419088(arg0, k);
 }

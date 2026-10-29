@@ -44,7 +44,7 @@ void func_L20_00449A78(char *arg0) {
 
 /* func_L20_00449BB0 is defined in L20_00449178-g8.c (this unit has no $gp access for it). */
 
-INCLUDE_ASM("asm/levels", func_L20_00449CE0);
+/* func_L20_00449CE0 is defined in L20_00449CE0-g16.c. */
 
 /* func_L20_00449FD0 is defined in L20_00449178-g8.c (this unit has no $gp access for it). */
 
@@ -57,7 +57,7 @@ void func_L20_0044A108(char *arg0, char *arg1) {
     func_0029F338(arg0);
 }
 
-INCLUDE_ASM("asm/levels", func_L20_0044A1C8);
+/* func_L20_0044A1C8 is defined in L20_0044A1C8-g8.c (it reaches data through $gp). */
 
 /* func_L20_0044A658 is defined in L20_00449178-g8.c (it reaches data through $gp). */
 
@@ -90,6 +90,6 @@ void func_L20_0044AB68(char *arg0) {
 /* func_L20_0044AC38 is defined in L20_0044AC38-g8.c (it reaches a global
    through $gp).  Its near miss is nonmatching/levels/func_L20_0044AC38.c. */
 
-INCLUDE_ASM("asm/levels", func_L20_0044AE58);
+/* func_L20_0044AE58 is defined in L20_0044AE58-g8.c. */
 
 /* func_L20_0044B100 is defined in L20_00449178-g8.c (this unit has no $gp access for it). */
