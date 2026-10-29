@@ -16,9 +16,12 @@ of config/levels/functions.tsv that the boot does not also have (a function many
 is one function). A function is matched when its C linked into at least one program that came
 out equal to the retail one (build/<program>/placed.json, written by tools/build.py).
 
-Units and categories are rac1-decomp's: one unit per file of the boot (core/, game/) and of the
+Units and categories are rac1-decomp's: one unit per file of the boot (core/, game/), one for the
 shared level code, one unit per level with all of that level's own functions; categories for the
-boot executable, the level code, the shared and the level-specific code, and each level. src/ holds only C that links (a near miss goes to nonmatching/), so
+boot executable, the level code, the shared and the level-specific code, and each level. A unit is
+complete when every one of its functions is matched; the complete ("linked") code of the total and
+of each category is the code of its complete units, summed as objdiff sums it, so it grows as units
+are finished. src/ holds only C that links (a near miss goes to nonmatching/), so
 --check, which needs neither the toolchain nor the game, requires the functions src/ has as C to be
 exactly the report's matched ones.
 """
@@ -85,6 +88,14 @@ def measures(fns: list[dict]) -> dict:
             "total_functions": len(fns), "matched_functions": sum(1 for f in fns if f["matched"]),
             "matched_functions_percent": pct(sum(1 for f in fns if f["matched"]), len(fns)),
             "complete_code": str(complete), "complete_code_percent": pct(complete, total)}
+
+
+def complete_measures(units: list[dict]) -> dict:
+    """complete_code of a total or category: the code of its complete units (objdiff-core's report
+    adds the units' measures up the same way), not all or nothing over every function."""
+    total = sum(int(u["measures"]["total_code"]) for u in units)
+    done = sum(int(u["measures"]["total_code"]) for u in units if u["metadata"]["complete"])
+    return {"complete_code": str(done), "complete_code_percent": 100.0 * done / total if total else 0.0}
 
 
 CODE_SECTIONS = {".vutext", "core.text", ".text"}
@@ -205,9 +216,11 @@ def build_report(groups: dict, title, data: dict) -> dict:
     wanted += [(f"level_{n:02d}", title(n)) for n in sorted(levels.NAMES)]
     cats = []
     for cid, cname in wanted:
-        rows = [r for u in units if cid in u["_category"] for r in u["_rows"]]
-        cats.append({"id": cid, "name": cname, "measures": measures(rows) | (data if cid == "executable" else {})})
-    total = measures(allrows)
+        members = [u for u in units if cid in u["_category"]]
+        rows = [r for u in members for r in u["_rows"]]
+        cats.append({"id": cid, "name": cname,
+                     "measures": measures(rows) | complete_measures(members) | (data if cid == "executable" else {})})
+    total = measures(allrows) | complete_measures(units)
     total.update({"total_units": len(units), "complete_units": sum(u["measures"]["complete_units"] for u in units)})
     total.update(data)
     for u in units:
@@ -386,9 +399,11 @@ def main() -> None:
     data = data_measures()
     cats = []
     for cid, cname in wanted:
-        rows = [r for u in units if cid in u["_category"] for r in u["_rows"]]
-        cats.append({"id": cid, "name": cname, "measures": measures(rows) | (data if cid == "executable" else {})})
-    total = measures(allrows)
+        members = [u for u in units if cid in u["_category"]]
+        rows = [r for u in members for r in u["_rows"]]
+        cats.append({"id": cid, "name": cname,
+                     "measures": measures(rows) | complete_measures(members) | (data if cid == "executable" else {})})
+    total = measures(allrows) | complete_measures(units)
     total.update({"total_units": len(units), "complete_units": sum(u["measures"]["complete_units"] for u in units)})
     total.update(data)
     for u in units:

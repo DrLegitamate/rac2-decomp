@@ -530,6 +530,26 @@ class ProgressChecks(unittest.TestCase):
             self.assertIn("0 C and 1 original-assembly functions",output.getvalue())
             self.assertEqual(path.read_bytes(),before)
 
+    def test_linked_code_sums_the_complete_units(self):
+        import progress
+        row=lambda name,size,address,matched:{"name":name,"size":size,"address":address,"matched":matched}
+        groups={"game/done":{"rows":[row("a",8,0x100,True),row("b",4,0x108,True)],
+                             "source_path":"src/game/done.c","categories":["executable","game"]},
+                "game/open":{"rows":[row("c",16,0x200,True),row("d",4,0x210,False)],
+                             "source_path":"src/game/open.c","categories":["executable","game"]},
+                "Shared level code":{"rows":[row("e",8,0x300,False)],
+                                     "source_path":"src/levels/shared","categories":["level_code","common"]}}
+        report=progress.build_report(groups,lambda n:f"Level {n:02d}",{})
+        total=report["measures"]
+        self.assertEqual((total["complete_code"],total["complete_units"],total["total_code"]),("12",1,"40"))
+        self.assertAlmostEqual(total["complete_code_percent"],30.0)
+        cats={c["id"]:c["measures"] for c in report["categories"]}
+        self.assertEqual(cats["game"]["complete_code"],"12")
+        self.assertAlmostEqual(cats["game"]["complete_code_percent"],37.5)
+        self.assertEqual(cats["common"]["complete_code"],"0")
+        units={u["name"]:u["measures"]["complete_code"] for u in report["units"]}
+        self.assertEqual(units,{"game/done":"12","game/open":"0","Shared level code":"0"})
+
     def release(self, functions, flags=(), where=None):
         import progress
         with tempfile.TemporaryDirectory() as d:
