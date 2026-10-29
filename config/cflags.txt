@@ -1472,6 +1472,8 @@ src/levels/23_damosel_orbit/L23_00416388-scan.c	-O2 -G8 -ffunction-sections -Wa,
 
 src/game/002C7BB8.c	-O2 -G0 -ffunction-sections -g
 
+src/game/0030A188-g8.c	-O2 -G8 -ffunction-sections -g -frac2-qcopy -frac2-qcopy-barrier
+src/game/00308600-beam-g8.c	-O2 -G8 -ffunction-sections -frac2-hazard-labels
 
 src/game/00270EE0-qcopy.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
 
@@ -1481,6 +1483,7 @@ src/game/00270EE0-qcopy.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-
 
 
 src/game/0029AE78-menu-g8.c	-O2 -G32 -ffunction-sections -Wa,-G32
+src/game/0031E3A8-update.c	-O2 -G0 -ffunction-sections -mno-split-addresses -g -fno-sched-interblock
 src/levels/shared/L14_003DE908-g32.c	-O2 -G32 -ffunction-sections -Wa,-G32
 
 
@@ -1499,6 +1502,8 @@ src/game/00284FC0-g8.c	-O2 -G8 -ffunction-sections -fno-strength-reduce
 
 
 src/game/00290A40-g16.c	-O2 -G16 -ffunction-sections -Wa,-G16
+src/game/0032EB28-corners-g8.c	-O2 -G8 -ffunction-sections -fno-sched-spec
+src/game/0032EB28-track.c	-O2 -G0 -ffunction-sections -g -frac2-gcse-unsplit-edges
 
 src/game/00300618-vectors.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -g -frac2-zero-ti-por
 src/core/00118460.c	-O2 -G2 -ffunction-sections
@@ -1541,6 +1546,7 @@ src/game/002EE3B0-g8.c	-O2 -G8 -ffunction-sections -frac2-hazard-labels
 src/core/00118BC0.c	-O2 -G2 -ffunction-sections -mastra-quad-saves
 src/core/00119AC0.c	-O2 -G2 -ffunction-sections -mastra-quad-saves
 
+src/game/0031F210-basis-g8.c	-O2 -G8 -ffunction-sections -fno-sched-spec
 src/game/002DF1B8-packet.c	-O2 -G0 -ffunction-sections -fno-strength-reduce
 
 
@@ -1589,6 +1595,7 @@ src/levels/16_snivelak/L16_00405488-g8.c	-O2 -G8 -ffunction-sections
 src/levels/01_oozla/L01_003DA300-g8.c	-O2 -G8 -ffunction-sections
 src/levels/16_snivelak/L16_00412F48-g8.c	-O2 -G8 -ffunction-sections
 src/levels/03_endako/L03_003D2518.c	-O2 -G0 -ffunction-sections -frac2-zero-ti-por
+src/game/0030F7B0-nearest.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
 
 
 
@@ -1609,6 +1616,7 @@ src/game/002B68C8.c	-O2 -G0 -ffunction-sections -fno-schedule-insns
 src/game/002CF7F0-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections -fno-builtin
 src/game/002D1970-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections -fno-builtin
 src/game/002D5E98-audio.c	-O2 -G0 -ffunction-sections -mno-split-addresses
+src/game/0030F7B0-g16.c	-O2 -G16 -ffunction-sections -Wa,-G16
 
 src/game/002CFDA8-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections -fno-builtin
 
@@ -1624,6 +1632,7 @@ src/game/002D3390-002D36A0-g8.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por -
 
 
 
+src/game/0030F7B0-crate-g8.c	-O2 -G8 -ffunction-sections -ffast-math
 
 
 
@@ -1635,6 +1644,8 @@ src/game/002FC8D0-disturb-g8.c	-O2 -G8 -ffunction-sections -g
 
 src/game/002C94C8.c	-O2 -G0 -ffunction-sections -g
 
+# Ammo pickup: vector clear, division padding and compare-label hazards.
+src/game/0031F210-pickup-g8.c	-O2 -G8 -ffunction-sections -g -frac2-zero-ti-por -frac2-hazard-labels
 
 
 
@@ -1642,6 +1653,7 @@ src/game/002CDD88-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections 
 
 
 
+src/game/0030F7B0-throw.c	-O2 -G0 -ffunction-sections -g -frac2-hazard-labels
 
 # Joba endpoint selection keeps the absolute fallback address tied to one register.
 src/levels/11_joba/L11_003F3258-g8.c	-O2 -G8 -ffunction-sections -mno-split-addresses

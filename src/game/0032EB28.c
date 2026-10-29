@@ -168,7 +168,7 @@ INCLUDE_ASM("asm/game", func_0032FDC0);
 /* func_0032FEA8 uses small data in 0032EB28-g8.c. */
 
 
-INCLUDE_ASM("asm/game", func_0032FFD8);
+/* func_0032FFD8 is defined in its own sibling unit. */
 
 INCLUDE_ASM("asm/game", func_00330150);
 
@@ -396,7 +396,7 @@ INCLUDE_ASM("asm/game", func_00335270);
 
 /* Moves camera 5 to a new position/rotation; mode 3 starts a transition back from the
    previous pose, modes 2 and 3 store the transition duration. */
-INCLUDE_ASM("asm/game", func_00335438);
+/* func_00335438 is defined in its own sibling unit. */
 
 void func_003355A8(int mode)
 {
@@ -451,7 +451,7 @@ void func_003358A0(void *unused, char *out, float factor) {
 }
 
 
-INCLUDE_ASM("asm/game", func_00335960);
+/* func_00335960 is defined in its own sibling unit. */
 
 void *func_00335AC8(void *object) {
     *(void **)object = D_001AD9A8;

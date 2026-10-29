@@ -1,4 +1,33 @@
-#include "include_asm.h"
+#include "common.h"
+
+/* One of the three 0xA0-byte effect slots of D_0022AA10, filled by func_00316400. */
+typedef struct {
+    float offset[4];            /* 0x00 */
+    float rotation[4];          /* 0x10 */
+    float origin[4];            /* 0x20 */
+    float position[4];          /* 0x30 */
+    float angle[3];             /* 0x40 */
+    float speed[3];             /* 0x4C */
+    float amplitude[3];         /* 0x58 */
+    float angle2[3];            /* 0x64 */
+    float speed2[3];            /* 0x70 */
+    float amplitude2[3];        /* 0x7C */
+    int fade;                   /* 0x88 */
+    void *owner;                /* 0x8C: 0 for a free slot */
+    char *object;               /* 0x90 */
+    int timer;                  /* 0x94 */
+    int duration;               /* 0x98 */
+    int expired;                /* 0x9C */
+} PoolEffect;
+
+extern PoolEffect D_0022AA10[3];
+extern char D_001B2520[] MACRO_ADDR;
+extern float func_002A7878(float min, float max);
+extern float func_002A78D8(float min, float max);
+extern void func_00282C88(void *vector);
+extern char *func_002AB1F0(void *object);
+extern void func_002B00B0(void *object, void *out, int);
+extern void func_00282D30(void *out, void *vector, float scale);
 
 extern char *Ffc961fca_FUN_002AD0B0(char *a1);
 
@@ -192,7 +221,7 @@ INCLUDE_ASM("asm/game", func_003116E8);
 INCLUDE_ASM("asm/game", func_003120C8);
 
 
-INCLUDE_ASM("asm/game", func_00312600);
+/* func_00312600 is in 0030F7B0-crate-g8.c. */
 
 int func_00312B58(Level16VendorMoby *moby) {
     return moby->state == 6;
@@ -209,7 +238,7 @@ int func_00312E10(unsigned char *p) { return p[0x20] == 1; }
 
 /* func_00312EB0 is defined in 00312EB0-qcopy.c. */
 
-INCLUDE_ASM("asm/game", func_00313210);
+/* func_00313210 is in 0030F7B0-g16.c. */
 
 extern char D_L00_0023A670[][16];
 extern void func_002ACEC0(void *, void *, void *, float);
@@ -241,21 +270,76 @@ INCLUDE_ASM("asm/game", func_003146C0);
 INCLUDE_ASM("asm/game", func_00314CF8);
 
 
-INCLUDE_ASM("asm/game", func_00314FD0);
+/* func_00314FD0 is in 0030F7B0-throw.c. */
 
 
 /* func_003158A8 uses the profile in 0030F7B0-spawn.c. */
 
-INCLUDE_ASM("asm/game", func_003159D0);
+/* func_003159D0 is defined in 0030F7B0-thrown.c. */
 
-
-INCLUDE_ASM("asm/game", func_00315C78);
+/* func_00315C78 is in 0030F7B0-nearest.c. */
 
 INCLUDE_ASM("asm/game", func_00315E20);
 
 /* func_00316248 is in 0030F7B0-g8.c. */
 
-INCLUDE_ASM("asm/game", func_00316400);
+/* Fills the first free effect slot for owner: random angles, speeds and amplitudes, a timer
+ * of duration frames, and the object's position as the start (offset when it has a record). */
+void func_00316400(void *owner, char *object, int duration)
+{
+    PoolEffect *pool = D_0022AA10;
+    int i = 0;
+    const char *origin = D_001B2520;
+    PoolEffect *effect;
+    float displacement[4] __attribute__((aligned(16)));
+    char *info;
+
+    for (; i < 3; i++) {
+        effect = &pool[i];
+        if (effect->owner != 0)
+            continue;
+
+        effect->owner = owner;
+        qcopy(effect->origin, origin);
+        effect->angle[0] = func_002A7878(-3.1415927f, 3.1415927f);
+        effect->angle[1] = func_002A7878(-3.1415927f, 3.1415927f);
+        effect->angle[2] = func_002A7878(-3.1415927f, 3.1415927f);
+        effect->angle2[0] = func_002A7878(-3.1415927f, 3.1415927f);
+        effect->angle2[1] = func_002A7878(-3.1415927f, 3.1415927f);
+        effect->angle2[2] = func_002A7878(-3.1415927f, 3.1415927f);
+        effect->speed[0] = func_002A78D8(0.001f, 0.005f);
+        effect->speed[1] = func_002A78D8(0.001f, 0.005f);
+        effect->speed[2] = func_002A78D8(0.001f, 0.005f);
+        effect->speed2[0] = func_002A78D8(0.001f, 0.005f);
+        effect->speed2[1] = func_002A78D8(0.001f, 0.005f);
+        effect->speed2[2] = func_002A78D8(0.001f, 0.005f);
+        effect->amplitude[0] = func_002A7878(3.25f, 4.75f) * 0.5f;
+        effect->amplitude[1] = func_002A7878(3.25f, 4.75f) * 0.5f;
+        effect->amplitude[2] = func_002A7878(3.25f, 4.75f) * 0.5f;
+        effect->amplitude2[0] = func_002A7878(3.25f, 4.75f) * 0.5f;
+        effect->amplitude2[1] = func_002A7878(3.25f, 4.75f) * 0.5f;
+        effect->amplitude2[2] = func_002A7878(3.25f, 4.75f) * 0.5f;
+        func_00282C88(effect->offset);
+        func_00282C88(effect->rotation);
+        effect->timer = duration;
+        effect->duration = duration;
+        effect->fade = 15;
+        effect->object = object;
+        effect->expired = 0;
+
+        info = func_002AB1F0(object);
+        if (info != 0) {
+            func_002B00B0(object, displacement, 1);
+            func_00282D30(displacement, displacement, *(float *)(info + 16));
+            func_00282CC0(effect->position, displacement, object + 16);
+        } else {
+            char *source = object + 16;
+
+            qcopy(effect->position, source);
+        }
+        break;
+    }
+}
 
 INCLUDE_ASM("asm/game", func_003166C8);
 
