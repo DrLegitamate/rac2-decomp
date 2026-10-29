@@ -1,4 +1,4 @@
-/* Medium-tier attempt: 632 bytes versus644; TI zero, register scheduling and two pre-div nops differ. */
+#include "common.h"
 typedef unsigned int VecBits __attribute__((mode(TI)));
 typedef union { VecBits bits; float f[4]; } LocalVec;
 extern void func_00282CC0(void *,void *,void *);
@@ -14,7 +14,8 @@ void func_L00_003CD658(char *obj) {
     char *ctx=*(char **)(obj+0x68);
     char *point=ctx;
     float angle=0.0f, step;
-    int i=8;
+    int n=8;
+    int i;
     frame.initial.bits=0;
     frame.initial.f[3]=1.0f;
     frame.initial.f[2]=3.0f;
@@ -30,19 +31,22 @@ void func_L00_003CD658(char *obj) {
         func_00282CC0(point,point,obj+0x10);
         *(float *)(point+12)=0.6f;
         point+=16;
-    } while(--i>=0);
+    } while(--n>=0);
     *(float *)(ctx+0x200)+=-0.1f;
     if(*(float *)(ctx+0x200)<=-7.0f) *(float *)(ctx+0x200)+=7.0f;
     func_L00_002EBE88(ctx,0x2B,0x2B,9,0x10400000,0x10400000,0.3f,0.6f,*(float *)(ctx+0x200));
+    i=0;
+    point=(char *)frame.ring;
     frame.offset.f[0]=func_00283180(*(float *)(obj+0xF8)+3.141593f)*0.65f;
     frame.offset.f[1]=func_00283198(*(float *)(obj+0xF8)+3.141593f)*0.65f;
     frame.offset.f[2]=0;
-    point=ctx;
-    for(i=0;i<9;i++) {
-        frame.ring[i]=*(VecBits *)point;
-        func_00282CC0(&frame.ring[i],&frame.offset,&frame.ring[i]);
-        ((float *)&frame.ring[i])[3]=1.0f;
-        point+=16;
+    { char *input=ctx;
+    for(;i<9;i++) {
+        qcopy(&frame.ring[i],input);
+        func_00282CC0(point,&frame.offset,point);
+        ((float *)point)[3]=1.0f;
+        point+=16; input+=16;
+    }
     }
     func_L00_002EBE88(frame.ring,0x2B,0x2B,9,0x2200000,0x2200000,0.3f,0.6f,*(float *)(ctx+0x200));
 }

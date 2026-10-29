@@ -1,4 +1,15 @@
 #include "include_asm.h"
+#include "common.h"
+
+extern int func_00282948(int *);
+extern int func_002A7820(int, int);
+extern float func_00283180(float);
+extern float func_00283198(float);
+extern float func_002A78D8(float, float);
+extern float func_002A7878(float, float);
+extern int func_00283CF0(float);
+/* EE integer and floating-point argument banks retain their independent order. */
+extern void func_L00_00338E90(void *, void *, int, float, int, int);
 
 
 
@@ -131,7 +142,49 @@ void func_L00_003E7768(unsigned char *object) {
     else D_00189EA0[0x2470]=0;
 }
 
-INCLUDE_ASM("asm/levels", func_L00_003EACC0);
+void func_L00_003EACC0(unsigned char *p) {
+    float v[4], pos[4];
+    float radius, secondRadius, z;
+    int *s = *(int **)(p + 0x68);
+    unsigned char *base;
+
+    if (p[0x20] == 0) {
+        p[0x30] = 0x80;
+        p[0x20] = 1;
+        s[1] = 20;
+        s[0] = 0;
+    }
+    if (p[0x20] == 1) {
+        if (func_00282948(s)) {
+            p[0x20] = 2;
+            s[0] = func_002A7820(50, 120);
+        }
+    }
+    if (p[0x20] == 2) {
+        if (func_00282948(s + 1)) {
+            p[0x20] = 1;
+            s[1] = func_002A7820(10, 25);
+        } else {
+            v[0] = func_00283180(*(float *)(p + 0xf8) - 1.570796489715576171875f)
+                   * 0.416666686534881591797f;
+            v[1] = func_00283198(*(float *)(p + 0xf8) - 1.570796489715576171875f)
+                   * 0.416666686534881591797f;
+            v[2] = 0.0f;
+            base = p + 0x10;
+            qcopy(pos, base);
+            z = v[2];
+            pos[2] += func_002A78D8(z, 0.5f);
+            radius = func_002A7878(0.1f, 3.0f);
+            func_L00_00338E90(pos, v, 300, radius,
+                             func_00283CF0(func_002A78D8(1.0f, 4.0f)), 0x40808080);
+            qcopy(pos, base);
+            pos[2] += func_002A78D8(z, 0.5f);
+            secondRadius = func_002A7878(0.1f, 3.0f);
+            func_L00_00338E90(pos, v, 300, secondRadius,
+                             func_00283CF0(func_002A78D8(1.0f, 4.0f)), 0x40808080);
+        }
+    }
+}
 
 extern int func_002ACBC8(void *a0, int a1);
 extern char D_00189EA0[];
@@ -153,7 +206,7 @@ INCLUDE_ASM("asm/levels", func_L00_0040D648);
 
 INCLUDE_ASM("asm/levels", func_L00_0040EAA0);
 
-INCLUDE_ASM("asm/levels", func_L00_00412E68);
+
 
 void func_L00_00419B80(void *a0) {
     unsigned char *p = (unsigned char *)a0;

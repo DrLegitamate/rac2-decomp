@@ -1,21 +1,10 @@
-/* Retained C reconstruction; not linked or counted.
- * Profile: -O2 -G8 -ffunction-sections.
- * 1140/1136 bytes; 0/1 USA v1.01 and USA v2.00 places.
- * The canonical function is absent from the PAL catalogue.
- * Remaining: Copy setup is reproduced; current pointer-return contracts for B60B0 and the
- * matched A6280 allocator wrapper are retained. The +0x39C field is copied as
- * float, matching its retail lwc1/swc1 bank. Absolute frame-counter address
- * lifetime, float compare scheduling and control-flow register allocation differ.
- * Reopen with: An independent initialization/global lifetime witness; do not add
- * source aliases solely to break address CSE or change callee contracts.
- */
-
 #include "common.h"
+
 #define F(p,o) (*(float *)((u8 *)(p)+(o)))
 #define I(p,o) (*(int *)((u8 *)(p)+(o)))
 #define P(p,o) (*(int **)((u8 *)(p)+(o)))
-typedef int OozlaQuad __attribute__((mode(TI)));
-extern int D_L01_001B2088 NOT_SDA;
+
+extern int D_L01_001B2088 MACRO_ADDR;
 extern void *D_L01_001FE180[];
 extern float D_L01_001AFDB4 __attribute__((sda));
 extern float D_L01_001AFDB8 __attribute__((sda));
@@ -32,11 +21,13 @@ extern void func_002A7750(void *,int,int);
 extern void func_002A7470(void *,int,int,int);
 extern float func_002A89A8(void *,int,float);
 extern void *func_L01_003A6280(u8 *,void *,u32,float,float);
+
 void func_L01_003B4C58(u8 *object)
 {
     u8 *state = *(u8 **)(object+0x68);
-    float height, scale;
-    int index;
+    float height, scale, angularStep, movementStep;
+    float acceleration, velocity, angularAcceleration, angularVelocity;
+    int handle;
     if (D_L01_001B2088 == 0 && object[0x21] != 255) *P(state,0x33C) = 0;
     height = func_L01_003BAFB0();
     if (height > 0.0f) F(state,0x34C) = height;
@@ -57,49 +48,59 @@ void func_L01_003B4C58(u8 *object)
     F(state,0x90) = 0.5f;
     F(state,0x94) = 0.5f;
     if (F(state,0x37C) == 0.0f) F(state,0x37C) = 1.0f;
-    state[0x2A] = 6;
     state[0x28] = 3;
+    state[0x2A] = 6;
+    angularStep = D_L01_001AFDD0 * 0.00029088825f;
+    movementStep = D_L01_001AFDC0 * 0.016666668f;
     F(state,0x30) = 0.5f;
     F(state,0x210) = 1.0f;
     F(state,0x21C) = 5.0f;
     F(state,0x220) = 6.0f;
-    F(state,0x218) = D_L01_001AFDD0 * 0.00029088825f;
-    F(state,0x214) = D_L01_001AFDC0 * 0.016666668f;
-    I(state,0x32C) = func_002A7820(120,0);
+    F(state,0x218) = angularStep;
+    F(state,0x214) = movementStep;
+    handle = func_002A7820(120,0);
+    scale = F(state,0x37C);
+    acceleration = D_L01_001AFDB4*(scale*0.00027777778f);
+    velocity = D_L01_001AFDB8*(scale*0.016666668f);
+    angularAcceleration = D_L01_001AFDC4*(scale*0.0000048481375f);
+    angularVelocity = D_L01_001AFDC8*(scale*0.00029088825f);
     F(state,0x110) = 1.0f;
+    I(state,0x32C) = handle;
     F(state,0x114) = 0.2f;
+    F(state,0x118) = 0.25f;
+    F(state,0x120) = 0.52359885f;
     F(state,0x11C) = 0.25f;
     F(state,0x140) = 0.52359885f;
     F(state,0x13C) = 0.005f;
-    F(state,0x118) = 0.25f;
-    F(state,0x120) = 0.52359885f;
-    scale = F(state,0x37C);
-    func_002B60B0(object,D_L01_001AFDB4*scale*0.00027777778f,D_L01_001AFDB8*scale*0.016666668f,D_L01_001AFDC4*scale*0.0000048481375f,D_L01_001AFDC8*scale*0.00029088825f);
+    func_002B60B0(object,acceleration,velocity,angularAcceleration,angularVelocity);
     if (I(state,0x30C) != -1) func_L01_003377C8(D_L01_001FE180[I(state,0x30C)]);
     if (I(state,0x364) != -1) func_L01_003377C8(D_L01_001FE180[I(state,0x364)]);
-    if (I(state,0x308) != -1) {
+    if (I(state,0x308) == -1) {
+        if (I(state,0x374) == 0) goto grounded;
+    } else {
         func_L01_003377C8(D_L01_001FE180[I(state,0x308)]);
         I(state,0x14C) = I(state,0x308);
         func_002A7750(object,1,1);
         F(object,0x18) = F(state,0x34C);
-    } else if (I(state,0x374) == 0) {
-        F(object,0x18) = func_002A89A8(object+0x10,0,0.5f);
-        index = I(state,0x364);
-        if (index == -1) index = I(state,0x30C);
-        I(state,0x14C) = index;
-        object[0xBC] = 0;
-        I(state,0x398) = I(state,0x394);
-        F(state,0x39C) = F(state,0x388);
-        func_002A7750(object,1,3);
-        if (object[0x43] != 0) func_002A7470(object,0,0,2);
-        goto next;
     }
     if (I(state,0x374) != 0) {
         func_002A7750(object,5,1);
-        F(object,0x18) = F(state,0x34C) - 2.0f;
+        F(object,0x18) = F(state,0x34C) + -2.0f;
     }
     I(object,0x98) = 0;
     if (object[0x43] != 4) func_002A7470(object,4,0,2);
+    goto next;
+grounded:
+    F(object,0x18) = func_002A89A8(object+0x10,0,0.5f);
+    if (I(state,0x364) != -1)
+        I(state,0x14C) = I(state,0x364);
+    else
+        I(state,0x14C) = I(state,0x30C);
+    object[0xBC] = 0;
+    I(state,0x398) = I(state,0x394);
+    F(state,0x39C) = F(state,0x388);
+    func_002A7750(object,1,3);
+    if (object[0x43] != 0) func_002A7470(object,0,0,2);
 next:
     if (I(state,0x380) != -1) {
         if (object[0x43] != 20) func_002A7470(object,20,0,2);

@@ -1,14 +1,3 @@
-/*
- * Retained complete manual C reconstruction; not linked or counted.
- * Profile: -O2 -G0 -ffunction-sections -mno-split-addresses
- * 1856/1848 bytes; 0/1 placements in us and us2; pal has no catalogue entry.
- * Residual: The 0x50 retail frame and saved-register count are recovered, but resident/settings
- * base lifetimes, copy/store and scalar scheduling remain different.
- * Reopen: Independent resident/settings address-at-use lifetime evidence preserving all
- * direction save/override/restore operations.
- * Trial-only source markers and profiles are restored after checking.
- */
-
 #include "common.h"
 
 typedef int DriveVector __attribute__((mode(TI)));
@@ -42,8 +31,14 @@ typedef struct PlayerDriveView {
     unsigned char pad22C4[0x24B8 - 0x22C4]; float animationSpeed;
 } PlayerDriveView;
 extern PlayerDriveView D_00189E20;
-extern int D_L01_001A9030;
-extern float D_L01_001A7DC0;
+/* Resident subview at the velocity vector; targetSpeed is 0xC4 bytes later. */
+typedef struct DriveVelocityView {
+    DriveVector velocity;
+    unsigned char pad10[0xC4 - 0x10]; float targetSpeed;
+} DriveVelocityView;
+extern DriveVelocityView D_00189F10;
+extern int D_L01_001A9030 MACRO_ADDR;
+extern float D_L01_001A7DC0 MACRO_ADDR;
 /* The settings prefix ends at the observed direction vector. */
 typedef struct DriveSettings {
     unsigned char pad0[0x158]; float heading;
@@ -56,7 +51,7 @@ extern void func_L00_002B3EF8(int, float, float, float);
 extern void func_L01_002B6948(float);
 extern void func_L00_002D3798(DriveVector *, DriveVector *, float);
 extern void func_L00_002D3B58(DriveVector *, DriveVector *, float);
-extern void func_L00_002D3BD8(char *, int, float);
+extern void func_L00_002D3BD8(void *, const void *, float);
 extern float func_L00_002D3A58(char *);
 extern float func_002AA2E8(float *, float, float);
 extern float func_00282DB0(void *, void *);
@@ -70,9 +65,9 @@ extern void func_00282F20(void *, void *, float);
 /* Update directional movement for the active player locomotion state. */
 void func_L01_002B7360(void)
 {
-    DriveVector local;
+    union { DriveVector q; float f[4]; } local;
     float smoothed;
-    float oldHeading = D_00189E20.heading;
+    float oldHeading;
     int state = D_00189E20.state;
 
     if (state == 10) {
@@ -81,15 +76,16 @@ void func_L01_002B7360(void)
         D_00189E20.targetSpeed = D_00189E20.planarDistance;
     } else if (state == 16) {
         float speed;
+        PlayerDriveView *hero = &D_00189E20;
         if (D_00189E20.frame > 54) {
             func_002AA2E8((float *)(&D_00189E20.recoveryRate), 0.0069444445f, 0.0019444445f);
         }
-        speed = D_00189E20.recoverySpeed;
-        if (D_00189E20.frame > 54) speed = 0.058333337f;
-        D_00189E20.speed = speed;
+        if (D_00189E20.frame <= 54) speed = D_00189E20.recoverySpeed;
+        else speed = 0.058333337f;
+        hero->speed = speed;
         func_L00_002B41B8(0.012222223f, 0.0125f);
-        func_L00_002D3BD8((char *)&D_00189E20.velocity, (int)(&D_00189E20.velocity), 0.0f);
-        func_L00_002D3798((DriveVector *)(&D_00189E20.velocity), (DriveVector *)(&D_00189E20.velocity), D_00189E20.targetSpeed);
+        func_L00_002D3BD8(&D_00189F10.velocity, &D_00189F10.velocity, 0.0f);
+        func_L00_002D3798((DriveVector *)(&D_00189F10.velocity), (DriveVector *)(&D_00189F10.velocity), D_00189F10.targetSpeed);
     } else if (state == 27) {
         if (D_00189E20.frame > 40) {
             func_L00_002B3EF8(0, 0.04f, 0.2f, 0.250163913f);
@@ -100,25 +96,25 @@ void func_L01_002B7360(void)
                 func_002AA2E8((float *)(&D_00189E20.lateralSpeed), 0.0f, 0.0022222223f);
             else func_002AA2E8((float *)(&D_00189E20.lateralSpeed), 0.033333335f, 0.0022222223f);
         }
-        ((float *)&local)[0] = D_00189E20.lateralSpeed;
-        ((float *)&local)[1] = 0.0f;
-        ((float *)&local)[2] = func_00282DB0(&D_00189E20.velocity, &D_00189E20.basis);
+        local.f[0] = D_00189E20.lateralSpeed;
+        local.f[1] = 0.0f;
+        local.f[2] = func_00282DB0(&D_00189E20.velocity, &D_00189E20.basis);
         func_00283098(&D_00189E20.velocity, &local, &D_00189E20);
     } else if (state == 11) {
         D_00189E20.heading = D_00189E20.targetHeading;
         qcopy(&D_00189E20.direction, &D_00189E20.targetDirection);
         func_L00_002B3EF8(0, 0.04f, 0.2f, 0.11635530f);
-        if (D_00189E20.transition == 3) D_00189E20.targetSpeed = 0.0f;
-        else D_00189E20.targetSpeed = D_00189E20.inputSpeed;
-        if (D_00189E20.useCurrentSpeed == 0) {
-            if (D_00189E20.allowAction == 0 || D_00189E20.actionFrame > 11)
-                func_002AA2E8((float *)(&D_00189E20.strafeSpeed), 0.07f, 0.0022222223f);
-            else func_002AA2E8((float *)(&D_00189E20.strafeSpeed), 0.0f, 0.0022222223f);
-        } else {
+        if (D_00189E20.transition != 3) D_00189E20.targetSpeed = D_00189E20.inputSpeed;
+        else D_00189E20.targetSpeed = 0.0f;
+        if (D_00189E20.useCurrentSpeed != 0) {
             float rate = D_00189E20.animationSpeed * 0.083333336f;
             if (rate < 0.033333335f) rate = 0.033333335f;
             func_002AA2E8((float *)(&D_00189E20.strafeSpeed), rate, 0.010277778f);
             D_00189E20.targetSpeed = D_00189E20.planarDistance;
+        } else {
+            if (D_00189E20.allowAction != 0 && D_00189E20.actionFrame <= 11)
+                func_002AA2E8((float *)(&D_00189E20.strafeSpeed), 0.0f, 0.0022222223f);
+            else func_002AA2E8((float *)(&D_00189E20.strafeSpeed), 0.07f, 0.0022222223f);
         }
         if (D_00189E20.axisMode == 0) {
             ((float *)&D_00189E20.velocity)[0] = func_00283180(D_00189E20.inputHeading);
@@ -126,9 +122,9 @@ void func_L01_002B7360(void)
             ((float *)&D_00189E20.velocity)[1] = func_00283198(D_00189E20.inputHeading);
             ((float *)&D_00189E20.velocity)[1] *= D_00189E20.strafeSpeed;
         } else {
-            func_L00_002D3BD8((char *)&local, (int)(&D_00189E20.localDirection), D_00189E20.strafeSpeed);
-            func_L00_002D3B58(&local, &local, 0.0f);
-            func_L00_002D3BD8((char *)&D_00189E20.velocity, (int)(&D_00189E20.velocity), 0.0f);
+            func_L00_002D3BD8(&local, &D_00189E20.localDirection, D_00189E20.strafeSpeed);
+            func_L00_002D3B58(&local.q, &local.q, 0.0f);
+            func_L00_002D3BD8(&D_00189E20.velocity, &D_00189E20.velocity, 0.0f);
             func_00282CC0(&D_00189E20.velocity, &D_00189E20.velocity, &local);
         }
         if (D_00189E20.axisMode == 0 && D_00189E20.useCurrentSpeed == 0) {
@@ -153,7 +149,7 @@ void func_L01_002B7360(void)
                 ((float *)&D_00189E20.velocity)[1] = func_00283198(D_00189E20.heading);
                 ((float *)&D_00189E20.velocity)[1] *= 0.08166667f;
             } else {
-                func_L00_002D3BD8((char *)&D_00189E20.velocity, (int)(&D_00189E20.velocity), 0.0f);
+                func_L00_002D3BD8(&D_00189E20.velocity, &D_00189E20.velocity, 0.0f);
                 func_00282F20(&local, &D_00189E20.direction, 0.08166667f);
                 func_00282CC0(&D_00189E20.velocity, &D_00189E20.velocity, &local);
             }
@@ -163,8 +159,8 @@ void func_L01_002B7360(void)
         func_L00_002B3EF8(0, 0.04f, 0.2f, D_00189E20.acceleration);
         D_00189E20.targetSpeed = 0.0f;
     } else {
-        qcopy(&local, &D_00189E20.direction);
         oldHeading = D_00189E20.heading;
+        qcopy(&local, &D_00189E20.direction);
         if (D_00189E20.overrideDirection != 0) {
             D_00189E20.heading = D_L01_001B9380.heading;
             qcopy(&D_00189E20.direction, &D_L01_001B9380.direction);
@@ -179,20 +175,20 @@ void func_L01_002B7360(void)
         func_L00_002B54F8(0.7f, 0.0f);
         qcopy(&D_00189E20.pendingResult, &D_00189E20.pending);
         {
-        float damping = 0.0055555557f;
-        if (D_00189E20.speed < D_L01_001A7DC0 * 0.00333333365f) {
-            if (D_00189E20.mode == 2) {
-                float rate = D_00189E20.pendingDamping;
-                smoothed = func_L00_002D3A58((char *)&D_00189E20.velocity);
-                func_002AA2E8(&smoothed, 0.0f, rate);
-                func_L00_002D3BD8((char *)&D_00189E20.velocity, (int)(&D_00189E20.velocity), smoothed);
-                return;
+            float damping = 0.0055555557f;
+            if (D_00189E20.speed < D_L01_001A7DC0 * 0.00333333365f) {
+                if (D_00189E20.mode == 2) {
+                    float rate = D_00189E20.pendingDamping;
+                    smoothed = func_L00_002D3A58((char *)&D_00189E20.velocity);
+                    func_002AA2E8(&smoothed, 0.0f, rate);
+                    func_L00_002D3BD8(&D_00189E20.velocity, &D_00189E20.velocity, smoothed);
+                    return;
+                }
+                if (D_00189E20.contact != 0) damping = 0.00305555575f;
+                else if (D_00189E20.special != 0) damping = 0.00055555557f;
+                else damping = 0.0022222223f;
             }
-            if (D_00189E20.contact != 0) damping = 0.00305555575f;
-            else if (D_00189E20.special != 0) damping = 0.00055555557f;
-            else damping = 0.0022222223f;
-        }
-        func_L01_002B6948(damping);
+            func_L01_002B6948(damping);
         }
     }
 }

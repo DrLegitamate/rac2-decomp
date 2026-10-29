@@ -1604,6 +1604,9 @@ src/levels/shared/L00_0033F678-projection.c	-O2 -G0 -ffunction-sections -g
 
 src/levels/shared/L00_003A8238-impact.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
 
+src/levels/00_aranos_tutorial/L00_003CD658-ring.c	-O2 -G0 -ffunction-sections -frac2-zero-ti-por -g
+src/levels/00_aranos_tutorial/L00_002FC7A8-probe-g8.c	-O2 -G8 -ffunction-sections -g
+src/levels/00_aranos_tutorial/L00_002FCBE8-state-g8.c	-O2 -G8 -ffunction-sections -g
 src/levels/shared/L00_003E2180-g8.c	-O2 -G8 -ffunction-sections -g
 
 src/game/002EE3B0-g8.c	-O2 -G8 -ffunction-sections -frac2-hazard-labels
@@ -1686,6 +1689,7 @@ src/levels/shared/L00_0031D670.c	-O2 -G0 -ffunction-sections -fno-schedule-insns
 
 src/levels/shared/L04_0033D0C0.c	-O2 -G0 -ffunction-sections -fno-schedule-insns
 src/levels/shared/L04_00365300.c	-O2 -G0 -ffunction-sections -g
+src/levels/00_aranos_tutorial/L00_003827E0-g8.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por
 src/levels/shared/L00_002A9E30-retime.c	-O2 -G0 -ffunction-sections -g
 
 
@@ -1733,6 +1737,7 @@ src/levels/shared/L05_00443740-g8.c	-O2 -G8 -ffunction-sections -g
 src/levels/shared/L06_004638F0.c	-O2 -G0 -ffunction-sections -g
 
 src/levels/shared/L18_00427BE0-update-g8.c	-O2 -G8 -ffunction-sections -g
+src/levels/01_oozla/L01_003B4C58-g8.c	-O2 -G8 -ffunction-sections -frac2-hazard-labels
 src/levels/shared/L00_002A5840-g8.c	-O2 -G8 -ffunction-sections -fno-sched-interblock
 
 src/levels/shared/L00_002B7718-g8.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por
@@ -1744,6 +1749,7 @@ src/game/002D3390-002D36A0-g8.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por -
 src/levels/shared/L12_003E3A88-g8.c	-O2 -G8 -ffunction-sections -g
 
 src/levels/shared/L00_002A9760-g8.c	-O2 -G8 -ffunction-sections -g
+src/levels/01_oozla/L01_002ADDC8-motion.c	-O2 -G0 -ffunction-sections -g
 # Preserve the line-label FPU padding before the visibility-test division.
 src/levels/shared/L08_0042EF00-g8.c	-O2 -G8 -ffunction-sections -g
 src/levels/shared/L06_004009B8-g8.c	-O2 -G8 -Wa,-G64 -ffunction-sections
@@ -1758,6 +1764,7 @@ src/levels/shared/L00_003A5FC0-contact.c	-O2 -G0 -ffunction-sections -frac2-qcop
 src/levels/shared/L00_002B5B60-motion.c	-O2 -G0 -ffunction-sections -g
 
 src/levels/shared/L16_002B5EE0-motion.c	-O2 -G0 -ffunction-sections -g
+src/levels/01_oozla/L01_002ADDC8-ground-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-hazard-labels
 src/levels/shared/L00_003D37E8-ribbon-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-hazard-labels
 
 src/game/002CE5D0-g8.c	-O2 -G8 -ffunction-sections -g

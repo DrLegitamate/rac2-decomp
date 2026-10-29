@@ -1,6 +1,27 @@
 #include "include_asm.h"
 #include "common.h"
 
+typedef unsigned int TI128 __attribute__((mode(TI)));
+
+extern void func_0029F338(void *);
+
+extern void func_0029FCC0(void *, int, void *);
+
+extern void *func_002A9640(void *, int, int);
+
+extern void func_002A8E20(void *, void *);
+
+typedef struct {
+    TI128 f00;
+    u32 f10;
+    u32 f14;
+    u8 f18;
+    u8 f19;
+    u16 f1A;
+    f32 f1C;
+    u32 f20;
+} L01_003A6350_Params;
+
 typedef struct {
     u8 pad[0x1FB0];
     f32 f1FB0;
@@ -19,11 +40,40 @@ INCLUDE_ASM("asm/levels", func_L01_00388FD0);
 
 INCLUDE_ASM("asm/levels", func_L01_003A5BB8);
 
-INCLUDE_ASM("asm/levels", func_L01_003A6028);
+/* func_L01_003A6028 is defined in L01_003A6028-g8.c. */
 
 /* func_L01_003A6280 is defined in L01_003A6280-helper-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L01_003A6350);
+void func_L01_003A6350(u8 *arg0) {
+    u8 *s0 = *(u8 **)(arg0 + 0x68);
+    u8 *a0 = *(u8 **)(s0 + 0x50);
+    L01_003A6350_Params p;
+    void *r;
+
+    if (a0 == 0 || *(s16 *)(a0 + 0xAA) != *(s32 *)(s0 + 0x54) ||
+        a0[0x20] == 0xFE || a0[0x20] == 0xFD) {
+        func_0029F338(arg0);
+        return;
+    }
+    {
+        if (*(s32 *)(s0 + 0x5C) != -1) {
+            func_0029FCC0(*(u32 *)(s0 + 0x50), *(s32 *)(s0 + 0x5C), arg0 + 0x10);
+        }
+        r = func_002A9640(arg0, -1, 0);
+        if (r != 0) {
+            qcopy(&p.f00, (u8 *)r + 0x10);
+            p.f10 = *(u32 *)((u8 *)r + 0x20);
+            p.f14 = *(u32 *)((u8 *)r + 0x24);
+            p.f18 = ((u8 *)r)[0x28];
+            p.f19 = ((u8 *)r)[0x29];
+            p.f1A = *(u16 *)((u8 *)r + 0x2A);
+            p.f1C = *(f32 *)((u8 *)r + 0x2C) * *(f32 *)(s0 + 0x58);
+            p.f20 = *(u32 *)((u8 *)r + 0x30);
+            func_002A8E20(*(u32 *)(s0 + 0x50), &p);
+        }
+        arg0[0xA8] = 0xFF;
+    }
+}
 
 void func_L01_003A6448(float *arg0, float *arg1) {
     *arg0 = -D_00189E20.f1FB0;
@@ -121,7 +171,7 @@ int func_L01_003B4C20(u8 *arg0) {
     return r;
 }
 
-INCLUDE_ASM("asm/levels", func_L01_003B4C58);
+/* func_L01_003B4C58 is defined in L01_003B4C58-g8.c. */
 
 extern float func_002A89A8(void *, int, float);
 extern float func_002A7940(void);

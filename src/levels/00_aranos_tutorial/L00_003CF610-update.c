@@ -1,4 +1,4 @@
-/* Medium-tier attempt: 920 bytes versus924; bank absolute/GP access and TI copy reloads differ. */
+#include "common.h"
 typedef unsigned int UpdateBits __attribute__((mode(TI)));
 #define D_00189EA0 (D_00189E20+0x80)
 #define D_00189EB0 (D_00189E20+0x90)
@@ -6,8 +6,8 @@ extern unsigned char D_001395B8;
 extern char D_00189E20[];
 extern unsigned char D_0019B2E8[];
 extern int D_001A79F0 __attribute__((sda));
-extern char D_L00_001A8F00[];
-extern char *D_L00_001B1F8C;
+extern int D_L00_001A8F00 __attribute__((sda));
+extern char *D_L00_001B1F8C __attribute__((sda));
 extern int D_L00_001FA920[];
 extern void func_00282CC0(void *, void *, void *);
 extern void func_00282F20(void *, void *, float);
@@ -21,15 +21,15 @@ extern int func_002A8508(int,int);
 extern void func_002AA800(void *,int,float,float);
 extern int func_002B3868(void *);
 extern void func_002DF3F8(void *,void *);
-extern void func_002E5CF8(int,int,void *);
+extern int func_002E5CF8(int,int,void *);
 extern void func_L00_002B9D60(void *,void *,int,int);
 extern void func_L00_002D40A0(void *,int,float);
 extern void func_L00_003294F0(void *,int);
 extern void func_L00_00429020(int);
-extern int func_L00_00429048(void);
+extern int func_L00_00429048(int);
 
 void func_L00_003CF610(unsigned char *obj) {
-    UpdateBits second,first;
+    union { UpdateBits q; float f[4]; } first,second;
     int *ctx=*(int **)(obj+0x68);
     if(!ctx) return;
     if((unsigned char)obj[0x20]==0) {
@@ -48,8 +48,8 @@ void func_L00_003CF610(unsigned char *obj) {
                 D_001395B8=1;
                 func_L00_00429020(ctx[4]);
                 func_002A0430((unsigned char)obj[0xB0]);
-                first=*(UpdateBits *)(D_L00_001B1F8C+ctx[3]*128+0x30);
-                second=*(UpdateBits *)(D_L00_001B1F8C+ctx[3]*128+0x70);
+                first.q=*(UpdateBits *)(D_L00_001B1F8C+ctx[3]*128+0x30);
+                second.q=*(UpdateBits *)(D_L00_001B1F8C+ctx[3]*128+0x70);
                 func_002DF3F8(&first,&second);
                 return;
             }
@@ -58,9 +58,10 @@ void func_L00_003CF610(unsigned char *obj) {
     }
     if((unsigned char)obj[0x20]==1) {
         if(ctx[4]) {
-            if(func_L00_00429048()) {
-                *(UpdateBits *)D_00189EA0=*(UpdateBits *)(D_L00_001B1F8C+ctx[3]*128+0x30);
-                *(UpdateBits *)D_00189EB0=*(UpdateBits *)(D_L00_001B1F8C+ctx[3]*128+0x70);
+            if(func_L00_00429048(ctx[4])) {
+                char *bank=D_L00_001B1F8C+ctx[3]*128;
+                qcopy_nc(D_00189EA0,bank+0x30);
+                qcopy_nc(D_00189EB0,bank+0x70);
                 obj[0x20]=3;
                 func_L00_003294F0(obj,1);
             }
@@ -74,16 +75,16 @@ void func_L00_003CF610(unsigned char *obj) {
         if(*(float *)(ctx+1)>135.0f) { func_002E5CF8(1,0,obj); obj[0x20]=2; }
     }
     if((unsigned char)obj[0x20]!=4) return;
-    if(*(int *)D_L00_001A8F00) return;
+    if(D_L00_001A8F00) return;
     if(func_002B3868(obj)) {
         func_002E5CF8(1,0,obj);
-        second=*(UpdateBits *)D_00189EA0;
+        qcopy(&second,D_00189EA0);
         func_00283410(D_00189E20,D_00189EB0);
         func_00282F20(&first,D_00189E20,-2.5f);
         func_00282CC0(&first,&second,&first);
         func_L00_002B9D60(&first,D_00189EB0,0,1);
         func_L00_002D40A0(&second,1,*(float *)(D_00189EB0+8));
     }
-    func_002AA800(obj+0xF4,0,*(float *)(ctx+6),0.02618f);
+    func_002AA800(obj+0xF4,0,*(float *)(ctx+6),0.02617994323372841f);
     if(func_00283C80(*(float *)(obj+0xF4),*(float *)(ctx+6))<0.001f) obj[0x20]=2;
 }
