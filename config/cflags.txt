@@ -1562,6 +1562,7 @@ src/levels/shared/L00_003F8E08-003feba0.c	-O2 -G0 -ffunction-sections -g
 
 src/levels/shared/L00_004282F0-spawn.c	-O2 -G32 -Wa,-G32 -ffunction-sections
 
+src/levels/02_maktar_nebula/L02_003DB310-reinit-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
 
 src/levels/shared/L02_00410E58.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -g
 
@@ -1594,7 +1595,9 @@ src/levels/shared/L03_003E2968-g8.c	-O2 -G8 -ffunction-sections -frac2-keep-bloc
 src/game/002FD828-g8.c	-O2 -G8 -ffunction-sections -g
 src/core/00116E10.c	-O2 -G2 -ffunction-sections -mastra-quad-saves
 src/core/00115FC0.c	-O2 -G2 -ffunction-sections -mastra-quad-saves
+src/levels/02_maktar_nebula/L02_00411750-g8.c	-O2 -G8 -g -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-hazard-labels
 
+src/levels/02_maktar_nebula/L02_003D7330-g8.c	-O2 -G16 -Wa,-G16 -ffunction-sections -fno-strength-reduce -frac2-qcopy
 src/game/002D1228-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections -fno-builtin
 src/game/002D0B98-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections -fno-builtin
 src/levels/shared/L11_002C5E80-trail-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-hazard-labels
@@ -1605,11 +1608,14 @@ src/game/002D2918-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections 
 
 src/levels/shared/L00_0033F678-projection.c	-O2 -G0 -ffunction-sections -g
 
+src/levels/02_maktar_nebula/L02_003D26B0-aim-g8.c	-O2 -G8 -ffunction-sections -frac2-keep-block-order
 src/levels/shared/L00_003A8238-impact.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
+src/levels/02_maktar_nebula/L02_0040A4A8-aim-g8.c	-O2 -G8 -ffunction-sections -frac2-keep-block-order
 
 src/levels/00_aranos_tutorial/L00_003CD658-ring.c	-O2 -G0 -ffunction-sections -frac2-zero-ti-por -g
 src/levels/00_aranos_tutorial/L00_002FC7A8-probe-g8.c	-O2 -G8 -ffunction-sections -g
 src/levels/00_aranos_tutorial/L00_002FCBE8-state-g8.c	-O2 -G8 -ffunction-sections -g
+src/levels/02_maktar_nebula/L02_003DB310-aim-g8.c	-O2 -G8 -ffunction-sections -frac2-keep-block-order
 src/levels/shared/L00_003E2180-g8.c	-O2 -G8 -ffunction-sections -g
 
 src/game/002EE3B0-g8.c	-O2 -G8 -ffunction-sections -frac2-hazard-labels
@@ -1755,6 +1761,7 @@ src/levels/shared/L12_003E3A88-g8.c	-O2 -G8 -ffunction-sections -g
 src/levels/shared/L00_002A9760-g8.c	-O2 -G8 -ffunction-sections -g
 src/levels/01_oozla/L01_003C97D8-draw.c	-O2 -G0 -ffunction-sections -g
 src/levels/01_oozla/L01_002ADDC8-motion.c	-O2 -G0 -ffunction-sections -g
+src/levels/02_maktar_nebula/L02_003FFDB0-g8.c	-O2 -G8 -ffunction-sections -g -mno-split-addresses
 # Preserve the line-label FPU padding before the visibility-test division.
 src/levels/shared/L08_0042EF00-g8.c	-O2 -G8 -ffunction-sections -g
 src/levels/shared/L06_004009B8-g8.c	-O2 -G8 -Wa,-G64 -ffunction-sections

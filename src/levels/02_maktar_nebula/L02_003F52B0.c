@@ -1,17 +1,10 @@
-/* func_L02_003F52B0 (w2 batch 3, 2026-10-28). Unit src/levels/02_maktar_nebula/L02_003F52B0-qcopy.c,
-   profile -O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier (the barrier flag is new since the
-   older notes). 220/220 bytes, 4 differing lines, all the case-0 setup:
-     retail: addiu $a1,$v1,0xB0 ; swc1 $f0,0xB4 ; lui $a0,0x1B ; addiu $a0,$a0,0x3210 ; swc1 $f1,0xB8 ; swc1 $f1,0xB0 ; swc1 $f20,0xBC ; lq ; sq
-     this:   lui $a0 ; swc1 B4 ; addiu $a1 ; swc1 B8 ; addiu $a0 ; swc1 B0 ; swc1 BC
-   All 720 orders of {the four stores, src=, dst=} with qcopy(dst, src) last were compiled; 4 is the best. */
 #include "common.h"
-
-typedef int TI128 __attribute__((mode(TI)));
 
 /* Prefix view of the effect-position field; not a complete global layout. */
 typedef struct { char pad[0xB0]; float effect_position[4]; } EffectPositionView;
 extern EffectPositionView D_00189E20;
-extern char D_L02_001B3210[];
+/* Keep the destination address as the assembler's absolute-address macro. */
+extern char D_L02_001B3210[] __attribute__((sda));
 extern char *D_L02_001AD410 __attribute__((sda));
 extern void func_L02_003F5390(char *);
 extern void func_L02_003F54D8(char *);

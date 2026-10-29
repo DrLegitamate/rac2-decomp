@@ -1,7 +1,7 @@
 #include "include_asm.h"
 #include "common.h"
 
-INCLUDE_ASM("asm/levels", func_L02_003DB310);
+/* func_L02_003DB310 is defined in L02_003DB310-reinit-g8.c. */
 
 extern void func_002A7750(char *, int, int);
 
@@ -311,7 +311,7 @@ INCLUDE_ASM("asm/levels", func_L02_003E7B58);
 
 INCLUDE_ASM("asm/levels", func_L02_003E80F8);
 
-INCLUDE_ASM("asm/levels", func_L02_003E87D8);
+/* func_L02_003E87D8 is defined in L02_003E87D8-g8.c. */
 
 /* func_L02_003E8CE8 is matched in L02_003E8CE8-g8.c (built with -frac2-qcopy -frac2-qcopy-barrier -g). */
 
@@ -794,9 +794,7 @@ void func_L02_003F1B70(char *arg0) {
     func_002A7750(arg0, 6, 4);
 }
 
-INCLUDE_ASM("asm/levels", func_L02_003F1BA8);
-
-INCLUDE_ASM("asm/levels", func_L02_003F52B0);
+/* func_L02_003F52B0 is defined in L02_003F52B0.c. */
 
 extern char *D_L02_001B3AF8 __attribute__((sda));
 extern char *D_L02_001B3AFC __attribute__((sda));

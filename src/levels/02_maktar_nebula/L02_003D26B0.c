@@ -69,11 +69,11 @@ extern int D_L02_001B359C __attribute__((sda));
 
 extern char *D_0018C2BC;
 
-INCLUDE_ASM("asm/levels", func_L02_003D26B0);
+/* func_L02_003D26B0 is defined in L02_003D26B0-aim-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L02_003D2DE0);
 
-INCLUDE_ASM("asm/levels", func_L02_003D4308);
+/* func_L02_003D4308 is defined in L02_003D4308-g8.c. */
 
 void func_L02_003D46B8(char *arg0) {
     char *state = *(char **)(arg0 + 0x68);
@@ -347,9 +347,9 @@ void func_L02_003D5DF8(char *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L02_003D5E40);
+/* func_L02_003D5E40 is matched in L02_003D5E40-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L02_003D5F50);
+/* func_L02_003D5F50 is defined in L02_003D26B0-g8.c. */
 
 void func_L02_003D62F0(char *arg0) {
     char *state = arg0;
@@ -389,7 +389,7 @@ int func_L02_003D6BB0(char *arg0) {
     return *(unsigned char *)(arg0 + 0x20) >= 3;
 }
 
-INCLUDE_ASM("asm/levels", func_L02_003D7330);
+/* func_L02_003D7330 is defined in L02_003D7330-g8.c. */
 
 extern void func_00283098(void *, void *, void *);
 

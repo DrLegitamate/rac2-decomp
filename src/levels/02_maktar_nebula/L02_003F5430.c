@@ -623,7 +623,46 @@ s32 func_L02_003FC0D0(char *a0, s32 a1) {
     return 0;
 }
 
-INCLUDE_ASM("asm/levels", func_L02_003FC1B0);
+void func_L02_003FC1B0(char *a0, s32 a1) {
+    s32 *v1 = *(s32 **)(a0 + 0x68);
+    s32 result = 0xA44;
+    if (a1 == result)
+        goto low_return;
+    if (a1 >= 0xA45)
+        goto high;
+    result = 0x9CA;
+    if (a1 == result)
+        goto inc50;
+low_return:
+    return;
+high:
+    result = 0xC3B;
+    if (a1 == result)
+        goto inc58;
+    if (a1 >= 0xC3C)
+        goto highest;
+    result = 0xB22;
+    if (a1 == result)
+        goto inc54;
+    return;
+highest:
+    result = 0xC3E;
+    if (a1 == result)
+        goto inc5c;
+    return;
+inc50:
+    ++v1[0x14];
+    return;
+inc54:
+    ++v1[0x15];
+    return;
+inc58:
+    ++v1[0x16];
+    return;
+inc5c:
+    ++v1[0x17];
+    return;
+}
 
 extern char *D_L02_001B359C __attribute__((section(".sdata")));
 extern s32 D_L02_001B35B8[] __attribute__((sda));
@@ -779,7 +818,7 @@ void func_L02_003FC7C8(char *a0) {
         func_L00_002B30E8();
 }
 
-INCLUDE_ASM("asm/levels", func_L02_003FC9C0);
+/* func_L02_003FC9C0 is matched in L02_003F5430-g8.c. */
 
 extern int func_002A77E0(int);
 extern void func_L00_002D7140(char *);
@@ -937,7 +976,7 @@ INCLUDE_ASM("asm/levels", func_L02_003FF6E8);
 
 /* func_L02_003FF9A0 is defined in L02_003F5430-g8.c ($gp accesses). */
 
-INCLUDE_ASM("asm/levels", func_L02_003FFDB0);
+/* func_L02_003FFDB0 is defined in L02_003FFDB0-g8.c ($gp accesses). */
 
 /* func_L02_004002E0 is matched in L02_004002E0-g8.c (built with -g). */
 

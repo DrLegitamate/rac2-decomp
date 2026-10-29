@@ -1,17 +1,10 @@
-/* Near miss, rechecked 2026-10-21 in src/levels/02_maktar_nebula/L02_003D26B0-g8.c
- * with the qualified compiler on master 8b23616 plus PR249,
- * -O2 -G8 -ffunction-sections: 552 bytes, retail 556; 0 of 1 places match.
- * The candidate has no second saved-register copy of e + 0x10.
- * The empty do/while previously used to force a CSE boundary was removed: it is
- * an artificial source barrier, prohibited by AGENTS.md. Preserve the natural C
- * here until the compiler difference or a supported source form is understood.
- */
+#include "common.h"
 
-#include "include_asm.h"
-
-typedef unsigned char u8;
-typedef unsigned short u16;
-typedef short s16;
+/* func_L02_003D26B0, split out of L02_003D26B0.c: its unit needs -frac2-keep-block-order. The
+ * list-pointer guard in front of the aim code is deleted by the compiler's null-pointer-check
+ * pass (p was just dereferenced); without the block merge it leaves retail's CSE block boundary
+ * there, which keeps the second saved copy of the target position (daddu of e + 0x10). The same
+ * body, with a visibility test in front, is func_L11_00449C70. */
 
 extern u16 *D_L02_001FC060[];
 extern u8 *D_L02_001B359C_1[] __attribute__((sda));
@@ -28,7 +21,6 @@ extern float func_00283BE0(float, float);
 extern void func_002ACEC0(float *, float *, char *, float);
 extern void func_00282CC0(float *, float *, u8 *);
 extern void func_L01_00321178(char *, float *);
-
 extern float func_00282E80(char *, void *);
 
 int func_L02_003D26B0(char *self) {
@@ -41,7 +33,6 @@ int func_L02_003D26B0(char *self) {
     char *ax;
 
 #define GROUP (*(int *)(state + 0x2EC))
-/* The heading of the target, from the object's position. */
 #define ANGLE()                                                                       \
     func_00283248(*(float *)(e + 0x10) - *(float *)(self + 0x10),                    \
                   *(float *)(e + 0x14) - *(float *)(self + 0x14))
@@ -60,6 +51,8 @@ int func_L02_003D26B0(char *self) {
             continue;
         if (!(func_00283C80(*(float *)(self + 0xF8), ANGLE()) < D_L02_001B0170 * 0.017453294f))
             continue;
+        if (p == 0)
+            return 0;
 
         func_00282CF0(buf, (float *)(self + 0x10), (float *)(e + 0x10));
         ax = self + 0xE0;

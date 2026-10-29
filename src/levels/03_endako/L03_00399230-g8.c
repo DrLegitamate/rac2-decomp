@@ -32,17 +32,49 @@ typedef int TI128 __attribute__((mode(TI)));
 
 extern void func_L03_003CAD78(char *a0);
 extern void func_002A7750(char *a0, s32 a1, s32 a2);
-extern void func_2E77F0(void *a0);
+extern void func_31B920(char *a0, s32 a1, s32 a2);
+extern void func_2E77F0(void *fn, void *entity);
 extern char *func_3113F0(s32 a0);
 extern void func_32AA20(char *a0, char *a1);
 extern f32  func_2EF670(f32 a0, f32 a1);
 extern f32  func_2EF110(f32 *a0);
 
-extern f32 D_L03_001B0350[] __attribute__((sda));
+extern f32 D_L03_001B0350[] SDATA(D_L03_001B0350);
 extern f32 D_L03_001B0648 __attribute__((sda));
 
-/* case 0 lights the actor's motion, case 1 winds the three tracks down */
-INCLUDE_ASM("asm/levels", func_L03_003CACA8);
+/* case 0 makes the object opaque and moves it to state 1; case 1 scrolls the three
+   offsets in its vars by the table's rates per frame (wrapping below -1) and queues
+   its draw callback with the object as argument (AddDrawCallback in rac1-decomp) */
+void func_L03_003CACA8(char *a0)
+{
+    s32 state = *(u8 *)(a0 + 0x20);
+    char *s0 = *(char **)(a0 + 0x68);
+
+    switch (state) {
+    case 0:
+        *(u8 *)(a0 + 0x30) = 0xFF;
+        func_31B920(a0, 1, -1);
+        *(s32 *)(s0 + 0xC) = 1;
+        break;
+    case 1: {
+        f32 *dst = (f32 *)s0;
+        f32 *src = &D_L03_001B0350[0];
+        s32 i;
+
+        for (i = 2; i >= 0; i--) {
+            f32 f = *dst - *src * 0.016666668f;
+
+            *dst = f;
+            if (f < -1.0f)
+                *dst = f + 1.0f;
+            src++;
+            dst++;
+        }
+        func_2E77F0(func_L03_003CAD78, a0);
+        break;
+    }
+    }
+}
 
 /* spawns the actor and seeds its aim from the caller's vector */
 INCLUDE_ASM("asm/levels", func_L03_003D18F8);

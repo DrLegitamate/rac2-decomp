@@ -1,12 +1,5 @@
-/* Opus big43, 2026-10-26: NOT MATCHING; 1476/1476 bytes, frame 0x60 as retail.
- * Profile: -O2 -G8 -g -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier.
- * us: 0/1 (us2 1 place, pal absent). Left: (1) the 0x1C store's join label sits
- * after the mtc1 hazard nop here, before it in retail (bc1f +3 vs +2); (2) the
- * D_L02_001A8F20 argument's lui/addiu is scheduled before the two random calls'
- * results are masked, retail after (3 words). What closed the rest: plain sized
- * D_L02_001B359C/368C (gp in delay slots, lui/lw elsewhere), a Hero union for the
- * 0x270/0x26C/0xE0/0x2290 reads, the visibility as a ternary after the call, the
- * flags read through (s32 *)scratch (no merged ld), and the loop inits in retail order.
+/* The incomplete SDA array keeps the particle vector address together;
+ * -frac2-hazard-labels retains the visibility join on its required hazard nop.
  */
 #include "common.h"
 
@@ -20,7 +13,7 @@ extern s32 D_001A79F0 __attribute__((sda));
 typedef union { u8 b[0x2400]; u8 *ptr[0x900]; void *v[0x900]; TI128 q[0x240]; } Hero;
 extern Hero D_00189E20;
 extern TI128 D_L02_001C0960;
-extern float D_L02_001A8F20[4];
+extern float D_L02_001A8F20[] __attribute__((sda));
 extern void func_L02_0031F858(s32, s32);
 extern float func_002A7940(void);
 extern float func_00282E80(void *, void *);

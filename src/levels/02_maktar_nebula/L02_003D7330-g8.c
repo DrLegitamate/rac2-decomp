@@ -1,17 +1,3 @@
-/*
- * Retained complete manual reconstruction; not linked or counted.
- * Profile: -O2 -G16 -Wa,-G16 -ffunction-sections -fno-strength-reduce
- * Retail: 1156 bytes; compiled: 1168 bytes.
- * Final coverage: us: 0/1; us2: 0/1; pal: catalogue absent.
- * Residual: 1168/1156 bytes with the correct 0x70 frame and four actual vector slots.
- * The missing initial owner-position snapshot is restored; sp0 is used by later
- * movement, sp0x10 by the initial offset and final joint query, sp0x20/0x30 by the
- * remaining intermediates. Real child-pointer lifetimes are retained. Matrix-loop
- * register allocation, call setup and switch schedules still differ.
- * Reopen: A measured matrix-row cursor/register witness. Disabling strength reduction
- * restores the increasing loop counter but leaves 1168 bytes. Do not remove the actual
- * entry snapshot or invent a padding vector to recover size.
- */
 #include "common.h"
 
 typedef int Vector __attribute__((mode(TI)));
@@ -66,12 +52,16 @@ void func_L02_003D7330(char *self) {
             qcopy(child + 0x10, position);
             func_002A0F48(child);
         }
-        source = (Vector *)(self + 0xC0);
-        destination = (Vector *)(*(char **)(state + 0x1C) + 0xC0);
-        for (i = 0; i < 3; i++) {
-            qcopy(destination, source);
-            destination++;
-            source++;
+        {
+            Vector *row = (Vector *)(self + 0xC0);
+            Vector *out = (Vector *)(*(char **)(state + 0x1C) + 0xC0);
+            int count = 0;
+            do {
+                qcopy(out, row);
+                count++;
+                row++;
+                out++;
+            } while (count < 3);
         }
         func_002AB028(*(char **)(state + 0x1C) + 0xC0);
         func_002A10E8(*(char **)(state + 0x1C));
@@ -80,8 +70,8 @@ void func_L02_003D7330(char *self) {
     case 1:
         if (func_002B3868(self)) *(short *)(state + 0x22) = 19;
         if (!func_00282978(state + 0x22)) {
-            func_00282F20(offset, self + 0xD0, 2.0f / func_00283CE0(19));
-            func_00282CC0(self + 0x10, self + 0x10, offset);
+            func_00282F20(updated, self + 0xD0, 2.0f / func_00283CE0(19));
+            func_00282CC0(self + 0x10, self + 0x10, updated);
         }
         if (*(unsigned char *)(self + 0x60) & 2) {
             qcopy(self + 0x10, state);
@@ -92,8 +82,8 @@ void func_L02_003D7330(char *self) {
     case 3:
         if (func_002B3868(self)) *(short *)(state + 0x22) = 19;
         if (!func_00282978(state + 0x22)) {
-            func_00282F20(offset, self + 0xD0, -2.0f / func_00283CE0(19));
-            func_00282CC0(self + 0x10, self + 0x10, offset);
+            func_00282F20(updated, self + 0xD0, -2.0f / func_00283CE0(19));
+            func_00282CC0(self + 0x10, self + 0x10, updated);
         }
         if (*(unsigned char *)(self + 0x60) & 2) {
             *(float *)(self + 0x48) = 0.0f;
@@ -114,13 +104,13 @@ void func_L02_003D7330(char *self) {
         }
         break;
     case 6:
-        if (*(short *)(state + 0x20)) {
-            func_00282978(state + 0x20);
-            break;
-        }
+        if (!*(short *)(state + 0x20)) {
         *(float *)(self + 0x48) = 1.0f;
         if (*(unsigned char *)(self + 0x43) != 2) func_002A7470(self, 2, 0, 0);
         func_002A7750(self, 7, -1);
+        } else {
+            func_00282978(state + 0x20);
+        }
         break;
     case 7:
         if (*(unsigned char *)(self + 0x60) & 2) {
@@ -143,9 +133,9 @@ void func_L02_003D7330(char *self) {
         source = (Vector *)(self + 0xC0);
         destination = (Vector *)(childMatrix + 0xC0);
         for (i = 0; i < 3; i++) {
-            qcopy(destination, source);
-            destination++;
+            *destination = *source;
             source++;
+            destination++;
         }
         func_002AB028(childMatrix + 0xC0);
         }

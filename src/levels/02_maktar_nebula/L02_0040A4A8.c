@@ -233,8 +233,6 @@ void func_L02_0040BBA0(u8 *a0) {
     func_31E6A0(a0, 6, 3);
 }
 
-INCLUDE_ASM("asm/levels", func_L02_0040BBD8);
-
 INCLUDE_ASM("asm/levels", func_L02_0040BE08);
 
 /* func_L02_0040CAF0 is defined in L02_0040CAF0-g8.c. */
@@ -398,7 +396,7 @@ void func_L02_0040FB80(u8 *a0) {
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L02_00411750);
+/* func_L02_00411750 is defined in L02_00411750-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L02_00411D18);
 
