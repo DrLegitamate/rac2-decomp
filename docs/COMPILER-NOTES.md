@@ -127,7 +127,7 @@ wrong profile with extra operations or knowingly false prototypes.
 | Ordinary 8-byte GPR saves | Default game -O2 -G0 -ffunction-sections | func_002889B8 |
 | Missing GP-relative access | Game compiler, -G8 sibling and correct known-size declaration | func_L00_003206B8 |
 | Public SDK/libgcc source differs under game compiler | sdk profile, accurate types and inline declarations | func_00122800, func_00122B00 |
-| libgcc `_eh.o` (L_eh): a call at the end of a non-void function keeps its frame instead of becoming a tail jump | sdk profile with -fexceptions, as GCC's libgcc Makefile builds _eh.o (rac3-decomp builds its copy the same way) | func_00120A30, func_001208E8 |
+| libgcc `_eh.o` (L_eh): preserve the frame at final calls and place the exception-return stub correctly | sdk profile with -fexceptions, as GCC's libgcc Makefile builds _eh.o (rac3-decomp builds its copy the same way) | func_00120A30, func_001208E8; paired throw/rethrow func_00120F00 and func_001210E0 |
 | Whole GPR save area uses sq/lq | -mastra-quad-saves | func_00119BC8, func_00115F28, func_00115C90 |
 | Two-word truncation cannot fill return slot | -mastra-split-trunc-slot | func_0012E8C8 |
 | SDK unit: a volatile access or sign extension fills a `jal`/`jr` slot | -Wa,--r5900-swap-branch-slots | func_001253A8, func_0012E378, func_0011C000 |
@@ -166,6 +166,20 @@ The three matrix buffers in `func_L02_003D6EE0` are independently 48, 48 and
 three vectors; `func_00283678` copies three; `func_00283698` reads three and
 writes four. The later `func_00283738` consumes only three vectors from each
 input. Check every producer and consumer before enlarging or shrinking a buffer.
+
+A full-width transfer does not establish that every lane is interpreted as a
+value. The type-2 particle path used by `func_L00_003E7E40` transfers sampled
+position W, while its normal renderer computes XYZ and replaces output W before
+consumption. The constructor clears the controlling flag and its updater retains
+that state. This permits the observed opaque transfer, not a 12-byte allocation:
+the complete 16-byte storage is still required. Verify the same lifecycle before
+reusing this conclusion, and do not invent a W initialization for matching.
+
+The water context in `func_L20_00447748` is thirteen words (0x34 bytes), not
+the fourteen words suggested by its old stack-layout screen. Its final callback
+field occupies +0x30 and no consumer reads a fourteenth word. Preserve the actual
+callback signatures and initialize the real field groups; extra stack space is
+not a reason to invent another member.
 
 ### Save order and loop padding
 
@@ -243,6 +257,19 @@ silently changing neighbouring definitions.
 - Preserve actual argument count and return width. A value-returning call defines
   `$v0` and can move the next constant to `$v1` (`func_00339F28`, `func_00343A30`).
   Do not invent a void return or an assembler-name alias to steer allocation.
+- An existing reconstructed declaration is evidence to audit, not an oracle.
+  `func_002AE730` writes its packed word through an output pointer; its last
+  packing call also leaves that value in v0. Current RAC1 and 146 direct calls
+  in each RAC2 release support an output-only interface: none consumes that
+  residual result. Correcting the definition and caller declarations together
+  preserves matching bytes. Do not infer a returned value solely from a register
+  left live at the epilogue, or infer void solely because result paths differ.
+- A body that ignores a formal does not prove a zero-argument API.
+  `func_001261F0` retains the real 32-bit `sceGsSyncV` mode argument, supported
+  by the public OpenGOAL interface and the game's zero-valued callers. The
+  matched preview helper `func_00300048` similarly retains its observed unused
+  object argument. Check callers or an independent interface before changing a
+  canonical declaration, and never add a synthetic use of an unused formal.
 - A 64-bit colour/result must keep its ABI width. `func_001175F0` forwards a long
   result; explicit 32-bit truncation adds two instructions.
 - A colour constant's declared argument width selects its materialisation. Through

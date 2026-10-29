@@ -1,3 +1,4 @@
+src/levels/12_todano/L12_00429610.c	-O2 -G0 -ffunction-sections -frac2-hazard-labels
 src/levels/shared/L04_0043BEE8-g8.c	-O2 -G8 -ffunction-sections -mno-split-addresses
 src/levels/shared/L03_003CC238.c	-O2 -G0 -ffunction-sections -frac2-zero-ti-por -g
 src/game/0034A808.c	-O2 -G0 -ffunction-sections -frac2-hazard-labels
@@ -1514,3 +1515,13 @@ src/levels/16_snivelak/L16_00405488-g8.c	-O2 -G8 -ffunction-sections
 src/levels/01_oozla/L01_003DA300-g8.c	-O2 -G8 -ffunction-sections
 src/levels/16_snivelak/L16_00412F48-g8.c	-O2 -G8 -ffunction-sections
 src/levels/03_endako/L03_003D2518.c	-O2 -G0 -ffunction-sections -frac2-zero-ti-por
+
+# Joba endpoint selection keeps the absolute fallback address tied to one register.
+src/levels/11_joba/L11_003F3258-g8.c	-O2 -G8 -ffunction-sections -mno-split-addresses
+src/core/001210E0-unwind.c	sdk -O2 -G2 -ffunction-sections -fexceptions
+src/core/00120F00-unwind.c	sdk -O2 -G2 -ffunction-sections -fexceptions
+
+# Forward pitch joins land on the measured mtc1 hazard nop.
+src/levels/shared/L04_003FA350.c	-O2 -G0 -ffunction-sections -frac2-hazard-labels
+src/game/002977A8.c	-O2 -G0 -ffunction-sections -fno-strength-reduce
+src/levels/shared/L00_003E7E40-trails.c	-O2 -G0 -ffunction-sections -mno-split-addresses

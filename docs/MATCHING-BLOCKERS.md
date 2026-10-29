@@ -197,6 +197,24 @@ PAL has no corresponding catalogue identity, and all 84 strict programs
 pass with the integrated source set. Different source declarations still
 need a consistent native interface or adapter before a PC-port claim.
 
+**Output-only packing and unused formals, 28 October 2026:**
+`func_002AE730` had an inferred integer return in its C definition, while some
+callers declared void. Propagating that inference changed the delay-slot store
+in `func_002BAA28`. The current RAC1 counterpart is output-only; an independent
+scan of all three RAC2 releases found 146 direct calls per release and no use
+of the residual v0 before an overwrite or another call. The canonical definition
+and visible callers now agree on `void(float *, int *)`; the written packed word
+is preserved. This is an interface correction supported independently of the
+desired instruction order. The contrasting `func_002AAA00` has explicit float
+return paths and keeps that result even when a caller ignores it.
+
+The real unused object formal of `func_00300048` is supported by repeated retail
+caller setup. The 32-bit mode of `func_001261F0` is also documented by the public
+[OpenGOAL interface](https://github.com/open-goal/jak-project/blob/78cde74d5addf8c787dc461ff9016c1d25300d48/game/graphics/sceGraphicsInterface.h).
+These changes use existing source methods; no artificial argument use or new
+compiler mechanism is involved. See [PR #364](https://github.com/OpenRAC/rac2-decomp/pull/364)
+for the integrated checks.
+
 The two independent witnesses were nonmatching when measured: `func_L00_003A2668`
 was 1204/1204 bytes, 0/81 present placements, first difference +0x8.
 `func_L23_0041D398` remains 1432/1432, 0/1; a real phase-lifetime split
@@ -951,6 +969,14 @@ A start inside a prior epilogue, measured linker filler, or an implausible entry
 
 No jr, two returns, a short size, or a register read before its local definition is not proof by itself. Trap/tail-call bodies may lack jr; ABI-defined live-ins must be considered. A four-byte residue needs its surrounding completed return and reference evidence, not just its size.
 
+**Unresolved pre-prologue hypothesis, `func_L05_0042AFE0`:** the current
+720-byte row uses F1 before defining it. All twelve carrying placements across
+US, US2 and PAL have a preceding GP load into F1. Including that word would
+produce a 724-byte body, but no direct jump/call, absolute pointer or nearby
+address-construction witness has established that entry. Keep the catalogue
+unchanged until entry evidence resolves the hypothesis. The retained diagnostic
+records the offsets; it receives no C or handwritten-assembly credit.
+
 **Unresolved extent/entry hypothesis: `func_002D9730` (USA v1.01, PAL, USA v2.00).** Its 100-byte body has the same decoded sequence across the three releases apart from release-specific call targets. At the USA v1.01 start, the preceding function returns at `0x2D9728` with its stack adjustment in the delay slot; the next word clears object offset `0x44`. The target then makes four positive stack adjustments (`+0x10`, `+0x30`, `+0x10`, `+0x130`), each followed by `nop`, before allocating a 16-byte call frame, saving `$ra`, making three calls and returning 8. A direct branch/call scan of USA v1.01 boot text found no target inside the extent; indirect references have not been traced. The retained C draft compiles to 64 bytes under the default game profile and matches 0/28 places in each release. A 96-byte `__builtin_alloca` probe still emitted the compiler's normal frame-pointer/RA prologue before the clear. This does not distinguish a hidden indirect entry from an extent boundary; do not change the catalogue or classify it handwritten. Next: trace indirect references and the incoming stack/argument ABI before another C attempt.
 
 The 49-worker wave reported roughly 30 suspects. Those are historical candidates; later rules in PRs #239/#241/#253 resolve specific filler/residue cases. Mixed prefix/body boundaries and the appendix's other proposals remain separate individually evidenced tasks.
@@ -1409,6 +1435,20 @@ agent's did.
 **Consequence:** a match has to be **re-checked in the file it will live in**, and the check
 that counts is `tools/build.py`, not `tools/check.py` in the worker's tree. Where a body's own
 unit cannot hold it, it needs a file of its own.
+
+**Exception-runtime profile, qualified on 28 October 2026:** the historical
+`func_00120F00` near miss was 480/476 bytes, with the exception-return stub in
+the wrong position; thirteen source rewrites had not fixed it. Its paired
+`func_001210E0` was incorrectly screened as geometry code. Both are public
+GNU EE libgcc `L_eh` routines (`__throw` and `__rethrow`). The existing SDK
+`-O2 -G2 -ffunction-sections -fexceptions` profile closes both in isolated units:
+476 and 484 bytes, one boot placement each in USA v1.01, USA v2.00 and PAL.
+Their real `frame_state` objects are each 0x2F0 bytes; the compiler's public
+unwind builtins provide register preservation and exception return.
+[The source change](https://github.com/OpenRAC/rac2-decomp/commit/78e70068441cbc77f608ea2b685e233a682fc8d5)
+passes all 84 strict programs after integration, with 313 unit tests. This is
+the existing runtime profile, not an instruction patch or a general remedy
+for unrelated save-order and register-allocation differences.
 
 **A separate linked-section dependency, verified on 24 October 2026:**
 `func_00306040` passed local checks while its direct same-unit call required
