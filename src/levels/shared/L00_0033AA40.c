@@ -1,12 +1,3 @@
-/* func_L00_0033AA40 (384 bytes, 27 places) - NEAR MISS (M22, 2026-10-26).
- * Profile: the default "-O2 -G0 -ffunction-sections" (qcopy() helper), as
- * src/levels/shared/L00_0033AA40.c.  384/384, 8 words off: only two register
- * pairs are swapped - size/value get $s5/$s6 the wrong way round and a/b get
- * $f21/$f22 the wrong way round (retail: value $s5, size $s6, a $f22, b $f21).
- * The D_L00_001FEA40 pointer moves between levels, so it is a ref_ name.
- * Storing b before a fixes the float pair but reverses the two stores; storing
- * value after size fixes the int pair but swaps $s6/$s7.  On the permuter.
- */
 #include "include_asm.h"
 #include "common.h"
 
@@ -30,8 +21,8 @@ extern float func_002A7878(float, float);
 extern unsigned char *ref_L00_0033AA40_00[];
 extern char D_00189EA0[];
 
-L00_0033AA40_Particle *func_L00_0033AA40(float life, float a, float b, Quad *position, Quad *velocity,
-                                         unsigned int size, int color, int value, int flag)
+L00_0033AA40_Particle *func_L00_0033AA40(Quad *position, Quad *velocity, unsigned int size,
+                                         float life, float a, int color, float b, int value, int flag)
 {
     L00_0033AA40_Particle *p = func_002B9030(0x40);
 

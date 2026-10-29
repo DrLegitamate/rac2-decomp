@@ -39,7 +39,24 @@ int func_L00_0032EFB0(int a0, int a1, int a2, int a3)
 }
 
 
-INCLUDE_ASM("asm/levels", func_L00_0032F038);
+typedef struct {
+    char gap_L00_0032F038[0x18E];
+    short head;
+    int count;
+    char gap2_L00_0032F038[0xC4];
+    float v[30];
+} Table_L00_0032F038;
+
+extern Table_L00_0032F038 D_00138180;
+
+/* Returns the float n entries back from the head of a 30-entry history ring (n capped at the
+   ring's count); RAC1's read_pad_float_history. */
+float func_L00_0032F038(int n)
+{
+    if (D_00138180.count < n)
+        n = D_00138180.count;
+    return D_00138180.v[(D_00138180.head - n + 30) % 30];
+}
 
 
 void func_L00_003318D8(void)
@@ -49,7 +66,7 @@ void func_L00_003318D8(void)
 void func_L00_00333E20(void) {
 }
 
-INCLUDE_ASM("asm/levels", func_L00_00333F90);
+/* func_L00_00333F90 is in L00_00333F90.c. */
 
 /* Calls a three-argument callee twice and a two-argument callee twice over fields of the first object, folds a float field through a float-to-int callee into an int field of the object, and calls a last callee when the updated field is negative. */
 void func_L00_003340A8(char *a)
@@ -101,21 +118,21 @@ void func_L00_00338DF8(char *a0)
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L00_0033AA40);
+/* func_L00_0033AA40 is in L00_0033AA40.c. */
 
 /* func_L00_0033BA68 is matched in L00_0033BA68.c (built with -frac2-qcopy). */
 
-INCLUDE_ASM("asm/levels", func_L00_0033C238);
+/* func_L00_0033C238 is matched in L00_0033C238.c. */
 
 
 
 
 
-INCLUDE_ASM("asm/levels", func_L00_0033E3B8);
+/* func_L00_0033E3B8 is in L00_0033E3B8.c. */
 
 
 
-INCLUDE_ASM("asm/levels", func_L00_0033EA00);
+/* func_L00_0033EA00 is matched in L00_0033EA00-g8.c. */
 
 
-INCLUDE_ASM("asm/levels", func_L00_0033EE38);
+/* func_L00_0033EE38 is in L00_0033EE38.c (built with -g). */

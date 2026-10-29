@@ -276,7 +276,7 @@ int func_L00_0031D620(int a0, int a1, float x) {
     return a0 + func_002EF250((float)(a1 - a0) * x);
 }
 
-INCLUDE_ASM("asm/levels", func_L00_0031D670);
+/* func_L00_0031D670 is defined in L00_0031D670.c. */
 
 
 /* Blends three components of a vector into a second one: for every component that is
@@ -395,7 +395,7 @@ void func_L00_00322AC0(List_F66766f2b *obj, int a1, int a2, float v)
     obj->count = obj->count + 1;
 }
 
-INCLUDE_ASM("asm/levels", func_L00_00322428);
+/* func_L00_00322428 is defined in L00_00322428-g8.c. */
 
 /* func_L00_00322BE0 is defined in L00_00322BE0.c. */
 
@@ -415,7 +415,7 @@ void func_L00_00322EC8(Rac2Native_5b4b17178a13f443_SmallSlotReset128Owner *owner
 }
 
 
-INCLUDE_ASM("asm/levels", func_L00_00323448);
+/* func_L00_00323448 is defined in L00_00323448-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L00_00323958);
 
@@ -468,7 +468,6 @@ Lzero:
     return 0;
 }
 
-INCLUDE_ASM("asm/levels", func_L00_00324D18);
 
 INCLUDE_ASM("asm/levels", func_L00_00324E48);
 
@@ -509,7 +508,6 @@ void func_L00_00325600(void *a0, void *a1, void *a2) {
 }
 
 
-INCLUDE_ASM("asm/levels", func_L00_00325CC0);
 
 
 /* stores a wrapped angle back into the caller field and forwards its [0,1] rescaled value (x*0.5+0.5) with two pointer arguments to a second callee */
@@ -560,7 +558,6 @@ void func_L00_003294F0(unsigned char *entity, int enabled) {
 
 /* func_L00_00329520 is in L00_00329520.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_003296C0);
 
 INCLUDE_ASM("asm/levels", func_L00_00329E90);
 
