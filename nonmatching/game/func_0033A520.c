@@ -1,6 +1,6 @@
 /* func_0033A520 (360 bytes, boot + 27 levels, src/game/003399B0.c, default -G0) - near miss,
-   measured 21 October 2026 with the current compiler (#222's mfc1 interlock is in: the size is
-   retail's now).
+   measured 21 October 2026 and rechecked 28 October 2026 with the current compiler (#222's
+   mfc1 interlock is in: plain C remains 360/360 bytes, 0/28 USA v1.01 places).
 
    The plain C below is 360 bytes, 0 of 28 places: 26 of the 90 words differ, all in +0x58..+0xBC.
    Everything before (prologue, the allocation, the four clears) and after (from the first call's

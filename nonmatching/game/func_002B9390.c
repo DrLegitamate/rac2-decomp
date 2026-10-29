@@ -3,11 +3,13 @@
 /* func_002B9390: measured plain-C near miss, not linked.
  *
  * Compiled in src/game/002B7E28-g8.c with -O2 -G8 -ffunction-sections.
- * The 140-byte best form represents the 0x40-byte record walk, negative-flag
- * skip, indexed handler call and prefetch. `tools/check.py func_002B9390 --diff`
- * reports 0/28 in USA v1.01, PAL and USA v2.00. The object has the right size,
- * but starts with a stack-frame save while retail stores $ra at $gp+0x2DB8;
- * loop branches, register allocation and delay-slot ordering also differ.
+ * Current-master USA v1.01 recheck: 140 bytes and 0/28. The 0x40-byte record
+ * walk, negative-flag skip, indexed handler call and prefetch are represented,
+ * but the candidate starts with a stack-frame save while retail stores $ra at
+ * $gp+0x2DB8. Retail also uses a GP-resident end pointer, branch-likely
+ * control flow, and different loop/call register setup. Historical checks
+ * reported 0/28 in PAL and USA v2.00; those ROMs are not present in this
+ * checkout, so they were not rerun here.
  * Other measured forms were 164, 152 and 140 bytes (the byte-pointer form),
  * 156 bytes with a volatile handler read, and 152 bytes when storing
  * `__builtin_return_address(0)` to the GP slot.

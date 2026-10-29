@@ -4,8 +4,8 @@
    the end address: sixteen bytes when all three are sixteen-byte aligned,
    four bytes when they are four-byte aligned, one byte otherwise.
 
-   Measured with tools/check.py in src/game/0027F128.c (the -O2 -G0 profile):
-   "func_00282AB0: 0 of 28 places match", 156 bytes against retail's 160.
+   Current-master USA v1.01 replay in a standalone -O2 -G0 unit:
+   156 bytes against retail's 160, 0/28 places.
 
    What differs, after this wave's measurements:
 

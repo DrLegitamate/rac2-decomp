@@ -1,7 +1,14 @@
 /* func_002E6A60 (276 bytes, boot 0x2E6A60, 28 places)
  *
- * Draft, not compiled: the shape of the body is known, the register allocation
- * and the order of the float work are not reproduced yet.
+ * First integrated compile, USA v1.01, 28 October 2026: 292 bytes, 0/28
+ * placements. The output copy, global-address setup and argument lifetimes
+ * inflate the frame to 0x70 against retail's 0x40; helper and FPU register
+ * assignments differ, as does the order of the matrix negations and stores.
+ * This is a semantic draft, not a near match. Reopen with a source lifetime
+ * that reduces the frame and produces retail's helper-call and float order.
+ * A fresh explicit-negation/store-order form plus a mode(TI) record copy
+ * (2026-10-28) measured 308 bytes, 0/28, worse than the retained 292-byte
+ * candidate; it increased rather than reduced frame/code pressure.
  *
  * The body: it takes no argument.  It reads two words out of the table at
  * 0x1B8840 (the word at +0x38 and the word at +0x68), scales the first by 32 and
@@ -31,6 +38,7 @@
  * is a computed address.
  */
 typedef float f32;
+typedef unsigned char u8;
 
 extern int ref_L00_001B8840_00[];      /* the table at 0x1B8840 */
 extern f32 ref_L00_001B90F0_00;         /* the float at 0x1B90F0 */

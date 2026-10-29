@@ -1,4 +1,4 @@
-/* Near miss: 380 bytes, expected 380, 0 of 28 places (USA v1.01 boot).
+/* Near miss: rechecked 28 October 2026 at 380/380 bytes, 0 of 28 USA v1.01 places.
  *
  * Profile: -O2 -G8 -ffunction-sections (the body counts three small-data
  * words through $gp).
@@ -9,6 +9,9 @@
  * previous->$v1, i->$a1 and the array cursor->$a0 around base->$a2; this cc1
  * swaps previous and i and puts the cursor in $a1.  The entry walk, the whole
  * call sequence, the two gp stores and the return value are identical.
+ * A 28 Oct pointer-induction probe (cached count plus `char **cursor`) grew the
+ * candidate to 364/380 bytes, 0/28; it reloaded the count in the loop and did
+ * not recover retail's allocation. The indexed form remains the best source.
  */
 /* One frame of the level transition loop: it re-links the queued entries to
    their predecessor, runs the frame's call sequence, and repeats while the

@@ -563,7 +563,7 @@ void func_0034F960(s32 *a0,s32 *a1,s32 *a2,s32 *a3,s32 *a4) {
  *a4=n-(a0[16]-a0[14]);
 }
 
-void func_0034FA30(s32 *a0,s32 a1) {
+int func_0034FA30(s32 *a0,s32 a1) {
     if(a0[0]==0) {
         if(a0[1]!=4) {
             s32 space=40-a0[12];
@@ -578,6 +578,7 @@ void func_0034FA30(s32 *a0,s32 a1) {
     a0[14]=(a0[14]+a1)%a0[16];
     a0[15]+=a1;
     a0[17]+=a1;
+    return a0[17];
 }
 
 /* true when the counter has reached 0x1000; byte-identical across all 27 levels. */

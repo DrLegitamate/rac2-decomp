@@ -32,11 +32,12 @@ extern char D_001B9340[];
  * sp+0x10/0x14) but the 0x38-byte gap to retail's n slots is unexplained: the
  * offsets imply another 0x38 bytes of locals that no retail instruction touches.
  *
- * Next experiment: a local struct/array occupying the full 0x54 bytes (the frame
- * 0x60 + two 8-byte saves) -- e.g. the record or a descriptor work area declared
- * as one aggregate -- which would both force n/off into memory and place them at
- * retail's offsets.  Otherwise treat the 0x38 bytes of untouched frame as a
- * catalogue/source-shape defect to investigate with the builder's siblings.
+ * Current-master aggregate experiment: one local struct with ptr[2] at +0/+4,
+ * off at +0x14 and n[2] at +0x4C/+0x50 compiled to 300 bytes, 0 of 28 places.
+ * It grew the 292-byte baseline but changed the record stores and still did not
+ * reach retail's 320-byte body. The unexplained frame gap alone is therefore not
+ * enough; reopen only with a source-shape hypothesis that also accounts for the
+ * remaining descriptor and record instruction differences.
  */
 long long func_00294C40(char *object)
 {

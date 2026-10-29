@@ -9,8 +9,21 @@
    emits the loads and the stores in another order (with
    -fno-schedule-insns the order comes out right); and it sinks the last
    store into the `jr $ra` delay slot instead of leaving a nop there.
-   What would unblock it: the quad register allocation and an empty delay
-   slot. */
+   Current-master rechecks (28 October 2026): the retained ordinary-C form is
+   still 28 bytes, 0/28. `-fno-schedule-insns` restores retail's load/store
+   order and 32-byte extent only when a temporary volatile destination was
+   used, but the quad registers still allocate as $v0/$v1/$a2 rather than
+   $at/$v0/$v1. That volatile destination describes ordinary object memory
+   falsely and is not a permissible source method; do not retain it. Other
+   ordinary pointer/aggregate lifetime orderings tested here keep the same
+   register set or reorder the transfers. A 29 October whole-aggregate assignment
+   using an aligned three-word `mode(TI)` struct compiled to 52 bytes, 0/28: cc1
+   lowered it to six 64-bit `ld`/`sd` transfers plus return, missing the retail
+   qword operations. A 29 October probe using three calls to the reviewed
+   `qcopy` helper in a dedicated unit emits 48 bytes, 0/28. The helper expands
+   each copy into one `lq`/`sq` pair using `$v0`, computes each offset between
+   pairs, and therefore cannot reproduce retail's three loads followed by
+   three stores with quad registers `$at`/`$v0`/`$v1`. No exact match. */
 typedef int TI128 __attribute__((mode(TI)));
 typedef unsigned char u8;
 

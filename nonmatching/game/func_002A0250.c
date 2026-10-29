@@ -1,6 +1,10 @@
-/* func_002A0250: Opus closer M1 near miss, 26 October 2026.
+/* func_002A0250: Opus closer M1 near miss, 26 October 2026; replayed 28 October.
    Profile: -O2 -G8 -ffunction-sections, own -g8 unit.
-   172/172 bytes, 13 differing. Naming the u16 at 0x10FFB0 as `D_0010FFB0[]` gives the retail head exactly. Left: in the tail retail stores the old packet pointer early and increments it in place in $v0; 1,080 statement orders and 192 type combinations did not move it. */
+   Current-master USA v1.01: 172/172 bytes, 0/28; first mismatch +0x60.
+   Naming the u16 at 0x10FFB0 as `D_0010FFB0[]` gives the retail head exactly.
+   Left: in the tail retail stores the old packet pointer early and increments
+   it in place in $v0; 1,080 statement orders and 192 type combinations did
+   not move it. */
 #include "common.h"
 extern char D_0010FFC0[];
 extern unsigned short D_0010FFB0[];

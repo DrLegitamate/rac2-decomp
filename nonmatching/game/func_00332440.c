@@ -21,6 +21,8 @@
  *
  * What would unblock it: the source order that makes this cc1 copy the parameters
  * in the order a1, a2, a0 and reuse $s0/$s1 for the two derived pointers.
+ * A 28 Oct trial introduced locals for a1, a2 and a0 in that order; it remained
+ * 328/324 bytes, 0/28, with the same extra saved-register pressure.
  */
 
 typedef int TI128 __attribute__((mode(TI)));

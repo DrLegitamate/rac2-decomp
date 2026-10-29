@@ -7,7 +7,9 @@
    local-variable spellings nor a second use of the constant.  The body
    needs the -G8 profile, so it belongs in 0027F128-g8.c.
    Same wall for func_002828F0 (offset -0x76DC), func_00282928 (-0x76D8)
-   and func_00282938 (-0x76D4). */
+   and func_00282938 (-0x76D4). An isolated 29 October
+   -fno-schedule-insns2 unit remains 12 bytes and 0/1; it retains the same
+   lwc1/jr/mul.s sequence and does not restore the hazard nop or GP offset. */
 typedef float f32;
 
 extern float D_001A7910 __attribute__((sda));

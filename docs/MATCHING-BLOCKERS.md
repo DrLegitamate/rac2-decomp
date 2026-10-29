@@ -34,6 +34,162 @@ agreed result here. A persistent personal issue comment is no longer required fo
 
 ## Recent verified updates
 
+**28 October 2026 near miss:** `func_002CF2B8` was checked in its current-master `-G8`
+unit with a corrected 32-bit style argument matching `func_0027FAA8`'s target
+`unsigned long` parameter. The candidate is 132/136 bytes and passes 0/28 USA v1.01
+placements. Retail keeps 256.0f in `$f1` and 0.5f in `$f2`; cc1 swaps them and
+schedules the x constant in the call delay slot instead of before the call. The
+previous `u64` prototype was incorrect. Splitting the multiplication into a named
+`scaled` local before adding 0.5f leaves the 132-byte output unchanged. This remains
+a retained near miss, not a match.
+
+An isolated `-O2 -G8 -ffunction-sections -fno-schedule-insns` unit also stays
+132/136 bytes and 0/28. It retains the same float-register swap, expanded style
+constant and x constant in the call delay slot; disabling instruction
+scheduling does not recover the retail sequence. Two further isolated flag
+probes on 29 October, `-fno-gcse` and `-ffast-math`, also produce byte-identical
+132/136-byte candidates and 0/28 placements. `-fno-schedule-insns2` remains
+132/136 and 0/28, reorders the per-program float load and call setup, but still
+assigns the constants to opposite FPRs from retail. Retain as a near miss for a
+new allocator or scheduling hypothesis.
+
+**29 October 2026 related probe:** `func_002CDA20` has the same helper-call and
+float-constant allocation pattern. Its corrected 32-bit ABI candidate remains
+136/140 bytes and 0/28 under isolated `-fno-schedule-insns2`, so the second
+scheduler-pass setting does not resolve that sibling near miss either.
+
+**28 October 2026 recheck:** `func_0029DD30`'s old retained note blamed a limitation
+in build relocation derivation. A common-base source probe using `D_00140000` and
+the measured `-0x6A48`/`-0x6898` offsets compiles to 132/140 bytes and 0/28 USA
+v1.01 placements; the size check stops before relocation derivation, so it does
+not establish whether that body can be placed. The immediate measured blocker is
+cc1 sharing the base and simplifying retail's branch-likely layout. The corrected
+candidate remains in `nonmatching/`; no build-tool change is proposed. A simplified
+volatile-read control-flow probe compiles to 88/140 bytes and 0/28, losing the
+retail's independent address materializations and branch-likely paths. This is
+weaker than the retained candidate and does not change its status. Replacing the
+common-base expressions with the already named `D_001395D5` and `D_001397C4`
+symbols in the retained branch structure still compiles to 132/140 and 0/28;
+cc1 continues to share the address setup, so this spelling does not recover the
+retail layout. A 29 October explicit-goto form with repeated volatile reads
+also compiles to 132/140 bytes and 0/28; it retains ordinary bnez/bltz branches
+and the shared base, so this control-flow spelling does not recover retail's
+branch-likely layout.
+
+**28 October 2026 recheck:** `func_002B9390`'s retained `-O2 -G8`
+candidate is 140/140 bytes and 0/28 in current-master USA v1.01. Retail saves
+`$ra` at `$gp+0x2DB8`, keeps the scan end pointer in GP storage and uses
+branch-likely flow; cc1 adds a stack frame and differs in the loop and handler
+call setup. Five earlier source forms measured 164, 152, 140, 156 and 152 bytes;
+the remaining work has no new plain-C hypothesis within the documented small
+function budget. PAL and USA v2.00 checks are historical and were not rerun
+because those ROMs are absent from this checkout. Keep the marker and retained
+candidate; do not classify it as handwritten based on difficulty.
+
+**28 October 2026 recheck:** `func_002CDA20`'s corrected 32-bit style ABI
+candidate (`-O2 -G8`) compiles to 136/140 bytes and 0/28 current-master USA
+v1.01 placements. Retail keeps 293.0f in `$f2` and 0.5f in `$f1`; cc1 swaps
+them, expands the 32-bit style constant beyond retail's `lui`/`ori`, and puts
+the x argument in the call delay slot. Reversing the addition operands stays
+136 bytes; a separate scaled local is 156. Its prior `u64` prototype was
+incorrect because the matched callee's target `unsigned long` is 32 bits.
+PAL and USA v2.00 data are absent here; no current checks were run for them.
+
+**29 October 2026 follow-up:** an isolated `-O2 -G8 -ffunction-sections
+-ffast-math` probe remains 136/140 bytes and 0/28, with the same FP constant
+register swap, expanded style constant and call-argument setup differences.
+This flag does not provide a new matching route. Reversing the multiplication
+operands (`ref * 293.0f`) is also byte-identical at 136/140 and 0/28.
+
+An isolated `-O2 -G8 -ffunction-sections -fno-schedule-insns` unit likewise
+measures 136/140 bytes and 0/28. It retains the float-register swap and
+expanded style constant; its argument setup and call/epilogue scheduling differ
+further. Disabling instruction scheduling does not recover the retail body.
+
+**28 October 2026 recheck:** `func_002D53F0`'s earlier exact-size candidate
+declared the `func_0027FAA8` style argument with common.h's 64-bit `u64`.
+The matched callee uses a local `unsigned long` alias, which is 32 bits in
+this target. With a 32-bit argument the candidate is 136/140 bytes and 0/28
+current-master USA v1.01 placements. Retail keeps 329.0f in `$f2` and 0.5f
+in `$f1`; cc1 reverses them and emits a different constant sequence for the
+style argument. The corrected candidate replaces the stale 140-byte result.
+
+**28 October 2026 recheck:** `func_002B6658`'s dedicated `-G8` candidate is
+152/148 bytes and 0/28 in current-master USA v1.01. Five source forms covering
+`while`/`continue`, `if`/`else`, a counted loop, a condition-label goto and a
+local flag copy retain the same core mismatch: retail's `bltzl`/`beqz`/`bnel`
+forms and delay-slot advance, plus the global-store and vtable register choices.
+The marker remains; this result does not support an `ASM_FUNC` classification.
+
+**28 October 2026 recheck:** `func_00282AB0`'s retained `-O2 -G0` candidate
+is 156/160 bytes and 0/28 in USA v1.01. The retail `add`/`addi` operations
+and plain `beqz` layout remain distinct from cc1's `addu`/`addiu` and
+branch-likely layout; the source also records the load and delay-slot
+differences. No new C hypothesis changes the retained measurements. Keep the
+marker; any `ASM_FUNC` classification requires maintainer agreement.
+
+**28 October 2026 recheck:** `func_002AD7B8`'s `-G8` source using
+`while (delay++ < 28) {}` compiles to 164 bytes and 0/28 in current-master USA
+v1.01. It reproduces the increasing delay count with the increment in the
+branch delay slot; the counter register and later allocation remain different.
+The separate delay variable used to select retail's counter register adds a
+copy before the compare. Keep the marker and the retained best source.
+
+**28 October 2026 recheck:** `func_002A0250`'s retained `-G8` candidate is
+172/172 bytes and 0/28 in current-master USA v1.01, with the first mismatch
+at `+0x60`. Naming the u16 at `0x10FFB0` recovers the entry sequence; the
+remaining tail differs in when the old packet pointer is stored and incremented.
+The prior 1,080 statement-order and 192 type-combination trials did not close
+that difference. Keep the marker and retained near miss.
+
+**28 October 2026 recheck:** `func_002DE618`'s break-then-clear source
+hypothesis compiles to 212 bytes and 0/28 in current-master USA v1.01. It keeps
+the final bit clear outside the scan but diverges from retail's loop and call
+layout; the first mismatch is `+0x10`. The existing merged-clear candidate at
+188 bytes remains the best near miss. Keep the marker and both measured source
+shapes; no tool or catalogue change is indicated.
+
+**28 October 2026 recheck:** `func_002F5D40`'s retained `-G8` candidate is
+236/224 bytes and 0/28 in current-master USA v1.01. Its `func_002EF010`
+result is declared at the callee's full `unsigned long` width, which adds
+conversions before the 32-bit address shifts; conditional and address
+scheduling also differ. Keep the marker pending a real return-contract audit
+or independently justified source-lifetime evidence.
+
+**28 October 2026 recheck:** `func_002798A0`'s retained plain-C draft is
+224/228 bytes and 0/28 in current-master USA v1.01. Its table/state loop is
+reconstructed, but size differs so relocation-adjusted instruction comparison
+does not run; register allocation and branch layout remain open. A historical
+228-byte form also missed at `+0x4`. Keep the marker and best retained source.
+
+**28 October 2026 recheck:** `func_00304128`'s `-O2 -G0` candidate is
+228/228 bytes and 0/28 in current-master USA v1.01, first differing at `+0x44`.
+The remaining differences are the symbol-to-local 16-byte copy's register and
+destination choices, the frame-backed float store, and later call argument
+scheduling. Retained pointer, union, struct and temporary spellings did not
+resolve those differences. Keep the marker pending a materially new source
+hypothesis.
+
+**28 October 2026 recheck:** `func_00298298`'s retained `-G8` candidate is
+216/232 bytes and 0/28 in current-master USA v1.01. Its control flow, state
+values and loop edges are recovered. Retail's dead `~0x80` constants in two
+loop-head delay slots, register allocation and separate state 21/20 tails
+remain unresolved. Keep the marker and retained candidate.
+
+**28 October 2026 recheck:** `func_002A8600`'s `-G0` candidate is 216/232
+bytes and 0/28 in current-master USA v1.01. It retains the measured iterator
+state accesses and four-argument helper ABI; the active/inactive filter and
+shared return/call layout still differ. Keep the marker and retained source;
+do not add redundant stores or artificial dependencies to force the retail
+control flow.
+
+**28 October 2026 recheck:** `func_00305438`'s `-frac2-qcopy` indexed-loop
+candidate is 172/172 bytes and 0/28 in current-master USA v1.01, with the first
+mismatch at `+0x3C`. The body, calls and copies align; cc1 duplicates and folds
+the first loop exit test and puts the body before the test, while retail enters
+with an unconditional branch to the rotated test. Keep the marker and the
+retained C; no generated loop machinery is warranted by this one shape.
+
 **Source-method update, 25 October 2026:** RAC1's reviewed shared EE helpers
 (`qcopy`, `qcopy_nc`, `qzero`) and original public runtime-library target
 primitives are now permitted under `AGENTS.md`. Earlier prohibitions below are
@@ -275,6 +431,8 @@ The wave 8 allocator investigation remains useful: global.c prioritizes approxim
 
 **func_002A7470 (23 October 2026):** With `-O2 -G8 -ffunction-sections`, six plain-C forms reached a best 356/364 bytes and 0/28 placements in both USA v1.01 and USA v2.00; PAL has no catalogue row. The retained draft reconstructs the early helper, threshold guard and state updates, but its dynamic 16-byte-copy allocation and final table-byte access differ. A 360-byte form matched the `lq`/`sq` copy sequence but kept the animation index in `$s5`, expanding the frame from 0x40 to 0x50. **Next:** preserve the copy's pointer allocation while recomputing the animation index without a callee-saved live range. The size mismatch means the checker did not reach relocation-aware comparison.
 
+**28 October 2026 requalification:** the retained 364-byte `-O2 -G8 -ffunction-sections -frac2-qcopy` candidate still matches 0/28 USA v1.01 placements; the first difference is at +0x20 in head register allocation. Its later copy and table-byte observations remain as recorded.
+
 **Large state dispatchers (23 October 2026).** The retained
 [`func_L22_002BF1B0`](../nonmatching/levels/func_L22_002BF1B0.c) now contains the
 complete Dobbo Orbit state body: 147 selector values, 63 retail destinations and
@@ -446,6 +604,44 @@ candidate has the same 12-byte missing-nop result as the previously measured
 `func_L00_002EDCB8` family; the catalogue prefix correction does not change
 that compiler blocker.
 
+**29 October 2026 follow-up:** `func_002828B8` also remains a 12-byte candidate
+against its 16-byte extent under isolated `-fno-schedule-insns2`. It retains
+`lwc1 $f0,0($gp) ; jr $ra ; mul.s $f0,$f0,$f12`, so this later scheduler pass
+does not restore either retail's load-delay `nop` or its `-0x76E0($gp)` offset.
+The same isolated profile leaves sibling `func_002828F0` at 12/16 bytes and
+0/1, with `0($gp)` instead of `-0x76DC($gp)` and the same compact sequence.
+
+**28 October 2026 follow-up:** retail's `func_00282890` sequence loads
+`D_001A790C`, seeds the COP1 accumulator with `0.25f + 0.25f` via `adda.s`,
+then computes `ACC + (float)a0 * D_001A790C` via `madd.s` before conversion.
+The resulting C expression, `(int)((float)a0 * D_001A790C + 0.5f)`, is
+semantically supported by the decoded instructions. In the proper `-G8`
+sibling it compiles to 44 bytes against retail's 40 and matches 0/1: cc1 emits
+separate `mul.s`/`add.s`, directly materializes 0.5, and references the global
+at `0($gp)` rather than `-0x76E4($gp)`. `__builtin_fmaf` instead emits an
+80-byte helper-call sequence. Keep the marker; the accumulator schedule and
+small-data reference remain unresolved, and these probes do not justify
+`ASM_FUNC`. A 28 October 2026 `-ffast-math` check does expose `adda.s` and
+`madd.s` and corrects the GP-relative load, but the 0.5f expression still
+measures 44/40 bytes and seeds the accumulator from 0.5f; spelling the offset
+as two `0.25f` additions measures 48/40 bytes. Adding `-fno-schedule-insns`
+to the 0.5f form leaves its 44-byte output unchanged. No tested C form matches
+the retail ordering. The same operation appears at `func_002828C8` with
+`D_001A7910`: its corrected semantic C probe also measures 44/40 bytes, 0/1,
+with the same separate arithmetic and `0($gp)` load in place of retail's
+`-0x76E0($gp)` reference. A 28 October 2026 `-ffast-math` probe for this sibling
+is also 44/40 bytes and 0/1; it exposes `adda.s`/`madd.s` and fixes the
+GP-relative displacement, but seeds ACC from 0.5f and schedules that constant
+before the global load. The explicit `(x * D + 0.25f) + 0.25f` form measures
+48/40 bytes. `func_00282900` repeats the same result for
+`D_001A7914`, with retail `-0x76DC($gp)` and a 44/40-byte, 0/1 semantic C
+probe. The 28 October 2026 `-ffast-math` probe is 44/40 and 0/1; the explicit
+`(x * D + 0.25f) + 0.25f` form is 48/40. It exposes the accumulator
+instructions but does not match the retail order or size. A 29 October 2026
+`__builtin_fmaf((float)a0, D_001A7914, 0.5f)` probe in the actual `-G8`
+sibling compiles to 80/40 bytes and emits unresolved helper calls instead of
+the retail EE accumulator sequence; the temporary unit edits were restored.
+
 <a id="blocker-05"></a>
 
 ## 5. `nop nop` before `div.s`
@@ -544,11 +740,14 @@ A switch's comparison tree is also a separate source problem: func_L19_00423CC0 
 
 Historical boot candidates func_00119BF8(3072 bytes, table 0x13A7B0) and func_00118D98(3368 bytes, table 0x13A6C0) remain markers. The recorded binary comparison distinguished their vfprintf-family implementation from the public newlib tree: PRINT used memcpy/writer calls instead of iovecs/sprint; cvt returned via a static buffer rather than a digit pointer; the observed Inf/NaN strings differed. func_001185E8's attempted reconstruction was 1508 versus 1496 bytes. These are historical implementation clues, not permission to use prohibited SDK sources or headers.
 
-**24 October 2026, shared record lookup:** `func_002F6510` remains a
-244/248-byte near miss under game `-O2 -G8 -ffunction-sections`, with 0/28
-placements in each release. Six checker invocations (no scratch compiles)
-measured 232-byte raw-index, 264-byte duplicated-call and 244-byte shared-call
-forms. A named-table computed-goto probe did not preserve retail arm offsets
+**24–29 October 2026, shared record lookup:** `func_002F6510`'s retained
+semantic switch remains a 244/248-byte near miss under game `-O2 -G8
+-ffunction-sections`, with 0/28 placements in each release. Six checker
+invocations (no scratch compiles) measured 232-byte raw-index, 264-byte
+duplicated-call and 244-byte shared-call forms. A 29 October direct-mode switch
+(mode 2 by default, mode 1 in the selected cases) compiles to 196/248 and
+0/28; it removes the later selection branch but changes the shared tail and
+register layout. A named-table computed-goto probe did not preserve retail arm offsets
 +0x60/+0x64; the retained semantic switch in `nonmatching/game/func_002F6510.c`
 avoids that invalid binding assumption. Root/index lifetime and address setup
 still differ. Reopen with independent type/lifetime evidence and exact arm
@@ -574,6 +773,31 @@ Historical mismatches involved bnel/beql with a taken-path slot where retail use
 Hoisting genuinely shared work before the condition changed slot selection in some bodies. It is a measured source lever, not a guarantee that every likely branch can be rewritten to a normal one. Five workers had previously discarded 9, 10, 11, 14 and 15 targets using that signature alone; those exclusions were not justified without exact decoding/profile checks.
 
 Integer BEQL/BNEL execute the slot on taken paths and annul it on non-taken paths. The earlier unconditional/inverted-slot claim is withdrawn. This was checked against the [official PCSX2 R5900 interpreter](https://github.com/PCSX2/pcsx2/blob/0f71e668b8adc950db7de1b1b15c2f5080c102e9/pcsx2/Interpreter.cpp#L387-L410), not a new hardware experiment. Do not generalize this statement to a differently decoded instruction.
+
+**28 October 2026, retained near miss:** `func_002958B8` (USA v1.01, 344 bytes,
+boot and 27 levels) is 336/344 bytes and 0/28 in the current source unit. The
+scan loop still emits a plain `beq` where retail uses `beql` with the index
+delta in its annulled slot. Rewriting the pointer walk as a counted `for` loop
+or a pre-incremented `do` loop leaves the same 336-byte output. A separate
+`long long` delta trial changes the size to 352 bytes, and a 32-bit update
+expression assigned back to that value gives 372; neither is a match. The
+retained candidate records the other delay-slot and prologue differences.
+
+**29 October 2026 current-master replay:** `func_00118460`'s retained
+pointer-induction candidate is 100/112 bytes and 0/1 under an isolated game
+unit with `-O2 -G2 -ffunction-sections`. It uses `$a0` instead of retail's
+`$v1` from +0x08, and emits `bne` plus a separate `bgtz` loop back edge rather
+than retail's `beql` with the zero store in its delay slot. A nested equality
+form (`if (*p == '9') *p = '0'; else { *p += 1; return *p; }`) compiles
+byte-identically to the retained candidate. Recomputing `buf + len` inside the
+loop measures 116/112 and peels the loop; returning directly from the first
+non-nine case was previously measured at 96/112. The source was also replayed
+in its original SDK unit (`sdk -O2 -G2`), with 0/1 and different instruction
+allocation. The entry's early branch targets the final return-1 block inside
+this function, not a sibling. A new condition-led carry loop
+(`while (count > 0 && *--p == '9')`) emits retail's `beql` with the zero store
+in its delay slot, but expands to 136/112 bytes and remains 0/1 because it
+duplicates the count and character checks. No strict linked match is claimed.
 
 <a id="blocker-08"></a>
 
@@ -695,6 +919,33 @@ that note, not a C reconstruction, so the observation belongs here instead.
 The `INCLUDE_ASM` marker is unchanged: instruction-set/control-flow review and
 the handwritten-assembly acceptance rule still apply before `ASM_FUNC` credit.
 
+**28 October 2026 current-master review evidence:** `func_002E31E8` is a 376-byte
+body in the boot and 27 level placements. Its retail body uses `$at` as a live
+table cursor, `lqc2`/VU0 vector arithmetic/`qmfc2.ni`, and trapping `addi`. No C
+attempt was made; this supports an `ASM_FUNC` proposal pending maintainer
+agreement.
+
+**28 October 2026 current-master review evidence:** `func_0029D0E0` is a 376-byte
+body in the boot and 27 level placements. Retail uses `$at` to carry table values
+from loads at +0x2C/+0xB8 into stores at +0x98/+0x140 (record field +0x64),
+and has trapping
+`addi` instructions. This supports a handwritten-assembly proposal; no C attempt
+was made. Keep `INCLUDE_ASM` pending maintainer agreement to `ASM_FUNC`.
+
+**28 October 2026 current-master review evidence:** `func_002A0A28` is 352 bytes
+in the boot and 27 level placements. Rabbitizer's R5900 decode shows `$at` used
+as a live scan pointer (`addi $at,$t7,0xD00`, then `lbu` through it, followed
+by `addi $at,$at,1` and a loop comparison) and again as a second table cursor.
+The body also uses trapping `addi` at +0x0C, +0x20, +0xC0 and +0xDC. This
+supports a handwritten-assembly proposal under the repository rule; no C attempt
+was made, and `INCLUDE_ASM` remains until a maintainer agrees to `ASM_FUNC`.
+
+**28 October 2026 evidence:** `func_002F0B78` is 392 bytes in the boot and 27 level placements. USA v1.01 retail uses `$at` as a live cursor, trapping `addi`, and COP2/VU0 operations including `lqc2`, `qmtc2.ni`, vector arithmetic, `qmfc2.ni` and accumulator instructions. No C attempt was made; retain `INCLUDE_ASM` pending maintainer agreement to `ASM_FUNC`.
+
+**28 October 2026 evidence:** `func_002A0558` is 80 bytes in the boot and four level placements. USA v1.01 retail uses COP2/VU0 operations (`lqc2`, vector arithmetic, `vsqrt`, `vwaitq`, `qmtc2.ni`, `qmfc2.ni`) and `$at` as a working register; and returns a computed vector value through a COP2-to-GPR/FP transfer. No C attempt was made. This supports handwritten-assembly review; leave `INCLUDE_ASM` pending maintainer agreement to `ASM_FUNC`.
+
+**28 October 2026 evidence:** `func_002A08A0` is 392 bytes in the boot and 27 level placements. USA v1.01 retail uses `$at` as a live pointer, trapping `addi`, and COP2/VU0 instructions including `lqc2`, `vaddw.xyz`, `vsub.xyz`, `qmfc2.ni` and VU0 accumulator operations. No C attempt was made; this supports handwritten-assembly review, but keep `INCLUDE_ASM` until a maintainer agrees to `ASM_FUNC`.
+
 **28 October 2026 evidence:** the 264-byte `func_002F0D00` routine in USA v1.01
 uses `$at` as a working register in the shift at +0x30 and add at +0x38, and a
 trapping `addi` at +0x28. It is catalogued in the boot and at 27 level
@@ -718,6 +969,36 @@ The 288-byte `func_002F3D20` routine in USA v1.01 combines MMI `pext*` and
 `$at`, and multiple trapping `addi` instructions. It is catalogued in the boot
 and at 27 level placements. No C attempt was made; retain `INCLUDE_ASM` until
 a maintainer agrees with the handwritten classification.
+
+**28 October 2026 evidence:** the 320-byte `func_0029D258` body in USA v1.01
+(boot and 27 level placements) contains interleaved COP2/VU0 vector operations
+(`lqc2`, `qmtc2`, `vmulax`, `vmadday`, `qmfc2`) and MMI packed-integer
+operations (`pextlb`, `pextlh`, `pmulth`, `pmfhl.sh`, `ppacb`, `ppach`). The
+sequence transforms four vector records and packs output colours. This is
+evidence for handwritten-assembly review, not a C match; its source marker
+remains `INCLUDE_ASM` pending maintainer agreement.
+
+**28 October 2026 evidence:** `func_00283698` is an 80-byte routine in the boot
+and 27 levels. Its USA v1.01 body loads three vector rows with `lqc2`, performs
+VU0 vector additions/subtractions, stores three results with `sqc2`, then puts
+the final `sqc2 $vf6,0x20($a0)` in the live `jr $ra` delay slot. All 27 level
+placements contain the VU0 store opcode. These COP2/VU0 operations are outside
+the compiler's C output; this supports handwritten-assembly review, not a C
+match. Leave `INCLUDE_ASM` until a maintainer agrees to `ASM_FUNC`.
+
+**28 October 2026 evidence:** `func_002836E8` is an 80-byte routine in the boot
+and 27 levels. USA v1.01 loads three vector rows with `lqc2`, performs VU0
+vector additions/subtractions, stores three results with `sqc2`, and returns
+with a `nop` delay slot. All 27 level placements contain the `lqc2` opcode.
+This supports handwritten-assembly review, not a C match; leave `INCLUDE_ASM`
+until a maintainer agrees to `ASM_FUNC`.
+
+**28 October 2026 evidence:** `func_00283738` is an 80-byte routine in the boot
+and 27 levels. USA v1.01 loads two 3x4 matrices with `lqc2`, multiplies and
+accumulates their rows with VU0 vector operations, stores three result rows
+with `sqc2`, and places the final store in the live return delay slot. All 27
+level placements contain `lqc2`. This supports handwritten-assembly review,
+not a C match; leave `INCLUDE_ASM` until a maintainer agrees to `ASM_FUNC`.
 
 The wave 8 correction correctly identified 0x700014A9 as por, not mtsa or an undecodable word. The recorded mtsa zero encoding was 0x00000029. A por-plus-sq zero mismatch remains separate from a decoder error (section 17).
 
@@ -1014,6 +1295,115 @@ other way round. Also shows up as a store landing in the second `jal` delay slot
 first. This is `reorg`'s forward-fill choice and it is the single most common near miss in the
 six waves' drafts (37 of 240 worker notes mention a delay slot).
 
+**28 October 2026 follow-up:** `func_002B68C8`'s current candidate is 112 bytes
+against the 108-byte boot extent, with zero matches at its one placement. Retail
+places the ordinary `-1` state store in the call-delay slot; the compiler moves
+it before the final flag store. Making the state writes volatile restores their
+order but leaves the call slot empty. A temporary current-unit check confirms
+the same slot mismatch; no strict linked match is claimed.
+
+**28 October 2026 recheck:** with the state pointer acquired after the first
+helper and the `-1` value materialized after that call, an all-ordinary-store
+candidate reaches the correct 108-byte size. It still matches 0/1: cc1 moves the
+`+0x24` store before the `+0x3C` store instead of keeping it after the other
+fields in the `func_002B66F0` delay slot. Marking only the final store volatile
+produces the same order; making all stores volatile retains their order but
+leaves a nop in the call delay slot. No artificial reads, barriers or fake
+dependencies are used. This supersedes the earlier 112-byte size measurement.
+An explicitly laid out naturally aligned state struct also gives 112 bytes;
+packing it gives 156 bytes of byte/partial stores. Neither layout improves the
+ordinary-store candidate.
+
+**28 October 2026 follow-up:** `func_0011B140` has two retail `sync` barriers
+around the `0x1000F000` handshake and returns the unsigned 64-bit value
+initialized through `func_0011AF90`. The current semantic candidate, checked in
+the marker unit's default game profile with complete helper declarations,
+volatile flag/MMIO accesses and two `__sync_synchronize()` calls, is 184 bytes
+against retail's 164 (0/1). The candidate does emit both `sync` instructions; it saves the helper result
+in `$s0` and repeatedly materializes the MMIO address. A branch-shaped source
+that duplicates each real store in both callback arms grows to 212 bytes and
+moves both callbacks before polling. This supersedes the earlier 192-byte
+measurement. A 29 October 2026 actual-unit probe replacing `__sync_synchronize()`
+with `__atomic_thread_fence(5)` is also 184/164 and 0/1, but this GCC 2.9
+frontend treats the unsupported spelling as an implicit helper call, emitting
+`jal func_000000` with argument 5 rather than `sync`; the probe was discarded.
+No strict match is established.
+
+**28 October 2026 follow-up:** `func_0029DC90` is 60 bytes at 28 USA v1.01 places.
+Its retail low return word in `$v0` is boolean, but `$v1` contains values left by
+the nested flag tests and the function is referenced through a data table, so the
+callback return width is unresolved. The retained 64-bit-result C candidate is
+64 bytes (0/28); a nested `int` result variable compiles to 52 bytes (0/28), and
+explicit early returns compile to 64 bytes (0/28). These variants differ in
+allocation and branch layout. The neighboring `func_0029DCD0` also uses ordinary
+global reads, so volatile qualifiers are not evidence-based here.
+**28 October 2026 source-symbol recheck:** the retained C now names the three
+bytes as boot-resident `D_001395C1`, `D_001A7B05` and `D_001A7B0C`. Rechecked
+in the marker unit with the three absolute data expressions, the nested-return
+form is 60/60 bytes and 0/28 USA v1.01 places. Every word now agrees except the
+first `lbu` destination (`$v0` in C, `$v1` in retail). The external-symbol
+form leaves its relocations at zero; the named-result form is 52 bytes, the
+conditional-expression form is 64, and a shared-failure-label form ties the
+nested body. The callback return width remains unresolved
+because no direct callers are present and its table prototype is unknown.
+**28 October 2026 short-circuit probe:** spelling the predicate as a direct
+`D_001395C1 && D_001A7B05 && D_001A7B0C` chain produces 52 bytes, 0/28.
+It allocates the first load to `$v1` like retail and the second to `$v0`, but
+puts the third load in `$v1`, changes the branch layout, and does not reproduce
+the return-value move in the retail delay slot. The 60-byte nested-return body
+remains the closest candidate; no additional source shape is justified by this
+result.
+
+**29 October 2026 scheduling probe:** a dedicated `-O2 -G8
+-ffunction-sections -fno-schedule-insns` unit with the nested-return body stays
+60/60 bytes and 0/28. The first `lbu` remains in `$v0` instead of retail's
+`$v1`; the remaining body is aligned. Disabling scheduling does not resolve
+the allocation difference.
+
+**29 October 2026 scheduling follow-up:** `func_002A0488` remains 48/48 bytes
+and 0/28 with isolated `-fno-schedule-insns2`. The probe exchanges the first
+`dsll32` and `ld`, while the final store remains before `jr $ra` instead of in
+its delay slot. This later scheduler setting does not resolve the return-slot
+mismatch.
+
+**29 October 2026 corrected-base follow-up:** `func_00295870` is a 68-byte
+table predicate at 28 USA v1.01 placements. Retail's table base is
+`0x0010B540` (`D_0010B540`), with path offsets `0x14F4` and `0x15D4`; the
+previous near-miss source used the wrong `D_00105540` base and is superseded.
+The corrected array candidate in the original source unit compiles to 64/68
+bytes and 0/28. It preserves the two paths but allocates the mask, base and
+loaded word to `$v1`, `$v0` and `$v0`, where retail uses `$v0`, `$v1` and `$a0`.
+`-fno-schedule-insns` remains 0/28 and leaves the mask outside the branch delay
+slot. A corrected byte-offset pointer form is 56/68, 0/28, and hoists the
+index. Do not introduce artificial dependencies or memory accesses to force
+the retail allocation.
+
+**28 October 2026 follow-up:** `func_002FFCF8` is a 124-byte function with a current
+120-byte candidate at 28 USA v1.01 placements. A temporary explicit statement order
+(initial helper call, short load, angle helper call, float load and calculation) remained
+120/124 and 0/28: the compiler still scheduled the short load in the angle call's delay
+slot, while retail leaves the slot empty. Address materialization and register choices
+also differ. Isolated-unit `-fno-schedule-insns` and `-fno-schedule-insns2` probes
+also remain 120/124 and 0/28; neither moves the short load, and the latter changes
+stack-save and float-constant order. No artificial dependency or volatile access is
+justified to force the slot.
+
+**28 October 2026 follow-up:** `func_002F7320` is 132 bytes at 28 USA v1.01 placements.
+The retained nested-condition candidate was 132/132 but 0/28. A temporary explicit
+single-loop/goto form, with the same table-search and comparison semantics, compiled to
+120/132 (0/28); it exposes the shared loop exit but still differs in table-base setup,
+cursor/index allocation, branch layout and return-value scheduling. Retain the smaller
+candidate as the current near miss; no strict linked match is established. A structured
+`for (;;)` loop with `break` at the same zero-entry/key/limit conditions compiles to
+144/132 (0/28), with additional cursor/index work and a less similar branch layout.
+
+**29 October 2026 FPU scheduling probe:** `func_00282C68` remains 16/16 bytes
+and 0/28 with isolated `-O2 -G0 -ffunction-sections -ffast-math
+-fno-schedule-insns2`. The max operation moves to the first word and min fills
+the return delay slot, but the max destination and min source still use the
+wrong FPRs. Reversing both comparisons is byte-identical; the fast-math
+if-chain is 44/16. No match is established.
+
 **Measured examples:** `func_L18_0042FAA8` (56 bytes, 13 of 14 instructions identical, "the delay-slot filler takes" the other value); `func_L02_003D69F0` (48 against 44, the
 `sw $zero` lands in the second `jal` delay slot instead of the first); `func_L23_003C0E98`
 (prologue reordered, the `lw` in the slot instead of before it).
@@ -1040,6 +1430,14 @@ split of COMPILER-NOTES) puts only that argument in the `jal` slot; it does not
 move a2. Two different source orders and the `x = x + 1` / `x++` / named-temp
 counter forms measured. Retained: `nonmatching/levels/func_L08_0042F440.c`,
 `func_L08_0042FAC0.c`.
+
+**28 October 2026, retained near miss:** `func_0027A9F0` (USA v1.01, 332 bytes,
+boot and 27 levels; default `-O2 -G0`) compiles to 328 bytes and 0/28. Retail
+stores the width before a helper call and places the argument copy in the `jal`
+delay slot; the candidate's width store occupies that slot. Moving the width
+store ahead of all other screen-state stores leaves the same 328-byte output.
+This is one unchanged source-order result, not evidence that all scheduling
+forms are exhausted; the retained file records the other measured store orders.
 
 <a id="blocker-20"></a>
 
@@ -1222,6 +1620,15 @@ comparison as an ordered `<=` or `>=`. Complete corrected reconstructions,
 their actual release coverage and reopening conditions remain unlinked;
 equal size, matching frames and prefixes receive no matching credit.
 [Retained source corrections](https://github.com/OpenRAC/rac2-decomp/commit/7799e607437c4e999af6be52050c904bbc5ef069).
+
+**28 October 2026, retained near miss:** `func_002A8F70` (USA v1.01, 340 bytes,
+boot and 27 level placements) has a 312-byte C candidate under the default
+`-O2 -G0 -ffunction-sections` profile, 0/28. It models the existing-entry
+owner/time test, flag merge, ring insertion, VU helper call and two real
+16-byte transfers with reviewed `qcopy`. Retail saves s0-s7 in a 0x50 frame;
+the candidate's 0x40 frame saves fewer registers. An explicit threshold
+`if`/`else` compiled to 316 bytes; a reused local ring-table base gave 304.
+Both alternatives also match 0/28. On 29 October 2026, temporarily integrating the retained body into its actual `src/game/002A7750.c` translation unit and reusing its existing `L_A8E20Entry` and table declarations compiled to 324 bytes, 0/28; retail is 340 bytes with a 0x50 frame and saves s0-s7, while the integrated candidate keeps the 0x40 frame. The previously recorded standalone 312-byte result was not reproduced in that translation-unit context. Reopen with an independently justified value-lifetime or register-allocation shape; do not add dummy state to force saves.
 
 <a id="blocker-23"></a>
 
@@ -1651,11 +2058,11 @@ are **one** pseudo living across three calls: no reference count can make it eli
 
 **23 October 2026, semantic draft only:** func_00278EB0 remains a marker. Nine checker invocations measured an earlier default -G0 draft at 204 bytes, 0/28 placements in every release, with two independent additions swapped at +0x70/+0x74. Coordinator review found inaccurate callee declarations. The retained nonmatching/game/func_00278EB0.c now uses the existing 64-bit wait-mask and no-argument field-query signatures; its current bytes and placements are unmeasured. The earlier results are superseded as qualification evidence. Reopen with coordinate-type/scheduling evidence and validate the accurate ABI before claiming size or equality.
 
-**23 October 2026, retained near miss:** `func_0028E2A8` has a 332-byte plain-C `-G8` draft against 348 retail bytes, 0/28 in USA v1.01. Ten target runs included one checker environment failure and an incomplete-array compile failure. A separate 344-byte section-annotated diagnostic matched 0/28 in USA v1.01, PAL, and USA v2.00. Recomputing the second record lookup and moving to a G8 sibling improved the draft, but register allocation, branch layout, and external-address materialization remain different. The marker is restored; reopen with verified global storage and argument-layout evidence.
+**23 October 2026, requalified 28 October 2026, retained near miss:** `func_0028E2A8` has a 332-byte plain-C `-G8` draft against 348 retail bytes, 0/28 in USA v1.01. Ten earlier target runs included one checker environment failure and an incomplete-array compile failure; the current-master `-O2 -G8 -ffunction-sections` check confirms the same 332-byte result. A separate 344-byte section-annotated diagnostic matched 0/28 in USA v1.01, PAL, and USA v2.00. Recomputing the second record lookup and moving to a G8 sibling improved the draft, but register allocation, branch layout, and external-address materialization remain different. The marker is restored; reopen with verified global storage and argument-layout evidence.
 
-**23 October 2026, retained near miss:** `func_0028B160` uses the default game -G0 profile in `src/game/00288D88.c`; its 292-byte body has 28 placements in each release. Six plain-C candidates were measured, and the best three reached 280 bytes, 0/28 in USA v1.01, PAL, and USA v2.00. Since the size differed, the checker did not perform relocation-adjusted byte comparisons. The retained draft models the count loop, renderer call, and scaled offset update. Its object diff shows different register allocation and layout; the proposed cause is unverified. Reopen with `.lreg` lifetime evidence or a new source-shape hypothesis. The marker is restored and no full build was run.
+**23 October 2026, retained near miss; rechecked 28 October:** `func_0028B160` uses the default game -G0 profile in `src/game/00288D88.c`; retail is 292 bytes with 28 placements in each release. Six plain-C candidates were measured, and the best three reached 280 bytes, 0/28 in USA v1.01, PAL, and USA v2.00. Since the size differed, the checker did not perform relocation-adjusted byte comparisons. The retained draft models the count loop, renderer call, and scaled offset update. `python3 tools/regalloc.py func_0028B160 --version us` reports byte-identical baseline/dump objects under -O2 -G0; the candidate holds the address of `D_001B1894` in a saved register across the loop, while retail rematerializes the address each pass and uses `$s6` for the shift base 1 (candidate uses `$fp`). This narrows the allocation difference but supplies no source-level remedy yet. The marker is restored; no full build was run.
 
-**23 October 2026, retained near miss:** `func_00280670` is 160 bytes with 28 placements in each release. Ten plain-C forms reached 152 bytes and 0/28 in USA v1.01, PAL, and USA v2.00. The retained record-based counted-threshold loop still differs in register allocation and loop setup. Reopen with verified record-layout or argument-liveness evidence; the marker is restored and no full build was run.
+**23 October 2026, rechecked 28 October 2026, retained near miss:** `func_00280670` is 160 bytes with 28 USA v1.01 placements. The retained record-based counted-threshold loop compiles to 152 bytes, 0/28 in current-master USA v1.01. Reversing the `count`/`total` declaration order leaves the output unchanged. The body still differs in total/count and input-pointer allocation, loop setup and result-pointer reconstruction. Ten earlier plain-C forms were also 152 bytes; PAL/USA v2.00 checks are historical because those ROMs are absent from this checkout. Reopen with verified record-layout or argument-liveness evidence; the marker is restored and no full build was run.
 
 **23 October 2026, retained near miss:** `func_002BCB00` is 340 bytes with 28 placements in USA v1.01 and USA v2.00; PAL has no catalogue entry for the name. Nine default-game-profile source compiles included one failed literal form; the eight compiled variants measured 328, 324, 328, 332, 332, 332, 332 and 336 bytes. The best candidate matched 0/28 in both releases. Its saved-register assignment, pointer setup, and scheduling around vector copies and the float constant still differ. Reopen with ABI or allocation evidence; the marker is restored and no full build was run.
 
@@ -1680,6 +2087,13 @@ Historically seven loop forms in two five-member families retained a different b
 The qualified cc1 rejects **both** `-freorder-blocks` and `-fno-reorder-blocks` as Invalid option(exit 33). Do not add them to cflags.txt. `-mastra-keep-frame-order` is accepted, but controls frame-related scheduling rather than arbitrary block ordering.
 
 Meaningful return/break arrangements have matched some loops. PR #238's tidy_condjump_fallthru.py removes a jump to the next block early enough for flow to remove its dead input in six documented rotated id-list walks. Neither remedy establishes a solution for every block-order mismatch.
+
+**28 October 2026, `func_00335960`:** the retained 360-byte USA v1.01 body rechecks
+at 316/360 bytes and 0/28 placements in its current source unit. The attempted
+`for`/`while`/split-condition forms all lower to a jump into a shared tail; retail
+uses a rotated loop with its head peeled. The loop also makes cc1 hoist the mode
+load that retail performs afterward. Retain the marker; reopen with independent
+block-order or live-range evidence, not another equivalent loop spelling.
 
 <a id="blocker-44"></a>
 
@@ -1809,6 +2223,30 @@ The wave 13 report found five suspects. Missing jr or local register definitions
 
 PR #253 is merged. Generator, catalogue, markers and tests account for these specific extents while preserving reconstructed program bytes. They are catalogue corrections, not new C or handwritten-function credit. Other historical boundary proposals below remain independent.
 
+**28 October 2026 USA v1.01 follow-up, still pending:** `func_0029B848` is a 12-byte catalogue row whose bytes decode to `daddu $v0,$zero,$zero; nop; addiu $sp,$sp,0x10`. In the boot and all 25 level placements, it follows a completed `jr $ra`, its delay-slot `nop`, and one further `nop`; scans found no direct branch/jump target inside the row and no aligned literal pointer into it. A temporary `return 0` C probe emitted 8 bytes and matched 0/26 placements. This resembles the recorded return-value/unmatched-restore residue `func_002FED78`, but `func_0029B848` is catalogued in PAL and USA v2.00 as well, and those retail dumps are unavailable in this checkout. Keep its marker and catalogue row unchanged pending maintainer decision and release-qualified audit; it has not been added to `FUNCTION_RESIDUES`.  **28 October 2026 follow-up:** USA v1.01 boot-only `func_003356E8` spans 0x003356E8-0x00335794 (172 bytes), between `func_003355A8` ending at 0x003356E4 and `func_00335798` at 0x00335798. The extent starts with `sb $a0,0x88($v1)` and then contains stack adjustments, delay-slot nops and stores, without a function prologue, branch/jump body or return. A scan of boot load segments found no direct branch/jump target or aligned literal pointer into the extent. Treat as a residue hypothesis only; leave the marker/catalogue unchanged pending maintainer and release audit.
+
+**28 October 2026 USA v1.01 follow-up, pending release-qualified audit:** `func_00288D40` is catalogued as 20 bytes at boot 0x00288D40 and 25 level placements. The boot listing shows a completed `func_00288D30` return at 0x00288D34 with its delay-slot `sltu`, followed by `nop` at 0x00288D3C; the row then contains `daddu $v0,$zero,$zero; nop; addiu $sp,$sp,0x10; nop; addiu $sp,$sp,0x10`, followed by another `nop` at 0x00288D54 and the next function at 0x00288D58. No boot assembly listing references the `f_00288D40` label. A `void` stub compiles to 8 bytes; a `return 0` trial was not retained. This is a residue hypothesis only: aligned-pointer and all-placement/release audits remain outstanding. Keep the marker and catalogue unchanged pending maintainer review; do not count it as a match or handwritten function.
+
+**28 October 2026 USA v1.01 follow-up, pending release-qualified audit:** `func_002ED570` is catalogued as 4 bytes in boot and 23 levels. The boot listing places its sole `lw $v0,0x24($v1)` after the completed `func_002ED508` epilogue (return at 0x002ED560, delay slot at 0x002ED564, then two nops) and before the `func_002ED578` prologue; the label is an `alabel`, not a function entry. A `void` stub compiles to 8 bytes. Keep the marker and catalogue unchanged pending maintainer review and aligned-pointer/all-placement audits; this is not a match or handwritten-function claim.
+
+**28 October 2026 USA v1.01 follow-up, pending release-qualified audit:** `func_0029CEC8` is catalogued as 12 bytes in boot and 23 levels. In the boot listing it follows `func_0029CE80`'s completed return at 0x0029CEC0 and delay-slot stack restore at 0x0029CEC4; the extent is `sw $a0,-0x4000($gp); nop; addiu $sp,$sp,0x10; nop`, then the next label at 0x0029CED8 is an `alabel` starting a new stack frame. The label `f_0029CEC8` is itself an `alabel`; no direct branch reference to it appears in the boot listing. A `void` C stub is 8 bytes. Keep the marker/catalogue unchanged pending maintainer and aligned-pointer/all-placement audits; do not count it as a match or handwritten function.
+
+**29 October 2026 USA v1.01 all-placement audit:** `func_002EEBB0` is 20 bytes in the boot and 23 levels. All 24 placements have the same boundary: completed `jr $ra` and stack-adjust delay slot, then `daddu $v0,$zero,$zero; nop; addiu $sp,$sp,0x140; nop; addiu $sp,$sp,0xC0; nop`, followed by the next catalogue entry. Scans of all 24 loaded programs found no direct branch/jump target, aligned loaded-word pointer or adjacent `lui` plus `addiu`/`ori` construction to the row. The earlier temporary empty-C probe compiled to 8 bytes and matched 0/24. This supports an orphaned epilogue-fragment hypothesis but does not rule out computed indirect entry; PAL and USA v2.00 retail dumps are unavailable here. Keep the marker/catalogue unchanged pending maintainer review; this is not a C match or handwritten-function claim.
+
+**28 October 2026 USA v1.01 follow-up, pending release-qualified audit:** `func_002ED880` is catalogued as 28 bytes in boot and 23 levels. The boot listing labels this extent `alabel`; it contains two stores, a load, three nops and `addiu $sp,$sp,0xB0`, followed by a nop and another `alabel` at 0x002ED8A0. It sits within a cluster of `alabel` extents after completed returns, and no direct boot-listing branch reference to `f_002ED880` was found. A `void` stub compiles to 8 bytes. Treat it as a residue hypothesis only; keep marker/catalogue unchanged pending maintainer and aligned-pointer/all-placement audits.
+
+**28 October 2026 USA v1.01 follow-up, pending release-qualified audit:** `func_002ED9A8` is catalogued as 20 bytes in boot and 23 levels. Its boot extent follows `func_002ED990`'s completed return at 0x002ED9A0 and delay-slot stack restore at 0x002ED9A4; it contains `lw $v0,0xC($v1); nop; addiu $sp,$sp,0x20; nop; addiu $sp,$sp,0x20`, then a nop before the next `alabel` at 0x002ED9C0. The label is an `alabel`, and no direct branch reference to `f_002ED9A8` appears in the boot listing. A `void` stub compiles to 8 bytes. Keep marker/catalogue unchanged pending maintainer and aligned-pointer/all-placement audits; do not count it as a match or handwritten function.
+
+
+**28 October 2026 USA v1.01 follow-up, pending maintainer review:** boot-only `func_0026FEF0` is 20 bytes and follows `func_0026FEB8`'s completed return at 0x0026FEE8 and stack-adjustment delay slot at 0x0026FEEC. The extent is `sw $v0,0x38($a0); nop; addiu $sp,$sp,0x10; nop; addiu $sp,$sp,0x20`, followed by padding and the next prologue at 0x0026FF08. No direct target in catalogued boot code or aligned loaded-word pointer enters the row. A temporary empty C probe emits 8 bytes and matches 0/1. Keep marker and catalogue row pending maintainer review; do not count it as a match or handwritten function.
+
+**28 October 2026 USA v1.01 follow-up, pending maintainer review:** boot-only `func_002725C8` is 20 bytes and follows `func_00272550`'s completed return at 0x002725C0 and stack-adjustment delay slot at 0x002725C4. The extent is `addiu $sp,$sp,0x80; nop; nop; nop; sw $zero,0x4($v0)`, followed by padding before the next frame at 0x002725E0. No direct target in catalogued boot code or aligned loaded-word pointer enters the row. A temporary empty C probe emits 8 bytes and matches 0/1. Keep marker and catalogue row pending maintainer review; do not count it as a match or handwritten function.
+
+**28 October 2026 USA v1.01 follow-up, pending maintainer review:** boot-only `func_00298D10` is 20 bytes, labelled `alabel`, after `func_00298CEC`'s completed return at 0x00298D04 and stack-adjustment delay slot at 0x00298D08. The extent is `daddu $v0,$zero,$zero; nop; daddu $v0,$v1,$zero; nop; addiu $sp,$sp,0x40`, followed by padding before the next frame at 0x00298D28. It has no local prologue or return. A temporary empty C probe emits 8 bytes and matches 0/1. Keep marker and catalogue row pending maintainer review; do not count it as a match or handwritten function.
+
+**29 October 2026 USA v1.01 follow-up, pending maintainer review:** boot-only `func_002B8530` is catalogued as 20 bytes and disassembles to `lwc1 $f0,0x2D0($a2); nop; lwc1 $f0,0x258($a2); nop; addiu $sp,$sp,0x30`. The previous extent ends with a completed return/delay slot, the disassembler labels this address `alabel`, and a new frame begins at `func_002B8548`. This local boundary evidence is insufficient to edit the release-shared catalogue; retain the marker and row pending maintainer review.
+
+**28 October 2026 USA v1.01 follow-up, pending maintainer review:** boot-only `func_002B4068` is 36 bytes, labelled `alabel`, after `func_002B4040`'s completed return at 0x002B4054, delay-slot result operation, and padding. Its body is `sw $zero,0($gp); nop; sw $zero,0($gp); nop; addiu $sp,$sp,0x60; nop; addiu $sp,$sp,0x90; nop; addiu $sp,$sp,0x150; nop`, followed by the next frame at 0x002B4090. It has no local prologue or return. A temporary empty C probe emits 8 bytes and matches 0/1. Keep marker and catalogue row pending maintainer review; do not count it as a match or handwritten function.
 
 <a id="blocker-51"></a>
 
@@ -1956,12 +2394,56 @@ were left on the table for nothing. The over-broad classes are:
 
 (the fix belongs in `tools/levels.py`, outside every worker's lane):
 `func_L00_00400F30`, `func_003495B8`, `func_0034CE88`, `func_002EEBB0`,
-`func_L00_002DA390`, `func_0031E6D8`, `func_0031D350`, `func_00326CA8`,
+`func_L00_002DA390`, `func_0031E6D8`, `func_00326CA8`,
 `func_L00_003D1B48`, `func_002B80B8`, `func_L00_0037B408`, `func_L00_0037B4B8`,
 `func_L00_0037B5C0`, `func_00280660`. They are the same shape: a four- to
 sixteen-byte extent that reads a register it never sets, or branches outside its own
 bytes, or is the linker's padding between two bodies. Each is deposited with its
-evidence.
+evidence. **28 October 2026 USA v1.01 follow-up for `func_002B80B8`:** unlike the
+short extents grouped above, this 76-byte boot row begins at `alabel f_002B80B8`
+after `func_002B80A8`'s completed return at `0x002B80AC`, its delay slot, and a
+padding nop. It consists only of positive `$sp` adjustments separated by nops,
+two more nops, and `addiu $v0,$zero,-1`; the following `func_002B8108` starts a
+fresh frame at `0x002B8108`. The boot assembly has no direct reference to the
+alabel. This supports a catalogue-fragment hypothesis, but the 15 USA v1.01
+level placements and the PAL/USA v2.00 copies have not been audited here. Keep
+the generated rows and source markers pending maintainer review; no catalogue
+mechanism change is made. **28 October 2026 USA v1.01 follow-up for `func_0031D350`:** this
+boot-only catalogue row is 132 bytes, so it is distinct from the short extents
+above. Its bytes are stack-pointer additions interleaved with nops, plus one
+`addiu $v0,$zero,1`. It begins after `func_0031D308`'s completed `jr $ra`, its
+stack-restore delay slot, and a nop; the next prologue starts at `0x0031D3E0`.
+The assembly labels the start `alabel`, has no direct reference to
+`f_0031D350`, and the linked boot ELF contains no aligned word equal to the
+entry address. A temporary empty C body measures 8 bytes against 132. This
+supports a catalogue-fragment hypothesis, not a match; keep the marker and
+generated row pending maintainer review. Other releases are not audited and
+the row has not been added to release-shared residue handling. **28 October
+2026 follow-up for `func_0029B848`:** this generated 12-byte row has no
+standalone body at the boot or checked USA v1.01 level placement. In boot it
+is `daddu $v0,$zero,$zero; nop; addiu $sp,$sp,0x10; nop`, followed at
+`0x0029B858` by the next function's `addiu $sp,$sp,-0x10` prologue. All 25
+level placements have the same 12 bytes; at level 00, the `0x0030C920` extent
+is followed at `0x0030C930` by the next prologue. It contains no `jr $ra`; the
+preceding `func_0029B810` has already returned, and a scan of direct boot
+branches found no target at its start. The 8-byte C zero-return probe cannot
+represent the 12-byte row across all 26 placements. Leave the marker and
+generated catalogue unchanged pending maintainer catalogue review; no C match
+is claimed. **28 October 2026 follow-up for `func_002ED9A8`:** the generated
+20-byte extent is `lw $v0,0xC($v1); nop; addiu $sp,$sp,0x20; nop; addiu
+$sp,$sp,0x20` in boot and all 23 USA v1.01 level placements. It follows the
+previous function's completed `jr $ra` at boot `0x002ED9A0` and stack-adjustment
+delay slot at `0x002ED9A4`; the next row starts with a prologue at `0x002ED9C0`.
+There is no return in this row, and a scan of direct boot branches found no
+target at its start. This supports a catalogue-fragment diagnosis; retain the
+generated row and marker pending maintainer review.
+**28 October 2026 follow-ups for `func_002ED848`, `func_002ED880` and `func_002ED8F0`:** these extents are byte-identical across all 23 USA v1.01 level placements. `func_002ED848` is 36 bytes of unrelated `$gp`/stack stores and zero-base stores; it follows the previous function's return at boot `0x002ED83C` and stack-adjustment delay slot at `0x002ED840`. `func_002ED880` is 28 bytes of stores, loads, nops and a stack add after `func_002ED870`'s completed return and delay slot. `func_002ED8F0` is 84 bytes of stack adjustments and loads ending with a stack add, after `func_002ED8A0`'s completed return and delay slot. None contains a return, and direct boot branch/jump scans found no target at any of the three starts. These support catalogue-fragment diagnoses; retain markers and generated rows pending maintainer review.
+**28 October 2026 follow-up for `func_0029CEC8`:** the generated 12-byte extent is `sw $a0,-0x4000($gp); nop; addiu $sp,$sp,0x10; nop` in boot and all 23 USA v1.01 level placements. It follows the prior function's completed `jr $ra` at boot `0x0029CEC0` and stack-adjustment delay slot at `0x0029CEC4`; the next function's prologue begins at `0x0029CED8`. The row contains no return, and a scan of direct boot branches found no target at its start. This supports a catalogue-fragment diagnosis; retain the generated row and marker pending maintainer review.
+**28 October 2026 follow-up for `func_002ED570`:** this generated 4-byte extent is `lw $v0,0x24($v1)` in the boot and all 23 USA v1.01 level placements. It follows the preceding function's completed `jr $ra` at boot `0x002ED560`, its stack-adjustment delay slot at `0x002ED564` and two nops; the next function's frame setup begins at `0x002ED578`. The row itself has no prologue or return, and a scan of direct boot branches found no target at `0x002ED570`. This supports a catalogue-fragment diagnosis; retain the generated row and marker pending maintainer review.
+**28 October 2026 follow-up for `func_00288D40`:** its 20-byte generated extent is identical across all 25 USA v1.01 level placements and consists of `daddu $v0,$zero,$zero; nop; addiu $sp,$sp,0x10; nop; addiu $sp,$sp,0x10`. It follows `func_00288D30`'s completed return (`jr $ra` at boot `0x00288D34`) and has no return of its own; the next catalogue row starts at `0x00288D58`. A direct boot branch/jump scan found no target at `0x00288D40`. This supports a catalogue-fragment/padding diagnosis; retain the generated row and marker pending maintainer review.
+**29 October 2026 USA v1.01 all-placement audit for `func_003495B8`:** this 4-byte row is `swc1 $f1,0x18($a0)` in the boot and all 27 level placements. Every placement has the same boundary: it follows `func_003495A0`'s completed `jr $ra`, its `sw $zero,0x18($a0)` delay slot, and a nop; after the row's own nop, `func_003495C0` starts with `jr $ra`. Scans across all 28 loaded programs found no direct branch/jump target, aligned loaded-word pointer or adjacent `lui` plus `addiu`/`ori` construction to the row. The instruction reads `$f1` without a local definition, so no source-defined C computation accounts for it. This supports a catalogue-residue hypothesis but cannot rule out computed indirect entry; leave the marker and row unchanged pending maintainer review.
+**29 October 2026 USA v1.01 all-placement audit for `func_0034CE88`:** this 12-byte row contains `sw $v0,0x156C($a0); nop; sw $v0,0x1564($a0)` in the boot and all 27 level placements. Every placement follows the preceding function's completed `jr $ra` and `addiu $sp,$sp,0x10` delay slot; after the two stores and nops, `func_0034CE98` starts with its own `jr $ra`. Scans across all 28 loaded programs found no direct branch/jump target, aligned loaded-word pointer or adjacent `lui` plus `addiu`/`ori` construction to the row. The stores use `$v0` without a local definition. This supports a catalogue-residue hypothesis but does not rule out computed indirect entry; keep the catalogue row and marker unchanged pending maintainer review.
+**28 October 2026 recheck of `func_00280660`:** 12 bytes in the boot and 22 level placements; its body is `sw $zero,0x14($v1); nop; sw $zero,0x1C($a0)`, after a completed return and stack-adjustment delay slot in every USA v1.01 copy. The boot function-range scan and aligned loaded-word scan found no incoming target/reference; the empty C probe is 8 bytes, 0/23. Keep its marker pending the maintainer’s catalogue-rule decision.
 
 
 <a id="blocker-52"></a>
@@ -2194,7 +2676,7 @@ The old appendix is an investigation record, not a current work queue. Filler re
 - func_L16_00424B48's eight-byte restore/nop prefix is now independently verified and excluded; its 160-byte body starts at 00424B50. func_L11_00440790 remains a separate historical proposal (212 bytes, candidate 192-byte body and an apparently unreachable block). An old size or apparently dead block alone does not establish that second correction or handwritten code.
 - **Differing-callee case resolved:** func_L00_003F5660 now uses ref_L00_003F5660_00 and passes 27/27, including levels 08,09,19,30. The old assertion that no single definition could represent it was wrong. Genuine nonrelocated immediate differences remain a different problem.
 
-The historical full core scan reported 60 fill-starting entries rather than the earlier 26. Many simple cases were subsequently removed; mixed examples such as func_001158F4, func_0011A7F8, func_0011E920, func_0011ED28, func_0011F364, func_0011FB8C, func_00120354, func_00125D94, func_0012646C, func_0012F998 and func_00130A8C need their own boundary evidence. The old table and prose disagreed on func_0011F364: 28-byte prefix/608-byte body at 11F380 versus 4/632 at 11F368. Neither historical figure is adopted here as a verified correction. Preserve the real code until the discrepancy is resolved.
+The historical full core scan reported 60 fill-starting entries rather than the earlier 26. Many simple cases were subsequently removed; mixed examples such as func_001158F4, func_0011A7F8, func_0011E920, func_0011ED28, func_0011F364, func_0011FB8C, func_00120354, func_00125D94, func_0012646C, func_0012F998 and func_00130A8C need their own boundary evidence. For `func_0012F998`, a 28 October 2026 USA v1.01 scan found no direct boot branch/jump target or aligned loaded-word pointer into the 16-byte row, which follows `func_0012F948`’s completed return and delay slot; PAL and USA v2.00 extents remain unaudited, so no correction is adopted. The old table and prose disagreed on func_0011F364: 28-byte prefix/608-byte body at 11F380 versus 4/632 at 11F368. Neither historical figure is adopted here as a verified correction. Preserve the real code until the discrepancy is resolved. **28 October 2026 follow-up for `func_0011A7F8`:** USA v1.01 decodes its 24-byte body as two `pref 0x0D,-0x3233($t6)` words, `addiu $v1,$zero,0`, `syscall 0`, `jr $ra`, `nop`. It follows the preceding function’s completed return and stack-adjustment delay slot. Scanning catalogued boot functions and aligned loaded words found no direct/pointer reference to the extent, but computed indirect entries are untraced and the syscall body itself is coherent. No C or handwritten classification is proposed; retain the marker pending entry/ABI and compiler review.
 
 A known entry pointer is strong positive evidence; one pointer lookup is not proof that all other entry points or indirect targets are absent. Verify every affected placement and preserve raw bytes.
 
@@ -2362,10 +2844,18 @@ The qualified GNU opcode table includes the `mult d,s,t` form with `WR_d`. As an
 | `func_002FED78` | 12 | 1 | `0x002FED68` |
 | `func_002FF0B0` | 36 | 1 | `0x002FF0A4` |
 | `func_002FDB40` | 148 | 23 (boot + 22 levels) | `0x002FDB30` |
+| `func_0033B538` | 4 | 1 (boot) | `0x0033B52C` |
+| `func_003172D0` | 188 | 1 (boot) | `0x00316E08` ends at `0x003172CC`; this row starts four bytes later |
 
 Every checked placement follows a preceding `jr $ra` and its delay slot. A scan of the corresponding program's text found no direct branch/jump target inside any of these extents; a scan of the loaded non-code sections found no aligned literal pointer into them. The mixed arithmetic/store fragments are therefore supported as catalogue residues by their surrounding code and reference audit, not merely by their lack of `jr $ra` or by FPU nops.
 
+**28 October 2026 USA v1.01 follow-up:** `func_003172D0` is a 188-byte boot-only row between the end of `func_00316E08` at `0x003172CC` and `func_00317390`. Its bytes are 24 stack-pointer increments with interleaved `nop`s, one `swc1 $f0,0($a1)`, and a final stack increment; they have no new frame setup or return. Scanning all catalogued boot functions found no direct branch/jump target into the row, and no aligned loaded-word value points into its extent. This supports a catalogue-boundary concern; it is not proof against computed indirect entry. Leave its marker and catalogue row untouched pending maintainer review.
+
 **Decision:** keep these as catalogue-correction cases, not C-matching targets or handwritten-function credit. #243 retains the observations but does not change the catalogue. A separate generator change should verify every affected placement, preserve the original image bytes, and include regression tests before dropping these rows. This static audit does not establish the absence of computed indirect targets, so do not generalize it into an opcode-only deletion rule.
+
+**29 October 2026 USA v1.01 all-placement audit:** `func_0033B538` is a four-byte boot row containing only `daddu $v0,$a0,$zero`. In the boot and all 27 level placements, it follows the preceding function’s completed `jr $ra` and stack-adjust delay slot, then a nop; the next catalogue entry starts with a new frame prologue. Across all 28 loaded programs, scans found no direct branch/jump target at the row, no aligned loaded-word pointer to it, and no adjacent `lui` plus `addiu`/`ori` construction of its address. This strengthens the catalogue-residue hypothesis but does not rule out computed indirect entry. Keep its marker and catalogue row unchanged pending maintainer review; do not add it to residue handling before that review.
+
+**29 October 2026 USA v1.01 screening:** `func_003495B8` and `func_0034CE88` have boundary patterns audited across all 28 placements and no direct branch/jump, aligned pointer or adjacent high/low address-pair references; see the placement-specific entries above. These support catalogue-residue hypotheses but cannot rule out computed indirect entry or establish other-release behavior. Keep both markers and rows unchanged pending maintainer review. Do not add either to residue handling without that review.
 
 ### game/00308600 follow-up — PR #287 merged; original near miss retained
 
@@ -2379,7 +2869,7 @@ attributed for provenance, not exclusive ownership.
 
 | Function / family | Status | Evidence and next action |
 | --- | --- | --- |
-| **Vector copy as a scheduling barrier:** `func_002B5E48`, `func_002EE988`, `func_L23_00418650`, `func_L23_003C01F8`, `func_L23_00418DC0`, `func_L23_004256F0`, `func_L02_003DB158`, `func_L02_003D47B0`, `func_L26_003D4930`, `func_L12_00413CE0` (close: `func_002B50E0`, `func_L23_0041D0A0`); from today's first attempts at level 2, also `func_L02_00401BF8`, `func_L02_003F1A88`, `func_L02_003EE938`, `func_L02_003E8CE8` | Merged, #275 | Each is retail's size with `-frac2-qcopy` in a unit of its own. Each is exact when the copy is the volatile asm `lq $2,0(%1) ; sq $2,0(%0)`, in scratch copies only. The profile's grouped pair lets independent instructions cross it. About 50 single flags and many source orders, including `-frac2-zero-ti-barrier`, do not. #275 (merged) adds the opt-in `-frac2-qcopy-barrier`, the clear's block in `sched_analyze_insn` applied to the qcopy insn. Twelve witnesses landed with it. Twenty-three more near misses are exact with it as their records stand, in #283; two more follow. `func_002B50E0` is still 3 words off, a sched1 tie on argument moves. |
+| **Vector copy as a scheduling barrier:** `func_002B5E48`, `func_002EE988`, `func_L23_00418650`, `func_L23_003C01F8`, `func_L23_00418DC0`, `func_L23_004256F0`, `func_L02_003DB158`, `func_L02_003D47B0`, `func_L26_003D4930`, `func_L12_00413CE0` (close: `func_002B50E0`, `func_L23_0041D0A0`); from today's first attempts at level 2, also `func_L02_00401BF8`, `func_L02_003F1A88`, `func_L02_003EE938`, `func_L02_003E8CE8` | Merged, #275 | Each is retail's size with `-frac2-qcopy` in a unit of its own. Each is exact when the copy is the volatile asm `lq $2,0(%1) ; sq $2,0(%0)`, in scratch copies only. The profile's grouped pair lets independent instructions cross it. About 50 single flags and many source orders, including `-frac2-zero-ti-barrier`, do not. #275 (merged) adds the opt-in `-frac2-qcopy-barrier`, the clear's block in `sched_analyze_insn` applied to the qcopy insn. Twelve witnesses landed with it. Twenty-three more near misses are exact with it as their records stand, in #283; two more follow. `func_002B50E0` is still 3 words off, a sched1 tie on argument moves. A 29 October aligned 48-byte character-buffer probe under `-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier` preserves the same `+0x124` three-move difference, so byte-buffer storage does not change the soft-frame-pointer tie. |
 | **The barrier copy's link costs:** `func_L02_003F1A88` | Qualified with reviewed helper | The TI/barrier profile was five words off because its producer-link latency differed from the real macro dependency graph. The approved `qcopy` helper closes the 228-byte function under default G0, 1/1 in each release. No compiler link-cost patch is needed. Preserve the original distinction: modeling only part of an inline helper's optimizer effects need not reproduce the actual helper. |
 | **A TImode zero reloaded as a register pair:** `func_L02_004388A0` | Open, measured | 5 words off with the barrier: its 16-byte zero clear is reloaded as a group of two general registers, though the R5900 holds it in one. That makes `$v1` a spill register, so a hoisted sentinel -1 left unassigned gets `$v1` where retail has `$v0`. Without the clear (diagnostic only), every -1 is in `$v0`. |
 | **A register saved and never used:** `func_L02_003FF6E8` | Open, measured | Retail saves `$s2` and never uses it; 21 retail game functions do so, and none of them is C. A plain C spelling reproduces the frame and register roles but keeps the value in `$s2`, 700 bytes against 696. Also `func_00326A10` (28 October 2026): retail saves `$s0` unused beside `$s1` = 0x8710; the C reaches 444/444 bytes with frame 0x90 and the constant in `$s0` ([record](../nonmatching/game/func_00326A10.c)). |
@@ -2392,7 +2882,7 @@ attributed for provenance, not exclusive ownership.
 | **gcse critical-edge split, Cygnus block merge:** `func_002CD720`, `func_L02_003E79F8`, `func_L02_003FCCA0`, `func_L18_004283F0` | Merged, #261 | Opt-in `-frac2-gcse-unsplit-edges` and `-frac2-keep-block-order`. `func_L23_0041B9F0` reaches retail's size with the gcse switch and still stops at the copy order. |
 | **PRE keeps a load across a store to another offset:** `func_L02_003EEC58` (and `func_L23_0041C0E8`) | Open | Retail reloads the index after a store to a disjoint offset of the same base. A historical `volatile` probe reproduces it. Current RAC1 also uses volatile fields; this is not a blanket-forbidden source method (see COMPILER-NOTES.md). **Next:** establish whether a faithful field qualifier describes the target's actual accesses before considering an opt-in PRE rule. The old probe alone does not qualify either solution. |
 | **Wide store in an annulled slot:** `func_L02_0042EDD0`, `func_L23_00422668`, `func_L02_003E7370` | Merged, #279 | Retail's game code has no `sd` or `sq` among the 2,895 stores in annulled slots. Ordinary slots hold 547 `sq` and 497 `sd`, and annulled slots do take wide loads.<br><br>PR #279 adds the opt-in `-frac2-no-annulled-wide-stores` (reorg's thread and steal paths; `optimize_skip` is kept). It is neutral by default (796 of 796 units); forced on in every game-compiler unit, it changes only the two witnesses. `func_L02_0042EDD0` (2 places, with the clear barrier) and `func_L23_00422668` (with `-frac2-qcopy`) are exact with it. `func_L02_003E7370` also needs the clear barrier in a call slot, and the barrier then also catches a plain C clear. |
-| **Catalogue rows that are not functions:** `func_00288D40` (20 bytes), `func_00290718` (4), `func_00298D10` (20), `func_002B4068` (36), `func_002B49A0` (12), `func_002ED570` (4), `func_002FC460`, `func_002FC510`, `func_002FC618`, `func_002FC868` (4 each), `func_0033B538` (4) | Evidence, left as markers | Each row starts right after a complete function, its `jr $ra` and the delay slot, and ends at the next function. No branch or jump in any catalogued boot function reaches it (scan of every boot row). Their words, like `sw $v0,-0x3D14($gp)` or `addiu $sp,$sp,0x10 ; nop`, read as unreachable tails.<br><br>Three level rows fit the same pattern (DrLegitamate, 28 October 2026, USA v1.01): `func_L09_003FB780` (4 bytes; levels 09, 22, 23: `daddu $v0,$zero,$zero`), `func_L25_00373ED0` (4: `addiu $v0,$v0,0`) and `func_L25_00373F08` (4: `sw $a0,0x48($v0)`). Each of the five placements follows a `jr $ra`, its delay slot and padding, and is followed by a `nop` and the next function. No branch or jump label in its program's disassembly reaches it, and no aligned word in the level's `text.bin`, `data.bin`, `lit.bin` or vtables equals its address. Left as markers. **Next:** a `tools/levels.py` rule for unreachable inter-function words, if maintainers want one. |
+| **Catalogue rows that are not functions:** `func_0011B320` (4 bytes), `func_0011B450` (4 bytes), `func_0011E920` (24 bytes), `func_0012FB10` (52 bytes), `func_00131CB0` (8 bytes), `func_00288D40` (20 bytes), `func_00290718` (4), `func_00298D10` (20), `func_0029CEC8` (12), `func_00130AAC` (4), `func_002B0A08` (12), `func_002B4068` (36), `func_002B49A0` (12), `func_002B8530` (20), `func_0026FEF0` (20), `func_00272540` (12), `func_002725C8` (20), `func_002DF630` (12), `func_002ED570` (4), `func_002ED848` (36), `func_002ED880` (28), `func_002ED8F0` (84), `func_002ED9A8` (20), `func_002EEBB0` (20), `func_002FC460`, `func_002FC510`, `func_002FC618`, `func_002FC868` (4 each), `func_0033B538` (4), `func_003380A8` (4) | Evidence, left as markers | Each row starts after a completed return or tail jump and its delay slot, possibly with alignment padding, and ends at the next function. No branch or jump in any catalogued boot function reaches it (scan of every boot row). Their words, like `sw $v0,-0x3D14($gp)` or `addiu $sp,$sp,0x10 ; nop`, read as unreachable tails. **28 October 2026 follow-up:** `func_0029CEC8` is 12 bytes in the boot and 23 level placements. Each USA v1.01 copy is `sw $a0,-0x4000($gp); nop; addiu $sp,$sp,0x10`, immediately after the preceding completed return and its stack-adjustment delay slot; there are no direct branch/jump targets or aligned non-text pointers into the extent in any of the 24 programs. A temporary `return 0` probe emits 8 bytes and matches 0/24. PAL and USA v2.00 retail dumps are unavailable here, so retain the catalogue row and marker pending release-qualified review. **28 October 2026 follow-up:** `func_002ED9A8` is 20 bytes in the boot and 23 level placements. Every USA v1.01 copy begins immediately after the preceding completed return and its stack-adjustment delay slot; its body is `lw $v0,0xC($v1); nop; addiu $sp,$sp,0x20; nop; addiu $sp,$sp,0x20`. No direct branch/jump targets or aligned non-text pointers enter the extent in any of the 24 programs. A temporary empty C probe emits 8 bytes and matches 0/24. PAL and USA v2.00 retail dumps are unavailable, so leave the marker and catalogue row pending release-qualified maintainer review. **28 October 2026 follow-up:** `func_002ED848` is 36 bytes in the boot and 23 level placements. Its USA v1.01 body is an orphan GP store, register no-ops, zero assignments, and two stores through the zero register; all 24 copies follow a completed return, its delay slot and padding, with no direct branch/jump target or aligned non-text pointer into the extent. The empty C probe emits 8 bytes, 0/24. PAL and USA v2.00 dumps are unavailable; keep the marker and row pending maintainer review. **28 October 2026 follow-up:** `func_002EEBB0` is 20 bytes in the boot and 23 level placements. Each USA v1.01 copy begins immediately after the preceding completed return and its stack-adjustment delay slot; the body is `daddu $v0,$zero,$zero; nop; addiu $sp,$sp,0x140; nop; addiu $sp,$sp,0xC0`. No direct branch/jump target or aligned non-text pointer enters the extent in any of the 24 programs. An empty C probe emits 8 bytes and matches 0/24. PAL and USA v2.00 retail dumps are unavailable, so keep the marker and catalogue row pending maintainer review. **28 October 2026 follow-up:** `func_002ED8F0` is 84 bytes in the boot and 23 level placements. All USA v1.01 copies follow a completed return and its value-move delay slot, then one `nop`; the 21-word extent contains only stack adjustments with nops, one float load, one word load, and `daddu $v0,$a2,$zero`. No direct branch/jump target or aligned non-text pointer enters the extent in any of the 24 programs. An empty C probe emits 8 bytes and matches 0/24. Other-release dumps are absent; leave the marker/catalogue row pending maintainer review. **28 October 2026 follow-up:** `func_002ED880` is 28 bytes in the boot and 23 level placements. Each USA v1.01 copy follows a completed return and its load delay slot, then one `nop`; the body is `sw $a0,0x48($v0); lw $v0,0x48($v1); nop; nop; nop; addiu $sp,$sp,0xB0`. No direct branch/jump target or aligned non-text pointer enters the extent in any of the 24 programs. An empty C probe emits 8 bytes and matches 0/24. PAL and USA v2.00 retail dumps are unavailable, so the marker/catalogue row remain pending maintainer review. **28 October 2026 follow-up:** `func_002B0A08` is 12 bytes in the boot and three level placements. Its four USA v1.01 copies begin with `sh $zero,0x1C($a0); nop; addiu $sp,$sp,0x30`, immediately after the preceding completed return and its stack-adjustment delay slot; no direct branch/jump target or aligned non-text pointer enters the extent. An empty C probe emits 8 bytes and matches 0/4. PAL and USA v2.00 dumps are unavailable; leave the marker and row pending maintainer review.<br><br>Three level rows fit the same pattern (DrLegitamate, 28 October 2026, USA v1.01): `func_L09_003FB780` (4 bytes; levels 09, 22, 23: `daddu $v0,$zero,$zero`), `func_L25_00373ED0` (4: `addiu $v0,$v0,0`) and `func_L25_00373F08` (4: `sw $a0,0x48($v0)`). Each of the five placements follows a `jr $ra`, its delay slot and padding, and is followed by a `nop` and the next function. No branch or jump label in its program's disassembly reaches it, and no aligned word in the level's `text.bin`, `data.bin`, `lit.bin` or vtables equals its address. Left as markers. **28 October 2026 follow-up:** `func_0011B320` is a single `daddu $v0,$zero,$zero` word at the boot address. It follows `func_0011B270`’s completed `jr $ra`, its `addiu $sp,$sp,0x40` delay slot and one padding `nop`; no direct branch/jump target in any catalogued boot function or aligned word reference in the loaded boot image points into it. A temporary empty C probe is 8 bytes, 0/1. Keep its marker/catalogue row pending maintainer review; do not add it to the residue mechanism without release-qualified review.  **28 October 2026 follow-up:** `func_0011B450` is a single `and $a0,$a0,$v0` word. It follows `func_0011B3D0`’s completed `jr $ra`, stack-adjustment delay slot and one padding `nop`; a scan of catalogued boot functions found no direct incoming target, and no aligned loaded-word pointer equals its address. The empty C probe emits 8 bytes, 0/1. Leave the marker pending the maintainer’s catalogue-rule decision.  **28 October 2026 follow-up:** `func_00130AAC` is the single word `pref 0x0D,-0x3233($t6)` between `func_00130AA0`’s tail jump and the `func_00130AB0` prologue. The preceding jump is `j func_130C68` with its `addiu $a0,$a0,0x4C` delay slot. No direct boot branch/jump target or aligned loaded-word pointer enters the one-word row. The empty C probe is 8 bytes and matches 0/1. Keep its marker/catalogue row pending maintainer review.  **28 October 2026 follow-up:** `func_003380A8` is the word `sw $zero,0($v0)`, after the completed return and padding of `func_00338098` and before `func_003380B0`’s prologue. No direct branch/jump target in a catalogued boot function or aligned loaded-word pointer enters the row. The empty C probe is 8 bytes, 0/1. Leave the marker/catalogue row pending maintainer review.  **28 October 2026 follow-up:** `func_00131CB0` is 8 bytes: `addiu $v1,$zero,0x23; syscall 0`. It follows `func_00131CA8`’s completed tail jump to `func_11FA20` and its `daddu $a0,$zero,$zero` delay slot; the next row begins with a new prologue. No direct boot branch/jump target or aligned loaded-word pointer enters this row. An empty C probe is also 8 bytes but emits `jr $ra; nop`, matching 0/1. Keep its marker/catalogue row pending maintainer review.  **28 October 2026 follow-up:** boot-only `func_00272540` is 12 bytes: `daddu $v0,$a1,$zero; nop; addiu $sp,$sp,0x10`, immediately after the preceding function’s return/delay sequence and before the next stack-frame prologue. No direct target in a catalogued boot function or aligned loaded-word pointer enters the row. A temporary empty C probe emits 8 bytes and matches 0/1. Leave its marker and row pending maintainer review.  **28 October 2026 follow-up:** boot-only `func_002DF630` is `daddu $v0,$zero,$zero; nop; addiu $sp,$sp,0x30`, after a completed return, its stack-adjustment delay slot and one `nop`, and before the next prologue. No direct target in a catalogued boot function or aligned loaded-word pointer enters it. The empty C probe is 8 bytes, 0/1. Keep the marker and catalogue row pending maintainer review.  **28 October 2026 follow-up:** boot-only `func_0026FEF0` is 20 bytes: `sw $v0,0x38($a0); nop; addiu $sp,$sp,0x10; nop; addiu $sp,$sp,0x20`. It follows a completed return and its `+0x80` stack-adjustment delay slot, immediately before a new frame prologue. No direct target in catalogued boot code or aligned loaded-word pointer enters the row. An empty C probe is 8 bytes, 0/1. Leave its marker and row pending maintainer review.  **28 October 2026 follow-up:** boot-only `func_002725C8` is 20 bytes: `addiu $sp,$sp,0x80; nop; nop; nop; sw $zero,0x4($v0); nop`. It follows the preceding function’s completed return and stack-adjustment delay slot, then three `nop`s; the next row starts a new frame. No direct boot target or aligned loaded-word pointer enters the extent. An empty C probe is 8 bytes, 0/1. Keep the marker and row pending maintainer review.  **28 October 2026 follow-up:** boot-only `func_002B8530` is 20 bytes: `lwc1 $f0,0x2D0($a2); nop; lwc1 $f0,0x258($a2); nop; addiu $sp,$sp,0x30`. It follows a completed `jr $ra`, its `sh $zero,0x18E($v0)` delay slot and one padding `nop`; a new stack prologue follows the row. No direct target in catalogued boot code or aligned loaded-word pointer enters it. An empty C probe is 8 bytes, 0/1. Keep its marker/row pending maintainer review.  **28 October 2026 follow-up:** boot-only `func_0011E920` is 24 bytes: `addiu $sp,$sp,0x10; nop; addiu $sp,$sp,0x30; nop; addiu $sp,$sp,0x30; pref 0x0D,-0x3233($t6)`. It follows a completed return and its stack-adjustment delay slot; a fresh `-0x50` frame follows the row. No direct target in catalogued boot code or aligned loaded-word pointer enters it. An empty C probe is 8 bytes, 0/1. Keep its marker and row pending maintainer review.  **28 October 2026 follow-up:** boot-only `func_0012FB10` is 52 bytes and follows a completed return, its stack-adjustment delay slot and one `nop`. Its store/load/offset-add sequence has no direct branch/jump target in catalogued USA v1.01 boot functions and no aligned loaded-word pointer into the range. The row exists in PAL and USA v2.00 catalogues, but those dumps are absent; preserve its marker and row pending release-qualified maintainer review. **Next:** a `tools/levels.py` rule for unreachable inter-function words, if maintainers want one. |
 | **Rows that begin inside the previous epilogue:** 113 unmatched level-catalogue rows, 8 of them reserved by me (`func_L02_003EA180`, `func_L02_004004D0`, `func_L02_00439CD8`, `func_L03_00421398`, `func_L19_003DCCC8`, `func_L19_003DD9D8`, `func_L23_00415988`, `func_L23_004277B0`) | Evidence for §47's entry corrections | Each row starts with 8 to 104 bytes of epilogue words (a positive `addiu $sp,$sp,N`, `nop`), then directly a prologue `addiu $sp,$sp,-N`. None of the 137 rows that begin with such words is C. In all 1,065 placements, no branch or jump reaches the leading words.<br><br>106 rows have a reference to the prologue (a code address pair, a data pointer or a call) and none into the leading words. Two also have a data word equal to a leading address. Five have no reference found.<br><br>`func_L02_004004D0` is one of them: `func_L02_003FAF28` passes `D_L02_004004D8` as a callback, and its C equals retail from +8 except for the copy barrier. **Next:** entry corrections such as `LEVEL_ENTRY_OFFSETS`, keyed so that boot and level identity holds. I can prepare them for my eight if wanted. The list is below the table. |
 
 <details><summary>The 113 rows, with the reference found at the prologue (programs counted per row)</summary>
@@ -2803,3 +3293,15 @@ child-pointer reloads need no invented volatile fields: ordinary byte/halfword
 accesses already retain them. Independent clamps shorten the body, reversing
 the arms changes block order, and debug labels do not change the branch. This
 compiler rejects `-mno-branch-likely`; no compiler change was made.
+
+
+**28 October–29 October 2026 near-miss rechecks:** `func_00280510` remains 248/240 bytes and 0/28 on current-master USA v1.01 with the actual `func_002FC560(u32, u64)` prototype supplied in a temporary probe; helper relocations resolve, but the resident global load and branch/control layout differ. `func_0029CD48`'s retained candidate used a false integer parameter for the actual no-argument `func_0029CD20`; with the real helper interface and pointer conversion, it is 232/240 bytes and 0/28, so the earlier exact-size result and its tail analysis are superseded. A temporary `noinline` attribute on `func_0029CD20` leaves the candidate at 232/240. `func_0029FDF0` remains 176/240 and 0/28; direct-global cursor/tag variants measured 196/240 and 180/240, also 0/28. The retained candidate has a 0x30-byte frame against retail's 0x20-byte frame and coalesces pointer loads/stores. A 29 October `func_0029EFD0` probe using `(p - base) >> 1` measures 252/248 and 0/28 in the default profile, versus 256/248 for the retained explicit-label form. The lower-size source is not retained because mutable `D_001B1B60` is reloaded after a helper call, so the stride alignment needed to justify the expression is not established. These are USA v1.01 measurements only.
+
+
+**28 October 2026 current-master near-miss checks:** `func_0029FDF0` remains 176/240 bytes and 0/28, with direct-global variants at 196/240 and 180/240; `func_002FE8D8` replay in the actual unit is 240/248 and 0/28 (the previously reported exact size was not reproducible); `func_0034AC10` remains 256/256 and 0/28, first mismatch +0x18; `func_002E3360` remains 168/264 and 0/28; `func_002CA790` remains 280/276 and 0/28; `func_00290B48` remains 280/280 and 0/28, first mismatch +0x3C; `func_00291640` remains 292/280 and 0/28; `func_003427C0` remains 284/284 and 0/28, first mismatch +0x88; `func_0027C540` remains 252/288 and 0/28; `func_0029F840` remains 284/288 and 0/28; `func_003462A8`'s original candidate is 296/288 and 0/28 in a `-G8` probe; moving its local copy later produces 276/288 and 0/28, while the volatile-array trial is 252/288 and 0/28; `func_0028B160` remains 280/292 and 0/28; `func_002B6480` remains 308/308 and 0/28, first mismatch +0xBC; `func_002D1590` remains 296/308 and 0/28; `func_00291CA8` remains 316/312 and 0/28; `func_002CB510` remains 312/312 and 0/28, first mismatch +0x48; an explicit state/table-pointer form measures 300/312 and 0/28; `func_00350240` remains 304/312 and 0/28. These are USA v1.01 measurements.
+
+**29 October 2026 current-master recheck:** `func_0011BEE0` (public SDK `kputchar`, USA v1.01 boot, default game profile `-O2 -G0 -ffunction-sections`) was replayed in its isolated source unit. A volatile SIO register-block view with status at `0x1000F130` and data at offset `0x50` compiles to 48/56 bytes and 0/1. It matches the materialized `$v1` data address and the volatile byte store in the `jr` delay slot; GCC instead forms the status access as `lui $v0,0x1001` plus `lw $v0,-0xED0($v0)`, shortens the wait loop, and places the return-value copy differently. This is a meaningful, hardware-backed alternative to the earlier register-pinned probe, but not a match. See `nonmatching/core/func_0011BEE0.c`.
+
+**29 October 2026 current-master recheck:** `func_00133580` was compiled in a temporary dedicated `-G8` unit with its fallback accurately declared as `func_00124B88(int)` and called with `arg0`. Under `-O2 -G8 -ffunction-sections` it remains 180/188 bytes, 0/1; `-fno-gcse` produces byte-identical output and this compiler rejects `-fno-cse`. The helper prototype correction preserves semantics but does not change code generation. Retail's `$s0`/`$s1`/`$s2` allocation and repeated `D_001A7100` address materialization remain unresolved. No temporary source or flag changes remain.
+
+**29 October 2026 follow-up:** a volatile-qualified `D_001A7100` hypothesis, based on its load-in-progress polling role, was measured in the same isolated `-O2 -G8 -ffunction-sections` unit. It remains 180/188 bytes and 0/1, with flag-address materialization before both calls but incorrect saved-register allocation and control flow. The asynchronous-write contract is unverified; do not retain the volatile declaration unless independent evidence establishes it.
