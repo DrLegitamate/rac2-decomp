@@ -1,16 +1,3 @@
-/* Retained C reconstruction, not linked or counted.
- * Profile: -O2 -G8 -ffunction-sections.
- * 276/276 bytes; 0/2 placements in each of us, us2 and pal.
- * The approved qcopy closes the copy addressing, counter rematerialization
- * and controller allocation walls. All code outside the initial object-flag
- * stores agrees.
- * Remaining: The 0x50/0xFF constant allocations and stores at +0x32/+0x30 are exchanged
- * around the +0x34 mask store, first difference +0x84. A named mask load and
- * an evidence-based partial object-field layout give the same schedule.
- * Reopen with: Independent object-field/lifetime or store-order evidence; three
- * meaningful forms now give identical bytes.
- */
-
 #include "common.h"
 
 typedef int TI128 __attribute__((mode(TI)));
@@ -31,9 +18,10 @@ char *func_L22_003FB1F8(char *obj, TI128 *pos, int arg3, f32 f) {
             D_L22_001AF37C = c + 1;
             *(u16 *)(o + 0x96) = (c + 2) % 31;
         }
-        *(u16 *)(o + 0x32) = 0x50;
-        *(u16 *)(o + 0x34) |= 0x108;
+        /* This order also preserves the retail flag-store scheduling. */
         *(u8 *)(o + 0x30) = 0xFF;
+        *(u16 *)(o + 0x34) |= 0x108;
+        *(u16 *)(o + 0x32) = 0x50;
         *(u8 *)(o + 0x31) = 1;
         *(u8 *)(o + 0x20) = 0;
         *(f32 *)(o + 0x2C) = *(f32 *)(*(u32 *)(o + 0x24) + 0x24) * f;

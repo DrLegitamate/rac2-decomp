@@ -48,7 +48,7 @@ int func_L22_003A6128(f32 f12) {
     return 0;
 }
 
-INCLUDE_ASM("asm/levels", func_L22_003A6230);
+/* func_L22_003A6230 is defined in L22_003A6230-g8.c. */
 
 /* shared native body of family cbc1388ebe801e68 */
 void func_L22_003A6470(u8 *a0, int a1) {
@@ -118,7 +118,7 @@ f32 func_L22_003A65E0(u8 *a0) {
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L22_003A6640);
+/* func_L22_003A6640 is defined in L22_003A6640-g8.c. */
 
 extern u8 D_00189E20[];
 extern f32 func_00282E48(void *a0, void *a1);
@@ -162,9 +162,9 @@ void func_L22_003AD090(u8 *a0) {
 
 INCLUDE_ASM("asm/levels", func_L22_003C9880);
 
-INCLUDE_ASM("asm/levels", func_L22_003C9B60);
+/* func_L22_003C9B60 is defined in L22_003C9B60-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L22_003C9D48);
+/* func_L22_003C9D48 is in L22_003C9D48-g8.c. */
 
 extern void *func_002A9640(void *a0, int a1, int a2);
 
@@ -233,11 +233,11 @@ INCLUDE_ASM("asm/levels", func_L22_003F5688);
 
 /* func_L22_003F8658 is defined in L22_003F8658-helper-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L22_003FB1F8);
+/* func_L22_003FB1F8 is in L22_003FB1F8-g8.c. */
 
 /* func_L22_003FB310 is defined in L22_003FB310-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L22_003FB9B8);
+/* func_L22_003FB9B8 is defined in L22_003FB9B8-g8.c. */
 
 /* func_L22_003FBBF0 is in L22_003FBBF0-particles-g8.c. */
 
@@ -255,7 +255,9 @@ INCLUDE_ASM("asm/levels", func_L22_003FCF08);
 
 INCLUDE_ASM("asm/levels", func_L22_003FD2D8);
 
-INCLUDE_ASM("asm/levels", func_L22_003FD958);
+/* func_L22_003FD2D8: see L22_003FD2D8-g8.c. */
+
+/* func_L22_003FD958 is defined in L22_003FD958-g8.c. */
 
 /* func_L22_0040DD40 is defined in L22_0040DD40-helper-g8.c. */
 

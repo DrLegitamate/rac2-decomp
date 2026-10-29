@@ -95,6 +95,59 @@ void func_L18_0043E9B0(u8 *obj) {
     func_L18_00307C60(obj + 0x10, obj + 0xC0, n, 0, t, D_L18_001B1C5C, 0.08f);
 }
 
+extern int D_L18_001B1C60 __attribute__((sda));
+extern float D_L18_001B1C64 __attribute__((sda));
+extern float D_L18_001B1C78 __attribute__((sda));
+extern float D_L18_001B1C7C __attribute__((sda));
+extern float D_L18_001B1C80 __attribute__((sda));
+extern float D_L18_001B1C84 __attribute__((sda));
+extern int D_L18_001B1C88 __attribute__((sda));
+extern int D_L18_001B1C8C __attribute__((sda));
+extern float D_L18_001B1C90 __attribute__((sda));
+extern int D_L18_001B1C98 __attribute__((sda));
+extern int D_L18_001B1C9C __attribute__((sda));
+extern float func_002A7878(float, float);
+extern float func_002A7940(void);
+extern void func_L18_0043F130(void *, int, void *, float);
+extern void func_L18_0043F428(void *, int, int, int, int, float, float);
+extern void func_L11_00458DF0(void *, int, float, int, float, int, int);
+
+/* Builds and draws the state's two ribbons (control points at +0 and +0xA0, faded by the
+   0x158 level), then emits the paired particle bursts at +0, +0x10, +0xA0 and +0xB0. The
+   point buffer is sized by the level's count control. */
+void func_L18_0043EA90(char *object)
+{
+    char *state = *(char **)(object + 0x68);
+    int count = D_L18_001B1C60;
+    typedef struct { float values[4]; } Point __attribute__((aligned(16)));
+    Point points[count];
+    float step = D_L18_001B1C64;
+    int life;
+    float first, second, large, small;
+
+    life = func_002A7820(48, 128);
+    first = (1.0f - *(float *)(state + 0x158)) * func_002A7878(D_L18_001B1C78, D_L18_001B1C7C);
+    second = (1.0f - *(float *)(state + 0x158)) * func_002A7878(D_L18_001B1C80, D_L18_001B1C84);
+    func_L18_0043F130(points, count, state, step);
+    func_L18_0043F428(points, count, life, D_L18_001B1C88, D_L18_001B1C8C, first, second);
+    life = func_002A7820(48, 128);
+    first = (1.0f - *(float *)(state + 0x158)) * func_002A7878(D_L18_001B1C78, D_L18_001B1C7C);
+    second = (1.0f - *(float *)(state + 0x158)) * func_002A7878(D_L18_001B1C80, D_L18_001B1C84);
+    func_L18_0043F130(points, count, state + 0xA0, step);
+    func_L18_0043F428(points, count, life, D_L18_001B1C88, D_L18_001B1C8C, first, second);
+    small = D_L18_001B1C90 * (1.0f - *(float *)(state + 0x158));
+    large = small * 0.5f;
+    func_L11_00458DF0(state, D_L18_001B1C98, large, func_002A7820(80, 96), func_002A7940(), 49, 2);
+    small *= 0.7f;
+    func_L11_00458DF0(state, D_L18_001B1C9C, small, func_002A7820(8, 22), func_002A7940(), 11, 2);
+    func_L11_00458DF0(state + 0x10, D_L18_001B1C98, large, func_002A7820(80, 96), func_002A7940(), 49, 2);
+    func_L11_00458DF0(state + 0x10, D_L18_001B1C9C, small, func_002A7820(8, 22), func_002A7940(), 11, 2);
+    func_L11_00458DF0(state + 0xA0, D_L18_001B1C98, large, func_002A7820(80, 96), func_002A7940(), 49, 2);
+    func_L11_00458DF0(state + 0xA0, D_L18_001B1C9C, small, func_002A7820(8, 22), func_002A7940(), 11, 2);
+    func_L11_00458DF0(state + 0xB0, D_L18_001B1C98, large, func_002A7820(80, 96), func_002A7940(), 49, 2);
+    func_L11_00458DF0(state + 0xB0, D_L18_001B1C9C, small, func_002A7820(8, 22), func_002A7940(), 11, 2);
+}
+
 typedef float L18_EDE8f32;
 
 static __inline__ void qcopy(void *dst, const void *src) {

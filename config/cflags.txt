@@ -1513,6 +1513,8 @@ src/levels/shared/L00_0033C238.c	-O2 -G0 -ffunction-sections -fstrict-aliasing
 
 
 
+src/levels/shared/L22_003A6230-g8.c	-O2 -G8 -ffunction-sections -g
+src/levels/shared/L22_003C9B60-g8.c	-O2 -G8 -ffunction-sections -mno-split-addresses
 
 src/levels/shared/L00_00325CC0-g8.c	-O2 -G64 -ffunction-sections -Wa,-G64
 
@@ -1524,6 +1526,7 @@ src/levels/shared/L00_002B91C0-burst.c	-O2 -G0 -ffunction-sections -frac2-qcopy 
 src/levels/shared/L03_003E3800.c	-O2 -G0 -ffunction-sections -g
 src/levels/shared/L00_003EAA58.c	-O2 -G0 -ffunction-sections -g
 src/game/002AAC80-smoothing.c	-O2 -G0 -ffunction-sections -g
+src/levels/shared/L22_002A8B98-animation.c	-O2 -G0 -g -ffunction-sections
 src/levels/shared/L09_003E9E60.c	-O2 -G0 -ffunction-sections -g -fno-gcse
 
 src/game/00284FC0-g8.c	-O2 -G8 -ffunction-sections -fno-strength-reduce
@@ -1547,6 +1550,7 @@ src/core/00120528-eh.c	sdk -O2 -G2 -ffunction-sections -fexceptions
 src/game/00273730.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -g
 
 
+src/levels/shared/L22_003C9D48-g8.c	-O2 -G8 -ffunction-sections -mno-split-addresses
 src/levels/shared/L00_00324D18.c	-O2 -G0 -ffunction-sections -frac2-keep-block-order -frac2-gcse-unsplit-edges
 src/levels/shared/L00_003296C0.c	-O2 -G0 -ffunction-sections -mno-split-addresses
 
@@ -1728,6 +1732,7 @@ src/levels/shared/L05_00443740-g8.c	-O2 -G8 -ffunction-sections -g
 
 src/levels/shared/L06_004638F0.c	-O2 -G0 -ffunction-sections -g
 
+src/levels/shared/L18_00427BE0-update-g8.c	-O2 -G8 -ffunction-sections -g
 src/levels/shared/L00_002A5840-g8.c	-O2 -G8 -ffunction-sections -fno-sched-interblock
 
 src/levels/shared/L00_002B7718-g8.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por

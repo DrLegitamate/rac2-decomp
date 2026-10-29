@@ -1,7 +1,5 @@
 #include "common.h"
 
-typedef int TI128 __attribute__((mode(TI)));
-
 typedef struct HrugisEffectCamera {
     char pad00[0x140];
     float position[4];
@@ -27,15 +25,14 @@ void func_L22_003A6640(char *object, int a1, int a2, float radius) {
     float heading, speed, tilt, yaw;
     unsigned char *particle;
     unsigned char *data;
-    char *src;
 
     if (a1 != -1) {
         func_0029FCC0(object, a1, initial);
     } else {
-        src = object + 0x10;
         if (a2 != 0)
-            src = (char *)&a2;
-        *(TI128 *)initial = *(TI128 *)src;
+            qcopy(initial, &a2);
+        else
+            qcopy(initial, object + 0x10);
     }
     heading = func_00283248(D_L22_001B9B40.position[0] - *(float *)(object + 0x10),
                             D_L22_001B9B40.position[1] - *(float *)(object + 0x14));
