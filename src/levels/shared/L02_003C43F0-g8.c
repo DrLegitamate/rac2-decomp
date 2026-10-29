@@ -88,7 +88,7 @@ void func_L02_003D28E0(void *a0)
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L02_004013C0);
+/* func_L02_004013C0 is defined in L02_004013C0-g8.c. */
 
 /* The kind's table gives a count; the kind's own helper gives the kind's id. */
 

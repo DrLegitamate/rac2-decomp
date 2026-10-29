@@ -614,7 +614,6 @@ void func_L02_003CE908(char *a0) {
     func_002B0990(a0, q, 0, 1.79999995231628417968750f, 1);
 }
 
-INCLUDE_ASM("asm/levels", func_L02_003CEA28);
 /* Defined in L02_003CEA28.c. */
 
 /* The entity pool base and the highest group id once more, as the `sda` arrays the twin walk
@@ -748,7 +747,7 @@ void func_L02_003CEE40(struct L02Kind330Object *a0) {
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L02_003CEFD8);
+/* func_L02_003CEFD8 is in L02_003CEFD8.c. */
 
 typedef struct {
     f32 x;

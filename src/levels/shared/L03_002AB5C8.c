@@ -1,4 +1,146 @@
 #include "include_asm.h"
+#include "common.h"
+
+typedef union { int quad __attribute__((mode(TI))); struct { float x, y, z, w; } f; } HopVector;
+/* Player (Ratchet) state block in the level's data, reached through D_L03_00189E20. */
+typedef struct {
+    HopVector field_0;
+    unsigned char pad_10[0x10];
+    HopVector field_20;
+    unsigned char pad_30[0x68];
+    float rot_z;
+    unsigned char pad_9C[0x54];
+    float vel_x;
+    float vel_y;
+    unsigned char pad_F8[0x68];
+    HopVector field_160;
+    unsigned char pad_170[0x4];
+    float field_174;
+    unsigned char pad_178[0x18];
+    HopVector field_190;
+    float facing_angle;
+    float field_1A4;
+    float field_1A8;
+    unsigned char pad_1AC[0x4];
+    float field_1B0;
+    float field_1B4;
+    int state_time;
+    unsigned char pad_1BC[0x18c];
+    short field_348;
+    short field_34A;
+    unsigned char pad_34C[0x108];
+    float field_454;
+    unsigned char pad_458[0x18];
+    HopVector field_470;
+    HopVector field_480;
+    unsigned char pad_490[0x4];
+    float field_494;
+    unsigned char pad_498[0x6];
+    unsigned char field_49E;
+    unsigned char pad_49F[0xf];
+    short field_4AE;
+    unsigned char pad_4B0[0xc];
+    float field_4BC;
+    float field_4C0;
+    float field_4C4;
+    unsigned char pad_4C8[0xc];
+    int field_4D4;
+    float field_4D8;
+    float field_4DC;
+    unsigned char pad_4E0[0x10];
+    HopVector field_4F0;
+    unsigned char pad_500[0x20];
+    float field_520;
+    short field_524;
+    unsigned char pad_526[0x7];
+    unsigned char field_52D;
+    unsigned char pad_52E[0x532];
+    HopVector field_A60;
+    unsigned char pad_A70[0x14];
+    float field_A84;
+    unsigned char pad_A88[0x1b0];
+    float anim_time;
+    unsigned char pad_C3C[0x804];
+    HopVector field_1440;
+    unsigned char pad_1450[0x4];
+    short field_1454;
+    unsigned char pad_1456[0x2];
+    float field_1458;
+    unsigned char pad_145C[0xe38];
+    int state;
+    unsigned char pad_2298[0x4];
+    int field_229C;
+    unsigned char pad_22A0[0x23];
+    unsigned char field_22C3;
+    unsigned char pad_22C4[0x1f4];
+    float field_24B8;
+} HopPlayer;
+#define HOP_PLAYER (*(HopPlayer *)D_L03_00189E20)
+extern int D_L03_001A8FF0[] __attribute__((sda));
+extern float D_L03_001A7DC0[] __attribute__((sda));
+typedef struct {
+    unsigned char pad_0[0x158];
+    float angle;
+    unsigned char pad_15C[0x214];
+    HopVector basis;
+} HopSavedState;
+extern unsigned char D_L03_001B9840[];
+#define HOP_SAVED (*(HopSavedState *)D_L03_001B9840)
+extern void func_L00_002B54F8(float, float);
+extern void func_L00_002B41B8(float, float);
+extern void func_L00_002D3BD8(float, void *, void *);
+extern void func_L00_002D3798(void *, void *, float);
+extern void func_L00_002B3EF8(float, float, float, int);
+extern void func_L01_002B6948(float);
+extern float func_00282DB0(void *, void *);
+extern void func_00283098(void *, void *, void *);
+extern float func_00283180(float);
+extern float func_00283198(float);
+extern void func_L00_002D3B58(float, void *, void *);
+extern float func_00283C80(float, float);
+extern float func_002AA898(float *, float *, int, float, float, float, float);
+extern float func_00283BE0(float, float);
+extern void func_L00_002AA0F0(float, float, float);
+extern float func_L00_002D3A58(void *);
+
+/* Object (moby) header: its state pointer and class id. */
+typedef struct {
+    unsigned char pad_0[0x68];
+    unsigned char *state;
+    unsigned char pad_6C[0x3e];
+    short type;
+} Moby;
+
+/* Particle record returned by func_002BDCE8; its payload follows at 0x20. */
+typedef struct {
+    unsigned char pad_0[4];
+    int mode;
+    unsigned char pad_8[2];
+    unsigned char alpha;
+    unsigned char alpha_copy;
+} ParticlePayload;
+
+typedef struct {
+    unsigned char pad_0[8];
+    unsigned char variation;
+    unsigned char pad_9;
+    union {
+        short duration;
+        unsigned char duration_lo;
+    } life;
+    unsigned char pad_C[0x14];
+    ParticlePayload payload;
+} Particle;
+
+/* Particle emitter inputs; the two register banks retain their EE argument order. */
+extern float D_L03_001A8F20[] __attribute__((sda));
+extern void func_00282CC0(void *, void *, void *);
+extern int func_002A77E0(int);
+extern void func_0029FC20(void *, int, void *);
+extern float func_00282DF0(void *);
+extern void func_00282F20(void *, void *, float);
+extern Particle *func_002BDCE8(void *, float, float, float, int, void *, float, unsigned int, int);
+
 
 #define MACRO_ADDR __attribute__((section(".sdata")))
 
@@ -91,7 +233,178 @@ void func_L03_002B8D10(void) {
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L03_002BC430);
+/* Per-state airborne steering of the player: velocity, facing and speed targets. */
+void func_L03_002BC430(void) {
+    HopVector temp;
+    float step, scale;
+
+    if (HOP_PLAYER.state == 10) {
+        func_L00_002B54F8(0.7f, 0.0f);
+        qcopy(&HOP_PLAYER.field_160, &HOP_PLAYER.field_A60);
+        HOP_PLAYER.field_1B4 = HOP_PLAYER.field_174;
+        return;
+    }
+
+    if (HOP_PLAYER.state == 0x10) {
+        if (HOP_PLAYER.state_time > 0x36)
+            func_002AA2E8(&HOP_PLAYER.field_520, 0.0069444444961845875f, 0.0019444444915279746f);
+        if (HOP_PLAYER.state_time <= 0x36)
+            HOP_PLAYER.field_1B0 = HOP_PLAYER.field_454;
+        else
+            HOP_PLAYER.field_1B0 = 0.05833333730697632f;
+        func_L00_002B41B8(0.012222222983837128f, 0.0125f);
+        func_L00_002D3BD8(0.0f, &HOP_PLAYER.vel_x, &HOP_PLAYER.vel_x);
+        func_L00_002D3798(&HOP_PLAYER.vel_x, &HOP_PLAYER.vel_x, HOP_PLAYER.field_1B4);
+        return;
+    }
+
+    if (HOP_PLAYER.state == 0x1B) {
+        if (HOP_PLAYER.state_time > 0x28) {
+            func_L00_002B3EF8(0.04f, 0.2f, 0.2501639127731323f, 0);
+            func_L01_002B6948(0.0055555556900799274f);
+        }
+        if (HOP_PLAYER.anim_time >= 13.0f && HOP_PLAYER.anim_time <= 30.0f) {
+            if (HOP_PLAYER.anim_time > 27.0f)
+                func_002AA2E8(&HOP_PLAYER.field_4BC, 0.0f, 0.002222222276031971f);
+            else
+                func_002AA2E8(&HOP_PLAYER.field_4BC, 0.03333333507180214f, 0.002222222276031971f);
+        }
+        temp.f.x = HOP_PLAYER.field_4BC;
+        temp.f.y = 0.0f;
+        temp.f.z = func_00282DB0(&HOP_PLAYER.vel_x, &HOP_PLAYER.field_20);
+        func_00283098(&HOP_PLAYER.vel_x, &temp, &HOP_PLAYER);
+        return;
+    }
+
+    if (HOP_PLAYER.state == 0x48) {
+        if (HOP_PLAYER.anim_time >= 5.0f && HOP_PLAYER.anim_time <= 18.0f) {
+            if (HOP_PLAYER.anim_time > 15.0f)
+                func_002AA2E8(&HOP_PLAYER.field_4BC, 0.0f, 0.002222222276031971f);
+            else
+                func_002AA2E8(&HOP_PLAYER.field_4BC, 0.02083333395421505f, 0.002222222276031971f);
+        }
+        temp.f.x = HOP_PLAYER.field_4BC;
+        temp.f.y = 0.0f;
+        temp.f.z = func_00282DB0(&HOP_PLAYER.vel_x, &HOP_PLAYER.field_20);
+        func_00283098(&HOP_PLAYER.vel_x, &temp, &HOP_PLAYER);
+        return;
+    }
+
+    if (HOP_PLAYER.state == 0xB) {
+        HOP_PLAYER.facing_angle = HOP_PLAYER.field_4C4;
+        qcopy(&HOP_PLAYER.field_190, &HOP_PLAYER.field_480);
+        func_L00_002B3EF8(0.04f, 0.2f, 0.116355299949646f, 0);
+        if (HOP_PLAYER.field_4D4 != 3)
+            HOP_PLAYER.field_1B4 = HOP_PLAYER.field_4D8;
+        else
+            HOP_PLAYER.field_1B4 = 0.0f;
+        if (HOP_PLAYER.field_52D) {
+            step = HOP_PLAYER.field_24B8 * 0.0833333358168602f;
+            if (step < 0.03333333507180214f)
+                step = 0.03333333507180214f;
+            func_002AA2E8(&HOP_PLAYER.field_4DC, step, 0.010277777910232544f);
+            HOP_PLAYER.field_1B4 = HOP_PLAYER.field_174;
+        } else {
+            if (HOP_PLAYER.field_49E && HOP_PLAYER.field_4AE <= 11)
+                func_002AA2E8(&HOP_PLAYER.field_4DC, 0.0f, 0.002222222276031971f);
+            else
+                func_002AA2E8(&HOP_PLAYER.field_4DC, 0.07f, 0.002222222276031971f);
+        }
+        if (!HOP_PLAYER.field_22C3) {
+            HOP_PLAYER.vel_x = func_00283180(HOP_PLAYER.field_4C0);
+            HOP_PLAYER.vel_x *= HOP_PLAYER.field_4DC;
+            HOP_PLAYER.vel_y = func_00283198(HOP_PLAYER.field_4C0);
+            HOP_PLAYER.vel_y *= HOP_PLAYER.field_4DC;
+        } else {
+            func_L00_002D3BD8(HOP_PLAYER.field_4DC, &temp, &HOP_PLAYER.field_470);
+            func_L00_002D3B58(0.0f, &temp, &temp);
+            func_L00_002D3BD8(0.0f, &HOP_PLAYER.vel_x, &HOP_PLAYER.vel_x);
+            func_00282CC0(&HOP_PLAYER.vel_x, &HOP_PLAYER.vel_x, &temp);
+        }
+        if (!HOP_PLAYER.field_22C3 && !HOP_PLAYER.field_52D) {
+            scale = HOP_PLAYER.field_4D8 * func_00283198(func_00283C80(HOP_PLAYER.field_4C4, HOP_PLAYER.field_4C0));
+            HOP_PLAYER.vel_x += func_00283180(HOP_PLAYER.field_4C4) * scale;
+            HOP_PLAYER.vel_y += func_00283198(HOP_PLAYER.field_4C4) * scale;
+        }
+        func_L00_002B54F8(0.7f, 0.0f);
+        qcopy(&HOP_PLAYER.field_160, &HOP_PLAYER.field_A60);
+        return;
+    }
+
+    if (HOP_PLAYER.state == 0x11) {
+        HOP_PLAYER.facing_angle = HOP_PLAYER.field_4F0.f.w;
+        qcopy(&HOP_PLAYER.field_190, &HOP_PLAYER.field_4F0);
+        if (HOP_PLAYER.state_time > 9)
+            func_L00_002B3EF8(0.041999999433755875f, 0.2f, 0.1978040188550949f, -1);
+        if (HOP_PLAYER.state_time > 8) {
+            if (!HOP_PLAYER.field_348) {
+                HOP_PLAYER.vel_x = func_00283180(HOP_PLAYER.facing_angle) * 0.08166667073965073f;
+                HOP_PLAYER.vel_y = func_00283198(HOP_PLAYER.facing_angle) * 0.08166667073965073f;
+            } else {
+                func_L00_002D3BD8(0.0f, &HOP_PLAYER.vel_x, &HOP_PLAYER.vel_x);
+                func_00282F20(&temp, &HOP_PLAYER.field_190, 0.08166667073965073f);
+                func_00282CC0(&HOP_PLAYER.vel_x, &HOP_PLAYER.vel_x, &temp);
+            }
+        }
+        HOP_PLAYER.field_1B4 = HOP_PLAYER.field_174;
+        return;
+    }
+
+    if (HOP_PLAYER.state == 0x81 && !D_L03_001A8FF0[0]) {
+        func_L00_002B3EF8(0.04f, 0.2f, HOP_PLAYER.field_494, 0);
+        HOP_PLAYER.field_1B4 = 0.0f;
+        return;
+    }
+
+    if (HOP_PLAYER.state == 0x2C) {
+        float angle = HOP_PLAYER.rot_z;
+        float delta;
+
+        HOP_PLAYER.field_1A8 = func_002AA898(&angle, &HOP_PLAYER.field_1A4, 0, HOP_PLAYER.facing_angle,
+                                             0.017999999225139618f, 0.2f, 0.12217307090759277f);
+        delta = func_00283BE0(angle, HOP_PLAYER.rot_z);
+        func_L00_002AA0F0(0.0f, 0.0f, delta);
+    } else {
+        float oldAngle = HOP_PLAYER.facing_angle;
+
+        qcopy(&temp, &HOP_PLAYER.field_190);
+        if (HOP_PLAYER.field_1454) {
+            HOP_PLAYER.facing_angle = HOP_SAVED.angle;
+            qcopy(&HOP_PLAYER.field_190, &HOP_SAVED.basis);
+        }
+        func_L00_002B3EF8(0.04f, 0.2f, HOP_PLAYER.field_494, 0);
+        if (HOP_PLAYER.field_1454) {
+            HOP_PLAYER.field_1458 = oldAngle;
+            qcopy(&HOP_PLAYER.field_1440, &temp);
+            HOP_PLAYER.facing_angle = oldAngle;
+            qcopy(&HOP_PLAYER.field_190, &HOP_PLAYER.field_1440);
+        }
+    }
+
+    func_L00_002B54F8(0.7f, 0.0f);
+    qcopy(&HOP_PLAYER.field_160, &HOP_PLAYER.field_A60);
+
+    step = 0.0055555556900799274f;
+    if (HOP_PLAYER.field_1B0 < D_L03_001A7DC0[0] * 0.0033333336468786f) {
+        if (HOP_PLAYER.field_229C == 2) {
+            float brake = HOP_PLAYER.field_A84;
+            float angle = func_L00_002D3A58(&HOP_PLAYER.vel_x);
+
+            func_002AA2E8(&angle, 0.0f, brake);
+            func_L00_002D3BD8(angle, &HOP_PLAYER.vel_x, &HOP_PLAYER.vel_x);
+            return;
+        }
+        if (HOP_PLAYER.field_34A)
+            step = 0.003055555745959282f;
+        else
+            step = HOP_PLAYER.field_524 ? 0.0005555555690079927f : 0.002222222276031971f;
+    }
+
+    func_L01_002B6948(step);
+}
+
+#undef HOP_PLAYER
+#undef HOP_SAVED
 
 /* rac1-decomp src/overlays/shared/camera_001FC308.c: func_L02_001FC308 */
 /* Adapted from Lombyte (MIT) for PAL by OpenRAC's tools/port.py: src/overlays/shared/gameplay/camera/001fc008.c, FUN_L02_001fc008. */
@@ -115,7 +428,92 @@ INCLUDE_ASM("asm/levels", func_L03_002ECF08);
 ASM_FUNC("asm/levels", func_L03_002EFB60);
 
 
-INCLUDE_ASM("asm/levels", func_L03_00326458);
+/* Emits two particle groups scaled by the object's transformed basis length. */
+void func_L03_00326458(Moby *object)
+{
+    float matrix[16], point[4], velocity[4];
+    float weight, radius, energy;
+    short type = object->type;
+
+    if ((type != 0x2EE && type != 0xCE0) || object == 0)
+        return;
+
+    func_0029FC20(object, 0, matrix);
+    weight = func_00282DF0(matrix) * 0.9746588468551636f;
+    if (weight > 1.0f)
+        weight = 1.0f;
+    energy = weight * 44000.0f + 6000.0f;
+    radius = weight * 0.02f + 0.01f;
+    func_00282F20(velocity, matrix + 8, weight * -0.025f + -0.025f);
+
+    /* Larger smoke puffs with random spin. */
+    {
+        int i;
+        short duration;
+        int mode;
+        unsigned char alpha;
+
+        duration = 6;
+        mode = 2;
+        alpha = 0x50;
+        func_00282CC0(point, matrix + 12, velocity);
+        i = 1;
+        do {
+            Particle *particle;
+            int spin;
+
+            spin = func_002A77E0(16);
+            if (func_002A77E0(2))
+                spin = -spin;
+            particle = func_002BDCE8(point, radius, 1.0f, 0.75f, spin, D_L03_001A8F20, energy, 0x503030FF, 0);
+            if (particle != 0) {
+                ParticlePayload *payload = &particle->payload;
+
+                particle->life.duration = duration;
+                payload->mode = mode;
+                payload->alpha = alpha;
+                payload->alpha_copy = particle->life.duration_lo;
+            }
+            i--;
+        } while (i >= 0);
+    }
+
+    energy = weight * 25000.0f + 5000.0f;
+    radius = weight * 0.015000000596046448f + 0.01f;
+    func_00282F20(velocity, matrix + 8, weight * -0.015000000596046448f + -0.01f);
+
+    /* Smaller, short-lived sparks. */
+    {
+        short duration;
+        int mode;
+        unsigned char alpha;
+
+        duration = 2;
+        mode = 2;
+        alpha = 0x7F;
+        func_00282CC0(point, matrix + 12, velocity);
+        {
+            int j;
+
+            j = 4;
+            do {
+                Particle *particle;
+
+                particle = func_002BDCE8(point, radius, 1.0f, 1.0f, 16, D_L03_001A8F20, energy, 0x7FFFFFFF, 0);
+                if (particle != 0) {
+                    ParticlePayload *payload = &particle->payload;
+
+                    particle->life.duration = duration;
+                    particle->variation = func_002A77E0(255);
+                    payload->mode = mode;
+                    payload->alpha = alpha;
+                    payload->alpha_copy = particle->life.duration_lo;
+                }
+                j--;
+            } while (j >= 0);
+        }
+    }
+}
 
 
 INCLUDE_ASM("asm/levels", func_L03_00329EF0);
@@ -159,7 +557,40 @@ void func_L03_0038B390(unsigned char *a0, int a1, int a2, int a3) {
     *(long long *)(p + 0x70) = 5;
 }
 
-INCLUDE_ASM("asm/levels", func_L03_0038B408);
+extern void func_L03_0038B2E8(void *, void *, int);
+extern void func_00282CF0(void *, void *, void *);
+extern void func_00282CC0(void *, void *, void *);
+extern float (*D_L03_001FE700[])[4];
+
+/* Effect state hung off an object: four vertex-table indices, a vertex count and an offset. */
+typedef struct {
+    unsigned char pad_0[0x28];
+    int groups[4];
+    int count;
+    unsigned char pad_3C[0xA4];
+    float offset[4];
+} VertexGroupState;
+
+/* Adjusts each vertex of the object's groups relative to a computed centre, then offsets it by the state vector. */
+void func_L03_0038B408(Moby *object)
+{
+    float center[4];
+    VertexGroupState *state = (VertexGroupState *)object->state;
+    float (**table)[4] = D_L03_001FE700;
+    float (*vertices)[4];
+    int i, j;
+
+    for (i = 0; i < 4; i++) {
+        vertices = table[state->groups[i]];
+        if (vertices != 0) {
+            func_L03_0038B2E8(center, vertices, state->count);
+            for (j = 0; j < state->count; j++) {
+                func_00282CF0(vertices + j + 1, vertices + j + 1, center);
+                func_00282CC0(vertices + j + 1, vertices + j + 1, state->offset);
+            }
+        }
+    }
+}
 
 
 
