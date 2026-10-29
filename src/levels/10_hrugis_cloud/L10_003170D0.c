@@ -1,5 +1,69 @@
 #include "common.h"
 
+/* A moby class header, as far as func_L10_00417CE0 writes it. */
+typedef struct {
+    u8 pad00[0x24];
+    f32 scale;                  /* 0x24: default scale */
+    u8 pad28[0x3C - 0x28];
+    f32 f3C;                    /* 0x3C */
+    u8 pad40[0x48 - 0x40];
+    f32 *f48;                   /* 0x48 */
+} MobyClass;
+
+/* The moby, as far as func_L10_00417CE0 reads it. */
+typedef struct {
+    u8 pad00[0x10];
+    f32 position[4];            /* 0x10 */
+    u8 pad20[0x24 - 0x20];
+    MobyClass *mclass;          /* 0x24 */
+    u8 pad28[0x2C - 0x28];
+    f32 scale;                  /* 0x2C */
+    u8 updateDistance;          /* 0x30 */
+    u8 pad31;
+    u16 drawDistance;           /* 0x32 */
+    u16 flags;                  /* 0x34 */
+    u8 pad36[0x68 - 0x36];
+    void *vars;                 /* 0x68: the instance data */
+    u8 pad6C[0xC0 - 0x6C];
+    f32 rotation[3][4];         /* 0xC0: rows of the rotation matrix */
+} Moby;
+
+/* A joint manipulator, as RAC1's Manipulator: func_0029F978 attaches it to a joint of a
+   moby, whose transform it then sets. */
+typedef struct {
+    u8 joint;                   /* 0x00 */
+    u8 attached;                /* 0x01 */
+    u8 scaleOn;                 /* 0x02 */
+    u8 absolute;                /* 0x03 */
+    s32 jointId;                /* 0x04 */
+    void *next;                 /* 0x08: the moby's next manipulator */
+    f32 interp;                 /* 0x0C */
+    f32 rotation[4];            /* 0x10: a quaternion (func_L10_00418088) */
+    f32 scale[4];               /* 0x20 */
+    f32 translation[4];         /* 0x30 */
+} Manipulator;
+
+/* The instance data of the moby that carries the class 0xF86 mobies. */
+typedef struct {
+    u8 pad000[0x2F0];
+    Manipulator manips[4];      /* 0x2F0: two per side, side 1 first */
+} CarrierVars;
+
+/* The instance data of a class 0xF86 moby. */
+typedef struct {
+    f32 aim[4];                 /* 0x00: aim direction (func_L10_00418088) */
+    Moby *parent;               /* 0x10 */
+    s32 side;                   /* 0x14 */
+    Moby *follower;             /* 0x18: the class 0x134F moby that follows it */
+} AttachedVars;
+
+extern void func_00282C88(void *);
+extern Moby *func_0029EFD0(s32 oClass);
+extern void func_00283360(void *);
+extern void func_0029FCC0(Moby *moby, s32 joint, f32 *position);
+extern void func_0029F978(Moby *moby, s32 joint, Manipulator *manip);
+extern void func_002A0F48(Moby *moby);
+
 typedef int TI128 __attribute__((mode(TI)));
 
 extern u8 *func_002ED688(u8 *);
@@ -7,8 +71,8 @@ extern f32 func_00283198(f32);
 extern f32 func_00283180(f32);
 extern void func_00282CC0(void *, void *, void *);
 
-extern void func_00282CF0(u8 *, u8 *, u8 *);
-extern void func_00282D30(u8 *, u8 *, f32);
+extern void func_00282CF0(void *, void *, void *);
+extern void func_00282D30(void *, void *, f32);
 
 extern void func_00283098(void *, void *, void *);
 extern void func_0029FC20(u8 *, s32, void *);
@@ -72,7 +136,7 @@ extern s32 D_001B0F44 __attribute__((sda));
 extern s32 D_001B0F48 __attribute__((sda));
 
 
-INCLUDE_ASM("asm/levels", func_L10_003170D0);
+/* func_L10_003170D0 is in L10_003170D0-scene-g8.c. */
 
 /* func_L10_00317528 is in L10_003170D0-scene.c. */
 
@@ -104,7 +168,7 @@ void func_L10_003F6110(u8 *arg0) {
     *(u16 *)(arg0 + 0x34) = *(u16 *)(arg0 + 0x34) & 0xEFFF;
 }
 
-INCLUDE_ASM("asm/levels", func_L10_003F61C8);
+/* func_L10_003F61C8 is in L10_003170D0-beam.c. */
 
 INCLUDE_ASM("asm/levels", func_L10_00415A50);
 
@@ -185,9 +249,109 @@ void func_L10_00417C40(u8 *arg0) {
         func_L10_00418088(arg0);
 }
 
-INCLUDE_ASM("asm/levels", func_L10_00417CE0);
+/* Creates the class 0xF86 moby that hangs from parent on the given side, with a class
+   0x134F moby following it. The parent's two manipulators for that side take the new
+   moby's joint 0 and 1 positions, made local (joint 1 relative to joint 0) and in model
+   units, and are attached to those joints. Returns the new moby, or 0. */
+Moby *func_L10_00417CE0(Moby *parent, s32 side)
+{
+    CarrierVars *parentVars = parent->vars;
+    Moby *moby = func_0029EFD0(0xF86);
+    AttachedVars *vars;
+    Manipulator *first;
+    Manipulator *second;
+    MobyClass *mclass;
 
-INCLUDE_ASM("asm/levels", func_L10_00417F30);
+    if (moby != 0) {
+        vars = moby->vars;
+        moby->updateDistance = 0xFF;
+        moby->drawDistance = 0x1FF;
+        moby->flags |= 0x100;
+        vars->parent = parent;
+        vars->side = side;
+        mclass = moby->mclass;
+        moby->scale = mclass->scale * 0.8f;
+        mclass->f48[3] = 18855.0f;
+        mclass->f3C = 18855.0f;
+        func_00283360(moby->rotation);
+
+        if (side) {
+            first = &parentVars->manips[0];
+            second = &parentVars->manips[1];
+        } else {
+            first = &parentVars->manips[2];
+            second = &parentVars->manips[3];
+        }
+        func_0029FCC0(moby, 0, first->translation);
+        func_0029FCC0(moby, 1, second->translation);
+        func_00282CF0(first->translation, first->translation, moby->position);
+        func_00282CF0(second->translation, second->translation, moby->position);
+        func_00282CF0(second->translation, second->translation, first->translation);
+        func_00282D30(first->translation, first->translation, (1.0f / moby->scale) * 1024.0f);
+        func_00282D30(second->translation, second->translation, (1.0f / moby->scale) * 1024.0f);
+        func_0029F978(moby, 0, first);
+        func_0029F978(moby, 1, second);
+        first->translation[3] = 1.0f;
+        first->interp = 1.0f;
+        first->absolute = 1;
+        second->translation[3] = 1.0f;
+        second->interp = 1.0f;
+        second->absolute = 1;
+
+        func_L10_00417F30((u8 *)moby);
+        func_002A0F48(moby);
+        func_00282C88(vars->aim);
+        vars->aim[0] = 1.0f;
+
+        vars->follower = func_0029EFD0(0x134F);
+        if (vars->follower != 0) {
+            MobyClass *followerClass = vars->follower->mclass;
+
+            followerClass->f48[3] = 18855.0f;
+            followerClass->f3C = 18855.0f;
+            vars->follower->updateDistance = 0xFF;
+            vars->follower->drawDistance = 0x1FF;
+            vars->follower->flags |= 0x100;
+            vars->follower->scale = 16.0f;
+        }
+    }
+    return moby;
+}
+
+
+void func_L10_00417F30(u8 *arg0)
+{
+    u8 *s2 = *(u8 **)(arg0 + 0x68);
+    u8 *q;
+    s32 st = *(s32 *)(s2 + 0x14);
+    f32 v[4];
+    f32 w[12];
+
+    if (st != 0) {
+        if (st == 1) {
+            u8 *p = *(u8 **)(s2 + 0x10);
+            qcopy(arg0 + 0xC0, p + 0xC0);
+            qcopy(arg0 + 0xD0, p + 0xD0);
+            qcopy(arg0 + 0xE0, p + 0xE0);
+            qcopy(arg0 + 0x10, p + 0x10);
+        }
+    } else {
+        u8 *p = *(u8 **)(s2 + 0x10);
+        func_00308BB8(v, p + 0xC0, func_00309138(1.5707963705062866f));
+        v[3] = func_00309120(1.5707963705062866f);
+        func_003098F8(v, w);
+        func_003096D8(arg0 + 0xC0, w, *(u8 **)(s2 + 0x10) + 0xC0);
+        qcopy(arg0 + 0x10, *(u8 **)(s2 + 0x10) + 0x10);
+    }
+    q = *(u8 **)(s2 + 0x18);
+    if (q != 0) {
+        qcopy(q + 0xC0, arg0 + 0xC0);
+        qcopy(q + 0xD0, arg0 + 0xD0);
+        qcopy(q + 0xE0, arg0 + 0xE0);
+        qcopy(q + 0x10, arg0 + 0x10);
+    }
+}
+
 
 void func_L10_00418088(u8 *arg0) {
     u8 *state = *(u8 **)(arg0 + 0x68);
@@ -295,7 +459,7 @@ void func_L10_004184F0(u8 *arg0) {
 }
 
 
-INCLUDE_ASM("asm/levels", func_L10_00418768);
+/* func_L10_00418768 is in L10_00418768.c. */
 
 
 void func_L10_00418968(u8 *arg0) {
@@ -427,7 +591,7 @@ void func_L10_0041ED50(u8 *arg0) {
 }
 
 
-INCLUDE_ASM("asm/levels", func_L10_00421288);
+/* func_L10_00421288 is in L10_003170D0-state-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L10_00421790);
 
@@ -435,8 +599,8 @@ INCLUDE_ASM("asm/levels", func_L10_004227A0);
 
 INCLUDE_ASM("asm/levels", func_L10_00423500);
 
-INCLUDE_ASM("asm/levels", func_L10_00423788);
+/* func_L10_00423788 is in L10_003170D0-collision.c. */
 
 INCLUDE_ASM("asm/levels", func_L10_004239A0);
 
-INCLUDE_ASM("asm/levels", func_L10_00423DC8);
+/* func_L10_00423DC8 is in L10_00423DC8-g8.c. */

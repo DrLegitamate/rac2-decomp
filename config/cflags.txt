@@ -1510,6 +1510,7 @@ src/levels/shared/L05_004445E8-g8.c	-O2 -G8 -ffunction-sections -frac2-keep-bloc
 src/levels/07_siberius/L07_004080E0.c	-O2 -G16 -Wa,-G16 -ffunction-sections -mno-split-addresses
 src/game/0031E3A8-update.c	-O2 -G0 -ffunction-sections -mno-split-addresses -g -fno-sched-interblock
 src/levels/shared/L14_003DE908-g32.c	-O2 -G32 -ffunction-sections -Wa,-G32
+src/levels/10_hrugis_cloud/L10_003170D0-scene-g8.c	-O2 -G8 -Wa,-G64 -ffunction-sections
 
 src/levels/shared/L00_004224D0-camera-g8.c	-O2 -G8 -ffunction-sections -frac2-gcse-unsplit-edges
 
@@ -1518,6 +1519,7 @@ src/levels/03_endako/L03_003D0300-g8.c	-O2 -G8 -ffunction-sections -frac2-keep-b
 src/levels/shared/L00_0033EA00-g8.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por -fno-gcse
 src/levels/shared/L00_0033C238.c	-O2 -G0 -ffunction-sections -fstrict-aliasing
 
+src/levels/09_dobbo/L09_002F8BA0-draw-g8.c	-O2 -G8 -g -ffunction-sections
 
 
 src/levels/shared/L22_003A6230-g8.c	-O2 -G8 -ffunction-sections -g
@@ -1651,6 +1653,7 @@ src/game/0031F210-basis-g8.c	-O2 -G8 -ffunction-sections -fno-sched-spec
 src/game/002DF1B8-packet.c	-O2 -G0 -ffunction-sections -fno-strength-reduce
 src/levels/shared/L00_0041ABB8-ring-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
 src/levels/shared/L00_0041E958-target.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
+src/levels/10_hrugis_cloud/L10_00418768.c	-O2 -G0 -ffunction-sections -fstrict-aliasing
 
 src/levels/shared/L01_00397110-update-g8.c	-O2 -G8 -ffunction-sections -g -frac2-hazard-labels
 
@@ -1729,6 +1732,7 @@ src/game/003427B0-fade.c	-O2 -G0 -ffunction-sections -frac2-hazard-labels
 # Preserve the movement-mode handler order.
 src/levels/shared/L00_002D3798-3D98.c	-O2 -G0 -ffunction-sections -frac2-keep-block-order
 
+src/levels/09_dobbo/L09_003FCA58-g64.c	-O2 -G64 -Wa,-G64 -ffunction-sections
 src/levels/shared/L04_00455418.c	-O2 -G0 -ffunction-sections -g
 src/levels/shared/L04_0046D250-g8.c	-O2 -G8 -ffunction-sections -g
 # Keep the local loop counter distinct and reload each object-table entry.
@@ -1802,11 +1806,13 @@ src/game/002CE5D0-g8.c	-O2 -G8 -ffunction-sections -g
 src/levels/shared/L00_002A6420-target-g8.c	-O2 -G8 -ffunction-sections -frac2-keep-block-order -frac2-gcse-unsplit-edges
 src/levels/01_oozla/L01_003CC280-g8.c	-O2 -G8 -ffunction-sections -fno-cse-follow-jumps -frac2-hazard-labels
 src/levels/shared/L03_003E26C8-g8.c	-O2 -G8 -ffunction-sections -frac2-hazard-labels
+src/levels/09_dobbo/L09_002F8BA0-beam-g8.c	-O2 -G8 -ffunction-sections -g -frac2-keep-block-order -frac2-no-null-pointer-checks
 src/game/002FDF40-g8.c	-O2 -G8 -ffunction-sections -g -frac2-hazard-labels
 
 src/levels/shared/L05_00445338-g8.c	-O2 -G8 -ffunction-sections -g -frac2-gcse-unsplit-edges
 src/game/002FC8D0-disturb-g8.c	-O2 -G8 -ffunction-sections -g
 
+src/levels/09_dobbo/L09_00409308.c	-O2 -G0 -ffunction-sections -g
 
 src/levels/shared/L00_002B6560.c	-O2 -G0 -ffunction-sections -frac2-hazard-labels
 src/game/002C94C8.c	-O2 -G0 -ffunction-sections -g

@@ -54,7 +54,7 @@ INCLUDE_ASM("asm/levels", func_L10_00424CD0);
 /* func_L10_00425508 is defined in L10_00424028-reward-g8.c. */
 
 
-INCLUDE_ASM("asm/levels", func_L10_00424448);
+/* func_L10_00424448 is defined in L10_00424448-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L10_0042B500);
 
