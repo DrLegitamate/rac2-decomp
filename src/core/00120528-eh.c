@@ -1,25 +1,3 @@
-/* libgcc _eh.o: __sjthrow, __sjpopnthrow and __eh_rtime_match, transcribed
-   from the L_eh section of GCC's libgcc2.c (GPL version 2-or-later with the
-   libgcc linking exception; the source is the public archive the qualified
-   compiler is built from, gnu-ee-binutils-gcc-1.1, gcc/libgcc2.c).
-
-   The boot catalogue carries one 728-byte extent for this object, but the
-   retail bytes hold three functions: __sjthrow to 0x001206A0,
-   __sjpopnthrow to 0x001207B8, __eh_rtime_match to the end. The extent is
-   what the linker sees, so the two later bodies are pinned into the first
-   one's section with a section attribute - the same layout the linker gives
-   the three separate sections of a normal object, and the only source-level
-   way to hand tools/build.py a single 728-byte symbol. */
-
-/* 26 October 2026 (xcarry): this version, carried from rac3-decomp's
-   src/boot_elf/core/libgcc/_eh.c (func_001269B0, the same instructions
-   there), is exact under tools/check.py in us, pal and us2 when built
-   `sdk -O2 -G2 -ffunction-sections -fexceptions` (libgcc builds _eh.o with
-   -fexceptions; __terminate is not noreturn), and with the section
-   attributes on the two later bodies tools/build.py boot --strict links it
-   (OK, 1942 C functions). Left here for a maintainer to rule on the
-   section attributes; without them it waits for the catalogue split. */
-
 /* libgcc _eh.o: __sjthrow, __sjpopnthrow and __eh_rtime_match, which follow each other
    in retail (the catalogue sees the three as one function), from the L_eh section of
    GCC's libgcc2.c, carried from rac3-decomp's src/boot_elf/core/libgcc/_eh.c

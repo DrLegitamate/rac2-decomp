@@ -1,66 +1,14 @@
 #include "common.h"
 
-/* NEAR MISS - candidate 756 bytes, retail's exact size (wave 4, 15 October 2026).
-
-   newlib mallocr.c's `fREe` (DEFINE_FREE), transcribed from
-   build/sdk-compiler-build/source/ee/newlib/libc/stdlib/mallocr.c and compiled
-   with -O2 -G2 -ffunction-sections -mastra-quad-saves (src/core/00116460.c's and
-   src/core/001166C8.c's profile: the prologue `addiu $sp,$sp,-0x30` with
-   `sq $ra,0x20; sq $s1,0x10; sq $s0,0x0` is exact). trim_threshold 0x1345F0
-   and top_pad 0x1345F8 are unsigned long, the other statics are the 0x1341E8
-   bin array; no mmap arm and no check_inuse_chunk (HAVE_MMAP 0, DEBUG off).
-
-   Wave 3 recorded 764 bytes against retail's 756 with two extra instructions:
-   the islr branch's delay slot held `sz += nextsz` while the unlink path
-   reloaded both `next->fd` and `next->bk`, and a load-to-branch `nop` sat in
-   front of the frontlink large-bin loop's rotated `beql`.
-
-   Wave 4 measured where the size comes from. The `unlink(next, bck, fwd)` macro
-   makes cc1 emit a SECOND load of `next->fd` in the unlink block: this cc1 does
-   not carry a load across the branch unless the value stays live past it (spelt
-   as an explicit `fwd = next->fd` in the else arm alone, the candidate goes back
-   to 764 bytes - measured). Naming the load before the test and using it as the
-   unlink's FD keeps it live, and then:
-
-   - the size becomes 756, retail's exact figure, and the islr region takes
-     retail's layout: `sz += nextsz` inline, the `next->fd` load in the islr
-     branch's delay slot, and the unlink path reaching the join with only
-     `next->bk` left to load;
-   - two words still differ. This cc1 keeps the loaded FD in $a2 and uses it
-     directly, where retail loads into $v1 and copies at the join
-     (`daddu $a2,$v1,$zero`, which is the macro's own `FD = P->fd` assignment:
-     retail's cc1 had CSE'd the load, so the assignment became a copy. The
-     earlier `unlink(p, bck, fwd)` above is what puts `fwd` in $a2 at both
-     sites). Retail's copy is the one instruction this candidate lacks.
-   - the load-to-branch `nop` in front of the frontlink large-bin loop is
-     untouched by the arm above (`lw $a2,0x8($a2)` then `beql $a2,$t0` in
-     retail; this cc1 inserts a `nop` between them, and moving `sz += nextsz`
-     relative to the load does not change it).
-
-   So the residual stays in wave 3's class - this cc1's delay-slot and
-   cross-branch CSE choices, not a source shape - but the body is now
-   size-exact and the islr region is understood to one instruction. The
-   candidate below is the 756-byte one; its one deviation from the upstream
-   transcription is the consolidate-forward arm (the load hoisted into `fwd`,
-   the `unlink` macro written out for that arm). */
-
 /*
  * A version of malloc/free/realloc written by Doug Lea and released to the
  * public domain (dlmalloc 2.6.5), adapted by newlib. See
  * THIRD_PARTY_NOTICES.md.
  */
 
-/* Source: newlib mallocr.c, fREe under DEFINE_FREE
- * (build/sdk-compiler-build/source/ee/newlib/libc/stdlib/mallocr.c) - the unit
- * the free shim (rc1_func_00115F78) calls with the reentrancy pointer. Same
- * profile and same constants as src/core/001166C8.c (mALLOc, the unit before
- * it): -O2 -G2 -ffunction-sections -mastra-quad-saves, SIZE_SZ 4, MINSIZE 16,
- * MALLOC_ALIGNMENT 16, HAVE_MMAP 0, DEBUG off, so no mmap arm and no
- * check_inuse_chunk. The three statics this body needs are trim_threshold
- * 0x001345F0 (unsigned long, read with `ld`), top_pad 0x001345F8 (unsigned
- * long, narrowed to size_t for the malloc_trim call) and the bin array
- * 0x001341E8 (top at +8, last_remainder at +8 of bin 1). The lock/unlock pair
- * is func_00116300/func_00116360 and malloc_trim is func_00117108. */
+/* Public newlib dlmalloc 2.6.5 fREe, with mmap and debug checks disabled.
+ * The forward-consolidation test keeps next->fd available to unlink.
+ */
 
 struct _reent;
 
@@ -203,6 +151,7 @@ void func_00116E10(struct _reent *reent_ptr, Void_t *mem) {
   INTERNAL_SIZE_T nextsz; /* its size */
   INTERNAL_SIZE_T prevsz; /* size of previous contiguous chunk */
   mchunkptr bck;       /* misc temp for linking */
+  mchunkptr nextfd;
   mchunkptr fwd;       /* misc temp for linking */
   int       islr;      /* track whether merging with last_remainder */
 
@@ -258,19 +207,17 @@ void func_00116E10(struct _reent *reent_ptr, Void_t *mem) {
 
   if (!(inuse_bit_at_offset(next, nextsz)))   /* consolidate forward */
   {
-    fwd = next->fd;
+    nextfd = next->fd;
     sz += nextsz;
 
-    if (!islr && fwd == last_remainder)        /* re-insert last_remainder */
+    if (!islr && nextfd == last_remainder)        /* re-insert last_remainder */
     {
       islr = 1;
       link_last_remainder(p);
     }
     else
     {
-      bck = next->bk;
-      fwd->bk = bck;
-      bck->fd = fwd;
+      unlink(next, bck, fwd);
     }
   }
 

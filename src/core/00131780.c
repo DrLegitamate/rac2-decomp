@@ -274,7 +274,7 @@ void func_00132B58(int value, long fourth, int fifth) {
 
 
 
-INCLUDE_ASM("asm/core", func_00132C48);
+/* func_00132C48 is in its own -g8 unit. */
 
 /* func_00132DF0 is defined in 00132DF0-g8.c. */
 
