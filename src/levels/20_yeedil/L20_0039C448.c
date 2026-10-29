@@ -36,12 +36,12 @@ extern float D_L20_0023E670[];
 
 extern char *func_0029EFD0(int);
 
-INCLUDE_ASM("asm/levels", func_L20_0039C5D0);
+/* func_L20_0039C5D0 is defined in L20_0039C5D0.c (grouped-copy profile). */
 
 /* func_L20_0039C8C8 is defined in L20_0039C8C8.c. */
 
 
-INCLUDE_ASM("asm/levels", func_L20_0039CF58);
+/* func_L20_0039CF58 is defined in L20_0039CF58.c. */
 
 INCLUDE_ASM("asm/levels", func_L20_0039D340);
 
@@ -85,7 +85,7 @@ void func_L20_0039D7B0(char *arg0) {
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L20_0039D880);
+/* func_L20_0039D880 is defined in L20_0039D880.c. */
 
 extern void func_002A7470(void *, int, int, int);
 
@@ -348,4 +348,4 @@ s32 func_L20_00435178(char *arg0, s32 arg1) {
    near miss is in nonmatching/levels/func_L20_004395B0.c. */
 /* func_L20_0043D470 is defined in L20_0039C448-qcopy.c (its copy needs the grouped-copy profile). */
 
-INCLUDE_ASM("asm/levels", func_L20_0043D4D8);
+/* func_L20_0043D4D8 is defined in L20_0043D4D8.c. */
