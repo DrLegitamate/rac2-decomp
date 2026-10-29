@@ -1,13 +1,6 @@
-/* M21 2026-10-26: 912 of 916 bytes with -O2 -G0 -ffunction-sections (us, level 00).
-   Two spots off: (1) the three-glow loop: retail keeps the glow pointer in $s1 and loop.c's
-   down-counter in $s0; here the other way round (6 words, register only); (2) retail reads
-   D_001A7A43 with a macro `lui $v0; lbu $v0` after the size select and leaves a nop in the
-   beqz slot; split here, so the lui fills that slot (MACRO_ADDR gives $gp for a byte; a
-   4-byte MACRO_ADDR array gives the same). What closed the rest: a hero struct view read
-   directly (shared %hi in $s3), D_L00_001A8F00 MACRO_ADDR, the per-arm `-=` stores in the
-   mode-1 flag test (then-arm first), the colour local before the glow loop, a separate peak
-   local for the max, value *= pi as its own statement. Permuter queued. */
-
+/* Source-shape reference: OpenRAC/rac1-decomp (GPL-3.0),
+ * src/overlays/shared/hero_idle_and_animation.c. */
+/* Draws the hero glow and the queued effects for the current mode. */
 #include "common.h"
 
 typedef struct {
@@ -40,7 +33,7 @@ typedef struct {
 } Hero_L00_002A7A50;
 extern Hero_L00_002A7A50 D_00189E20;
 extern int D_L00_001A8F00 MACRO_ADDR;
-extern unsigned char D_001A7A43;
+extern unsigned char D_001A7A40[] __attribute__((sda));
 extern void func_L00_00325AE8(void *, unsigned int, float, float);
 extern float func_00283CE0(int);
 extern float func_00283198(float);
@@ -73,10 +66,14 @@ void func_L00_002A7A50(void)
         func_002FC560(0x47, 0x5360B);
     }
     if (D_00189E20.mode == 3) {
+        unsigned int tint = D_00189E20.f2508;
         float (*glow)[4] = D_00189E20.glow;
-        color = D_00189E20.f2508;
-        for (index = 0; index < 3; index++, glow++)
-            func_L00_00325AE8(*glow, color, 0.2f, 0.08f);
+        int remaining = 2;
+        while (remaining >= 0) {
+            func_L00_00325AE8(*glow, tint, 0.2f, 0.08f);
+            glow++;
+            remaining--;
+        }
     } else if (D_00189E20.mode == 0) {
         if ((func_L00_002ADEA0(3) == 3 || func_L00_002ADEA0(3) == 2) && !D_00189E20.f24FC) {
             if (D_00189E20.f2500) {
@@ -95,7 +92,7 @@ void func_L00_002A7A50(void)
         func_L00_00325AE8(D_00189E20.v2010, 0x300000C0U, 0.25f, 0.08f);
     } else if (D_00189E20.mode == 1) {
         size = D_00189E20.f2520 ? 0.101500004529953f : 0.07f;
-        if (D_001A7A43) {
+        if (D_001A7A40[3]) {
             D_00189E20.v2010[2] -= 0.01f;
             size *= 1.7f;
         } else {

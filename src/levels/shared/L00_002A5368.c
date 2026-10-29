@@ -42,11 +42,11 @@ void func_L00_002A5368(void) {
 
 /* func_L00_002A5480 is built in its G8 unit. */
 
-INCLUDE_ASM("asm/levels", func_L00_002A5518);
+/* func_L00_002A5518 is built in L00_002A5518-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_002A5840);
+/* func_L00_002A5840 is built in L00_002A5840-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_002A5CB0);
+/* func_L00_002A5CB0 is built in L00_002A5CB0.c. */
 
 INCLUDE_ASM("asm/levels", func_L00_002A6008);
 

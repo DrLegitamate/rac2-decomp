@@ -241,7 +241,7 @@ void func_L00_002A70F0(void)
 
 INCLUDE_ASM("asm/levels", func_L00_002A70F8);
 
-INCLUDE_ASM("asm/levels", func_L00_002A74A8);
+/* func_L00_002A74A8 is defined in L00_002A74A8-tint.c. */
 
 
 /* runs a three-float setup over two resident blocks when the mode is 124, then publishes a
@@ -260,7 +260,7 @@ void func_L00_002A76B8(void)
     *(float *)(*(char **)(base + 0x2290) + 0xF4) = *(float *)(base + 0x6B0);
 }
 
-INCLUDE_ASM("asm/levels", func_L00_002A7748);
+/* func_L00_002A7748 is defined in L00_002A7748.c. */
 
 /* func_L00_002A7958 is matched in its own unit, src/levels/shared/L00_002A7958-g8.c (-O2 -G8 -ffunction-sections). */
 
@@ -275,13 +275,13 @@ void func_L00_002A7A10(void)
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L00_002A7A50);
+/* func_L00_002A7A50 is defined in L00_002A7A50-glow.c. */
 
 INCLUDE_ASM("asm/levels", func_L00_002A9460);
 
 /* func_L00_002A9600 uses the quadword-copy profile in L00_002A9600-qcopy.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_002A9760);
+/* func_L00_002A9760 is defined in L00_002A9760-g8.c. */
 
 /* Clamps two float fields of one object into [-1,1] through a repeated helper call and copies the clamped values into a second object. */
 void func_L00_002A9D38(float *a0, float *a1, float f12)
@@ -301,7 +301,7 @@ void func_L00_002A9D38(float *a0, float *a1, float f12)
     a0[1] = a1[1];
 }
 
-INCLUDE_ASM("asm/levels", func_L00_002A9E30);
+/* func_L00_002A9E30 is defined in L00_002A9E30-retime.c. */
 
 /* blends two table entries by the fractional part of a clock value: the integer part is the index, one step back is wrapped over a count unless a flag selects the last slot, and the result is frac*table[index] + (scale-frac)*table[previous] */
 float func_L00_002A9F30(float *table, int count)
@@ -373,7 +373,7 @@ void func_L00_002AA178(int a0)
     func_L00_003116A8_1(a0, 9, &buf, D_0018AA70);
 }
 
-INCLUDE_ASM("asm/levels", func_L00_002AA200);
+/* func_L00_002AA200 is defined in L00_002AA200-pose.c. */
 
 /* Bumps a 16-bit counter in a fixed data block and, when the new value exceeds the caller's threshold, builds a three-float jittered position from two globals plus three random calls, hands it to a spawn helper and stores the helper's return value back into the counter. */
 void func_L00_002AA478(char *self, int arg1)
@@ -398,15 +398,15 @@ void func_L00_002AA478(char *self, int arg1)
 
 /* Near miss: nonmatching/levels/func_L00_002AA570.c - 472/480 bytes; retail
    keeps the base's %hi in $s5 and re-materialises it inside the loop. */
-INCLUDE_ASM("asm/levels", func_L00_002AA570);
+/* func_L00_002AA570 is defined in L00_002AA570-effects.c. */
 
 /* func_L00_002AA750 is defined in L00_002AA750.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_002AA938);
+/* func_L00_002AA938 is defined in L00_002AA938-effects.c. */
 
 /* func_L00_002AABE0 is defined in L00_002AABE0.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_002AAE00);
+/* func_L00_002AAE00 is defined in L00_002AAE00-effects.c. */
 
 typedef struct {
     char reserved00[0xA4];
@@ -554,15 +554,15 @@ void func_L00_002AB3E0(void)
 }
 
 
-INCLUDE_ASM("asm/levels", func_L00_002AB420);
+/* func_L00_002AB420 is defined in L00_002AB420-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_002AB948);
+/* func_L00_002AB948 is defined in L00_002AB948.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_002ABBA0);
+/* func_L00_002ABBA0 is defined in L00_002A6420-target-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_002AC1A0);
+/* func_L00_002AC1A0 is defined in L00_002AC1A0.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_002AC578);
+/* func_L00_002AC578 is defined in L00_002AC578.c. */
 
 /* func_L00_002ACA08 is defined in L00_002ACA08-flags.c. */
 
@@ -570,7 +570,7 @@ INCLUDE_ASM("asm/levels", func_L00_002ACF88);
 
 INCLUDE_ASM("asm/levels", func_L00_002AD868);
 
-INCLUDE_ASM("asm/levels", func_L00_002ADB40);
+/* func_L00_002ADB40 is defined in L00_002ADB40.c. */
 
 /* forwards an output pointer, three pinned floating constants and selector one to the typed helper */
 void func_L00_002ADCF8(f32 *output) {
@@ -657,4 +657,4 @@ float func_L00_002AE070(int a0)
 
 
 
-INCLUDE_ASM("asm/levels", func_L00_002AE0C8);
+/* func_L00_002AE0C8 is defined in L00_002AE0C8-regions.c. */

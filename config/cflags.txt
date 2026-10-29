@@ -1601,6 +1601,7 @@ src/game/0030F7B0-nearest.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcop
 
 
 
+src/levels/shared/L00_002A9E30-retime.c	-O2 -G0 -ffunction-sections -g
 
 
 
@@ -1625,6 +1626,7 @@ src/game/002CFDA8-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections 
 src/game/00291850.c	-O2 -G0 -ffunction-sections -frac2-keep-block-order
 
 
+src/levels/shared/L00_002A5840-g8.c	-O2 -G8 -ffunction-sections -fno-sched-interblock
 
 src/game/002BEBC0-hazard-labels.c	-O2 -G0 -ffunction-sections -frac2-hazard-labels
 src/game/002BC508-g8.c	-O2 -G8 -ffunction-sections -g
@@ -1632,6 +1634,7 @@ src/game/002BC508-g8.c	-O2 -G8 -ffunction-sections -g
 src/game/00274128-projection.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -g
 src/game/002D3390-002D36A0-g8.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por -frac2-qcopy
 
+src/levels/shared/L00_002A9760-g8.c	-O2 -G8 -ffunction-sections -g
 
 
 src/game/0030F7B0-crate-g8.c	-O2 -G8 -ffunction-sections -ffast-math
@@ -1639,6 +1642,7 @@ src/game/0030F7B0-crate-g8.c	-O2 -G8 -ffunction-sections -ffast-math
 
 
 src/game/002CE5D0-g8.c	-O2 -G8 -ffunction-sections -g
+src/levels/shared/L00_002A6420-target-g8.c	-O2 -G8 -ffunction-sections -frac2-keep-block-order -frac2-gcse-unsplit-edges
 src/game/002FDF40-g8.c	-O2 -G8 -ffunction-sections -g -frac2-hazard-labels
 
 src/game/002FC8D0-disturb-g8.c	-O2 -G8 -ffunction-sections -g
