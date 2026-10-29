@@ -2,6 +2,38 @@
 
 extern char *D_L08_001B29DC __attribute__((sda));
 
+typedef int TI128 __attribute__((mode(TI)));
+
+/* Tuning words read by func_L08_003D3EF8. */
+extern float D_L08_001B0338 __attribute__((sda));
+extern float D_L08_001B033C __attribute__((sda));
+extern float D_L08_001B0340 __attribute__((sda));
+extern float D_L08_001B0344 __attribute__((sda));
+extern unsigned char D_L08_001B0348 __attribute__((sda));
+extern int D_L08_001B034C __attribute__((sda));
+extern int D_L08_001B0350 __attribute__((sda));
+extern float D_L08_001B0354 __attribute__((sda));
+extern float D_L08_001B0358 __attribute__((sda));
+extern int D_L08_001B035C __attribute__((sda));
+extern int D_L08_001B0360 __attribute__((sda));
+extern int D_L08_001B0368 __attribute__((sda));
+extern int D_L08_001B036C __attribute__((sda));
+/* The frame counter: absolute loads, $gp in a delay slot. */
+extern int D_L08_001B2508 MACRO_ADDR;
+extern char D_L08_001B9B00[];
+
+extern void func_0029FCC0(void *, int, void *);
+extern int func_002A77E0(int);
+extern void func_002A7A00(void *, float, float);
+extern void func_002C3150(void *, void *, int, unsigned char, unsigned char, int, float);
+extern unsigned char *func_002C2FD8(void *, int, unsigned char, int, int, int, int, float);
+extern void func_00282CC0(void *, void *, void *);
+extern void func_00282CF0(void *, void *, void *);
+extern void func_00282F20(void *, void *, float);
+extern float func_00283CE0(int);
+extern float func_00282C48(float);
+extern int func_00283D38(int, int, float);
+
 float func_L08_003CCD58(int index) {
     if (index != -1)
         return *(float *)(D_L08_001B29DC + ((unsigned int)index << 8) + 0x18);
@@ -111,4 +143,53 @@ int func_L08_003D0098(int index) {
             return 1;
     }
     return 0;
+}
+
+/* After a one-in-four roll, spawns four particles from joint 0 whose velocity grows by a
+   random step each time; then draws four rings between the moby and the point at
+   D_L08_001B9B00, laid out as RAC1's update_gold_bolt_glow_rings lays out its rings: each
+   ring's colour follows the frame counter, and its byte argument (the ring angle in RAC1)
+   is the counter's low byte, doubled and/or inverted by the ring index. */
+void func_L08_003D3EF8(char *obj)
+{
+    TI128 joint, velocity, step, ring, ring_step;
+    int count;
+    int k;
+    int b;
+    float t;
+    float reciprocal, half, size;
+    int color;
+
+    func_0029FCC0(obj, 0, &joint);
+    if (func_002A77E0(4) == 0) {
+        func_002A7A00(&velocity, D_L08_001B0338 * 0.016666668f, D_L08_001B033C * 0.016666668f);
+        b = D_L08_001B0348;
+        func_002C3150(&joint, &velocity, D_L08_001B034C, b, func_002A77E0(255), 0, D_L08_001B0354);
+        for (count = 2; count >= 0; count--) {
+            func_002A7A00(&step, D_L08_001B0340 * 0.016666668f, D_L08_001B0344 * 0.016666668f);
+            func_00282CC0(&velocity, &velocity, &step);
+            b = D_L08_001B0348;
+            func_002C3150(&joint, &velocity, D_L08_001B0350, b, func_002A77E0(255), 0, D_L08_001B0358);
+        }
+    }
+    func_00282CF0(&ring, D_L08_001B9B00, &joint);
+    func_00282F20(&ring, &ring, -0.3f);
+    func_00282F20(&ring_step, &ring, 0.1f);
+    func_00282CC0(&ring, &ring, &joint);
+    reciprocal = 0.003921569f;
+    half = 0.5f;
+    size = 3.0f;
+    for (k = 0; k < 4; k++) {
+        t = func_00283CE0(0xFF - ((D_L08_001B2508 + k * 20) & 0xFF));
+        color = func_00283D38(D_L08_001B035C, D_L08_001B0360, func_00282C48(half - t * reciprocal));
+        b = D_L08_001B2508 & 0xFF;
+        if (k & 2)
+            b = b * 2;
+        if (k & 1)
+            b = 0xFF - b;
+        func_002C2FD8(&ring, color, b, D_L08_001B036C, D_L08_001B0368, 2, 0,
+                      (func_00283CE0(k) + size)
+                          * (*(float *)(obj + 0x2C) / *(float *)(*(char **)(obj + 0x24) + 0x24)));
+        func_00282CC0(&ring, &ring, &ring_step);
+    }
 }

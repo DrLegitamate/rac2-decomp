@@ -1470,6 +1470,7 @@ src/levels/19_grelbin/L19_003E9400-lift-g8.c	-O2 -G8 -ffunction-sections -frac2-
 src/levels/23_damosel_orbit/L23_00416388-scan.c	-O2 -G8 -ffunction-sections -Wa,-G32
 src/levels/shared/L00_003C6298-ribbon-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-hazard-labels
 src/levels/shared/L00_0040D058-ribbon.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-hazard-labels
+src/levels/08_tabora/L08_00425FE8.c	-g -O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-hazard-labels
 src/levels/06_notak/L06_00420740.c	-O2 -G0 -ffunction-sections -g -frac2-hazard-labels
 src/levels/06_notak/L06_0041F558.c	-O2 -G0 -ffunction-sections -fno-expensive-optimizations
 src/levels/shared/L00_003DE950-g8.c	-O2 -G8 -ffunction-sections -g
@@ -1488,6 +1489,7 @@ src/levels/shared/L05_003D1E60-g8.c	-O2 -G8 -ffunction-sections -frac2-keep-bloc
 src/levels/shared/L01_002B6948-velocity.c	-O2 -g -G0 -ffunction-sections -frac2-keep-block-order -frac2-hazard-labels
 src/game/00270EE0-qcopy.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
 
+src/levels/08_tabora/L08_003D8AB0.c	-O2 -G0 -ffunction-sections -fno-gcse
 
 src/levels/shared/L00_003AA4C8-effects-g.c	-O2 -G0 -g -ffunction-sections
 src/levels/shared/L00_003ACA60-particles-g.c	-O2 -G0 -g -ffunction-sections
@@ -1539,6 +1541,7 @@ src/levels/shared/L00_00407C18-g64.c	-O2 -G64 -Wa,-G64 -ffunction-sections
 src/levels/shared/L00_004079C8-g64.c	-O2 -G64 -Wa,-G64 -ffunction-sections
 
 src/levels/shared/L00_0037DD80-init-g8.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por -Wa,-G8
+src/levels/09_dobbo/L09_002F89F8-g64.c	-O2 -G64 -Wa,-G64 -ffunction-sections
 
 
 src/game/00290A40-g16.c	-O2 -G16 -ffunction-sections -Wa,-G16
@@ -1757,6 +1760,7 @@ src/game/0030F7B0-g16.c	-O2 -G16 -ffunction-sections -Wa,-G16
 src/game/002CFDA8-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections -fno-builtin
 
 src/game/00291850.c	-O2 -G0 -ffunction-sections -frac2-keep-block-order
+src/levels/08_tabora/L08_003D00C8-g8.c	-O2 -G8 -ffunction-sections -g
 src/levels/shared/L05_00443740-g8.c	-O2 -G8 -ffunction-sections -g
 
 src/levels/shared/L06_004638F0.c	-O2 -G0 -ffunction-sections -g
@@ -1830,6 +1834,7 @@ src/levels/03_endako/L03_0041D258-g8.c	-O2 -G16 -Wa,-G16 -ffunction-sections
 src/levels/shared/L08_0042E678-g8.c	-O2 -G8 -ffunction-sections -g -frac2-qcopy -frac2-qcopy-barrier
 src/game/0030F7B0-throw.c	-O2 -G0 -ffunction-sections -g -frac2-hazard-labels
 src/levels/07_siberius/L07_003F7968-g32.c	-O2 -G32 -Wa,-G32 -ffunction-sections
+src/levels/07_siberius/L07_00410700-g8.c	-O2 -G8 -ffunction-sections -g -frac2-qcopy -frac2-qcopy-barrier
 src/levels/07_siberius/L07_0040E980-g8.c	-O2 -G8 -ffunction-sections -g -frac2-qcopy -frac2-qcopy-barrier
 
 # Joba endpoint selection keeps the absolute fallback address tied to one register.

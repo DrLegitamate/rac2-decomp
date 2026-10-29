@@ -122,13 +122,13 @@ float func_L08_0032EF80(ti_word *input, int initial, int first, int second, int 
     return func_L08_0032ED98(&value, third, result);
 }
 
-INCLUDE_ASM("asm/levels", func_L08_0032F898);
+/* func_L08_0032F898 is defined in L08_0032F898.c. */
 
 INCLUDE_ASM("asm/levels", func_L08_003CC750);
 
-INCLUDE_ASM("asm/levels", func_L08_003CCC30);
+/* func_L08_003CCC30 is defined in L08_003CCC30-qcopy.c. */
 
-INCLUDE_ASM("asm/levels", func_L08_003CCD80);
+/* func_L08_003CCD80 is defined in L08_003CCD80-g8.c. */
 
 /* func_L08_003CFE68 is in the sibling file L08_002D90C8-g8.c (it uses $gp addresses). */
 
@@ -146,14 +146,14 @@ void func_L08_003D0040(void *object) {
     if (parts[1]) func_0029FCC0(object, 1, (char *)parts[1] + 0x10);
 }
 
-INCLUDE_ASM("asm/levels", func_L08_003D00C8);
+/* func_L08_003D00C8 is defined in L08_003D00C8-g8.c. */
 
 /* func_L08_003D0508 is defined in L08_003D0508-qcopy.c. */
 
 /* func_L08_003D2F50 is defined in L08_002D90C8-damage-g8.c. */
 
 
-INCLUDE_ASM("asm/levels", func_L08_003D3EF8);
+/* func_L08_003D3EF8 is in the sibling file L08_002D90C8-g8.c (it uses $gp addresses). */
 
 extern f32 func_3279B8(void);
 
