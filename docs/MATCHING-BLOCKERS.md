@@ -76,6 +76,9 @@ that negative result.
 **29 October 2026 related near miss:** `func_002CDA20` uses the same helper-call and float-constant pattern. Its corrected 32-bit ABI candidate is 136/140 bytes and 0/28 under isolated `-fno-schedule-insns2`; the later scheduling pass does not recover the four missing bytes.
 
 
+**29 October 2026 near miss:** `func_0029DD30` was rechecked with an explicit-goto C form preserving repeated volatile reads. It compiles to 132/140 bytes and 0/28 USA v1.01 placements; the output still has ordinary bnez/bltz branches and a shared base, while retail uses a branch-likely path. The source-shape change does not recover retail control flow or qualify relocation placement.
+
+
 ## Topic index
 
 The 52 original section numbers are preserved for existing references. Anyone may improve
