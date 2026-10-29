@@ -67,3 +67,40 @@ void func_L00_00385040(char *object)
     }
     func_001163A0(saved);
 }
+
+extern int func_00115DA8(char *buffer, char *format, ...);
+
+extern void func_L00_002E95C0(int x, int y, unsigned long colour, char *text, int length);
+
+extern char D_L00_001AEEC0[];
+
+extern char D_L00_001AEED0[];
+
+/* A six-word block of x/y pairs and a three-word block of colours. Retail reads
+ * element 0 of each through $gp and the other elements as absolute macro loads at
+ * an offset from the block, which keeps them out of the call delay slots
+ * (docs/COMPILER-NOTES.md, "reorg: which global loads may fill a slot"). */
+extern int D_L00_001AEE98[] MACRO_ADDR;
+
+extern int D_L00_001AEE98_gp SDATA(D_L00_001AEE98);
+
+extern int D_L00_001AEEB0[] MACRO_ADDR;
+
+extern int D_L00_001AEEB0_gp SDATA(D_L00_001AEEB0);
+
+/* Draws "Score: %d" (data+0x60), "Level: %d" (data+0x70 plus one) and "Score: %d"
+ * (data+0x64) from the object's data (object+0x68), each at its own position and
+ * colour. */
+void func_L00_003852A0(void *object)
+{
+    char buffer[0x100];
+    char *state = *(char **)((char *)object + 0x68);
+
+    func_00115DA8(buffer, D_L00_001AEEC0, *(int *)(state + 0x60));
+    func_L00_002E95C0(D_L00_001AEE98_gp, D_L00_001AEE98[1], D_L00_001AEEB0[2], buffer, -1);
+    func_00115DA8(buffer, D_L00_001AEED0, *(int *)(state + 0x70) + 1);
+    func_L00_002E95C0(D_L00_001AEE98[2], D_L00_001AEE98[3], D_L00_001AEEB0[1], buffer, -1);
+    func_00115DA8(buffer, D_L00_001AEEC0, *(int *)(state + 0x64));
+    func_L00_002E95C0(D_L00_001AEE98[4], D_L00_001AEE98[5], D_L00_001AEEB0_gp, buffer, -1);
+}
+

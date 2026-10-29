@@ -96,7 +96,7 @@ void func_L00_0037E0C0(int a0)
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L00_0037E418);
+/* func_L00_0037E418 is built with -G8: see L00_0037DD80-init-g8.c. */
 
 /* runs the three per-frame passes in the order the level expects */
 void func_L00_0037E5C0(void)

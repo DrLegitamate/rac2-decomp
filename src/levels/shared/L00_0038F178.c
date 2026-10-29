@@ -72,6 +72,42 @@ typedef struct {
 
 extern void func_0029F338(NativeUpdate775View *object);
 
+typedef struct {
+    char prefix[0x760];
+    float aimAxis[4];
+    char pad770[0xAC0];
+    unsigned int buttons;
+    char pad1234[0xC];
+    int resource;
+    char pad1244[0x1050];
+    int level;
+    char pad2298[0x24];
+    unsigned char busy;
+    char pad22BD[0x277];
+    int cooldown;
+} LaunchHero;
+extern LaunchHero D_00189E20;
+extern unsigned int D_00138320;
+extern void func_0029FCC0(char *, int, char *);
+/* Interleaved declarations preserve the EE ABI's independent GPR and FP argument order. */
+extern void func_002FDF40(void *, void *, void *, float, float, float, float, void *);
+extern int func_002FE5A0(void *, void *, void *, void *, void *, int, int, float);
+extern int func_00282948(int *), func_L00_002D3F30(int, int);
+extern void func_L00_002AF7D0(void), func_L00_002AF568(void);
+extern int func_002E5CF8(int, int, char *);
+extern char *func_L00_00398810(char *, char *);
+extern void ref_L00_0039D110_00(void *, void *);
+extern void func_L00_0039D340(Rac2Native_9cdc323a4d0c2fbd_AnalysisOwner *);
+
+typedef struct { float value[3]; } QuerySettings;
+extern QuerySettings D_L00_001AF410;
+typedef struct { char prefix[0x1A0]; unsigned int held, pressed; } LaunchInput;
+extern LaunchInput D_00138180;
+extern char *func_002AF580(void *, void *, int *, void *, int, int, float, float, float, float, float, int, void *);
+extern char *func_L00_0038D530(char *, char *);
+extern void ref_L00_00397E60_00(void *, void *);
+extern void func_L00_00398118(Rac2Native_9cdc323a4d0c2fbd_AnalysisOwner *);
+
 /* func_L00_0038F178 is defined in L00_0038F178-effects.c. */
 
 /* Family 6eb4f363e5305bed: seed body at func_L00_00387408. */
@@ -148,7 +184,7 @@ void func_L00_0038F5F0(char *object)
         func_0029F338((NativeUpdate775View *)object);
 }
 
-INCLUDE_ASM("asm/levels", func_L00_0038F8B8);
+/* func_L00_0038F8B8 is defined in L00_0038F8B8.c. */
 
 /* func_L00_0038FC48 is defined in L00_0038FC48-g8.c. */
 
@@ -295,7 +331,7 @@ char *func_L00_00395240(char *arg)
 
 INCLUDE_ASM("asm/levels", func_L00_00395428);
 
-INCLUDE_ASM("asm/levels", func_L00_003959C0);
+/* func_L00_003959C0 is defined in L00_003959C0-g8.c. */
 
 /* func_L00_00395A88 is defined in L00_00395A88-g8.c. */
 
@@ -304,7 +340,55 @@ INCLUDE_ASM("asm/levels", func_L00_003959C0);
 
 /* func_L00_003973E8 is defined in L00_003973E8-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L00_00397E60);
+/* Selects an aim target before advancing the projectile launcher state. */
+void func_L00_00397E60(char *actor)
+{
+    char *state = *(char **)(actor + 0x68);
+    char position[16];
+    QuerySettings settings;
+    char direction[16];
+    int foundCount;
+    char *target;
+    int ready;
+    func_0029FCC0(actor, 0, position);
+    settings = D_L00_001AF410;
+    target = func_002AF580(actor + 0x10, D_00189E20.aimAxis, &foundCount, 0, 0, 0,
+                          0.3926991f, 0.7853982f, 11.1f, 0.0f, 0.0f, 0, &settings);
+    func_002FDF40(direction, position, target, 1.5f, D_00189E20.level == 29 ? 11.0f : 10.0f, 0.16666667f, 0.003055555745959282f, 0);
+    ready = 1;
+    *(int *)(state + 0x24) = func_002FE5A0(position, direction, state, state + 0x10, actor, 0, 0, 0.003055555745959282f);
+    if (D_00189E20.level == 29) {
+        if (!func_00282948(&D_00189E20.cooldown)) ready = 0;
+    }
+    else D_00189E20.cooldown = 40;
+    switch (*(unsigned char *)(actor + 0x20)) {
+    case 0:
+        *(unsigned char *)(actor + 0x20) = 1;
+        *(int *)(state + 0x24) = 0;
+    case 1:
+        if ((D_00138180.held & D_00189E20.buttons) == 0 || D_00189E20.busy || D_00189E20.resource < 23 || !ready) break;
+        if (func_L00_002D3F30(-1, 1)) {
+            func_L00_002AF568();
+            *(unsigned char *)(actor + 0x20) = 2;
+            *(int *)(state + 0x20) = 20;
+            break;
+        }
+        if (D_00138180.pressed & D_00189E20.buttons) func_002E5CF8(2, 0, actor);
+        break;
+    case 2:
+        if (!func_00282948((int *)(state + 0x20))) break;
+        *(char **)(func_L00_0038D530(position, direction) + 0xB8) = actor;
+        func_L00_002AF7D0();
+        *(unsigned char *)(actor + 0x20) = 3;
+        *(int *)(state + 0x20) = 10;
+        break;
+    case 3:
+        if (func_00282948((int *)(state + 0x20))) *(unsigned char *)(actor + 0x20) = 1;
+        break;
+    }
+    ref_L00_00397E60_00(func_L00_00398118, actor);
+}
+
 
 /* When the context flag at offset 0x24 is nonzero, pass scale 1.0, the context, its vector at offset 0x10 and mode zero to the bound helper; original game role is unknown. */
 void func_L00_00398118(Rac2Native_9cdc323a4d0c2fbd_AnalysisOwner *owner)
@@ -322,7 +406,47 @@ INCLUDE_ASM("asm/levels", func_L00_00398810);
 /* func_L00_0039B288 is defined in L00_0039B288-g8.c. */
 
 
-INCLUDE_ASM("asm/levels", func_L00_0039D110);
+/* Aims and launches the actor's projectile in response to the shared input gate. */
+void func_L00_0039D110(char *actor)
+{
+    char *state = *(char **)(actor + 0x68);
+    char position[16], direction[16];
+    int ready;
+    func_0029FCC0(actor, 0, position);
+    func_002FDF40(direction, position, 0, 1.5f, D_00189E20.level == 29 ? 11.0f : 5.0f, 0.16666667f, 0.003055555745959282f, 0);
+    ready = 1;
+    *(int *)(state + 0x24) = func_002FE5A0(position, direction, state, state + 0x10, actor, 0, 0, 0.003055555745959282f);
+    if (D_00189E20.level == 29) {
+        if (!func_00282948(&D_00189E20.cooldown)) ready = 0;
+    }
+    else D_00189E20.cooldown = 40;
+    switch (*(unsigned char *)(actor + 0x20)) {
+    case 0:
+        *(unsigned char *)(actor + 0x20) = 1;
+        *(int *)(state + 0x24) = 0;
+    case 1:
+        if ((D_00138320 & D_00189E20.buttons) == 0 || D_00189E20.busy || D_00189E20.resource < 9 || !ready) break;
+        if (func_L00_002D3F30(-1, 1)) {
+            func_L00_002AF568();
+            *(unsigned char *)(actor + 0x20) = 2;
+            *(int *)(state + 0x20) = 20;
+            break;
+        }
+        func_002E5CF8(2, 0, actor);
+        break;
+    case 2:
+        if (!func_00282948((int *)(state + 0x20))) break;
+        *(char **)(func_L00_00398810(position, direction) + 0xB8) = actor;
+        func_L00_002AF7D0();
+        *(unsigned char *)(actor + 0x20) = 3;
+        *(int *)(state + 0x20) = 10;
+        break;
+    case 3:
+        if (func_00282948((int *)(state + 0x20))) *(unsigned char *)(actor + 0x20) = 1;
+        break;
+    }
+    ref_L00_0039D110_00(func_L00_0039D340, actor);
+}
 
 /* When the context flag at offset 0x24 is nonzero, pass scale 1.0, the context, its vector at offset 0x10 and mode zero to the bound helper; original game role is unknown. */
 void func_L00_0039D340(Rac2Native_9cdc323a4d0c2fbd_AnalysisOwner *owner)

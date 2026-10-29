@@ -234,7 +234,6 @@ void func_L00_0037FE08(void)
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L00_0037FF98);
 
 extern int func_00303E20(int object, char *name, int first, int second);
 
@@ -286,7 +285,6 @@ INCLUDE_ASM("asm/levels", func_L00_00382F28);
 
 INCLUDE_ASM("asm/levels", func_L00_00383B90);
 
-INCLUDE_ASM("asm/levels", func_L00_00384070);
 
 INCLUDE_ASM("asm/levels", func_L00_00384248);
 
@@ -297,7 +295,6 @@ INCLUDE_ASM("asm/levels", func_L00_00384678);
 /* func_L00_00384CA8 is defined in L00_00384CA8-qcopy.c. */
 
 
-INCLUDE_ASM("asm/levels", func_L00_003852A0);
 
 
 /* func_L00_00387370 is defined in L00_00387370-g8-qcopy.c. */
