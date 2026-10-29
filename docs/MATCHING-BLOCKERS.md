@@ -1514,6 +1514,19 @@ Use `rabbitizer.Instruction(word, address, rabbitizer.InstrCategory.R5900).disas
 - **The tree-level fold merges `pi + pi`** into one 2¤Ç constant, where retail doubles ¤Ç at run
   time (`add.s $f1,$f14,$f14`); two separate statements are not folded, so the retail's two
   `add.s` need them.
+
+**29 October 2026 current-master evidence — `func_00283CB8`:** Retail is a 16-byte
+float-to-integer-to-float conversion at 28 USA v1.01 placements; its final `sub.s`
+fills the return delay slot. The retained cast candidate is 28 bytes and 0/28,
+with `mfc1`/`mtc1` through `$v0` instead of keeping the converted value in the
+FPU. Eight cast spellings produced the same sequence; `rintf`, `nearbyintf`,
+`truncf`, and `roundf` each produced a 60-byte helper-call version. These 12
+measured forms reach the bounded-attempt stop rule without a closer result.
+Also, a C cast truncates toward zero while retail `cvt.w.s` follows the active
+FPU rounding mode, so the retained cast is not established as behaviorally
+equivalent. Reopen with a qualified standard-C/compiler mechanism that keeps
+the conversion in the FPU and preserves rounding-mode semantics.
+
 - **A float-bit return may need the full R5900-width value.** In `func_002829D8`, retail moves
   the float bits to a GPR, shifts them into the high word, and compares the signed 64-bit result
   with 1 before subtracting 2. The -G8 C form using an unsigned 64-bit shift is 76/64 bytes;
