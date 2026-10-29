@@ -166,7 +166,7 @@ float func_002AA898(float *position, float target, float *velocity,
 }
 
 
-INCLUDE_ASM("asm/game", func_002AAC80);
+/* func_002AAC80 is in 002AAC80-smoothing.c. */
 
 /* Scales four float arguments by 255, converts each through the same routine, masks each result to a byte and packs the four bytes into one word, low byte first. */
 int func_002AAE98(float r, float g, float b, float a)
@@ -897,7 +897,7 @@ float func_002AF2E8(char *a0, char *a1, int *a2,
     return reach;
 }
 
-INCLUDE_ASM("asm/game", func_002AF460);
+/* func_002AF460 is in 002AA800-nearest.c. */
 INCLUDE_ASM("asm/game", func_002AF580);
 
 

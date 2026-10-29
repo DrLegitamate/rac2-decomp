@@ -180,6 +180,11 @@ int func_002B6318(unsigned char *object)
 }
 
 
+extern unsigned int D_001B22A8 __attribute__((sda));
+extern char *D_001A742C __attribute__((section(".sdata")));
+extern char D_001BAD40[];
+extern void func_0027D4B8(void);
+extern void func_0027D5C0(void);
 extern char D_001A6AF0[];
 extern int D_001B8840[];
 extern void func_0011AED0(int);
@@ -189,7 +194,28 @@ extern void func_0011AED0(int);
    lets one of two builders append, then ends the chain and hands it to func_0011AED0.
    The cursor is an integer address, so each word stored through it may alias it and it
    is read again before every store. */
-INCLUDE_ASM("asm/game", func_002B6480);
+void func_002B6480(unsigned int *packet)
+{
+    D_001B22A8 = (unsigned int)packet;
+    *(unsigned int *)(D_001B22A8 + 0x00) = 0x30000009;
+    *(unsigned int *)(D_001B22A8 + 0x04) = (unsigned int)(D_001A742C + 0xC0) & 0x0FFFFFFF;
+    *(unsigned int *)(D_001B22A8 + 0x08) = 0;
+    *(unsigned int *)(D_001B22A8 + 0x0C) = 0x50000009;
+    *(unsigned int *)(D_001B22A8 + 0x10) = 0x30000025;
+    *(unsigned int *)(D_001B22A8 + 0x14) = (unsigned int)D_001A6AF0;
+    *(unsigned int *)(D_001B22A8 + 0x18) = 0;
+    *(unsigned int *)(D_001B22A8 + 0x1C) = 0x50000025;
+    D_001B22A8 += 0x20;
+    D_001B8840[13]++;
+    if (*(int *)D_001BAD40)
+        func_0027D4B8();
+    else
+        func_0027D5C0();
+    *(unsigned int *)(D_001B22A8 + 0x00) = 0x70000000;
+    *(unsigned int *)(D_001B22A8 + 0x04) = 0;
+    D_001B22A8 += 0x10;
+    func_0011AED0(0);
+}
 
 
 
@@ -233,7 +259,7 @@ void func_002B67E0(int a0, int index) {
 INCLUDE_ASM("asm/game", func_002B6828);
 
 
-INCLUDE_ASM("asm/game", func_002B68C8);
+/* func_002B68C8 is built from 002B68C8.c. */
 
 extern void func_002B7D88(s32);
 extern void func_001336D0(void (*)(s32));

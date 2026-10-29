@@ -1490,6 +1490,7 @@ src/levels/shared/L14_003DE908-g32.c	-O2 -G32 -ffunction-sections -Wa,-G32
 
 src/game/00294BC8-map-point-g8.c	-O2 -G32 -Wa,-G32 -ffunction-sections -g
 
+src/game/002AAC80-smoothing.c	-O2 -G0 -ffunction-sections -g
 
 src/game/00284FC0-g8.c	-O2 -G8 -ffunction-sections -fno-strength-reduce
 
@@ -1533,6 +1534,7 @@ src/core/00119AC0.c	-O2 -G2 -ffunction-sections -mastra-quad-saves
 
 
 
+src/game/002BDCE8.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
 src/game/00273E98.c	-O2 -G0 -g -ffunction-sections
 
 # Siberius falling-object controller keeps its plain C stack clear materialized.
@@ -1585,12 +1587,14 @@ src/levels/03_endako/L03_003D2518.c	-O2 -G0 -ffunction-sections -frac2-zero-ti-p
 
 
 
+src/game/002AA800-nearest.c	-O2 -G0 -ffunction-sections -g -ffast-math
 
 
 
 src/core/00133580-g8.c	-O2 -G8 -ffunction-sections -mno-split-addresses -fno-gcse
 
 
+src/game/002B68C8.c	-O2 -G0 -ffunction-sections -fno-schedule-insns
 
 
 
@@ -1598,6 +1602,8 @@ src/game/00291850.c	-O2 -G0 -ffunction-sections -frac2-keep-block-order
 
 
 
+src/game/002BEBC0-hazard-labels.c	-O2 -G0 -ffunction-sections -frac2-hazard-labels
+src/game/002BC508-g8.c	-O2 -G8 -ffunction-sections -g
 
 src/game/00274128-projection.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -g
 

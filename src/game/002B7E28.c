@@ -302,7 +302,7 @@ void func_002B8518(void) {
 
 INCLUDE_ASM("asm/game", func_002B8530);
 
-INCLUDE_ASM("asm/game", func_002B85F8);
+/* func_002B85F8 is in 002B7E28-g8.c. */
 
 void func_002B8888(u8 *a0) {
  s32 *p=(s32 *)(a0+0x140);s32 count=15;
@@ -518,7 +518,7 @@ void func_002BBB70(char *p)
 
 INCLUDE_ASM("asm/game", func_002BBF40);
 
-INCLUDE_ASM("asm/game", func_002BC508);
+/* func_002BC508 is in 002BC508-g8.c. */
 
 char *func_002BC768(char *pos, int spin, int color, float spread, float low, float high, float accel, float size)
 {
@@ -640,7 +640,7 @@ void func_002BD500(char *a)
         func_002B9180(a);
 }
 
-INCLUDE_ASM("asm/game", func_002BDCE8);
+/* func_002BDCE8 uses the qcopy profile in 002BDCE8.c. */
 
 /* func_002BDEB0 is in 002BDEB0.c. */
 
@@ -693,7 +693,8 @@ void func_002BE9B8(char *p)
     Fc10c1216_FUN_00282CC0(p + 16, p + 16, (char *)(q + 4));
 }
 
-INCLUDE_ASM("asm/game", func_002BEBC0);
+/* func_002BEBC0 is in 002BEBC0-hazard-labels.c (retail keeps a branch label on its
+   mtc1 hazard nop, which only a -frac2-hazard-labels unit reproduces). */
 
 INCLUDE_ASM("asm/game", func_002BEE70);
 

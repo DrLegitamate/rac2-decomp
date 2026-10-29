@@ -154,7 +154,7 @@ float func_002B04E0(char *a0, float *src, char *third)
 
 
 
-INCLUDE_ASM("asm/game", func_002B0668);
+/* func_002B0668 is defined in 002B00B0-effect-g8.c. */
 
 
 /* Calls one float-conversion helper on (a0 %% a1) and again on a1, then returns 2*pi times the quotient minus pi. */
@@ -323,7 +323,7 @@ int func_002B0E90(void)
     return count;
 }
 
-INCLUDE_ASM("asm/game", func_002B1350);
+/* func_002B1350 is defined in 002B00B0-reaction-g8.c. */
 
 int func_002B1A80(u8 *owner, int b, int *outIndex,
                                        float *o0, float *o1, float *o2, float *o3,
