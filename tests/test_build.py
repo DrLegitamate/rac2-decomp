@@ -305,6 +305,7 @@ class StrictBuild(unittest.TestCase):
 
     def test_parallel_build_propagates_strict_and_child_failure(self):
         with patch.object(sys, "argv", ["build.py", "all", "--strict", "--jobs", "2"]), \
+             patch.dict(os.environ, {"RAC2_ONE_PREFIX": "1"}), \
              patch.object(build.levels, "NAMES", {0: "test"}), \
              patch.object(build.subprocess, "run", return_value=SimpleNamespace(
                  returncode=1, stdout="", stderr="strict failure")) as run, redirect_stdout(StringIO()):
@@ -313,3 +314,31 @@ class StrictBuild(unittest.TestCase):
             self.assertEqual(run.call_count, 2)
             for call in run.call_args_list:
                 self.assertIn("--strict", call.args[0])
+
+    def test_parallel_build_gives_each_program_its_own_wine_prefix(self):
+        # One wineserver serves a prefix, so programs at once each get one of their own.
+        with tempfile.TemporaryDirectory() as tmp, \
+             patch.object(sys, "argv", ["build.py", "all", "--jobs", "2"]), \
+             patch.dict(os.environ, {}, clear=False), \
+             patch.object(build, "BUILD", Path(tmp)), \
+             patch.object(build.levels, "NAMES", {0: "test"}), \
+             patch.object(build.subprocess, "run", return_value=SimpleNamespace(
+                 returncode=0, stdout="", stderr="")) as run, redirect_stdout(StringIO()):
+            os.environ.pop("WINEPREFIX", None)
+            os.environ.pop("RAC2_ONE_PREFIX", None)
+            build.main()
+            boots = [c for c in run.call_args_list if "wineboot" in c.args[0]]
+            programs = [c for c in run.call_args_list if "wineboot" not in c.args[0]]
+            self.assertEqual(len(boots), 2)
+            self.assertEqual(len(programs), 2)
+            used = {c.kwargs["env"]["WINEPREFIX"] for c in programs}
+            self.assertTrue(used <= {str(Path(tmp) / "wine" / n) for n in ("0", "1")})
+            for c in programs:
+                self.assertTrue(c.kwargs["env"]["WINEPREFIX"].startswith(str(Path(tmp) / "wine")))
+
+    def test_a_set_wine_prefix_keeps_one_prefix(self):
+        with patch.dict(os.environ, {"WINEPREFIX": "/somewhere"}):
+            self.assertIsNone(build.wine_prefixes(8))
+        with patch.dict(os.environ, {"RAC2_ONE_PREFIX": "1"}):
+            self.assertIsNone(build.wine_prefixes(8))
+        self.assertIsNone(build.wine_prefixes(1))
