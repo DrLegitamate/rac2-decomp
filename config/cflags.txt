@@ -1505,6 +1505,7 @@ src/levels/03_endako/L03_003F6948-g8.c	-O2 -G128 -ffunction-sections -Wa,-G128
 src/levels/shared/L05_00444DF8-g8.c	-O2 -G8 -ffunction-sections -mno-split-addresses
 src/levels/shared/L05_00442F90-g8.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por
 src/levels/shared/L05_004445E8-g8.c	-O2 -G8 -ffunction-sections -frac2-keep-block-order
+src/levels/07_siberius/L07_004080E0.c	-O2 -G16 -Wa,-G16 -ffunction-sections -mno-split-addresses
 src/game/0031E3A8-update.c	-O2 -G0 -ffunction-sections -mno-split-addresses -g -fno-sched-interblock
 src/levels/shared/L14_003DE908-g32.c	-O2 -G32 -ffunction-sections -Wa,-G32
 
@@ -1557,6 +1558,7 @@ src/levels/01_oozla/L01_0040F360-g8.c	-O2 -G8 -ffunction-sections -mno-split-add
 
 src/game/00273730.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -g
 
+src/levels/07_siberius/L07_003EECE0.c	-O2 -G0 -ffunction-sections -mno-split-addresses
 
 src/levels/shared/L22_003C9D48-g8.c	-O2 -G8 -ffunction-sections -mno-split-addresses
 src/levels/shared/L00_00324D18.c	-O2 -G0 -ffunction-sections -frac2-keep-block-order -frac2-gcse-unsplit-edges
@@ -1564,6 +1566,7 @@ src/levels/shared/L00_003296C0.c	-O2 -G0 -ffunction-sections -mno-split-addresse
 src/levels/03_endako/L03_003D18F8-g8.c	-O2 -G8 -ffunction-sections -g
 
 src/levels/shared/L04_003C6FE8-timer.c	-O2 -G0 -ffunction-sections -g
+src/levels/07_siberius/L07_003F4578-geometry-g8.c	-O2 -G8 -ffunction-sections -fno-sched-interblock
 src/levels/shared/L00_003F8E08-003feba0.c	-O2 -G0 -ffunction-sections -g
 
 src/levels/shared/L00_004282F0-spawn.c	-O2 -G32 -Wa,-G32 -ffunction-sections
@@ -1715,6 +1718,8 @@ src/levels/shared/L00_002A9E30-retime.c	-O2 -G0 -ffunction-sections -g
 
 src/levels/shared/L00_003E4508-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
 
+# Mixed materialized and direct quadword clears in the Siberius launcher.
+src/levels/07_siberius/L07_003E4BD0-g8.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por -g
 
 src/game/002AA800-nearest.c	-O2 -G0 -ffunction-sections -g -ffast-math
 src/game/003427B0-fade.c	-O2 -G0 -ffunction-sections -frac2-hazard-labels
@@ -1812,6 +1817,8 @@ src/levels/shared/L04_003C8380-stream.c	-O2 -G0 -ffunction-sections -g
 src/levels/03_endako/L03_003CF0C0-g8.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por
 src/levels/shared/L16_0040BED0.c	-O2 -G16 -Wa,-G16 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
 src/levels/shared/L00_003C6298-pool-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
+src/levels/07_siberius/L07_003EB838.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier
+src/levels/07_siberius/L07_003E61E0-g8.c	-O2 -G8 -ffunction-sections -g
 src/levels/shared/L00_002D3798-aim-g8.c	-O2 -G8 -ffunction-sections -g
 
 src/game/002CDD88-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections -fno-builtin
@@ -1822,6 +1829,8 @@ src/levels/03_endako/L03_0041D258-g8.c	-O2 -G16 -Wa,-G16 -ffunction-sections
 
 src/levels/shared/L08_0042E678-g8.c	-O2 -G8 -ffunction-sections -g -frac2-qcopy -frac2-qcopy-barrier
 src/game/0030F7B0-throw.c	-O2 -G0 -ffunction-sections -g -frac2-hazard-labels
+src/levels/07_siberius/L07_003F7968-g32.c	-O2 -G32 -Wa,-G32 -ffunction-sections
+src/levels/07_siberius/L07_0040E980-g8.c	-O2 -G8 -ffunction-sections -g -frac2-qcopy -frac2-qcopy-barrier
 
 # Joba endpoint selection keeps the absolute fallback address tied to one register.
 src/levels/11_joba/L11_003F3258-g8.c	-O2 -G8 -ffunction-sections -mno-split-addresses

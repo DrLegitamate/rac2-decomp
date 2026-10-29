@@ -1,9 +1,3 @@
-/* Nonmatching: 292/292 bytes.
- * Profile: -O2 -G0 -ffunction-sections -mno-split-addresses.
- * Final placement checks: US: 0/1; US2: 0/1; PAL: 0/1.
- * 292/292 bytes and frame 0x30. Capturing the definition pointer before the flags write and reading its health field afterwards reproduces the complete prefix through +0x94. Three fresh global loads and grouped copies are present, but their address registers differ from +0x98 onward.
- * Reopen with source-level table/vector address lifetime evidence from the allocator dumps; -mno-split-addresses already removes the saved high-address register without inventing volatility.
- */
 #include "common.h"
 
 typedef int TI128 __attribute__((mode(TI)));
@@ -16,14 +10,15 @@ extern int func_00283DB8(TI128 *, float);
 
 extern float func_00283248(float, float);
 
-extern char *D_L07_001B23CC __attribute__((nosda));
+/* The table is indexed in 128-byte records; position starts at offset 0x30. */
+typedef struct { char bytes[128]; } EntryECE0;
+extern EntryECE0 *D_L07_001B23CC __attribute__((nosda));
 
 void func_L07_003EECE0(char *arg)
 {
     TI128 tmp;
     char *s0 = arg;
     char *s1;
-    char *base;
     char *definition;
     unsigned short v;
     int r;
@@ -43,21 +38,15 @@ void func_L07_003EECE0(char *arg)
         func_00282D60(&tmp, s0, 0.0009765625f);
         r = func_00283DB8(&tmp, 128.0f);
         if (r != -1) {
-            base = D_L07_001B23CC;
-            qcopy(arg + 0x10, base + *(int *)(s1 + 0x98) * 128 + 0x30);
+            qcopy(arg + 0x10, &D_L07_001B23CC[*(int *)(s1 + 0x98)].bytes[0x30]);
         }
     }
 
-    base = D_L07_001B23CC;
+    r = *(int *)(s1 + 0x94);
+    entry = (char *)(r * 128 + (int)D_L07_001B23CC);
     f1 = *(float *)(arg + 0x10);
     f0 = *(float *)(arg + 0x14);
-    r = *(int *)(s1 + 0x94);
-    entry = r * 128 + base;
     *(float *)(s1 + 0xE8) = func_00283248(*(float *)(entry + 0x30) - f1, *(float *)(entry + 0x34) - f0);
-
     qcopy(s1 + 0xF0, arg + 0x10);
-
-    r = *(int *)(s1 + 0x94);
-    entry = r * 128 + D_L07_001B23CC;
-    qcopy(s1 + 0xD0, entry + 0x30);
+    qcopy(s1 + 0xD0, &D_L07_001B23CC[*(int *)(s1 + 0x94)].bytes[0x30]);
 }

@@ -1,16 +1,17 @@
+#include "common.h"
 #include "include_asm.h"
 
 INCLUDE_ASM("asm/levels", func_L07_00389EB8);
 
 INCLUDE_ASM("asm/levels", func_L07_003B72E8);
 
-INCLUDE_ASM("asm/levels", func_L07_003E4BD0);
+/* func_L07_003E4BD0 is in L07_003E4BD0-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L07_003E5070);
 
 /* func_L07_003E5198 is in L07_003E5198-g8.c. */
 
-INCLUDE_ASM("asm/levels", func_L07_003E56B8);
+/* func_L07_003E56B8 is in L07_003E56B8-g8.c. */
 
 
 extern void func_00282978(char *);
@@ -83,7 +84,7 @@ unsigned char *func_L07_003E5B70(int group, int *count)
 
 /* func_L07_003E5C78 is defined in L07_003E5C78-helpers.c. */
 
-INCLUDE_ASM("asm/levels", func_L07_003E5FA8);
+/* func_L07_003E5FA8 is in L07_003E5FA8-g8.c. */
 
 extern void func_002AD0E0(char *, int, char *, char *, char *, char *);
 
@@ -102,7 +103,7 @@ void func_L07_003E6148(char *arg)
 /* func_L07_003E61B8 is in the sibling file L07_00389EB8-g8.c: its body
    reaches a small-data global through $gp. */
 
-INCLUDE_ASM("asm/levels", func_L07_003E61E0);
+/* func_L07_003E61E0 is in L07_003E61E0-g8.c. */
 
 /* func_L07_003E69B8 is in L07_003E69B8-g8.c. */
 
@@ -237,9 +238,27 @@ void func_L07_003EB790(unsigned char *arg0)
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L07_003EB838);
+/* func_L07_003EB838 is in L07_003EB838.c. */
 
-INCLUDE_ASM("asm/levels", func_L07_003EBAB8);
+void func_L07_003EBAB8(char *actor)
+{
+    float position[4] __attribute__((aligned(16)));
+    float direction[4] __attribute__((aligned(16)));
+    char *state = *(char **)(actor + 0x68);
+    *(int *)(actor + 0x98) = 0;
+    *(unsigned short *)(actor + 0x34) = (*(unsigned short *)(actor + 0x34) | 0x41) & 0xefff;
+    func_002A6C58(actor, 0, 3);
+    *(TI128 *)position = 0;
+    position[2] = 0.75f;
+    func_00283098((TI128 *)position, (TI128 *)position, actor + 0xc0);
+    func_00282CC0((TI128 *)position, (TI128 *)position, actor + 0x10);
+    func_0032C700((TI128 *)position, 0, 25, 20, 20, 20, 45, 1, 0.6f, 20.0f,
+                 1, 0, 0, *(int *)(state + 0x314));
+    func_002E5CF8(9, 0, actor);
+    func_00282F20((TI128 *)direction, (TI128 *)(state + 0x1c0), 0.0500000045f);
+    func_002B0A68(actor, 0x7f8, (TI128 *)direction, 3.0f, 6.0f, 3.0f, 6.0f, 0xff);
+}
+
 
 /* Twin of func_L07_003E7380 with the mode eight instead of ten. */
 void func_L07_003EBBE8(char *arg, int a1, int a2, int a3, int a4)
@@ -253,15 +272,47 @@ void func_L07_003EBBE8(char *arg, int a1, int a2, int a3, int a4)
     func_L07_002E2090(arg, a1, a2, arg + 0xF0, r, a3, a4);
 }
 
-INCLUDE_ASM("asm/levels", func_L07_003EE3B0);
+/* func_L07_003EE3B0 is in L07_003EE3B0-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L07_003EE640);
 
 /* func_L07_003EE708 is matched in L07_003EE708-g8.c (built with -frac2-qcopy -frac2-qcopy-barrier). */
 
-INCLUDE_ASM("asm/levels", func_L07_003EEBF8);
+void func_L07_003EEBF8(char *arg, char *a1, TI128 *a2, TI128 *a3)
+{
+    TI128 v[2];
+    TI128 *second = &v[1];
+    char *s1;
+    unsigned short w;
 
-INCLUDE_ASM("asm/levels", func_L07_003EECE0);
+    v[0] = *a2;
+    *second = *a3;
+
+    w = *(unsigned short *)(arg + 0x34);
+    *(unsigned short *)(arg + 0x34) = (w & 0xFFBE) | 0x1000;
+
+    s1 = *(char **)(arg + 0x68);
+    *(int *)(arg + 0x98) = *(int *)(*(int *)(arg + 0x24) + 0x10);
+    func_002A7750((unsigned char *)arg, 2, -1);
+
+    *(unsigned char *)(arg + 0x30) = 0xFF;
+    *(short *)(arg + 0x32) = 0xFF;
+
+    *(int *)(s1 + 0x110) = (int)a1;
+
+    func_00283098((TI128 *)(arg + 0x10), &v[0], a1 + 0xC0);
+    func_00282CC0((TI128 *)(arg + 0x10), (TI128 *)(arg + 0x10),
+                  (char *)(*(int *)(s1 + 0x110) + 0x10));
+
+    w = *(unsigned short *)(arg + 0x34);
+    *(unsigned short *)(arg + 0x34) = w & 0xEFFF;
+
+    qcopy(s1 + 0xF0, arg + 0x10);
+    qcopy(s1 + 0xD0, second);
+}
+
+
+/* func_L07_003EECE0 is in L07_003EECE0.c. */
 
 /* Play the fixed mode/value pair for this object. */
 void func_L07_003EEE08(char *arg)

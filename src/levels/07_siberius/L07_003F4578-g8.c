@@ -174,15 +174,40 @@ void func_L07_00410930(SibObj *a0)
 
 
 /* Seeds the two shared field defaults, then fills the 0x450 record once. */
-INCLUDE_ASM("asm/levels", func_L07_003F8780);
+extern void func_L00_00424A08(s32, f32, f32);
+extern void func_L00_00424A50(f32, f32);
+extern u8 *func_L00_002D70A0(s32);
+
+typedef struct { f32 x, y; u8 pad08[0x2C]; u32 color; } Effect;
+typedef struct { u8 pad[0x450]; Effect *effect; } EffectState;
+void func_L07_003F8780(u8 *a0)
+{
+    EffectState *s1 = *(EffectState **)(a0 + 0x68);
+
+    func_L00_00424A08(0, D_L07_001B10B8, 0.003f);
+    func_L00_00424A50(D_L07_001B10BC, 0.003f);
+    if (*(u8 *)(a0 + 0x95) != 0) {
+        if (s1->effect == 0)
+            s1->effect = (Effect *)func_L00_002D70A0(5);
+        {
+            f32 x = D_L07_001B10B8;
+            f32 y = D_L07_001B10BC;
+            u32 z;
+            s1->effect->x = x;
+            z = D_L07_001B10C0;
+            s1->effect->y = y;
+            s1->effect->color = z;
+        }
+    }
+}
 
 /* Arms the spinner on the first pass, otherwise steers its 0x20 angle down. */
-INCLUDE_ASM("asm/levels", func_L07_003F6CF0);
+/* func_L07_003F6CF0 is defined in L07_003F4578-spin-g8.c. */
 
 /* Steers the 0x54 yaw toward the argument and refreshes the two 0xF8 angles. */
 
 /* Feeds the four 0xA8 ids to the shared geometry pass. */
-INCLUDE_ASM("asm/levels", func_L07_0040F6B8);
+/* func_L07_0040F6B8 is defined in L07_003F4578-geometry-g8.c. */
 
 extern f32 func_2E49C8(f32 a, f32 b);
 
