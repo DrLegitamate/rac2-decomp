@@ -82,7 +82,7 @@ void func_L09_003F9468(DobboPartsObject252 *object)
 }
 
 
-INCLUDE_ASM("asm/levels", func_L09_003F9708);
+/* func_L09_003F9708 lives in L09_003F9708-g8.c. */
 
 extern s32 func_33E658(s32 a0);
 
@@ -127,11 +127,11 @@ void func_L09_004051F8(NativeAngleOwner *owner) {
 
 INCLUDE_ASM("asm/levels", func_L09_00410200);
 
-INCLUDE_ASM("asm/levels", func_L09_00410608);
+/* func_L09_00410608 lives in L09_00410608-g8.c. */
 
 /* func_L09_00410B40 lives in the sibling small-data unit (L09_003F9468-g8.c). */
 
-INCLUDE_ASM("asm/levels", func_L09_00410BC8);
+/* func_L09_00410BC8 lives in L09_00410BC8-sprites.c. */
 
 INCLUDE_ASM("asm/levels", func_L09_0041A700);
 

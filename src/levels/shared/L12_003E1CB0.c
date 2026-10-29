@@ -108,7 +108,7 @@ void func_L12_003E1CB0(s32 a0) {
     }
 }
 
-INCLUDE_ASM("asm/levels", func_L12_003E1EE8);
+/* func_L12_003E1EE8 is defined in L12_003E1EE8-g8.c. */
 
 /* func_L12_003E20F0 is defined in L12_003E20F0-g8.c. */
 
@@ -152,7 +152,51 @@ INCLUDE_ASM("asm/levels", func_L12_003E2460);
 
 INCLUDE_ASM("asm/levels", func_L12_003E3A88);
 
-INCLUDE_ASM("asm/levels", func_L12_00400900);
+void func_L12_00400900(int index, struct L12Settings *settings, int enable) {
+    u8 *obj = (u8 *)(D_L12_001B2E9C + (index << 8));
+
+    if (!obj)
+        return;
+    if (enable) {
+        if (settings->x > 0)
+            *(u16 *)(obj + 0x34) &= ~2;
+        else if (settings->x < 0)
+            *(u16 *)(obj + 0x34) |= 2;
+        if (settings->y > 0 && (!obj || !*(u8 **)(obj + 0x24) ||
+            *(s16 *)(*(u8 **)(obj + 0x24) + 0x46) != 18)) {
+            obj[0x31] = 1;
+            *(u16 *)(obj + 0x34) &= ~1;
+        } else if (settings->y < 0 && (!obj || !*(u8 **)(obj + 0x24) ||
+                   *(s16 *)(*(u8 **)(obj + 0x24) + 0x46) != 18)) {
+            obj[0x31] = 0;
+            *(u16 *)(obj + 0x34) |= 1;
+        }
+        if (settings->w > 0 && *(u8 **)(obj + 0x24))
+            *(int *)(obj + 0x98) = *(int *)(*(u8 **)(obj + 0x24) + 0x10);
+        else if (settings->w < 0 && *(u8 **)(obj + 0x24))
+            *(int *)(obj + 0x98) = 0;
+    } else {
+        if (settings->x > 0 && (!*(u8 **)(obj + 0x24) ||
+            *(s16 *)(*(u8 **)(obj + 0x24) + 0x46) != 18))
+            *(u16 *)(obj + 0x34) |= 2;
+        else if (settings->x < 0 && (!obj || !*(u8 **)(obj + 0x24) ||
+                 *(s16 *)(*(u8 **)(obj + 0x24) + 0x46) != 18))
+            *(u16 *)(obj + 0x34) &= ~2;
+        if (settings->y > 0 && (!obj || !*(u8 **)(obj + 0x24) ||
+            *(s16 *)(*(u8 **)(obj + 0x24) + 0x46) != 18)) {
+            obj[0x31] = 0;
+            *(u16 *)(obj + 0x34) |= 1;
+        } else if (settings->y < 0 && (!obj || !*(u8 **)(obj + 0x24) ||
+                   *(s16 *)(*(u8 **)(obj + 0x24) + 0x46) != 18)) {
+            obj[0x31] = 1;
+            *(u16 *)(obj + 0x34) &= ~1;
+        }
+        if (settings->w > 0)
+            *(int *)(obj + 0x98) = 0;
+        else if (settings->w < 0)
+            *(int *)(obj + 0x98) = *(int *)(*(u8 **)(obj + 0x24) + 0x10);
+    }
+}
 
 void func_L12_00400B28(s32 a0, s32 a1, s32 a2, s32 a3) {
     s16 *p = D_L12_001FB960[a2];
@@ -275,6 +319,6 @@ void func_L12_00427DD0(char *obj) {
 
 INCLUDE_ASM("asm/levels", func_L12_00429A50);
 
-INCLUDE_ASM("asm/levels", func_L12_00429D60);
+/* func_L12_00429D60 is defined in L12_003E1CB0-g8.c. */
 
 INCLUDE_ASM("asm/levels", func_L12_00429ED8);

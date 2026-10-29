@@ -290,7 +290,7 @@ void func_L09_003AEE80(char *object)
     func_L00_002E6CF0(D_L09_003AEF78, object);
 }
 
-INCLUDE_ASM("asm/levels", func_L09_003AF060);
+/* func_L09_003AF060 is defined in L09_003AF060.c. */
 
 /* the effect's record: four blocks, four colour words, a matrix and a vector */
 
@@ -390,7 +390,6 @@ void func_L09_003AF6B0(char *object)
 /* func_L09_003E9AA0 is matched in src/levels/shared/L09_002B7238-g8.c ($gp-relative small data). */
 
 /* Defined in L09_003E9E60.c. */
-INCLUDE_ASM("asm/levels", func_L09_003E9E60);
 
 /* steps the run's frame index and hands the sample it lands on to the linked stage */
 int func_L09_003EA058(char *object, int index) {
@@ -601,7 +600,7 @@ int func_L09_003F7A88(char *object, int index) {
 
 INCLUDE_ASM("asm/levels", func_L09_003F7CE0);
 
-INCLUDE_ASM("asm/levels", func_L09_003F8598);
+/* func_L09_003F8598 is defined in L09_003F8598-g8.c. */
 
 void func_L09_003F87D8(char *unused, int index)
 {

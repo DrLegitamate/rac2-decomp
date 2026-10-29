@@ -1524,6 +1524,7 @@ src/levels/shared/L00_002B91C0-burst.c	-O2 -G0 -ffunction-sections -frac2-qcopy 
 src/levels/shared/L03_003E3800.c	-O2 -G0 -ffunction-sections -g
 src/levels/shared/L00_003EAA58.c	-O2 -G0 -ffunction-sections -g
 src/game/002AAC80-smoothing.c	-O2 -G0 -ffunction-sections -g
+src/levels/shared/L09_003E9E60.c	-O2 -G0 -ffunction-sections -g -fno-gcse
 
 src/game/00284FC0-g8.c	-O2 -G8 -ffunction-sections -fno-strength-reduce
 src/levels/shared/L00_00407C18-g64.c	-O2 -G64 -Wa,-G64 -ffunction-sections
@@ -1587,6 +1588,7 @@ src/core/00115FC0.c	-O2 -G2 -ffunction-sections -mastra-quad-saves
 
 src/game/002D1228-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections -fno-builtin
 src/game/002D0B98-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections -fno-builtin
+src/levels/shared/L11_002C5E80-trail-g8.c	-O2 -G8 -ffunction-sections -frac2-qcopy -frac2-qcopy-barrier -frac2-hazard-labels
 src/game/00304128.c	-O2 -G0 -ffunction-sections -mno-split-addresses
 src/game/002D2918-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections -fno-builtin -Wa,-G32
 
@@ -1730,10 +1732,13 @@ src/game/00274128-projection.c	-O2 -G0 -ffunction-sections -frac2-qcopy -frac2-q
 src/game/002D3390-002D36A0-g8.c	-O2 -G8 -ffunction-sections -frac2-zero-ti-por -frac2-qcopy
 
 src/levels/shared/L00_002A9760-g8.c	-O2 -G8 -ffunction-sections -g
+# Preserve the line-label FPU padding before the visibility-test division.
+src/levels/shared/L08_0042EF00-g8.c	-O2 -G8 -ffunction-sections -g
 src/levels/shared/L06_004009B8-g8.c	-O2 -G8 -Wa,-G64 -ffunction-sections
 
 # Preserve the FPU padding before the slope division.
 src/levels/shared/L04_002CC748-movement.c	-O2 -G0 -g -ffunction-sections
+src/levels/shared/L11_002CDE10-motion.c	-O2 -g -G0 -ffunction-sections -frac2-keep-block-order -frac2-hazard-labels
 
 src/game/0030F7B0-crate-g8.c	-O2 -G8 -ffunction-sections -ffast-math
 
@@ -1769,6 +1774,7 @@ src/game/002CDD88-g8.c	-O2 -G8 -fno-expensive-optimizations -ffunction-sections 
 src/levels/shared/L06_0035EA68-fall.c	-O2 -G0 -g -ffunction-sections
 
 
+src/levels/shared/L08_0042E678-g8.c	-O2 -G8 -ffunction-sections -g -frac2-qcopy -frac2-qcopy-barrier
 src/game/0030F7B0-throw.c	-O2 -G0 -ffunction-sections -g -frac2-hazard-labels
 
 # Joba endpoint selection keeps the absolute fallback address tied to one register.

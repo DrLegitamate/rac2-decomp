@@ -1,18 +1,11 @@
-/* Retained complete C reconstruction; not linked or counted.
- * Profile: -O2 -G8 -ffunction-sections
- * 1320/1340 bytes; 0/3 placements in us and us2; pal has no catalogue entry.
- * Residual: The complete 0x90-byte packets, 64-bit texture/GS registers and four-float door state are preserved. Test-word allocation, mixed GP/absolute loads, packet stores and common-tail scheduling differ.
- * Reopen: Independent packet-field lifetime or dual-address frame-data evidence, preserving 64-bit values and the full aligned position vector.
- * Trial-only source markers and profiles are restored after checking.
- */
-
 #include "common.h"
-typedef int DoorQuad __attribute__((mode(TI)));
-/* A packet's 0x90-byte stride is measured between its three retail instances. */
-typedef struct { u8 header[0x40]; unsigned int colour[4]; float uv[8]; unsigned long reg70, texture, clamp, test; } DoorPacket;
+
+/* Three 0x90-byte quad packets (the RAC1 layout: four positions, four colours,
+   eight UVs, then tag, TEX0, TEX1 and ALPHA register words). */
+typedef struct { u8 header[0x40]; unsigned int colour[4]; float uv[8]; unsigned long tag, tex0, tex1, alpha; } DoorPacket;
 extern DoorPacket D_L08_00264F20, D_L08_00264FB0, D_L08_00265040;
 extern u8 *D_L08_002B2540[];
-extern int D_L08_001B2508 __attribute__((sda));
+extern int D_L08_001B2508 MACRO_ADDR;
 extern int D_L08_001B1EC0 __attribute__((sda));
 extern int D_L08_001B1ECC __attribute__((sda));
 extern int D_L08_001B1EBC __attribute__((sda));
@@ -59,6 +52,16 @@ extern void func_L00_002E6CF0(void (*callback)(void *), void *object);
 /* The four measured state floats occupy one 16-byte parameter block. */
 typedef struct { float upper, lower, phase, rate; } DoorState;
 
+/* Retail accesses: byte +0x31, halfwords +0x32/+0x34, byte +0xb0. */
+typedef struct {
+    u8 pad0[0x31];
+    u8 drawMode;
+    short radius;
+    u16 flags;
+    u8 pad36[0x7a];
+    u8 id;
+} DoorObject;
+
 void func_L08_0042EF00(u8 *object)
 {
     DoorState *data = *(DoorState **)(object + 0x68);
@@ -68,8 +71,11 @@ void func_L08_0042EF00(u8 *object)
     float uv;
     float corner;
     unsigned long texture;
+    /* Preserve each 64-bit packing stage when combining the signed selectors
+       into the unsigned GS register word. */
+    unsigned long alpha;
+    DoorPacket *second, *third;
     float position[4] __attribute__((aligned(16)));
-    int id;
     if (data == 0)
         return;
     switch (object[0x95]) {
@@ -81,33 +87,45 @@ void func_L08_0042EF00(u8 *object)
         data->rate *= 0.0002908882452175021f;
         data->phase = 0;
         texture = func_0027C878(D_L08_001B1EBC);
-        D_L08_00264F20.test = (unsigned long)D_L08_001B1E58 | ((unsigned long)D_L08_001B1E5C << 2) | ((unsigned long)D_L08_001B1E60 << 4) | ((unsigned long)D_L08_001B1E64 << 6) | ((unsigned long)D_L08_001B1E68 << 32);
-        D_L08_00264F20.colour[0] = D_L08_001B1E6C;
-        D_L08_00264F20.colour[3] = D_L08_001B1E6C;
-        D_L08_00264F20.colour[2] = D_L08_001B1E6C;
-        D_L08_00264F20.colour[1] = D_L08_001B1E6C;
-        D_L08_00264F20.texture = texture;
-        D_L08_00264F20.clamp = 0xff9000000260UL;
-        D_L08_00264F20.reg70 = 0;
+        alpha = (unsigned long)((long)((unsigned long)(
+                    (long)((unsigned long)D_L08_001B1E58 |
+                           ((unsigned long)D_L08_001B1E5C << 2)) |
+                    (long)((unsigned long)D_L08_001B1E60 << 4)) |
+                    ((unsigned long)D_L08_001B1E64 << 6)) |
+                    (long)((unsigned long)D_L08_001B1E68 << 32));
+        D_L08_00264F20.alpha = alpha;
+        D_L08_00264F20.colour[0] = D_L08_00264F20.colour[1] = D_L08_00264F20.colour[2] = D_L08_00264F20.colour[3] = D_L08_001B1E6C;
+        D_L08_00264F20.tex0 = texture;
+        D_L08_00264F20.tag = 0;
+        D_L08_00264F20.tex1 = 0xff9000000260UL;
         texture = func_0027C878(72);
-        D_L08_00264FB0.test = (unsigned long)D_L08_001B1E70 | ((unsigned long)D_L08_001B1E74 << 2) | ((unsigned long)D_L08_001B1E78 << 4) | ((unsigned long)D_L08_001B1E7C << 6) | ((unsigned long)D_L08_001B1E80 << 32);
-        D_L08_00265040.test = (unsigned long)D_L08_001B1E88 | ((unsigned long)D_L08_001B1E8C << 2) | ((unsigned long)D_L08_001B1E90 << 4) | ((unsigned long)D_L08_001B1E94 << 6) | ((unsigned long)D_L08_001B1E98 << 32);
-        D_L08_00264FB0.colour[0] = D_L08_001B1E84;
-        D_L08_00265040.colour[0] = D_L08_001B1E9C;
-        D_L08_00265040.texture = texture;
-        D_L08_00265040.clamp = 0xff9000000260UL;
-        D_L08_00264FB0.colour[3] = D_L08_001B1E84;
-        D_L08_00264FB0.colour[2] = D_L08_001B1E84;
-        D_L08_00264FB0.colour[1] = D_L08_001B1E84;
-        D_L08_00264FB0.texture = texture;
-        D_L08_00264FB0.clamp = 0xff9000000260UL;
-        D_L08_00264FB0.reg70 = 0;
-        D_L08_00265040.colour[3] = D_L08_001B1E9C;
-        D_L08_00265040.colour[2] = D_L08_001B1E9C;
-        D_L08_00265040.colour[1] = D_L08_001B1E9C;
-        D_L08_00265040.reg70 = 0;
-        object[0x31] = 0;
-        *(unsigned short *)(object + 0x34) |= 1;
+        second = &D_L08_00264FB0;
+        third = &D_L08_00265040;
+        /* As in RAC1, each of these packets gets its ALPHA word last. */
+        second->colour[0] = second->colour[1] = second->colour[2] = second->colour[3] = D_L08_001B1E84;
+        second->tex0 = texture;
+        second->tex1 = 0xff9000000260UL;
+        second->tag = 0;
+        alpha = (unsigned long)((long)((unsigned long)(
+                    (long)((unsigned long)D_L08_001B1E70 |
+                           ((unsigned long)D_L08_001B1E74 << 2)) |
+                    (long)((unsigned long)D_L08_001B1E78 << 4)) |
+                    ((unsigned long)D_L08_001B1E7C << 6)) |
+                    (long)((unsigned long)D_L08_001B1E80 << 32));
+        second->alpha = alpha;
+        third->colour[0] = third->colour[1] = third->colour[2] = third->colour[3] = D_L08_001B1E9C;
+        third->tex0 = texture;
+        third->tex1 = 0xff9000000260UL;
+        third->tag = 0;
+        alpha = (unsigned long)((long)((unsigned long)(
+                    (long)((unsigned long)D_L08_001B1E88 |
+                           ((unsigned long)D_L08_001B1E8C << 2)) |
+                    (long)((unsigned long)D_L08_001B1E90 << 4)) |
+                    ((unsigned long)D_L08_001B1E94 << 6)) |
+                    (long)((unsigned long)D_L08_001B1E98 << 32));
+        third->alpha = alpha;
+        ((DoorObject *)object)->drawMode = 0;
+        ((DoorObject *)object)->flags |= 1;
         if (D_0019B2E8[object[0xb0] + D_001A79F0 * 16] & 0x80) {
             data->phase = 3.1415927410125732f;
             object[0x95] = 3;
@@ -147,14 +165,14 @@ void func_L08_0042EF00(u8 *object)
         D_L08_001B1EC4 = D_L08_001B1EA8 * phase;
         uv = func_00283D00(func_00283CE0(D_L08_001B2508) * D_L08_001B1EA0, 1.0f);
         corner = uv + 2.0f;
-        D_L08_00264F20.uv[3] = uv;
-        D_L08_00264F20.uv[7] = corner;
         D_L08_00264F20.uv[0] = uv;
         D_L08_00264F20.uv[4] = uv;
         D_L08_00264F20.uv[2] = corner;
         D_L08_00264F20.uv[6] = corner;
         D_L08_00264F20.uv[1] = uv;
         D_L08_00264F20.uv[5] = corner;
+        D_L08_00264F20.uv[3] = uv;
+        D_L08_00264F20.uv[7] = corner;
         D_L08_001B1EC0 = D_L08_001B2508;
         D_L08_002B2540[0] = 0;
         D_L08_001B1ECC = 0;
@@ -163,10 +181,8 @@ void func_L08_0042EF00(u8 *object)
     position[3] = (*(float *)(object + 0x2c) * 11.319999694824219f) / *(float *)(*(u8 **)(object + 0x24) + 0x24);
     if (func_00283DB8(position, (float)*(short *)(object + 0x32)) != -1) {
         func_L00_002E6CF0(func_L08_0042E678, object);
-        id = D_L08_001B1ECC;
         D_L08_001B1EC8 = object;
-        D_L08_002B2540[id] = object;
-        D_L08_001B1ECC = id + 1;
-        D_L08_002B2540[id + 1] = 0;
+        D_L08_002B2540[D_L08_001B1ECC++] = object;
+        D_L08_002B2540[D_L08_001B1ECC] = 0;
     }
 }
